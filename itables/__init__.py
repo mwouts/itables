@@ -1,6 +1,6 @@
-from .javascript import init_itables
+from .javascript import show, load_datatables, init_itables
 from .version import __version__
 
-init_itables()
+load_datatables()
 
-__all__ = ['__version__']
+__all__ = ['__version__', 'show', 'init_itables']
