@@ -15,24 +15,35 @@ def load_datatables():
 
 $('head').append('<link rel="stylesheet" type="text/css" \
                 href = "//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" > ');
+
+$('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; } </style>');
 """))
 
 
-def datatables_js_script(data=None, columns=None, html_id=None, **kwargs):
-    """Return the javascript code that represents a table"""
+def datatables_js_script(data=None,
+                         columns=None,
+                         html_id=None,
+                         classes=['display', 'nowrap'],
+                         **kwargs):
+    """Return the javascript code that represents a table
+    classes: https://datatables.net/manual/styling/classes
+    """
     html_id = html_id or str(uuid.uuid4())
 
     if data is not None:
         kwargs['data'] = data
     if columns is not None:
         kwargs['columns'] = columns
-
+    if isinstance(classes, list):
+        classes = ' '.join(classes)
+        
     try:
-        return """$(element).html(`<table id=\"""" + html_id + """\"/>`);
-
-        require(["datatables"], function(datatables) {
-        $(document).ready(function() {        
-            table = $('#""" + html_id + """').DataTable( """ + json.dumps(kwargs) + """ );
+        return """$(element).html(`<table id=\"""" + html_id + """\" class=\"""" + classes + \
+               """\"/>`);
+       
+               require(["datatables"], function(datatables) {
+               $(document).ready(function() {        
+                   table = $('#""" + html_id + """').DataTable( """ + json.dumps(kwargs) + """ );
         } );
     })"""
     except TypeError as error:

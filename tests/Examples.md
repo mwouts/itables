@@ -48,8 +48,8 @@ df
 ## Change column width for one column
 
 ```python
-# Enlarge column 'name'
-show(df, columnDefs= [{ "width": "25%", "targets": 1 }])
+# Enlarge column 'name', and remove 'nowrap' in classes
+show(df, columnDefs= [{ "width": "25%", "targets": 1 }], classes='display')
 ```
 
 ## Printing a table with many columns
