@@ -41,31 +41,24 @@ def datatables(df=None,
     html_table = '<table id="' + html_id + '" class="' + classes + '"><thead>' + match.groups()[0] + '</thead></table>'
 
     # Table content as 'data' for DataTable
-    kwargs['data'] = df_rows(df)
-    try:
+    rounded_df = df.reset_index()
+    for col in rounded_df:
+        if rounded_df[col].dtype.kind == 'f':
+            rounded_df[col] = rounded_df[col].apply(lambda x: float(format(x, '.15g')))
 
+    kwargs['data'] = rounded_df.values.tolist()
+    try:
+        dt_args = json.dumps(kwargs)
         return """$(element).html(`""" + html_table + """`);
        
                require(["datatables"], function(datatables) {
                $(document).ready(function() {        
-                   table = $('#""" + html_id + """').DataTable( """ + json.dumps(kwargs) + """ );
+                   table = $('#""" + html_id + """').DataTable(""" + dt_args + """ );
         } );
     })"""
     except TypeError as error:
         warnings.warn(str(error))
         return ''
-
-
-def df_rows(df):
-    """Return the list of rows of the data frame"""
-    return [
-        # The index or multi-index
-        (list(i) if isinstance(i, tuple) else [i]) +
-        # And the content of the row
-        [v for v in df.loc[i].values]
-        # for every row
-        for i in df.index
-    ]
 
 
 def show(df=None, **kwargs):
