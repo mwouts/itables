@@ -25,11 +25,23 @@ df = wb.get_countries()
 df
 ```
 
+```python
+df_complex_index = df.set_index(['region','name'])
+df_complex_index.columns = (pd.DataFrame({'category':['code']*2 +['property']*2 +['localisation']*3}, 
+                                        index=df_complex_index.columns.rename('detail'))
+            .set_index('category', append=True).swaplevel().index)
+df_complex_index
+```
+
 ## Using itables on one table
 
 ```python
 from itables import show
 show(df)
+```
+
+```python
+show(df_complex_index)
 ```
 
 ## Using itables for all tables
