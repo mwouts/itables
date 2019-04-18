@@ -36,10 +36,11 @@ def datatables_js_script(data=None,
         kwargs['columns'] = columns
     if isinstance(classes, list):
         classes = ' '.join(classes)
-        
+
     try:
-        return """$(element).html(`<table id=\"""" + html_id + """\" class=\"""" + classes + \
-               """\"/>`);
+        html_table = '<table id="' + html_id + '" class="' + classes + '" />'
+
+        return """$(element).html(`""" + html_table + """`);
        
                require(["datatables"], function(datatables) {
                $(document).ready(function() {        
