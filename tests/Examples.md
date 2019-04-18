@@ -120,6 +120,15 @@ import qgrid
 qgrid.show_grid(df)
 ```
 
+## IPyAggrid
+
+```python
+from ipyaggrid import Grid
+
+Grid(grid_data=df,
+     grid_options = {'columnDefs' : [{'field': c} for c in df.columns]})
+```
+
 ## IPySheet
 
 I still have to find out how to print a dataframe.
