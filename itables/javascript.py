@@ -24,12 +24,18 @@ $('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; 
 def datatables(df=None,
                classes=['display', 'nowrap'],
                html_id=None,
+               max_bytes=2 ** 20,
                **kwargs):
     """Return the javascript code that represents a table
     :param df: a Pandas data frame
     :param classes: classes for the html table, see https://datatables.net/manual/styling/classes
     :param html_id: a unique identifier for the table
+    :param max_bytes: the largest memory size for which we wish to display the dataframe.
     """
+    if df.values.nbytes > max_bytes > 0:
+        raise ValueError('The dataframe has size {}, larger than the limit {}'.format(df.values.nbytes, max_bytes) +
+                         '\nPlease print a smaller dataframe, or print it with a larger/no limit with '
+                         'show(df, max_bytes=0)')
 
     html_id = html_id or str(uuid.uuid4())
     if isinstance(classes, list):
