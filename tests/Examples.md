@@ -61,7 +61,11 @@ df
 
 ```python
 # Enlarge column 'name', and remove 'nowrap' in classes
-show(df, columnDefs= [{ "width": "25%", "targets": 1 }], classes='display')
+show(df, columnDefs= [{"width": "200px", "targets": 4}], classes='display')
+```
+
+```python
+show(df.T, columnDefs = [{ "width": "50px", "targets": "_all" }])
 ```
 
 ## Printing a table with many columns
@@ -69,7 +73,7 @@ show(df, columnDefs= [{ "width": "25%", "targets": 1 }], classes='display')
 The table looks better when we set a minimal width on columns...
 
 ```python
-show(df.T, columnDefs = [{ "width": "50px", "targets": i } for i in range(len(df.index))])
+show(df.T, columnDefs = [{ "width": "50px", "targets": "_all" }])
 ```
 
 ## Custom paging
@@ -92,32 +96,10 @@ show(df, scrollY="200px",scrollCollapse=True, paging=False)
 show(df.head(12), paging=False)
 ```
 
-## Number and date formatting
-
-It is not great to have `-170.69099999999997` above. How should we format floats and dates to have a better look?
-
-```python
-from pandas.io.formats.format import format_array
-','.join(format_array(df.head(12).longitude.values, None))
-```
-
-## Large tables
-
-Warn and do not print tables with more than 1.5MB in full?
-
 ## Global configuration
 
 *TODO!!*
 
-## Index and multiindex
-
-```python
-df.set_index(['region', 'name'])
-```
-
-## Columns and hierarchical columns 
-
-Do we need to use the HTML layout, cf. https://datatables.net/examples/basic_init/complex_header.html ?
 
 # Other interactive tables
 
@@ -133,6 +115,8 @@ qgrid.show_grid(df)
 ```
 
 ## IPyAggrid
+
+The underlying ag-grid javascript library looks great!
 
 ```python
 from ipyaggrid import Grid
