@@ -18,9 +18,12 @@ def test_run_notebooks(md_file):
     nb = jupytext.readf(md_file)
 
     # execute notebook
-    ep = ExecutePreprocessor(timeout=None)
+    ep = ExecutePreprocessor(timeout=None, kernel_name='current_env')
     ep.preprocess(nb, {'metadata': {'path': os.path.dirname(os.path.abspath(__file__))}})
 
     # save to ipynb
     ipynb_file = md_file.replace('.md', '.ipynb')
     jupytext.writef(nb, ipynb_file)
+
+    # save to md again (otherwise jupytext will complain that ipynb is more recent)
+    jupytext.writef(nb, md_file)
