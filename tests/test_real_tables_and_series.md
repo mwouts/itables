@@ -15,7 +15,7 @@ jupyter:
 
 # From HTML to interactive tables
 
-## A sample HTML table
+## Pandas DataFrame as HTML tables
 
 ```python
 import pandas as pd
@@ -59,6 +59,8 @@ init_itable_mode()
 df
 ```
 
+## Displaying a series with itables
+
 ```python
 df.query('region!="Aggregates"').set_index(['region','name']).capitalCity
 ```
@@ -68,13 +70,13 @@ df.query('region!="Aggregates"').set_index(['region','name']).capitalCity
 ## Change column width for one column
 
 ```python
-# Enlarge column 'name', and remove 'nowrap' in classes
-show(df, columnDefs= [{"width": "25%", "targets": 4}], classes='display')
+# Columns width not working here?
+show(df, columnDefs = [{ "width": "50px", "targets": 4 }], classes=['display', 'nowrap'])
 ```
 
 ## Printing a table with many columns
 
-The table looks better when we set a minimal width on columns...
+Tables with many columns look better when we set a minimal width on columns...
 
 ```python
 show(df.T, columnDefs = [{ "width": "50px", "targets": "_all" }])
@@ -82,7 +84,7 @@ show(df.T, columnDefs = [{ "width": "50px", "targets": "_all" }])
 
 ## Custom paging
 
-We can ask to show as little as 2 entries per page...
+We can ask to show as little as 2 entries per page
 
 ```python
 show(df, lengthMenu = [2, 5, 10, 25, 50, 75, 100 ])
