@@ -24,7 +24,7 @@ $('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; 
 
 
 def datatables(df=None,
-               classes=['display', 'nowrap'],
+               classes=['display'],
                html_id=None,
                show_index='auto',
                max_bytes=2 ** 20,
