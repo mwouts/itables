@@ -5,3 +5,4 @@ codecov
 slimit
 jupytext
 nbconvert
+jupyter_client
