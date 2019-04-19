@@ -1,0 +1,4 @@
+pytest
+slimit
+jupytext
+nbconvert

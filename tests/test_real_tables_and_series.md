@@ -35,6 +35,8 @@ df_complex_index
 
 ## Using itables on one table
 
+Use `show` to display one table.
+
 ```python
 from itables import show
 show(df)
@@ -46,13 +48,19 @@ show(df_complex_index)
 
 ## Using itables for all tables
 
+Execute `init_itable_mode` if you want that every dataframe be printed as a javascript table.
+
 ```python
-from itables import init_itables
-init_itables()
+from itables import init_itable_mode
+init_itable_mode()
 ```
 
 ```python
 df
+```
+
+```python
+df.query('region!="Aggregates"').set_index(['region','name']).capitalCity
 ```
 
 # Advanced formatting
@@ -61,11 +69,7 @@ df
 
 ```python
 # Enlarge column 'name', and remove 'nowrap' in classes
-show(df, columnDefs= [{"width": "200px", "targets": 4}], classes='display')
-```
-
-```python
-show(df.T, columnDefs = [{ "width": "50px", "targets": "_all" }])
+show(df, columnDefs= [{"width": "25%", "targets": 4}], classes='display')
 ```
 
 ## Printing a table with many columns
@@ -96,40 +100,17 @@ show(df, scrollY="200px",scrollCollapse=True, paging=False)
 show(df.head(12), paging=False)
 ```
 
+# Show a large table
+
+```python
+wb.get_indicators()
+```
+
+```python
+wb.get_series('SP.POP.TOTL', mrv=1, simplify_index=True)
+```
+
 ## Global configuration
 
 *TODO!!*
 
-
-# Other interactive tables
-
-
-## QGrid by Quantopian
-
-Is great!
-And yes, we can filter on the column content.
-
-```python
-import qgrid
-qgrid.show_grid(df)
-```
-
-## IPyAggrid
-
-The underlying ag-grid javascript library looks great!
-
-```python
-from ipyaggrid import Grid
-
-Grid(grid_data=df,
-     grid_options = {'columnDefs' : [{'field': c} for c in df.columns]})
-```
-
-## IPySheet
-
-I still have to find out how to print a dataframe.
-
-```python
-import ipysheet
-ipysheet.sheet()
-```
