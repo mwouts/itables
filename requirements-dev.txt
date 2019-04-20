@@ -7,3 +7,4 @@ jupytext
 nbconvert
 jupyter_client
 ipykernel
+world_bank_data
