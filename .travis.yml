@@ -1,6 +1,8 @@
 dist: xenial   # required for Python >= 3.7
 language: python
 cache: pip
+env:
+  CODECOV_TOKEN="cc72f10a-bed8-4475-a793-62b028610aa3"
 python:
   - "3.6"
   - "3.7"
