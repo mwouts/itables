@@ -7,6 +7,11 @@ import pandas.io.formats.format as fmt
 import warnings
 from IPython.core.display import display, Javascript
 
+try:
+    unicode  # Python 2
+except NameError:
+    unicode = str  # Python 3
+
 
 def load_datatables():
     """Load the datatables.net library, and the corresponding css"""
@@ -73,7 +78,7 @@ def datatables(df=None,
             continue
 
         if x.dtype.kind == 'O':
-            formatted_df[col] = formatted_df[col].astype(str)
+            formatted_df[col] = formatted_df[col].astype(unicode)
             continue
 
         formatted_values = np.array(fmt.format_array(x.values, None))
