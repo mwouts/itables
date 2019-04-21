@@ -17,12 +17,12 @@ def load_datatables():
     """Load the datatables.net library, and the corresponding css"""
     display(Javascript("""require.config({
     paths: {
-        datatables: '//cdn.datatables.net/1.10.19/js/jquery.dataTables.min',
+        datatables: 'https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min',
     }
 });
 
 $('head').append('<link rel="stylesheet" type="text/css" \
-                href = "//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" > ');
+                href = "https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" > ');
 
 $('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; } </style>');
 """))
