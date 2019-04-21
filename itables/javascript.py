@@ -28,12 +28,12 @@ $('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; 
 """))
 
 
-def datatables(df=None,
-               classes=['display'],
-               html_id=None,
-               show_index='auto',
-               max_bytes=2 ** 20,
-               **kwargs):
+def _datatables_repr_(df=None,
+                      classes=['display'],
+                      html_id=None,
+                      show_index='auto',
+                      max_bytes=2 ** 20,
+                      **kwargs):
     """Return the HTML/javascript representation of the table
     :param df: a Pandas data frame
     :param classes: classes for the html table, see https://datatables.net/manual/styling/classes
@@ -107,11 +107,5 @@ require(["datatables"], function (datatables) {
 
 def show(df=None, **kwargs):
     """Show a dataframe"""
-    html = datatables(df, **kwargs)
+    html = _datatables_repr_(df, **kwargs)
     display(HTML(html))
-
-
-def init_itable_mode():
-    """Activate the representation of Pandas dataframes as interactive tables"""
-    pd.DataFrame._repr_html_ = datatables
-    pd.Series._repr_html_ = datatables

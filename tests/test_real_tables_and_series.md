@@ -51,8 +51,7 @@ show(df_complex_index)
 Execute `init_itable_mode` if you want that every dataframe be printed as a javascript table.
 
 ```python
-from itables import init_itable_mode
-init_itable_mode()
+import itables.interactive
 ```
 
 ```python
