@@ -15,20 +15,14 @@ jupyter:
 
 ```python
 from itables import show
-from sample_tables import sample_series, sample_tables, table_with_complex_header
+from itables.sample import sample_series, sample_dfs
 ```
 
 # Sample tables
 
 ```python
-for df in sample_tables():
+for df in sample_dfs():
     show(df)
-```
-
-# Table with complex header
-
-```python
-show(table_with_complex_header())
 ```
 
 # Series

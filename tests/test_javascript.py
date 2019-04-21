@@ -2,7 +2,7 @@ import re
 import pytest
 from slimit.parser import Parser
 from itables.javascript import _datatables_repr_
-from .sample_tables import sample_tables, table_with_complex_header, sample_series
+from itables.sample import sample_dfs, sample_series
 
 
 @pytest.fixture()
@@ -16,7 +16,7 @@ def test_incorrect_js_raises(parser):
         parser.parse(incorrect_script)
 
 
-@pytest.mark.parametrize('df', sample_tables() + [table_with_complex_header()])
+@pytest.mark.parametrize('df', sample_dfs())
 def test_sample_tables(df, parser):
     html = _datatables_repr_(df)
     js_re = re.compile('.*<script type="text/javascript">(.*)</script>', flags=re.M | re.DOTALL)
