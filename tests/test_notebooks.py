@@ -7,6 +7,7 @@ from nbconvert.preprocessors import ExecutePreprocessor
 def list_notebooks():
     nb_path = os.path.dirname(os.path.abspath(__file__))
     notebooks = [os.path.join(nb_path, nb_file) for nb_file in os.listdir(nb_path) if nb_file.endswith('.md')]
+    notebooks.append(os.path.join(nb_path, '..', 'README.md'))
 
     assert notebooks
     return notebooks

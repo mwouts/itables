@@ -13,18 +13,18 @@ show(wb.get_countries())
 
 ![](https://gist.githubusercontent.com/mwouts/165badb3f8ab345a25739a792859583b/raw/43d66231a1f916b350d266a8cb503dd30d7ae1e2/datatables.png)
 
-Note that if you want to display every dataframe or series as an interactive table, you just need to execute:
+Note that if you want to display every dataframe or series as an interactive table, you just need to `import itables.interactive`.
 
 ```python
-import itables
-itables.init_itable_mode()
+import itables.interactive
+wb.get_series('SP.POP.TOTL', mrv=1, simplify_index=True)
 ```
 
 # Installation
 
 Install the package with
 
-```bash
+```bash active=""
 pip install itables
 ```
 
