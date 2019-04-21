@@ -18,15 +18,15 @@ def test_incorrect_js_raises(parser):
 
 @pytest.mark.parametrize('df', sample_tables() + [table_with_complex_header()])
 def test_sample_tables(df, parser):
-    script = datatables(df)
-    multiline_js_string = re.compile('`(.*)`', flags=re.M | re.DOTALL)
-    script = re.sub(multiline_js_string, '', script)
+    html = datatables(df)
+    js_re = re.compile('.*<script type="text/javascript">(.*)</script>', flags=re.M | re.DOTALL)
+    script = js_re.match(html).groups()[0]
     parser.parse(script)
 
 
 @pytest.mark.parametrize('x', sample_series())
 def test_sample_series(x, parser):
-    script = datatables(x)
-    multiline_js_string = re.compile('`(.*)`', flags=re.M | re.DOTALL)
-    script = re.sub(multiline_js_string, '', script)
+    html = datatables(x)
+    js_re = re.compile('.*<script type="text/javascript">(.*)</script>', flags=re.M | re.DOTALL)
+    script = js_re.match(html).groups()[0]
     parser.parse(script)

@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import pandas.io.formats.format as fmt
 import warnings
-from IPython.core.display import display, Javascript
+from IPython.core.display import display, Javascript, HTML
 
 try:
     unicode  # Python 2
@@ -34,7 +34,7 @@ def datatables(df=None,
                show_index='auto',
                max_bytes=2 ** 20,
                **kwargs):
-    """Return the javascript code that represents a table
+    """Return the HTML/javascript representation of the table
     :param df: a Pandas data frame
     :param classes: classes for the html table, see https://datatables.net/manual/styling/classes
     :param html_id: a unique identifier for the table
@@ -90,13 +90,16 @@ def datatables(df=None,
     kwargs['data'] = formatted_df.values.tolist()
     try:
         dt_args = json.dumps(kwargs)
-        return """$(element).html(`""" + html_table + """`);
-
+        return """<div>""" + html_table + """
+<script type="text/javascript">
 require(["datatables"], function (datatables) {
     $(document).ready(function () {
         table = $('#""" + html_id + """').DataTable(""" + dt_args + """);
     });
-})"""
+})
+</script>
+</div>
+"""
     except TypeError as error:
         warnings.warn(str(error))
         return ''
@@ -104,11 +107,11 @@ require(["datatables"], function (datatables) {
 
 def show(df=None, **kwargs):
     """Show a dataframe"""
-    script = datatables(df, **kwargs)
-    display(Javascript(script))
+    html = datatables(df, **kwargs)
+    display(HTML(html))
 
 
 def init_itable_mode():
     """Activate the representation of Pandas dataframes as interactive tables"""
-    pd.DataFrame._repr_javascript_ = datatables
-    pd.Series._repr_javascript_ = datatables
+    pd.DataFrame._repr_html_ = datatables
+    pd.Series._repr_html_ = datatables
