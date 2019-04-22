@@ -6,6 +6,7 @@ import numpy as np
 import pandas.io.formats.format as fmt
 import warnings
 from IPython.core.display import display, Javascript, HTML
+import itables.options as opt
 
 try:
     unicode  # Python 2
@@ -28,50 +29,54 @@ $('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; 
 """))
 
 
-def _datatables_repr_(df=None,
-                      classes=['display'],
-                      html_id=None,
-                      show_index='auto',
-                      max_bytes=2 ** 20,
-                      **kwargs):
-    """Return the HTML/javascript representation of the table
-    :param df: a Pandas data frame
-    :param classes: classes for the html table, see https://datatables.net/manual/styling/classes
-    :param html_id: a unique identifier for the table
-    :param show_index: 'auto' (show the index unless it is an unnamed Range Index), True or False
-    :param max_bytes: the largest memory size for which we wish to display the dataframe.
-    """
+def _datatables_repr_(df=None, tableId=None, **kwargs):
+    """Return the HTML/javascript representation of the table"""
+
+    # Default options
+    for option in dir(opt):
+        if not option in kwargs and not option.startswith("__"):
+            kwargs[option] = getattr(opt, option)
+
+    # These options are used here, not in DataTable
+    classes = kwargs.pop('classes')
+    showIndex = kwargs.pop('showIndex')
+    maxBytes = kwargs.pop('maxBytes')
+
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
 
     if isinstance(df, pd.Series):
         df = df.to_frame()
 
-    if df.values.nbytes > max_bytes > 0:
-        raise ValueError('The dataframe has size {}, larger than the limit {}'.format(df.values.nbytes, max_bytes) +
-                         '\nPlease print a smaller dataframe, or print it with a larger/no limit with '
-                         'show(df, max_bytes=0)')
+    if df.values.nbytes > maxBytes > 0:
+        raise ValueError('The dataframe has size {}, larger than the limit {}\n'.format(df.values.nbytes, maxBytes) +
+                         'Please print a smaller dataframe, or enlarge or remove the limit:\n'
+                         'import itables.options as opt; opt.maxBytes=0')
 
-    html_id = html_id or str(uuid.uuid4())
+    # Do not show the page menu when the table has fewer rows than min length menu
+    if 'paging' not in kwargs and len(df.index) <= kwargs.get('lengthMenu', [10])[0]:
+        kwargs['paging'] = False
+
+    tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
         classes = ' '.join(classes)
 
-    if show_index == 'auto':
-        show_index = df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
+    if showIndex == 'auto':
+        showIndex = df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
 
-    if not show_index:
+    if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
     # Generate table head using pandas.to_html()
     pattern = re.compile(r'.*<thead>(.*)</thead>', flags=re.MULTILINE | re.DOTALL)
     match = pattern.match(df.head(0).to_html())
     thead = match.groups()[0]
-    if not show_index:
+    if not showIndex:
         thead = thead.replace('<th></th>', '', 1)
-    html_table = '<table id="' + html_id + '" class="' + classes + '"><thead>' + thead + '</thead></table>'
+    html_table = '<table id="' + tableId + '" class="' + classes + '"><thead>' + thead + '</thead></table>'
 
     # Table content as 'data' for DataTable
-    formatted_df = df.reset_index() if show_index else df.copy()
+    formatted_df = df.reset_index() if showIndex else df.copy()
     for col in formatted_df:
         x = formatted_df[col]
         if x.dtype.kind in ['b', 'i', 's']:
@@ -81,20 +86,23 @@ def _datatables_repr_(df=None,
             formatted_df[col] = formatted_df[col].astype(unicode)
             continue
 
-        formatted_values = np.array(fmt.format_array(x.values, None))
+        formatted_df[col] = np.array(fmt.format_array(x.values, None))
         if x.dtype.kind == 'f':
-            formatted_df[col] = formatted_values.astype(np.float)
-        else:
-            formatted_df[col] = formatted_values
+            try:
+                formatted_df[col] = formatted_df[col].astype(np.float)
+            except ValueError:
+                pass
 
     kwargs['data'] = formatted_df.values.tolist()
+
     try:
         dt_args = json.dumps(kwargs)
         return """<div>""" + html_table + """
 <script type="text/javascript">
 require(["datatables"], function (datatables) {
     $(document).ready(function () {
-        table = $('#""" + html_id + """').DataTable(""" + dt_args + """);
+        var dt_args = """ + dt_args + """;        
+        table = $('#""" + tableId + """').DataTable(dt_args);
     });
 })
 </script>
