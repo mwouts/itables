@@ -2,9 +2,5 @@ flake8
 pytest
 pytest-cov==2.5.1
 codecov
-slimit
 jupytext
-nbconvert
-jupyter_client
-ipykernel
 world_bank_data
