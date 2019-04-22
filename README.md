@@ -100,14 +100,11 @@ with pd.option_context('display.float_format', '${:,.2f}'.format):
 
 ## Advanced cell formatting
 
-TODO: eval JS function
-https://datatables.net/reference/option/columns.createdCell
+Datatables allows to set the cell or row style depending on the cell content, with either the [createdRow](https://datatables.net/reference/option/createdRow) or [createdCell](https://datatables.net/reference/option/columns.createdCell) callback. For instance, if we want the cells with negative numbers to be colored in red, we can use the `columnDefs.createdCell` argument as follows:
 
 ```python
-import pandas as pd
 show(pd.DataFrame([[-1,2,-3,4,-5],[6,-7,8,-9,10]], columns=list('abcde')), 
-                 columnDefs = [ {
-    "targets": "_all",
+                 columnDefs = [ { "targets": "_all",
     "createdCell": """function (td, cellData, rowData, row, col) {
       if ( cellData < 0 ) {
         $(td).css('color', 'red')
@@ -118,24 +115,50 @@ show(pd.DataFrame([[-1,2,-3,4,-5],[6,-7,8,-9,10]], columns=list('abcde')),
 
 ## Column width
 
-TODO
+FIXME: This does not appear to be working...
 
+```python
+show(df, columnsDefs = [{ "width": "200px", 'target':3}])
+```
+
+But in some cases - a table with many column like the one below, we can use the `width` parameter...
+
+```python
+show(x.to_frame().T, columnDefs = [{ "width": "80px", "targets": "_all" }])
+```
 
 ## HTML in cells
 
-TODO
+```python
+import pandas as pd
+show(pd.Series(['<b>bold</b>', '<i>italic</i>', '<a href="https://github.com/mwouts/itables">link</a>'], name='HTML'), paging=False)
+```
 
-## Selecting rows
+## Select rows
 
-TODO
+Not currently implemented. May be made available at a later stage using the [select](https://datatables.net/extensions/select/) extension for datatables.
 
-## CSV and Excel export
 
-TODO
+## Copy, CSV, PDF and Excel buttons
 
-## Displaying large tables
+Not currently implemented. May be made available at a later stage thanks to the [buttons](https://datatables.net/extensions/buttons/) extension for datatable.
 
-TODO
+
+## Large table support
+
+`itables` will not display dataframes that are larger than `maxBytes`, which is equal to 1MB by default. Truncate the dataframe with `df.head()`, or set the `maxBytes` parameter or option to an other value to display the dataframe. Or deactivate the limit with `maxBytes=0`.
+
+Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
+
+```python
+df = wb.get_indicators()
+df.values.nbytes
+```
+
+```python
+opt.maxBytes = 1000000
+df
+```
 
 # References
 
