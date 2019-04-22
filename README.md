@@ -1,18 +1,23 @@
 # Pandas DataFrames and Series as Interactive Tables in Jupyter
 
+[![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Build Status](https://travis-ci.com/mwouts/itables.svg?branch=master)](https://travis-ci.com/mwouts/itables)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=master)](https://codecov.io/github/mwouts/itables?branch=master)
+[![Binder](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)
+
 
 Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in both your notebooks and their HTML representation with a single additional import:
 
 ```python
 import itables.interactive
 import world_bank_data as wb
+
 df = wb.get_countries()
 df
 ```
 
-![](https://gist.githubusercontent.com/mwouts/165badb3f8ab345a25739a792859583b/raw/43d66231a1f916b350d266a8cb503dd30d7ae1e2/datatables.png)
+You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [![Binder](https://img.shields.io/badge/Binder-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)!
+
 
 # Quick start
 
@@ -22,7 +27,7 @@ Install the package with
 pip install itables
 ```
 
-Activate the interactive mode for all series and dataframes with 
+Activate the interactive mode for all series and dataframes with
 
 ```python
 import itables.interactive
@@ -32,7 +37,8 @@ Display just one series or dataframe as an interactive table with the `show` fun
 
 ```python
 from itables import show
-x = wb.get_series('SP.POP.TOTL', mrv=1, simplify_index=True)
+
+x = wb.get_series("SP.POP.TOTL", mrv=1, simplify_index=True)
 show(x)
 ```
 
@@ -46,6 +52,7 @@ Select [how many entries](https://datatables.net/examples/advanced_init/length_m
 
 ```python
 import itables.options as opt
+
 opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
 df
 ```
@@ -71,12 +78,12 @@ show(df, scrollY="200px", scrollCollapse=True, paging=False)
 Select how your table should look like with the `classes` argument of the `show` function, or by changing `itables.options.classes`. For the list of possible values, see [datatables' default style](https://datatables.net/manual/styling/classes) and [the style examples](https://datatables.net/examples/styling/).
 
 ```python
-opt.classes = ['display', 'nowrap']
+opt.classes = ["display", "nowrap"]
 df
 ```
 
 ```python
-opt.classes = ['display', 'cell-border']
+opt.classes = ["display", "cell-border"]
 df
 ```
 
@@ -87,15 +94,16 @@ Floats are rounded using `pd.options.display.float_format`. Please change that f
 ```python
 import math
 import pandas as pd
-with pd.option_context('display.float_format', '{:,.2f}'.format):
-    show(pd.Series([i * math.pi for i in range(1,6)]))
+
+with pd.option_context("display.float_format", "{:,.2f}".format):
+    show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 You may also choose to convert floating numbers to strings:
 
 ```python
-with pd.option_context('display.float_format', '${:,.2f}'.format):
-    show(pd.Series([i * math.pi for i in range(1,6)]))
+with pd.option_context("display.float_format", "${:,.2f}".format):
+    show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 ## Advanced cell formatting
@@ -103,14 +111,19 @@ with pd.option_context('display.float_format', '${:,.2f}'.format):
 Datatables allows to set the cell or row style depending on the cell content, with either the [createdRow](https://datatables.net/reference/option/createdRow) or [createdCell](https://datatables.net/reference/option/columns.createdCell) callback. For instance, if we want the cells with negative numbers to be colored in red, we can use the `columnDefs.createdCell` argument as follows:
 
 ```python
-show(pd.DataFrame([[-1,2,-3,4,-5],[6,-7,8,-9,10]], columns=list('abcde')), 
-                 columnDefs = [ { "targets": "_all",
-    "createdCell": """function (td, cellData, rowData, row, col) {
+show(
+    pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
+    columnDefs=[
+        {
+            "targets": "_all",
+            "createdCell": """function (td, cellData, rowData, row, col) {
       if ( cellData < 0 ) {
         $(td).css('color', 'red')
       }
-    }"""
-  } ])
+    }""",
+        }
+    ],
+)
 ```
 
 ## Column width
@@ -118,20 +131,31 @@ show(pd.DataFrame([[-1,2,-3,4,-5],[6,-7,8,-9,10]], columns=list('abcde')),
 FIXME: This does not appear to be working...
 
 ```python
-show(df, columnsDefs = [{ "width": "200px", 'target':3}])
+show(df, columnsDefs=[{"width": "200px", "target": 3}])
 ```
 
 But in some cases - a table with many column like the one below, we can use the `width` parameter...
 
 ```python
-show(x.to_frame().T, columnDefs = [{ "width": "80px", "targets": "_all" }])
+show(x.to_frame().T, columnDefs=[{"width": "80px", "targets": "_all"}])
 ```
 
 ## HTML in cells
 
 ```python
 import pandas as pd
-show(pd.Series(['<b>bold</b>', '<i>italic</i>', '<a href="https://github.com/mwouts/itables">link</a>'], name='HTML'), paging=False)
+
+show(
+    pd.Series(
+        [
+            "<b>bold</b>",
+            "<i>italic</i>",
+            '<a href="https://github.com/mwouts/itables">link</a>',
+        ],
+        name="HTML",
+    ),
+    paging=False,
+)
 ```
 
 ## Select rows
@@ -170,7 +194,7 @@ df
 
 ## Alternatives
 
-ITables is not a Jupyter widget, which means that it does not allows you to **edit** the content of the dataframe. 
+ITables is not a Jupyter widget, which means that it does not allows you to **edit** the content of the dataframe.
 If you are looking for Jupyter widgets, have a look at
 - [QGrid](https://github.com/quantopian/qgrid) by Quantopian
 - [IPyaggrid](https://dgothrek.gitlab.io/ipyaggrid/) by Louis Raison and Olivier Borderies
