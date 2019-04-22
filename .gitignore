@@ -4,3 +4,5 @@
 *.pyc
 *.ipynb
 .ipynb_checkpoints
+build
+dist
