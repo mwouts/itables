@@ -21,5 +21,5 @@ def test_run_notebooks(md_file):
     notebook = jupytext.readf(md_file)
     context = {}
     for cell in notebook.cells:
-        if cell.cell_type == 'code':
+        if cell.cell_type == 'code' and not cell.source.startswith('%'):
             exec(cell.source, context)
