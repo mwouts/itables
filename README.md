@@ -49,7 +49,7 @@ show(x)
 
 ### How many rows per page
 
-Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with the `lengthMenu` argument of the `show` function, or by changing `itables.options.default`:
+Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`:
 
 ```python
 import itables.options as opt
@@ -132,7 +132,7 @@ show(
 FIXME: This does not appear to be working...
 
 ```python
-show(df, columnsDefs=[{"width": "200px", "target": 3}])
+show(df, columnDefs=[{"width": "200px", "target": 3}])
 ```
 
 But in some cases - a table with many column like the one below, we can use the `width` parameter...
