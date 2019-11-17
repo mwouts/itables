@@ -165,7 +165,7 @@ Not currently implemented. May be made available at a later stage thanks to the 
 
 ## Large table support
 
-`itables` will not display dataframes that are larger than `maxBytes`, which is equal to 1MB by default. Truncate the dataframe with `df.head()`, or set the `maxBytes` parameter or option to an other value to display the dataframe. Or deactivate the limit with `maxBytes=0`.
+When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, then `itables` removes half the rows and columns, until the remaining table fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`) or columns (`maxColumns`).
 
 Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
 
@@ -175,7 +175,15 @@ df.values.nbytes
 ```
 
 ```python
-opt.maxBytes = 1000000
+df
+```
+
+```python
+show(df, maxRows=10)
+```
+
+```python
+opt.maxBytes = 2**20
 df
 ```
 

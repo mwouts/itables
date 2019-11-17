@@ -9,6 +9,7 @@ import pandas as pd
 import pandas.io.formats.format as fmt
 from IPython.core.display import display, Javascript, HTML
 import itables.options as opt
+from .downsample import downsample
 
 try:
     unicode  # Python 2
@@ -31,6 +32,28 @@ $('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; 
 """))
 
 
+def _formatted_values(df):
+    """Return the table content as a list of lists for DataTables"""
+    formatted_df = df.copy()
+    for col in formatted_df:
+        x = formatted_df[col]
+        if x.dtype.kind in ['b', 'i', 's']:
+            continue
+
+        if x.dtype.kind == 'O':
+            formatted_df[col] = formatted_df[col].astype(unicode)
+            continue
+
+        formatted_df[col] = np.array(fmt.format_array(x.values, None))
+        if x.dtype.kind == 'f':
+            try:
+                formatted_df[col] = formatted_df[col].astype(np.float)
+            except ValueError:
+                pass
+
+    return formatted_df.values.tolist()
+
+
 def _datatables_repr_(df=None, tableId=None, **kwargs):
     """Return the HTML/javascript representation of the table"""
 
@@ -42,7 +65,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     # These options are used here, not in DataTable
     classes = kwargs.pop('classes')
     showIndex = kwargs.pop('showIndex')
-    maxBytes = kwargs.pop('maxBytes')
+    maxBytes = kwargs.pop('maxBytes', 0)
+    maxRows = kwargs.pop('maxRows', 0)
+    maxColumns = kwargs.pop('maxColumns', 0)
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -50,10 +75,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if isinstance(df, pd.Series):
         df = df.to_frame()
 
-    if df.values.nbytes > maxBytes > 0:
-        raise ValueError('The dataframe has size {}, larger than the limit {}\n'.format(df.values.nbytes, maxBytes) +
-                         'Please print a smaller dataframe, or enlarge or remove the limit:\n'
-                         'import itables.options as opt; opt.maxBytes=0')
+    df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
 
     # Do not show the page menu when the table has fewer rows than min length menu
     if 'paging' not in kwargs and len(df.index) <= kwargs.get('lengthMenu', [10])[0]:
@@ -77,25 +99,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         thead = thead.replace('<th></th>', '', 1)
     html_table = '<table id="' + tableId + '" class="' + classes + '"><thead>' + thead + '</thead></table>'
 
-    # Table content as 'data' for DataTable
-    formatted_df = df.reset_index() if showIndex else df.copy()
-    for col in formatted_df:
-        x = formatted_df[col]
-        if x.dtype.kind in ['b', 'i', 's']:
-            continue
-
-        if x.dtype.kind == 'O':
-            formatted_df[col] = formatted_df[col].astype(unicode)
-            continue
-
-        formatted_df[col] = np.array(fmt.format_array(x.values, None))
-        if x.dtype.kind == 'f':
-            try:
-                formatted_df[col] = formatted_df[col].astype(np.float)
-            except ValueError:
-                pass
-
-    kwargs['data'] = formatted_df.values.tolist()
+    kwargs['data'] = _formatted_values(df.reset_index() if showIndex else df)
 
     try:
         dt_args = json.dumps(kwargs)
