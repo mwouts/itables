@@ -129,16 +129,10 @@ show(
 
 ## Column width
 
-FIXME: This does not appear to be working...
+FIXME: The `columnDefs` argument only acts on the tables that are larger than the notebook - typically tables with many columns like the one below:
 
 ```python
-show(df, columnDefs=[{"width": "200px", "target": 3}])
-```
-
-But in some cases - a table with many column like the one below, we can use the `width` parameter...
-
-```python
-show(x.to_frame().T, columnDefs=[{"width": "80px", "targets": "_all"}])
+show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}])
 ```
 
 ## HTML in cells

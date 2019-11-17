@@ -9,3 +9,6 @@ classes = ['display']
 
 """Maximum bytes for displaying a table"""
 maxBytes = 2 ** 20
+
+"""Default column width for large tables"""
+columnDefs = [{'width': '70px', 'targets': "_all"}]
