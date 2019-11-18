@@ -5,13 +5,16 @@ import io
 import re
 import uuid
 import json
-import warnings
+import logging
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
 from IPython.core.display import display, Javascript, HTML
 import itables.options as opt
 from .downsample import downsample
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 try:
     unicode  # Python 2
@@ -27,22 +30,11 @@ def read_package_file(*path):
 
 def load_datatables():
     """Load the datatables.net library, and the corresponding css"""
-
+    load_datatables_js = read_package_file('javascript', 'load_datatables_connected.js')
     eval_functions_js = read_package_file('javascript', 'eval_functions.js')
-    display(Javascript("""require.config({
-    paths: {
-        datatables: 'https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min',
-    }
-});
+    load_datatables_js += "\n$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');"
 
-$('head').append('<link rel="stylesheet" type="text/css" \
-                href = "https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" > ');
-                
-$('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; } </style>');
-
-$('head').append(`<script>
-""" + eval_functions_js + """
-</` + 'script>');"""))
+    display(Javascript(load_datatables_js))
 
 
 def _formatted_values(df):
@@ -72,7 +64,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     # Default options
     for option in dir(opt):
-        if not option in kwargs and not option.startswith("__"):
+        if option not in kwargs and not option.startswith("__"):
             kwargs[option] = getattr(opt, option)
 
     # These options are used here, not in DataTable
@@ -129,7 +121,7 @@ require(["datatables"], function (datatables) {
 </div>
 """
     except TypeError as error:
-        warnings.warn(str(error))
+        logger.error(str(error))
         return ''
 
 
