@@ -19,7 +19,6 @@ df
 
 You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)!
 
-
 # Quick start
 
 Install the package with
@@ -129,7 +128,7 @@ show(
 
 ## Column width
 
-FIXME: The `columnDefs` argument only acts on the tables that are larger than the notebook - typically tables with many columns like the one below:
+For tables that are larger than the notebook, the `columnDefs` argument allows to specify the desired width. If you wish you can also change the default in `itables.options`.
 
 ```python
 show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}])
@@ -163,14 +162,15 @@ Not currently implemented. May be made available at a later stage using the [sel
 Not currently implemented. May be made available at a later stage thanks to the [buttons](https://datatables.net/extensions/buttons/) extension for datatable.
 
 
-## Large table support
+## Downsampling
 
-When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, then `itables` removes half the rows and columns, until the remaining table fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`) or columns (`maxColumns`).
+When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
 
 Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
 
 ```python
-df = wb.get_indicators()
+df = wb.get_indicators().head(500)
+opt.maxBytes = 10000
 df.values.nbytes
 ```
 
@@ -178,14 +178,20 @@ df.values.nbytes
 df
 ```
 
+To show the table in full, we can modify the value of `maxBytes` either locally:
+
 ```python
-show(df, maxRows=10)
+show(df, maxBytes=0)
 ```
+
+or globally:
 
 ```python
 opt.maxBytes = 2**20
 df
 ```
+
+The `maxRows` and `maxColumns` arguments work similarly.
 
 # References
 
@@ -197,7 +203,8 @@ df
 
 ## Alternatives
 
-ITables is not a Jupyter widget, which means that it does not allows you to **edit** the content of the dataframe.
+ITables uses basic Javascript, and because of this it will only work in Jupyter Notebook, not in JupyterLab. It is not a Jupyter widget, which means that it does not allows you to **edit** the content of the dataframe.
+
 If you are looking for Jupyter widgets, have a look at
 - [QGrid](https://github.com/quantopian/qgrid) by Quantopian
 - [IPyaggrid](https://dgothrek.gitlab.io/ipyaggrid/) by Louis Raison and Olivier Borderies

@@ -3,4 +3,7 @@ pytest
 pytest-cov==2.5.1
 codecov
 jupytext
+nbconvert
+jupyter_client
+ipykernel
 world_bank_data
