@@ -1,14 +1,20 @@
 """HTML/js representation of Pandas dataframes"""
 
+import os
+import io
 import re
 import uuid
 import json
-import warnings
+import logging
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
 from IPython.core.display import display, Javascript, HTML
 import itables.options as opt
+from .downsample import downsample
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 try:
     unicode  # Python 2
@@ -16,19 +22,41 @@ except NameError:
     unicode = str  # Python 3
 
 
+def read_package_file(*path):
+    current_path = os.path.dirname(__file__)
+    with io.open(os.path.join(current_path, *path), encoding='utf-8') as fp:
+        return fp.read()
+
+
 def load_datatables():
     """Load the datatables.net library, and the corresponding css"""
-    display(Javascript("""require.config({
-    paths: {
-        datatables: 'https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min',
-    }
-});
+    load_datatables_js = read_package_file('javascript', 'load_datatables_connected.js')
+    eval_functions_js = read_package_file('javascript', 'eval_functions.js')
+    load_datatables_js += "\n$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');"
 
-$('head').append('<link rel="stylesheet" type="text/css" \
-                href = "https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" > ');
+    display(Javascript(load_datatables_js))
 
-$('head').append('<style> table td { text-overflow: ellipsis; overflow: hidden; } </style>');
-"""))
+
+def _formatted_values(df):
+    """Return the table content as a list of lists for DataTables"""
+    formatted_df = df.copy()
+    for col in formatted_df:
+        x = formatted_df[col]
+        if x.dtype.kind in ['b', 'i', 's']:
+            continue
+
+        if x.dtype.kind == 'O':
+            formatted_df[col] = formatted_df[col].astype(unicode)
+            continue
+
+        formatted_df[col] = np.array(fmt.format_array(x.values, None))
+        if x.dtype.kind == 'f':
+            try:
+                formatted_df[col] = formatted_df[col].astype(np.float)
+            except ValueError:
+                pass
+
+    return formatted_df.values.tolist()
 
 
 def _datatables_repr_(df=None, tableId=None, **kwargs):
@@ -36,13 +64,15 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     # Default options
     for option in dir(opt):
-        if not option in kwargs and not option.startswith("__"):
+        if option not in kwargs and not option.startswith("__"):
             kwargs[option] = getattr(opt, option)
 
     # These options are used here, not in DataTable
     classes = kwargs.pop('classes')
     showIndex = kwargs.pop('showIndex')
-    maxBytes = kwargs.pop('maxBytes')
+    maxBytes = kwargs.pop('maxBytes', 0)
+    maxRows = kwargs.pop('maxRows', 0)
+    maxColumns = kwargs.pop('maxColumns',  pd.get_option('display.max_columns'))
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -50,10 +80,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if isinstance(df, pd.Series):
         df = df.to_frame()
 
-    if df.values.nbytes > maxBytes > 0:
-        raise ValueError('The dataframe has size {}, larger than the limit {}\n'.format(df.values.nbytes, maxBytes) +
-                         'Please print a smaller dataframe, or enlarge or remove the limit:\n'
-                         'import itables.options as opt; opt.maxBytes=0')
+    df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
 
     # Do not show the page menu when the table has fewer rows than min length menu
     if 'paging' not in kwargs and len(df.index) <= kwargs.get('lengthMenu', [10])[0]:
@@ -77,87 +104,14 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         thead = thead.replace('<th></th>', '', 1)
     html_table = '<table id="' + tableId + '" class="' + classes + '"><thead>' + thead + '</thead></table>'
 
-    # Table content as 'data' for DataTable
-    formatted_df = df.reset_index() if showIndex else df.copy()
-    for col in formatted_df:
-        x = formatted_df[col]
-        if x.dtype.kind in ['b', 'i', 's']:
-            continue
-
-        if x.dtype.kind == 'O':
-            formatted_df[col] = formatted_df[col].astype(unicode)
-            continue
-
-        formatted_df[col] = np.array(fmt.format_array(x.values, None))
-        if x.dtype.kind == 'f':
-            try:
-                formatted_df[col] = formatted_df[col].astype(np.float)
-            except ValueError:
-                pass
-
-    kwargs['data'] = formatted_df.values.tolist()
+    kwargs['data'] = _formatted_values(df.reset_index() if showIndex else df)
 
     try:
         dt_args = json.dumps(kwargs)
         return """<div>""" + html_table + """
 <script type="text/javascript">
 require(["datatables"], function (datatables) {
-    $(document).ready(function () {
-        function eval_functions(map_or_text) {
-            if (typeof map_or_text === "string") {
-                if (map_or_text.startsWith("function")) {
-                    try {
-                        // Note: parenthesis are required around the whole expression for eval to return a value!
-                        // See https://stackoverflow.com/a/7399078/911298.
-                        //
-                        // eval("local_fun = " + map_or_text) would fail because local_fun is not declared
-                        // (using var, let or const would work, but it would only be declared in the local scope
-                        // and therefore the value could not be retrieved).
-                        const func = eval(`(${map_or_text})`);
-                        if (typeof func !== "function") {
-                            // Note: backquotes are super convenient! 
-                            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
-                            console.error(
-                                `Evaluated expression "${map_or_text}" is not a function (type is ${typeof func})`
-                            );
-                            return map_or_text;
-                        }
-                        // Return the function        
-                        return func;
-                    } catch (e) {
-                        // Make sure to print the error with a second argument to console.error().
-                        console.error(`itables was not able to parse "${map_or_text}"`, e);
-                    }
-                }
-            } else if (typeof map_or_text === "object") {
-                if (map_or_text instanceof Array) {
-                    // Note: "var" is now superseded by "let" and "const".
-                    // https://medium.com/javascript-scene/javascript-es6-var-let-or-const-ba58b8dcde75
-                    const result = [];
-                    // Note: "for of" is the best way to iterate through an iterable.
-                    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
-                    for (const item of map_or_text) {
-                        result.push(eval_functions(item));
-                    }
-                    return result;
-
-                    // Alternatively, more functional approach in one line:
-                    // return map_or_text.map(eval_functions);
-                } else {
-                    const result = {};
-                    // Object.keys() is safer than "for in" because otherwise you might have keys
-                    // that aren't defined in the object itself.
-                    //
-                    // See https://stackoverflow.com/a/684692/911298.
-                    for (const item of Object.keys(map_or_text)) {
-                        result[item] = eval_functions(map_or_text[item]);
-                    }
-                    return result;
-                }
-            }
-
-            return map_or_text;
-        }
+    $(document).ready(function () {        
         var dt_args = """ + dt_args + """;
         dt_args = eval_functions(dt_args);
         table = $('#""" + tableId + """').DataTable(dt_args);
@@ -167,7 +121,7 @@ require(["datatables"], function (datatables) {
 </div>
 """
     except TypeError as error:
-        warnings.warn(str(error))
+        logger.error(str(error))
         return ''
 
 
