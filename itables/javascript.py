@@ -72,7 +72,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     showIndex = kwargs.pop('showIndex')
     maxBytes = kwargs.pop('maxBytes', 0)
     maxRows = kwargs.pop('maxRows', 0)
-    maxColumns = kwargs.pop('maxColumns', 0)
+    maxColumns = kwargs.pop('maxColumns',  pd.get_option('display.max_columns'))
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
