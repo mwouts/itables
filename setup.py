@@ -24,7 +24,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     package_data={'itables': ['javascript/*.*']},
     tests_require=['pytest'],
-    install_requires=['pandas'],
+    install_requires=['IPython', 'pandas'],
     license='MIT',
     classifiers=['Development Status :: 3 - Alpha',
                  'License :: OSI Approved :: MIT License',
