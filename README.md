@@ -5,6 +5,7 @@
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=master)](https://codecov.io/github/mwouts/itables?branch=master)
 [![Binder](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 
 
 Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in both your notebooks and their HTML representation with a single additional import:
@@ -215,12 +216,3 @@ If you are looking for a table component that will fit in Dash applications, see
 I think it would be very helpful to have an identical table component for both Jupyter and [Dash](http://dash.plot.ly/). Please [let us know](https://community.plot.ly/t/why-does-dash-have-its-own-datatable-library/) if you are interested in drafting a new table component based on an existing Javascript library for Dash.
 
 Also, if you happen to prefer another Javascript table library (say, [ag-grid](https://www.ag-grid.com/)), and you would like to see it supported in `itables`, please open either an issue or a PR, and let us know what is the minimal code to display a table in Jupyter using your library.
-
-# Appendix
-
-Below we initialize the github star button <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a> that appears on top of this notebook:
-
-```python
-%%HTML
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-```
