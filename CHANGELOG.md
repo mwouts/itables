@@ -1,14 +1,17 @@
-0.2.0 (2019-12-??)
+0.2.0 (2019-11-20)
 ------------------
 
 Added
 =====
+- Large tables are downsampled (#2)
 
-- Large tables are displayed nicely (#5)
+Changed
+=======
+- Javascript code moved to Javascript files
 
-TODO
-- Support indexes, multiindexes for both columns and indexes
-- Automatically sample large tables
+Fixed
+=====
+- Tables with many columns are now well rendered (#5)
 
 
 0.1.0 (2019-04-23)
