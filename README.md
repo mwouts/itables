@@ -162,7 +162,7 @@ Not currently implemented. May be made available at a later stage using the [sel
 Not currently implemented. May be made available at a later stage thanks to the [buttons](https://datatables.net/extensions/buttons/) extension for datatable.
 
 
-## Downsampling
+## <a name="downsampling"></a> Downsampling
 
 When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
 
@@ -190,8 +190,6 @@ or globally:
 opt.maxBytes = 2**20
 df
 ```
-
-The `maxRows` and `maxColumns` arguments work similarly.
 
 # References
 
