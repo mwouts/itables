@@ -1,3 +1,15 @@
+0.2.1 (2019-11-21)
+------------------
+
+Added
+=====
+- Animated screenshot in README
+
+Fixed
+=====
+- Add IPython to setup.py install_requires, by Jon Shao (#9)
+
+
 0.2.0 (2019-11-20)
 ------------------
 
