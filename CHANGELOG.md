@@ -1,3 +1,11 @@
+0.2.2 (2020-10-01)
+==================
+
+Fixed
+-----
+- Pandas' `display.max_columns` can be `None`, by Arthur Deygin (#14)
+
+
 0.2.1 (2019-11-21)
 ==================
 
