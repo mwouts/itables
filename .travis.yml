@@ -6,8 +6,8 @@ env:
 python:
   - "3.6"
   - "3.7"
+  - "3.8"
   - "2.7"
-  - "3.4"
   - "3.5"
 install:
   # command to install dependencies
