@@ -12,6 +12,7 @@ import pandas.io.formats.format as fmt
 from IPython.core.display import display, Javascript, HTML
 import itables.options as opt
 from .downsample import downsample
+import string
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
@@ -27,10 +28,22 @@ def read_package_file(*path):
     with io.open(os.path.join(current_path, *path), encoding='utf-8') as fp:
         return fp.read()
 
-
-def load_datatables():
+__required_modules__ = {}
+def load_datatables(required_modules, required_css):
     """Load the datatables.net library, and the corresponding css"""
+    global __required_modules__
+    __required_modules__ = required_modules
+    required_modules_str = ",\n".join(['"{}": "{}"'.format(module, link) for module, link in required_modules.items()])
+
     load_datatables_js = read_package_file('javascript', 'load_datatables_connected.js')
+    load_datatables_js = string.Template(load_datatables_js).substitute(
+        paths=required_modules_str)
+
+    required_css_str = ""
+    for css in required_css:
+        required_css_str += "$('head').append('{}');\n".format(css)
+    load_datatables_js += required_css_str
+
     eval_functions_js = read_package_file('javascript', 'eval_functions.js')
     load_datatables_js += "\n$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');"
 
@@ -107,10 +120,12 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     kwargs['data'] = _formatted_values(df.reset_index() if showIndex else df)
 
     try:
+        global __required_modules__
+
         dt_args = json.dumps(kwargs)
-        return """<div>""" + html_table + """
-<script type="text/javascript">
-require(["datatables"], function (datatables) {
+        value_str = """<div>""" + html_table + '<script type="text/javascript">require([{}]'.format(
+            ",".join(['"{}"'.format(module) for module in __required_modules__.keys()])) + """
+, function (datatables) {
     $(document).ready(function () {        
         var dt_args = """ + dt_args + """;
         dt_args = eval_functions(dt_args);
@@ -120,6 +135,7 @@ require(["datatables"], function (datatables) {
 </script>
 </div>
 """
+        return value_str
     except TypeError as error:
         logger.error(str(error))
         return ''
