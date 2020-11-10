@@ -12,9 +12,12 @@ import pandas.io.formats.format as fmt
 from IPython.core.display import display, Javascript, HTML
 import itables.options as opt
 from .downsample import downsample
+import string
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
+
+__datatables_loaded__ = False
 
 try:
     unicode  # Python 2
@@ -28,13 +31,37 @@ def read_package_file(*path):
         return fp.read()
 
 
-def load_datatables():
+def load_datatables(**kwargs):
     """Load the datatables.net library, and the corresponding css"""
+
+    global __datatables_loaded__
+    if __datatables_loaded__:
+        return
+
+    for option in dir(opt):
+        if option not in kwargs and not option.startswith("__"):
+            kwargs[option] = getattr(opt, option)
+
+    required_modules = kwargs.pop('requiredModules')
+    required_css = kwargs.pop('requiredCss')
+
+    required_modules_str = ",\n".join(['"{}": "{}"'.format(module, link) for module, link in required_modules.items()])
+
     load_datatables_js = read_package_file('javascript', 'load_datatables_connected.js')
+    load_datatables_js = string.Template(load_datatables_js).substitute(
+        paths=required_modules_str)
+
+    required_css_str = ""
+    for css in required_css:
+        required_css_str += "$('head').append('<link rel=\"stylesheet\" type=\"text/css\" href = \"{}\" > ');\n".format(css)
+    load_datatables_js += required_css_str
+
     eval_functions_js = read_package_file('javascript', 'eval_functions.js')
     load_datatables_js += "\n$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');"
 
     display(Javascript(load_datatables_js))
+
+    __datatables_loaded__ = True
 
 
 def _formatted_values(df):
@@ -62,6 +89,8 @@ def _formatted_values(df):
 def _datatables_repr_(df=None, tableId=None, **kwargs):
     """Return the HTML/javascript representation of the table"""
 
+    load_datatables()
+
     # Default options
     for option in dir(opt):
         if option not in kwargs and not option.startswith("__"):
@@ -73,6 +102,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     maxBytes = kwargs.pop('maxBytes', 0)
     maxRows = kwargs.pop('maxRows', 0)
     maxColumns = kwargs.pop('maxColumns', pd.get_option('display.max_columns') or 0)
+    requiredModules = kwargs.pop('requiredModules')
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -108,9 +138,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     try:
         dt_args = json.dumps(kwargs)
-        return """<div>""" + html_table + """
-<script type="text/javascript">
-require(["datatables"], function (datatables) {
+        value_str = """<div>""" + html_table + '<script type="text/javascript">require([{}]'.format(
+            ",".join(['"{}"'.format(module) for module in requiredModules.keys()])) + """
+, function (datatables) {
     $(document).ready(function () {        
         var dt_args = """ + dt_args + """;
         dt_args = eval_functions(dt_args);
@@ -120,6 +150,7 @@ require(["datatables"], function (datatables) {
 </script>
 </div>
 """
+        return value_str
     except TypeError as error:
         logger.error(str(error))
         return ''
