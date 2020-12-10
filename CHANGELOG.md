@@ -1,3 +1,10 @@
+0.3.0 (2020-12-11)
+==================
+
+Fixed
+-------
+- `itables` now has an explicit `init_notebook_mode` function, which inserts the datatables.net library in the notebook. Use `init_notebook_mode(all_interactive=True)` to display all the pandas object as interactive tables. This fixes (#6) and (#17).
+
 0.2.2 (2020-10-01)
 ==================
 

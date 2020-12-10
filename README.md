@@ -10,16 +10,6 @@ Turn pandas DataFrames and Series into interactive [datatables](https://datatabl
 
 ![](https://raw.githubusercontent.com/mwouts/itables/master/demo/itables.gif)
 
-```python
-import itables.interactive
-import world_bank_data as wb
-
-df = wb.get_countries()
-df
-```
-
-You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)!
-
 # Quick start
 
 Install the package with
@@ -31,10 +21,21 @@ pip install itables
 Activate the interactive mode for all series and dataframes with
 
 ```python
-import itables.interactive
+from itables import init_notebook_mode
+init_notebook_mode(all_interactive=True)
 ```
 
-Display just one series or dataframe as an interactive table with the `show` function.
+```python
+import world_bank_data as wb
+
+df = wb.get_countries()
+df
+```
+
+You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)!
+
+
+Or display just one series or dataframe as an interactive table with the `show` function.
 
 ```python
 from itables import show

@@ -13,13 +13,15 @@ from IPython.core.display import display, Javascript, HTML
 import itables.options as opt
 from .downsample import downsample
 
-logging.basicConfig()
-logger = logging.getLogger(__name__)
-
 try:
     unicode  # Python 2
 except NameError:
     unicode = str  # Python 3
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
+
+_DATATABLE_LOADED = False
 
 
 def read_package_file(*path):
@@ -28,13 +30,32 @@ def read_package_file(*path):
         return fp.read()
 
 
-def load_datatables():
-    """Load the datatables.net library, and the corresponding css"""
+def init_notebook_mode(all_interactive=False):
+    """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
+    activate the datatables representation for all the Pandas DataFrames and Series.
+
+    Make sure you don't remove the output of this cell, otherwise the interactive tables won't work when
+    your notebook is reloaded.
+    """
+    if all_interactive:
+        pd.DataFrame._repr_html_ = _datatables_repr_
+        pd.Series._repr_html_ = _datatables_repr_
+
+    load_datatables(skip_if_already_loaded=False)
+
+
+def load_datatables(skip_if_already_loaded=True):
+    global _DATATABLE_LOADED
+    if _DATATABLE_LOADED and skip_if_already_loaded:
+        return
+
     load_datatables_js = read_package_file('javascript', 'load_datatables_connected.js')
     eval_functions_js = read_package_file('javascript', 'eval_functions.js')
     load_datatables_js += "\n$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');"
 
     display(Javascript(load_datatables_js))
+
+    _DATATABLE_LOADED = True
 
 
 def _formatted_values(df):
@@ -128,4 +149,5 @@ require(["datatables"], function (datatables) {
 def show(df=None, **kwargs):
     """Show a dataframe"""
     html = _datatables_repr_(df, **kwargs)
+    load_datatables(skip_if_already_loaded=True)
     display(HTML(html))
