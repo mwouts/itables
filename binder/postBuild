@@ -1,13 +1,5 @@
-#!/bin/bash
+# Stop everything if one command fails
+set -e
 
-set -ex
-
-# Extensions
-# 1. TOC
-jupyter contrib nbextension install --user
-jupyter nbextension enable toc2/main
-
-# 2. Jupytext
-jupyter serverextension enable jupytext --user
-jupyter nbextension install --py jupytext --user
-jupyter nbextension enable --py jupytext --user
+# Install from sources
+pip install .

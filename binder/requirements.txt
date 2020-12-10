@@ -1,4 +1,2 @@
-itables>=0.2
 jupytext
 world_bank_data
-jupyter_contrib_nbextensions
