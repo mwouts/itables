@@ -2,10 +2,10 @@
 
 """Show the index? Possible values: True, False and 'auto'. In mode 'auto', the index is not shown
 if it has no name and its content is range(N)"""
-showIndex = 'auto'
+showIndex = "auto"
 
 """Default styling options. See https://datatables.net/manual/styling/classes"""
-classes = ['display']
+classes = ["display"]
 
 """Maximum bytes for displaying a table"""
 maxBytes = 2 ** 16
@@ -15,4 +15,4 @@ maxBytes = 2 ** 16
 # maxColumns = 1000
 
 """Default column width for large tables"""
-columnDefs = [{'width': '70px', 'targets': "_all"}]
+columnDefs = [{"width": "70px", "targets": "_all"}]

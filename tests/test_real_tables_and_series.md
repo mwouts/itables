@@ -27,7 +27,7 @@ df
 
 ```python
 df_complex_index = df.set_index(['region','name'])
-df_complex_index.columns = (pd.DataFrame({'category':['code']*2 +['property']*2 +['localisation']*3}, 
+df_complex_index.columns = (pd.DataFrame({'category':['code']*2 +['property']*2 +['localisation']*3},
                                         index=df_complex_index.columns.rename('detail'))
             .set_index('category', append=True).swaplevel().index)
 df_complex_index
@@ -114,4 +114,3 @@ wb.get_series('SP.POP.TOTL', mrv=1, simplify_index=True)
 ## Global configuration
 
 *TODO!!*
-
