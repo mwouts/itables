@@ -1,0 +1,25 @@
+name: itables-dev
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python
+  - jupyter
+  - jupytext
+  # we require nbconvert<6.0 because the html export fails with nbconvert==6.0.7
+  # Cf. https://github.com/mwouts/itables/issues/21
+  - nbconvert<6.0
+  - ipykernel
+  - pytest
+  - pytest-xdist
+  - pytest-cov
+  - pre-commit
+  - pylint
+  - flake8
+  - black
+  - isort
+  - pip
+  - setuptools
+  - twine
+  - pip:
+    - world_bank_data
