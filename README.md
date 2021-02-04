@@ -138,6 +138,25 @@ For tables that are larger than the notebook, the `columnDefs` argument allows t
 show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}])
 ```
 
+## Cell alignment
+
+You can use the datatables.net [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
+
+```python
+show(df, columnDefs=[{"className":"dt-center",  "targets": "_all"}])
+```
+
+or globally by setting `opt.columnDefs`:
+
+```python
+opt.columnDefs = [{"className":"dt-center", "targets": "_all"}]
+df
+```
+
+```python
+del opt.columnDefs
+```
+
 ## HTML in cells
 
 ```python
