@@ -1,3 +1,11 @@
+0.4.0 (2020-12-??)
+==================
+
+Fixed
+-----
+- `itables` works on Jupyter Lab ([#3](https://github.com/mwouts/itables/issues/3)) - Thanks to Frédéric Collonval for pointing at the fix!
+
+
 0.3.0 (2020-12-14)
 ==================
 
