@@ -3,7 +3,7 @@
 
 Fixed
 -----
-- `jquery` is explicitly required. This fixes an issue with the HTML export when using `nbconvert>=6.0` (#21)
+- Fixed an issue with the HTML export when using `nbconvert>=6.0` (#21)
 
 Changed
 -------

@@ -55,7 +55,8 @@ def load_datatables(skip_if_already_loaded=True):
     load_datatables_js = read_package_file("javascript", "load_datatables_connected.js")
     eval_functions_js = read_package_file("javascript", "eval_functions.js")
     load_datatables_js += (
-        "\n$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');"
+        "require(['jquery'], function($) {\n"
+        "$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');});"
     )
 
     display(Javascript(load_datatables_js))
