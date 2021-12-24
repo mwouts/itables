@@ -51,7 +51,7 @@ df = wb.get_countries()
 df
 ```
 
-You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=README.md)!
+You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/README.md)!
 
 
 Or display just one series or dataframe as an interactive table with the `show` function.
