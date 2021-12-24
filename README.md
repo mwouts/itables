@@ -23,6 +23,9 @@ pip install itables
 In Jupyter Lab, load the `require` Javascript library (this is not required in Jupyter Notebook):
 
 ```python
+# This is required only in Jupyter Lab - don't do this in Jupyter Notebook
+# A PR is welcome if you know how to avoid this.
+# See https://github.com/mwouts/itables/issues/3
 from IPython.display import HTML, display
 from time import sleep
 
