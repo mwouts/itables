@@ -1,10 +1,12 @@
-0.3.1 (2020-12-??)
+0.3.1 (2020-12-24)
 ==================
 
 Fixed
 -----
 - We fixed an issue (`jquery` not found) with the HTML export when using `nbconvert>=6.0` (#21)
 - We documented how to change the default ordering of rows - with the `order` option (#30)
+- We documented how to load `require` in Jupyter Lab (#3)
+
 
 Changed
 -------

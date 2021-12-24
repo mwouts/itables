@@ -5,7 +5,7 @@
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Binder](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=README.md)
+[![Binder](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/README.md)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 
 Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in both your notebooks and their HTML representation with `import itables.interactive`:
@@ -18,6 +18,22 @@ Install the package with
 
 ```
 pip install itables
+```
+
+In Jupyter Lab, load the `require` Javascript library (this is not required in Jupyter Notebook):
+
+```python
+# This is required only in Jupyter Lab - don't do this in Jupyter Notebook
+# A PR is welcome if you know how to avoid this.
+# See https://github.com/mwouts/itables/issues/3
+from IPython.display import HTML, display
+from time import sleep
+
+display(HTML("""
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+"""))
+
+sleep(0.1)
 ```
 
 Activate the interactive mode for all series and dataframes with
