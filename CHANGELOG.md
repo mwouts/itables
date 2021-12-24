@@ -3,7 +3,8 @@
 
 Fixed
 -----
-- Fixed an issue with the HTML export when using `nbconvert>=6.0` (#21)
+- We fixed an issue (`jquery` not found) with the HTML export when using `nbconvert>=6.0` (#21)
+- We documented how to change the default ordering of rows - with the `order` option (#30)
 
 Changed
 -------
