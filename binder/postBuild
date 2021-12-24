@@ -3,3 +3,7 @@ set -e
 
 # Install from sources
 pip install .
+
+# Open .md notebooks with the Notebook editor
+mkdir -p ${HOME}/.jupyter/labconfig
+cp binder/labconfig/* ${HOME}/.jupyter/labconfig
