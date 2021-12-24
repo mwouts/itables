@@ -48,6 +48,21 @@ show(x)
 
 # Advanced usage
 
+## Row sorting
+
+Select the order in which the row are sorted with the [datatables' `order`](https://datatables.net/reference/option/order) argument. By default, the rows are sorted according to the first column (`order = [[0, 'asc']]`).
+
+If you want to deactivate the sorting, set `order = []`, either in the `show` method, or as a global option:
+
+```python
+import pandas as pd
+import itables.options as opt
+
+opt.order = []  # no sorting
+pd.DataFrame({'a':[2,1]})
+```
+
+
 ## Pagination
 
 ### How many rows per page
