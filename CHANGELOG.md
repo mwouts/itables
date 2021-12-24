@@ -1,3 +1,11 @@
+0.3.1 (2020-12-??)
+==================
+
+Changed
+-------
+- The main branch for the project is `main` rather than `master`
+
+
 0.3.0 (2020-12-14)
 ==================
 

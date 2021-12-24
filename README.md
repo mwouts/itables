@@ -2,15 +2,15 @@
 
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
-[![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=master)](https://codecov.io/github/mwouts/itables?branch=master)
+[![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Binder](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)
+[![Binder](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=README.md)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 
 Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in both your notebooks and their HTML representation with `import itables.interactive`:
 
-![](https://raw.githubusercontent.com/mwouts/itables/master/demo/itables.gif)
+![](https://raw.githubusercontent.com/mwouts/itables/main/demo/itables.gif)
 
 # Quick start
 
@@ -34,7 +34,7 @@ df = wb.get_countries()
 df
 ```
 
-You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/master?filepath=README.md)!
+You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=README.md)!
 
 
 Or display just one series or dataframe as an interactive table with the `show` function.
