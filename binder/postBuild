@@ -5,4 +5,5 @@ set -e
 pip install .
 
 # Open .md notebooks with the Notebook editor
-cp -R binder/labconfig ${HOME}/.jupyter
+mkdir -p ${HOME}/.jupyter/labconfig
+cp binder/labconfig/* ${HOME}/.jupyter/labconfig
