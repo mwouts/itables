@@ -1,9 +1,14 @@
 0.3.1 (2020-12-??)
 ==================
 
+Fixed
+-----
+- `jquery` is explicitly required. This fixes an issue with the HTML export when using `nbconvert>=6.0` (#21)
+
 Changed
 -------
 - The main branch for the project is `main` rather than `master`
+- Updated `datatables` to 1.11.3 and `jquery` to 3.5.1
 
 
 0.3.0 (2020-12-14)
