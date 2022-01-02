@@ -1,0 +1,24 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<style> table td { text-overflow: ellipsis; overflow: hidden; } </style>
+<script type="module">
+    import $ from "https://esm.sh/jquery@3.5.0";
+    import initDataTables from "https://esm.sh/datatables.net@1.11.3?deps=jquery@3.5.0";
+
+    initDataTables();
+
+    // Define the eval_functions_js function
+    // eval_functions_js
+
+    // Define the dt_args
+    let dt_args = null;
+
+    // Define the table data
+    const data = null;
+
+    dt_args["data"] = data
+
+    // Display the table
+    $(document).ready(function () {
+        $('#table_id').DataTable(dt_args);
+    });
+</script>

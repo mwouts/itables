@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import uuid
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -43,26 +44,25 @@ def init_notebook_mode(all_interactive=False):
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
+    else:
+        warnings.warn("Using init_notebook_mode(False) is not necessary ", DeprecationWarning)
 
-    load_datatables(skip_if_already_loaded=False)
 
+def load_datatables_connected(data, dt_args, table_id):
+    load_datatables_html = read_package_file("javascript", "load_datatables_connected.html")
 
-def load_datatables(skip_if_already_loaded=True):
-    global _DATATABLE_LOADED
-    if _DATATABLE_LOADED and skip_if_already_loaded:
-        return
-
-    load_datatables_js = read_package_file("javascript", "load_datatables_connected.js")
+    # Source the definition of eval_functions_js
     eval_functions_js = read_package_file("javascript", "eval_functions.js")
-    load_datatables_js += (
-        "require(['jquery'], function($) {\n"
-        "$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');});"
-    )
+    load_datatables_html = load_datatables_html.replace("// eval_functions_js", eval_functions_js)
 
-    display(Javascript(load_datatables_js))
+    # Set the value for the table id
+    load_datatables_html = load_datatables_html.replace("#table_id", "#" + table_id)
 
-    _DATATABLE_LOADED = True
+    # Set the value for dt_args & data
+    load_datatables_html = load_datatables_html.replace("dt_args = null;", "dt_args = eval_functions(" + dt_args + ");")
+    load_datatables_html = load_datatables_html.replace("data = null;", "data = " + data + ";")
 
+    return load_datatables_html
 
 def _formatted_values(df):
     """Return the table content as a list of lists for DataTables"""
@@ -79,7 +79,7 @@ def _formatted_values(df):
         formatted_df[col] = np.array(fmt.format_array(x.values, None))
         if x.dtype.kind == "f":
             try:
-                formatted_df[col] = formatted_df[col].astype(np.float)
+                formatted_df[col] = formatted_df[col].astype(float)
             except ValueError:
                 pass
 
@@ -139,37 +139,24 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         + "</thead></table>"
     )
 
-    kwargs["data"] = _formatted_values(df.reset_index() if showIndex else df)
+    data = _formatted_values(df.reset_index() if showIndex else df)
 
     try:
         dt_args = json.dumps(kwargs)
-        return (
-            """<div>"""
-            + html_table
-            + """
-<script type="text/javascript">
-require(["datatables"], function (datatables) {
-    $(document).ready(function () {
-        var dt_args = """
-            + dt_args
-            + """;
-        dt_args = eval_functions(dt_args);
-        table = $('#"""
-            + tableId
-            + """').DataTable(dt_args);
-    });
-})
-</script>
-</div>
-"""
-        )
+        data = json.dumps(data)
     except TypeError as error:
         logger.error(str(error))
         return ""
+
+    return (
+            html_table
+            + load_datatables_connected(
+        data=data,
+        dt_args=dt_args, table_id=tableId)
+    )
 
 
 def show(df=None, **kwargs):
     """Show a dataframe"""
     html = _datatables_repr_(df, **kwargs)
-    load_datatables(skip_if_already_loaded=True)
     display(HTML(html))

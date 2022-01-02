@@ -1,3 +1,11 @@
+0.4.0 (2022-01-??)
+==================
+
+Fixed
+-----
+- `itables` does not depend on `require` anymore and now works in Jupyter Notebook, Jupyter Lab and Jupyter nbconvert (#40)
+
+
 0.3.1 (2021-12-24)
 ==================
 
