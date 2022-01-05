@@ -159,6 +159,7 @@ show(
     }""",
         }
     ],
+    eval_functions=True,
 )
 ```
 

@@ -1,3 +1,11 @@
+0.4.0 (2022-01-??)
+==================
+
+Changed
+-------
+- The `show` function (and `itables.options`) has a new argument `eval_functions`. When set to `True`, the nested strings passed to `datatables.net` that start with `function` are converted to Javascript functions.
+
+
 0.3.1 (2021-12-24)
 ==================
 
