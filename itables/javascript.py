@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import uuid
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -53,12 +54,6 @@ def load_datatables(skip_if_already_loaded=True):
         return
 
     load_datatables_js = read_package_file("javascript", "load_datatables_connected.js")
-    eval_functions_js = read_package_file("javascript", "eval_functions.js")
-    load_datatables_js += (
-        "require(['jquery'], function($) {\n"
-        "$('head').append(`<script>\n" + eval_functions_js + "\n</` + 'script>');});"
-    )
-
     display(Javascript(load_datatables_js))
 
     _DATATABLE_LOADED = True
@@ -100,6 +95,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
+    eval_functions = kwargs.pop("eval_functions", None)
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -139,35 +135,67 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         + "</thead></table>"
     )
 
-    kwargs["data"] = _formatted_values(df.reset_index() if showIndex else df)
+    data = _formatted_values(df.reset_index() if showIndex else df)
+
+    if eval_functions:
+        eval_functions_js = read_package_file("javascript", "eval_functions.js")
+        html_table += "<script>\n" + eval_functions_js + "\n<script>"
+    elif eval_functions is None:
+        if _any_function(kwargs):
+            warnings.warn(
+                "One of the arguments passed to datatables starts with 'function'. "
+                "To evaluate this function, use the option 'eval_functions=True'. "
+                "To silence this warning, use 'eval_functions=False'."
+            )
 
     try:
         dt_args = json.dumps(kwargs)
-        return (
-            """<div><link rel="stylesheet" type="text/css"
+        dt_data = json.dumps(data)
+    except TypeError as error:
+        logger.error(str(error))
+        return ""
+
+    return (
+        """<div><link rel="stylesheet" type="text/css"
             href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
             <style> table td { text-overflow: ellipsis; overflow: hidden; } </style>"""
-            + html_table
-            + """
+        + html_table
+        + """
 <script type="text/javascript">
 require(["datatables"], function (datatables) {
     $(document).ready(function () {
         var dt_args = """
-            + dt_args
-            + """;
-        dt_args = eval_functions(dt_args);
+        + dt_args
+        + ";"
+        + ("dt_args = eval_functions(dt_args);" if eval_functions else "")
+        + "const data = "
+        + dt_data
+        + """;
+        dt_args["data"] = data;
         table = $('#"""
-            + tableId
-            + """').DataTable(dt_args);
+        + tableId
+        + """').DataTable(dt_args);
     });
 })
 </script>
 </div>
 """
-        )
-    except TypeError as error:
-        logger.error(str(error))
-        return ""
+    )
+
+
+def _any_function(value):
+    """Does a value or nested value starts with 'function'?"""
+    if isinstance(value, str) and value.startswith("function"):
+        return True
+    elif isinstance(value, list):
+        for nested_value in value:
+            if _any_function(nested_value):
+                return True
+    elif isinstance(value, dict):
+        for key, nested_value in value.items():
+            if _any_function(nested_value):
+                return True
+    return False
 
 
 def show(df=None, **kwargs):
