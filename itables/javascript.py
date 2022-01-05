@@ -11,7 +11,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
-from IPython.core.display import HTML, Javascript, display
+from IPython.core.display import HTML, display
 
 import itables.options as opt
 
@@ -45,24 +45,35 @@ def init_notebook_mode(all_interactive=False):
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
     else:
-        warnings.warn("Using init_notebook_mode(False) is not necessary ", DeprecationWarning)
+        warnings.warn(
+            "Using init_notebook_mode(False) is not necessary ", DeprecationWarning
+        )
 
 
 def load_datatables_connected(data, dt_args, table_id):
-    load_datatables_html = read_package_file("javascript", "load_datatables_connected.html")
+    load_datatables_html = read_package_file(
+        "javascript", "load_datatables_connected.html"
+    )
 
     # Source the definition of eval_functions_js
     eval_functions_js = read_package_file("javascript", "eval_functions.js")
-    load_datatables_html = load_datatables_html.replace("// eval_functions_js", eval_functions_js)
+    load_datatables_html = load_datatables_html.replace(
+        "// eval_functions_js", eval_functions_js
+    )
 
     # Set the value for the table id
     load_datatables_html = load_datatables_html.replace("#table_id", "#" + table_id)
 
     # Set the value for dt_args & data
-    load_datatables_html = load_datatables_html.replace("dt_args = null;", "dt_args = eval_functions(" + dt_args + ");")
-    load_datatables_html = load_datatables_html.replace("data = null;", "data = " + data + ";")
+    load_datatables_html = load_datatables_html.replace(
+        "dt_args = {};", "dt_args = eval_functions(" + dt_args + ");"
+    )
+    load_datatables_html = load_datatables_html.replace(
+        "data = [];", "data = " + data + ";"
+    )
 
     return load_datatables_html
+
 
 def _formatted_values(df):
     """Return the table content as a list of lists for DataTables"""
@@ -149,10 +160,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         return ""
 
     return (
-            html_table
-            + load_datatables_connected(
-        data=data,
-        dt_args=dt_args, table_id=tableId)
+        html_table
+        + "\n"
+        + load_datatables_connected(data=data, dt_args=dt_args, table_id=tableId)
     )
 
 

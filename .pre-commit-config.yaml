@@ -4,8 +4,8 @@
 exclude: >
     (?x)^(
       \.vscode/settings\.json|
-      demo/.*|
       tests/notebooks/.*|
+      index.html
     )$
 repos:
 
