@@ -137,20 +137,14 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         thead = thead.replace("<th></th>", "", 1)
     table_header = (
-        '<table id="'
-        + tableId
-        + '" class="'
-        + classes
-        + '"><thead>'
-        + thead
-        + "</thead></table>"
+        f'<table id="{tableId}" class="{classes}"><thead>{thead}</thead></table>'
     )
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
         table_header,
     )
-    output = replace_value(output, "#table_id", "#" + tableId)
+    output = replace_value(output, "#table_id", f"#{tableId}")
 
     # Export the DT args to JSON
     dt_args = json.dumps(kwargs)
@@ -161,17 +155,15 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         output = replace_value(
             output,
             "// eval_functions_js",
-            "<script>\n" + eval_functions_js + "\n<script>",
+            f"<script>\n{eval_functions_js}\n<script>",
         )
         output = replace_value(
             output,
             "let dt_args = {};",
-            "let dt_args = eval_functions(" + dt_args + ");",
+            f"let dt_args = eval_functions({dt_args});",
         )
     else:
-        output = replace_value(
-            output, "let dt_args = {};", "let dt_args = " + dt_args + ";"
-        )
+        output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
         if eval_functions is None and _any_function(kwargs):
             warnings.warn(
                 "One of the arguments passed to datatables starts with 'function'. "
@@ -182,7 +174,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)
     dt_data = json.dumps(data)
-    output = replace_value(output, "const data = [];", "const data = " + dt_data + ";")
+    output = replace_value(output, "const data = [];", f"const data = {dt_data};")
 
     return output
 
