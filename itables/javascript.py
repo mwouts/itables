@@ -144,7 +144,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     try:
         dt_args = json.dumps(kwargs)
         return (
-            """<div>"""
+            """<div><link rel="stylesheet" type="text/css"
+            href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+            <style> table td { text-overflow: ellipsis; overflow: hidden; } </style>"""
             + html_table
             + """
 <script type="text/javascript">
