@@ -81,6 +81,14 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
+def replace_value(template, pattern, value):
+    """Set the given pattern to the desired value in the template,
+    after making sure that the pattern is found exactly once."""
+    assert isinstance(template, str)
+    assert template.count(pattern) == 1
+    return template.replace(pattern, value)
+
+
 def _datatables_repr_(df=None, tableId=None, **kwargs):
     """Return the HTML/javascript representation of the table"""
 
@@ -109,6 +117,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if "paging" not in kwargs and len(df.index) <= kwargs.get("lengthMenu", [10])[0]:
         kwargs["paging"] = False
 
+    # Load the HTML template
+    output = read_package_file("datatables_template.html")
+
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
         classes = " ".join(classes)
@@ -125,7 +136,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     thead = match.groups()[0]
     if not showIndex:
         thead = thead.replace("<th></th>", "", 1)
-    html_table = (
+    table_header = (
         '<table id="'
         + tableId
         + '" class="'
@@ -134,53 +145,46 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         + thead
         + "</thead></table>"
     )
+    output = replace_value(
+        output,
+        '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
+        table_header,
+    )
+    output = replace_value(output, "#table_id", "#" + tableId)
 
-    data = _formatted_values(df.reset_index() if showIndex else df)
+    # Export the DT args to JSON
+    dt_args = json.dumps(kwargs)
 
+    # And load the eval_functions_js library if required
     if eval_functions:
         eval_functions_js = read_package_file("javascript", "eval_functions.js")
-        html_table += "<script>\n" + eval_functions_js + "\n<script>"
-    elif eval_functions is None:
-        if _any_function(kwargs):
+        output = replace_value(
+            output,
+            "// eval_functions_js",
+            "<script>\n" + eval_functions_js + "\n<script>",
+        )
+        output = replace_value(
+            output,
+            "let dt_args = {};",
+            "let dt_args = eval_functions(" + dt_args + ");",
+        )
+    else:
+        output = replace_value(
+            output, "let dt_args = {};", "let dt_args = " + dt_args + ";"
+        )
+        if eval_functions is None and _any_function(kwargs):
             warnings.warn(
                 "One of the arguments passed to datatables starts with 'function'. "
                 "To evaluate this function, use the option 'eval_functions=True'. "
                 "To silence this warning, use 'eval_functions=False'."
             )
 
-    try:
-        dt_args = json.dumps(kwargs)
-        dt_data = json.dumps(data)
-    except TypeError as error:
-        logger.error(str(error))
-        return ""
+    # Export the table data to JSON and include this in the HTML
+    data = _formatted_values(df.reset_index() if showIndex else df)
+    dt_data = json.dumps(data)
+    output = replace_value(output, "const data = [];", "const data = " + dt_data + ";")
 
-    return (
-        """<div><link rel="stylesheet" type="text/css"
-            href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-            <style> table td { text-overflow: ellipsis; overflow: hidden; } </style>"""
-        + html_table
-        + """
-<script type="text/javascript">
-require(["datatables"], function (datatables) {
-    $(document).ready(function () {
-        var dt_args = """
-        + dt_args
-        + ";"
-        + ("dt_args = eval_functions(dt_args);" if eval_functions else "")
-        + "const data = "
-        + dt_data
-        + """;
-        dt_args["data"] = data;
-        table = $('#"""
-        + tableId
-        + """').DataTable(dt_args);
-    });
-})
-</script>
-</div>
-"""
-    )
+    return output
 
 
 def _any_function(value):
