@@ -15,10 +15,27 @@
     const data = [];
     dt_args["data"] = data;
 
-    require(["jquery", "datatables"], ($, datatables) => {
+    if (typeof require === 'undefined') {
+        // TODO: This should become the default (use a simple import)
+        // when the ESM version works independently of whether
+        // require.js is there or not, see
+        // https://datatables.net/forums/discussion/69066/esm-es6-module-support?
+        const { default: $ } = await import("https://esm.sh/jquery@3.5.0");
+        const { default: initDataTables } = await import("https://esm.sh/datatables.net@1.11.3?deps=jquery@3.5.0");
+
+        initDataTables();
+
+        // Display the table
+        $(document).ready(function () {
+            $('#table_id').DataTable(dt_args);
+        });
+    } else {
+        require(["jquery", "datatables"], ($, datatables) => {
                 // Display the table
                 $(document).ready(function () {
                     $('#table_id').DataTable(dt_args);
                 });
-            });
+            }
+        )
+    }
 </script>

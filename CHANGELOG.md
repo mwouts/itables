@@ -3,6 +3,7 @@
 
 Changed
 -------
+- We load the `datatables.net` library with an ES import when `require.js` is not available. Now `itables` should also work in Jupyter Lab, VS Code and Colab (#3, #40)
 - The `show` function (and `itables.options`) has a new argument `eval_functions`. When set to `True`, the nested strings passed to `datatables.net` that start with `function` are converted to Javascript functions.
 - The HTML code for the datatables.net representation of the table is generated with an HTML template.
 - We use f-strings and thus require Python >= 3.6

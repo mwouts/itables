@@ -81,11 +81,11 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
-def replace_value(template, pattern, value):
+def replace_value(template, pattern, value, count=1):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
     assert isinstance(template, str)
-    assert template.count(pattern) == 1
+    assert template.count(pattern) == count
     return template.replace(pattern, value)
 
 
@@ -144,7 +144,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
         table_header,
     )
-    output = replace_value(output, "#table_id", f"#{tableId}")
+    output = replace_value(output, "#table_id", f"#{tableId}", count=2)
 
     # Export the DT args to JSON
     dt_args = json.dumps(kwargs)
