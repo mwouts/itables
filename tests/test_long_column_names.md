@@ -12,11 +12,12 @@ jupyter:
     name: itables
 ---
 
-In this notebook we document an issue with long column names.
+In this notebook we display a dataframe with very long column names.
 
 ```python
 import pandas as pd
-df = pd.DataFrame({"very " * 5 + "long name": [0] * 5,
+df = pd.DataFrame({"short name": [0] * 5,
+                   "very " * 5 + "long name": [0] * 5,
               "very " * 10 + "long name": [1] * 5,
               "very " * 20 + "long name": [2] * 5,
               "nospacein" + "very" * 50 + "longname": [3] * 5,
@@ -29,20 +30,10 @@ In Pandas the long names result in a very wide HTML table, however the columns d
 df
 ```
 
-With `datatables.net` the column width are fixed and because of this the columns do overlap. Note that, with the default `display` class, the columns that contains spaces are wrapped.
+With `datatables.net` the column width are fixed and because of this the columns did overlap when the style of `table th` was not set (issue #28). Note that, with the default `display` class, long columns names made of multiple words are wrapped onto multiple lines.
 
 ```python
 from itables import init_notebook_mode, show
 init_notebook_mode()
 show(df)
-```
-
-Maybe we can use the `columnDefs` argument to create wider columns?
-```python
-show(df, columnDefs = [{"width": "500px", "targets": "_all"}])
-```
-
-Or use the `autoWidth` argument (but I see no change here)?
-```python
-show(df, autoWidth = True)
 ```
