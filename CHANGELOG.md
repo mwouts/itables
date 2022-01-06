@@ -1,9 +1,12 @@
 0.4.0 (2022-01-06)
 ==================
 
-Changed
+Fixed
 -------
 - Now `itables` also works in Jupyter Lab, Colab, Nteract, VS Code and PyCharm (#3, #4, #26, #40), as we load the `datatables.net` library with an ES import when `require.js` is not available. Many thanks to [François Wouts](https://github.com/fwouts) for his precious help!
+
+Changed
+-------
 - The `show` function (and `itables.options`) has a new argument `eval_functions`. When set to `True`, the nested strings passed to `datatables.net` that start with `function` are converted to Javascript functions.
 - The HTML code for the datatables.net representation of the table is generated with an HTML template.
 - We use f-strings and thus require Python >= 3.6
@@ -17,7 +20,6 @@ Fixed
 - We fixed an issue (`jquery` not found) with the HTML export when using `nbconvert>=6.0` (#21)
 - We documented how to change the default ordering of rows - with the `order` option (#30)
 - We documented how to load `require` in Jupyter Lab (#3)
-
 
 Changed
 -------
