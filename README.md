@@ -1,4 +1,4 @@
-# Pandas DataFrames and Series as Interactive Tables in Jupyter
+# Pandas DataFrames and Series as Interactive Tables
 
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
@@ -9,7 +9,7 @@
 [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/README.md)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 
-Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in both your notebooks and their HTML representation with `import itables.interactive`:
+Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in your notebooks with `import itables.interactive`:
 
 ![](https://raw.githubusercontent.com/mwouts/itables/main/demo/itables.gif)
 
@@ -19,22 +19,6 @@ Install the package with
 
 ```
 pip install itables
-```
-
-In Jupyter Lab, load the `require` Javascript library (this is not required in Jupyter Notebook):
-
-```python
-# This is required only in Jupyter Lab - don't do this in Jupyter Notebook
-# A PR is welcome if you know how to avoid this.
-# See https://github.com/mwouts/itables/issues/3
-from IPython.display import HTML, display
-from time import sleep
-
-display(HTML("""
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
-"""))
-
-sleep(0.1)
 ```
 
 Activate the interactive mode for all series and dataframes with
@@ -62,6 +46,17 @@ from itables import show
 x = wb.get_series("SP.POP.TOTL", mrv=1, simplify_index=True)
 show(x)
 ```
+
+# Supported environments
+
+`itables` has been tested in the following editors:
+- Jupyter Notebook
+- Jupyter Lab
+- Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook)
+- Google Colab
+- VS Code (for both Jupyter Notebooks and Python scripts)
+- PyCharm (for Jupyter Notebooks)
+- Nteract
 
 # Advanced usage
 
@@ -253,11 +248,10 @@ df
 
 - DataTables is a plug-in for the jQuery Javascript library. It has a great [documentation](https://datatables.net/manual/), and a large set of [examples](https://datatables.net/examples/index).
 - The R package [DT](https://rstudio.github.io/DT/) uses [datatables.net](https://datatables.net/) as the underlying library for both R notebooks and Shiny applications. In addition to the standard functionalities of the library (display, sort, filtering and row selection), RStudio seems to have implemented cell edition.
-- Marek Cermak has an interesting [tutorial](https://medium.com/@marekermk/guide-to-interactive-pandas-dataframe-representation-485acae02946) on how to use datatables within Jupyter. He also published [jupyter-datatables](https://github.com/CermakM/jupyter-datatables), with a focus on numerical data and distribution plots.
 
 ## Alternatives
 
-ITables uses basic Javascript, and because of this it will only work in Jupyter Notebook, not in JupyterLab. It is not a Jupyter widget, which means that it does not allows you to **edit** the content of the dataframe.
+ITables uses basic Javascript. It is not a Jupyter widget, which means that it does not allows you to **edit** the content of the dataframe.
 
 If you are looking for Jupyter widgets, have a look at
 - [QGrid](https://github.com/quantopian/qgrid) by Quantopian
@@ -266,10 +260,6 @@ If you are looking for Jupyter widgets, have a look at
 
 If you are looking for a table component that will fit in Dash applications, see [datatable by Dash](https://github.com/plotly/dash-table/).
 
-## Contributing
-
-I think it would be very helpful to have an identical table component for both Jupyter and [Dash](http://dash.plot.ly/). Please [let us know](https://community.plot.ly/t/why-does-dash-have-its-own-datatable-library/) if you are interested in drafting a new table component based on an existing Javascript library for Dash.
-
-Also, if you happen to prefer another Javascript table library (say, [ag-grid](https://www.ag-grid.com/)), and you would like to see it supported in `itables`, please open either an issue or a PR, and let us know what is the minimal code to display a table in Jupyter using your library.
+Please also checkout [D-Tale](https://github.com/man-group/dtale) for exploring your Python DataFrames in the browser, using a local server.
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
