@@ -1,9 +1,17 @@
+0.4.2 (2022-01-07)
+==================
+
+Fixed
+-------
+- Fixed an issue in the HTML output when `eval_functions=True`
+
+
 0.4.1 (2022-01-06)
 ==================
 
 Fixed
 -------
-- Long column names don't overlap any more (#28)
+- Long column names don't overlap anymore (#28)
 
 
 0.4.0 (2022-01-06)

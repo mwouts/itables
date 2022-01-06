@@ -148,6 +148,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     # Export the DT args to JSON
     dt_args = json.dumps(kwargs)
+    output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
 
     # And load the eval_functions_js library if required
     if eval_functions:
@@ -155,21 +156,15 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         output = replace_value(
             output,
             "// eval_functions_js",
-            f"<script>\n{eval_functions_js}\n<script>",
+            f"{eval_functions_js}\ndt_args = eval_functions(dt_args);",
+            count=2,
         )
-        output = replace_value(
-            output,
-            "let dt_args = {};",
-            f"let dt_args = eval_functions({dt_args});",
+    elif eval_functions is None and _any_function(kwargs):
+        warnings.warn(
+            "One of the arguments passed to datatables starts with 'function'. "
+            "To evaluate this function, use the option 'eval_functions=True'. "
+            "To silence this warning, use 'eval_functions=False'."
         )
-    else:
-        output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
-        if eval_functions is None and _any_function(kwargs):
-            warnings.warn(
-                "One of the arguments passed to datatables starts with 'function'. "
-                "To evaluate this function, use the option 'eval_functions=True'. "
-                "To silence this warning, use 'eval_functions=False'."
-            )
 
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)
