@@ -4,7 +4,6 @@ import io
 import json
 import logging
 import os
-import re
 import uuid
 import warnings
 
@@ -81,6 +80,21 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
+def _table_header(df, table_id, show_index, classes):
+    """This function returns the HTML table header. Rows are not included."""
+    thead = ""
+    if show_index:
+        thead = "<th></th>" * len(df.index.names)
+
+    for column in df.columns:
+        thead += f"<th>{column}</th>"
+
+    loading = "<td>Loading...</td>"
+    tbody = f"<tr>{loading}</tr>"
+
+    return f'<table id="{table_id}" class="{classes}"><thead>{thead}</thead><tbody>{tbody}</tbody></table>'
+
+
 def replace_value(template, pattern, value, count=1):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
@@ -130,15 +144,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    # Generate table head using pandas.to_html()
-    pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    match = pattern.match(df.head(0).to_html())
-    thead = match.groups()[0]
-    if not showIndex:
-        thead = thead.replace("<th></th>", "", 1)
-    table_header = (
-        f'<table id="{tableId}" class="{classes}"><thead>{thead}</thead></table>'
-    )
+    table_header = _table_header(df, tableId, showIndex, classes)
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
