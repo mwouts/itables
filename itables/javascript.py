@@ -176,7 +176,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
 def _any_function(value):
     """Does a value or nested value starts with 'function'?"""
-    if isinstance(value, str) and value.startswith("function"):
+    if isinstance(value, str) and value.lstrip().startswith("function"):
         return True
     elif isinstance(value, list):
         for nested_value in value:

@@ -147,11 +147,13 @@ show(
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": """function (td, cellData, rowData, row, col) {
-      if ( cellData < 0 ) {
+            "createdCell": """
+function (td, cellData, rowData, row, col) {
+    if (cellData < 0) {
         $(td).css('color', 'red')
-      }
-    }""",
+    }
+}
+""",
         }
     ],
     eval_functions=True,

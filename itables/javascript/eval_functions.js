@@ -1,6 +1,6 @@
 function eval_functions(map_or_text) {
     if (typeof map_or_text === "string") {
-        if (map_or_text.startsWith("function")) {
+        if (map_or_text.trimStart().startsWith("function")) {
             try {
                 // Note: parenthesis are required around the whole expression for eval to return a value!
                 // See https://stackoverflow.com/a/7399078/911298.
