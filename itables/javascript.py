@@ -20,6 +20,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _DATATABLE_LOADED = False
+_ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
 
 def read_package_file(*path):
@@ -38,6 +39,10 @@ def init_notebook_mode(all_interactive=False):
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
+    else:
+        pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
+        if hasattr(pd.Series, "_repr_html_"):
+            del pd.Series._repr_html_
 
     load_datatables(skip_if_already_loaded=False)
 

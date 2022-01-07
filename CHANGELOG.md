@@ -2,9 +2,10 @@
 ==================
 
 Fixed
--------
-- Fixed an issue in the HTML output when `eval_functions=True`
-
+-----
+- Fix the HTML output when `eval_functions=True`
+- Display "Loading..." under the table header until the table is displayed with datatables.net
+- `init_notebook_mode(all_interactive=False)` restores the original Pandas HTML representation.
 
 0.4.1 (2022-01-06)
 ==================
