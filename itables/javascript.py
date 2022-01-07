@@ -4,7 +4,6 @@ import io
 import json
 import logging
 import os
-import re
 import uuid
 import warnings
 
@@ -17,15 +16,11 @@ import itables.options as opt
 
 from .downsample import downsample
 
-try:
-    unicode  # Python 2
-except NameError:
-    unicode = str  # Python 3
-
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _DATATABLE_LOADED = False
+_ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
 
 def read_package_file(*path):
@@ -44,6 +39,10 @@ def init_notebook_mode(all_interactive=False):
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
+    else:
+        pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
+        if hasattr(pd.Series, "_repr_html_"):
+            del pd.Series._repr_html_
 
     load_datatables(skip_if_already_loaded=False)
 
@@ -68,7 +67,7 @@ def _formatted_values(df):
             continue
 
         if x.dtype.kind == "O":
-            formatted_df[col] = formatted_df[col].astype(unicode)
+            formatted_df[col] = formatted_df[col].astype(str)
             continue
 
         formatted_df[col] = np.array(fmt.format_array(x.values, None))
@@ -79,6 +78,21 @@ def _formatted_values(df):
                 pass
 
     return formatted_df.values.tolist()
+
+
+def _table_header(df, table_id, show_index, classes):
+    """This function returns the HTML table header. Rows are not included."""
+    thead = ""
+    if show_index:
+        thead = "<th></th>" * len(df.index.names)
+
+    for column in df.columns:
+        thead += f"<th>{column}</th>"
+
+    loading = "<td>Loading... (need <a href=https://github.com/mwouts/itables/#table-not-loading>help</a>?)</td>"
+    tbody = f"<tr>{loading}</tr>"
+
+    return f'<table id="{table_id}" class="{classes}"><thead>{thead}</thead><tbody>{tbody}</tbody></table>'
 
 
 def replace_value(template, pattern, value, count=1):
@@ -130,15 +144,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    # Generate table head using pandas.to_html()
-    pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    match = pattern.match(df.head(0).to_html())
-    thead = match.groups()[0]
-    if not showIndex:
-        thead = thead.replace("<th></th>", "", 1)
-    table_header = (
-        f'<table id="{tableId}" class="{classes}"><thead>{thead}</thead></table>'
-    )
+    table_header = _table_header(df, tableId, showIndex, classes)
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
@@ -148,6 +154,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     # Export the DT args to JSON
     dt_args = json.dumps(kwargs)
+    output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
 
     # And load the eval_functions_js library if required
     if eval_functions:
@@ -155,21 +162,15 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         output = replace_value(
             output,
             "// eval_functions_js",
-            f"<script>\n{eval_functions_js}\n<script>",
+            f"{eval_functions_js}\ndt_args = eval_functions(dt_args);",
+            count=2,
         )
-        output = replace_value(
-            output,
-            "let dt_args = {};",
-            f"let dt_args = eval_functions({dt_args});",
+    elif eval_functions is None and _any_function(kwargs):
+        warnings.warn(
+            "One of the arguments passed to datatables starts with 'function'. "
+            "To evaluate this function, use the option 'eval_functions=True'. "
+            "To silence this warning, use 'eval_functions=False'."
         )
-    else:
-        output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
-        if eval_functions is None and _any_function(kwargs):
-            warnings.warn(
-                "One of the arguments passed to datatables starts with 'function'. "
-                "To evaluate this function, use the option 'eval_functions=True'. "
-                "To silence this warning, use 'eval_functions=False'."
-            )
 
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)
@@ -181,7 +182,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
 def _any_function(value):
     """Does a value or nested value starts with 'function'?"""
-    if isinstance(value, str) and value.startswith("function"):
+    if isinstance(value, str) and value.lstrip().startswith("function"):
         return True
     elif isinstance(value, list):
         for nested_value in value:

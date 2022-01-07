@@ -1,4 +1,4 @@
-# Pandas DataFrames and Series as Interactive Tables
+# Pandas DataFrames and Series as Interactive DataTables
 
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
@@ -9,7 +9,7 @@
 [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/README.md)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 
-Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in your notebooks with `import itables.interactive`:
+Turn pandas DataFrames and Series into interactive [datatables](https://datatables.net) in your notebooks!
 
 ![](https://raw.githubusercontent.com/mwouts/itables/main/demo/itables.gif)
 
@@ -28,6 +28,8 @@ from itables import init_notebook_mode
 init_notebook_mode(all_interactive=True)
 ```
 
+Then any dataframe will be displayed as an interactive [datatables](https://datatables.net) table:
+
 ```python
 import world_bank_data as wb
 
@@ -35,10 +37,7 @@ df = wb.get_countries()
 df
 ```
 
-You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/README.md)!
-
-
-Or display just one series or dataframe as an interactive table with the `show` function.
+If you want to display just one series or dataframe as an interactive table, use `itables.show`:
 
 ```python
 from itables import show
@@ -47,7 +46,11 @@ x = wb.get_series("SP.POP.TOTL", mrv=1, simplify_index=True)
 show(x)
 ```
 
-# Supported environments
+(NB: In Jupyter Notebook and Jupyter NBconvert, you need to call `init_notebook_mode()` before using `show`).
+
+You don't see any table above? Please either open the [HTML export](https://mwouts.github.io/itables/) of this notebook, or run this README on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/README.md)!
+
+## Supported environments
 
 `itables` has been tested in the following editors:
 - Jupyter Notebook
@@ -58,7 +61,19 @@ show(x)
 - PyCharm (for Jupyter Notebooks)
 - Nteract
 
+## Table not loading?
+
+If the table just says "Loading...", then maybe
+- You loaded a notebook that is not trusted (run "Trust Notebook" in View / Activate Command Palette)
+- Or you are offline?
+
+At the moment `itables` does not have an [offline mode](https://github.com/mwouts/itables/issues/8). While the table data is embedded in the notebook, the `jquery` and `datatables.net` are loaded from a CDN, see our [require.config](https://github.com/mwouts/itables/blob/main/itables/javascript/load_datatables_connected.js) and our [table template](https://github.com/mwouts/itables/blob/main/itables/datatables_template.html), so an internet connection is required to display the tables.
+
 # Advanced usage
+
+As `itables` is mostly a wrapper for the Javascript [datatables.net](https://datatables.net/) library, you should be able to find help on the datatables.net [forum](https://datatables.net/forums/) and [examples](https://datatables.net/examples/index)  for most formatting issues.
+
+Below we give a few examples of how the datatables.net examples can be translated to Python with `itables`.
 
 ## Row sorting
 
@@ -137,9 +152,11 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
     show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
-## Advanced cell formatting
+## Advanced cell formatting with JS callbacks
 
-Datatables allows to set the cell or row style depending on the cell content, with either the [createdRow](https://datatables.net/reference/option/createdRow) or [createdCell](https://datatables.net/reference/option/columns.createdCell) callback. For instance, if we want the cells with negative numbers to be colored in red, we can use the `columnDefs.createdCell` argument as follows:
+You can use Javascript callbacks to set the cell or row style depending on the cell content.
+
+The example below, in which we color in red the cells with negative numbers, is directly inspired by the corresponding datatables.net [example](https://datatables.net/reference/option/columns.createdCell).
 
 ```python
 show(
@@ -147,11 +164,13 @@ show(
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": """function (td, cellData, rowData, row, col) {
-      if ( cellData < 0 ) {
+            "createdCell": """
+function (td, cellData, rowData, row, col) {
+    if (cellData < 0) {
         $(td).css('color', 'red')
-      }
-    }""",
+    }
+}
+""",
         }
     ],
     eval_functions=True,
