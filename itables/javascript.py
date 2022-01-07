@@ -89,7 +89,7 @@ def _table_header(df, table_id, show_index, classes):
     for column in df.columns:
         thead += f"<th>{column}</th>"
 
-    loading = "<td>Loading...</td>"
+    loading = "<td>Loading... (need <a href=https://github.com/mwouts/itables/#table-not-loading>help</a>?)</td>"
     tbody = f"<tr>{loading}</tr>"
 
     return f'<table id="{table_id}" class="{classes}"><thead>{thead}</thead><tbody>{tbody}</tbody></table>'
