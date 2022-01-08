@@ -59,7 +59,6 @@ You don't see any table above? Please either open the [HTML export](https://mwou
 - Google Colab
 - VS Code (for both Jupyter Notebooks and Python scripts)
 - PyCharm (for Jupyter Notebooks)
-- Nteract
 
 ## Table not loading?
 
@@ -182,7 +181,7 @@ function (td, cellData, rowData, row, col) {
 For tables that are larger than the notebook, the `columnDefs` argument allows to specify the desired width. If you wish you can also change the default in `itables.options`.
 
 ```python
-show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}])
+show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}], maxColumns=300)
 ```
 
 ## Cell alignment

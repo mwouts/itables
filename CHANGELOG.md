@@ -1,3 +1,12 @@
+0.4.3 (2022-01-08)
+==================
+
+Changed
+-------
+
+- When a JS function is created on the Python side, we export it as-is (without quotes) in the HTML file and don't use JS eval anymore.
+
+
 0.4.2 (2022-01-07)
 ==================
 
@@ -20,7 +29,7 @@ Fixed
 
 Fixed
 -------
-- Now `itables` also works in Jupyter Lab, Colab, Nteract, VS Code and PyCharm (#3, #4, #26, #40), as we load the `datatables.net` library with an ES import when `require.js` is not available. Many thanks to [François Wouts](https://github.com/fwouts) for his precious help!
+- Now `itables` also works in Jupyter Lab, Colab, VS Code and PyCharm (#3, #4, #26, #40), as we load the `datatables.net` library with an ES import when `require.js` is not available. Many thanks to [François Wouts](https://github.com/fwouts) for his precious help!
 
 Changed
 -------
