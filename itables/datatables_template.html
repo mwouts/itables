@@ -9,9 +9,6 @@
     overflow: hidden;
 } </style>
 <script type="module">
-    // Define the dt_args
-    let dt_args = {};
-
     // Define the table data
     const data = [];
 
@@ -25,9 +22,8 @@
 
         initDataTables();
 
-        // Load and apply the eval_functions_js function to dt_args if required
-        // eval_functions_js
-
+        // Define the dt_args
+        let dt_args = {};
         dt_args["data"] = data;
 
         // Display the table
@@ -36,9 +32,8 @@
         });
     } else {
         require(["jquery", "datatables"], ($, datatables) => {
-                // Load and apply the eval_functions_js function to dt_args if required
-                // eval_functions_js
-
+                // Define the dt_args
+                let dt_args = {};
                 dt_args["data"] = data;
 
                 // Display the table
