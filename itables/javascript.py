@@ -52,8 +52,7 @@ def load_datatables(skip_if_already_loaded=True):
     if _DATATABLE_LOADED and skip_if_already_loaded:
         return
 
-    load_datatables_js = read_package_file("javascript", "load_datatables_connected.js")
-    display(Javascript(load_datatables_js))
+    display(Javascript(read_package_file("require_config.js")))
 
     _DATATABLE_LOADED = True
 
