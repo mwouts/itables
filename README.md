@@ -59,7 +59,6 @@ You don't see any table above? Please either open the [HTML export](https://mwou
 - Google Colab
 - VS Code (for both Jupyter Notebooks and Python scripts)
 - PyCharm (for Jupyter Notebooks)
-- Nteract
 
 ## Table not loading?
 

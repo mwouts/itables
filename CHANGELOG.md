@@ -29,7 +29,7 @@ Fixed
 
 Fixed
 -------
-- Now `itables` also works in Jupyter Lab, Colab, Nteract, VS Code and PyCharm (#3, #4, #26, #40), as we load the `datatables.net` library with an ES import when `require.js` is not available. Many thanks to [François Wouts](https://github.com/fwouts) for his precious help!
+- Now `itables` also works in Jupyter Lab, Colab, VS Code and PyCharm (#3, #4, #26, #40), as we load the `datatables.net` library with an ES import when `require.js` is not available. Many thanks to [François Wouts](https://github.com/fwouts) for his precious help!
 
 Changed
 -------
