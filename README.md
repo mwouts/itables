@@ -182,7 +182,7 @@ function (td, cellData, rowData, row, col) {
 For tables that are larger than the notebook, the `columnDefs` argument allows to specify the desired width. If you wish you can also change the default in `itables.options`.
 
 ```python
-show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}])
+show(x.to_frame().T, columnDefs=[{"width": "120px", "targets": "_all"}], maxColumns=300)
 ```
 
 ## Cell alignment
