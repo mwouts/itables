@@ -1,9 +1,16 @@
+0.4.4 (2022-01-10)
+==================
+
+Fixed
+-------
+- Add 'require_config.js' to the pip package (#48)
+
+
 0.4.3 (2022-01-08)
 ==================
 
 Changed
 -------
-
 - When a JS function is created on the Python side, we export it as-is (without quotes) in the HTML file and don't use JS eval anymore.
 
 
