@@ -31,10 +31,9 @@ init_notebook_mode(all_interactive=True)
 Then any dataframe will be displayed as an interactive [datatables](https://datatables.net) table:
 
 ```python
-import world_bank_data as wb
+from itables.sample_dfs import get_countries, get_population, get_indicators
 
-df = wb.get_countries()
-df
+df = get_countries()
 ```
 
 If you want to display just one series or dataframe as an interactive table, use `itables.show`:
@@ -42,7 +41,7 @@ If you want to display just one series or dataframe as an interactive table, use
 ```python
 from itables import show
 
-x = wb.get_series("SP.POP.TOTL", mrv=1, simplify_index=True)
+x = get_population()
 show(x)
 ```
 
@@ -238,7 +237,7 @@ When the data in a table is larger than `maxBytes`, which is equal to 64KB by de
 Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
 
 ```python
-df = wb.get_indicators().head(500)
+df = get_indicators()
 opt.maxBytes = 10000
 df.values.nbytes
 ```

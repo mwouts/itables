@@ -1,9 +1,7 @@
 """HTML/js representation of Pandas dataframes"""
 
-import io
 import json
 import logging
-import os
 import uuid
 import warnings
 
@@ -15,17 +13,12 @@ from IPython.core.display import HTML, Javascript, display
 import itables.options as opt
 
 from .downsample import downsample
+from .utils import read_package_file
 
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
-
-
-def read_package_file(*path):
-    current_path = os.path.dirname(__file__)
-    with io.open(os.path.join(current_path, *path), encoding="utf-8") as fp:
-        return fp.read()
 
 
 def init_notebook_mode(all_interactive=False):
