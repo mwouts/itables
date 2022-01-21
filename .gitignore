@@ -1,8 +1,16 @@
+# PyCharm & VS Code
 .idea
 .vscode
+
+# Python
 *.egg-info
 *.pyc
-*.ipynb
-.ipynb_checkpoints
 build
 dist
+
+# Notebooks
+*.ipynb
+.ipynb_checkpoints
+
+# Jupyter Book
+_build

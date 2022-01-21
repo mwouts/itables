@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python
   - jupyter
+  - jupyterlab
   - jupytext
   - nbconvert
   - ipykernel
@@ -19,5 +20,6 @@ dependencies:
   - pip
   - setuptools
   - twine
+  - jupyter-book
   - pip:
     - world_bank_data
