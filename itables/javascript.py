@@ -19,7 +19,6 @@ from .downsample import downsample
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-_DATATABLE_LOADED = False
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
 
@@ -44,17 +43,8 @@ def init_notebook_mode(all_interactive=False):
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
 
-    load_datatables(skip_if_already_loaded=False)
-
-
-def load_datatables(skip_if_already_loaded=True):
-    global _DATATABLE_LOADED
-    if _DATATABLE_LOADED and skip_if_already_loaded:
-        return
-
+    # TODO remove this when require.js is not used any more, see #51
     display(Javascript(read_package_file("require_config.js")))
-
-    _DATATABLE_LOADED = True
 
 
 def _formatted_values(df):
@@ -215,5 +205,4 @@ def _any_function(value):
 def show(df=None, **kwargs):
     """Show a dataframe"""
     html = _datatables_repr_(df, **kwargs)
-    load_datatables(skip_if_already_loaded=True)
     display(HTML(html))
