@@ -85,7 +85,7 @@ If the table just says "Loading...", then maybe
 
 At the moment `itables` does not have an [offline mode](https://github.com/mwouts/itables/issues/8). While the table data is embedded in the notebook, the `jquery` and `datatables.net` are loaded from a CDN, see our [require.config](https://github.com/mwouts/itables/blob/main/itables/javascript/load_datatables_connected.js) and our [table template](https://github.com/mwouts/itables/blob/main/itables/datatables_template.html), so an internet connection is required to display the tables.
 
-## <a name="downsampling"></a> Downsampling
+## Downsampling
 
 When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
 
