@@ -39,3 +39,8 @@ To build the documentation locally, use
 ```
 jupyter-book build docs
 ```
+
+To publish the documentation to the `gh-pages` branch, use
+```shell
+ghp-import -n -p -f docs/_build/html
+```
