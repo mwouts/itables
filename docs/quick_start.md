@@ -72,12 +72,9 @@ show(x)
 - VS Code (for both Jupyter Notebooks and Python scripts)
 - PyCharm (for Jupyter Notebooks)
 
-## Try this on Binder
+## Try ITables on Binder
 
-[![Notebook](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=docs)
-[![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs)
-
-Open our sample notebooks and run the examples on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs)!
+You can run our examples notebooks directly on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs), without having to install anything on your side.
 
 ## Table not loading?
 
