@@ -10,7 +10,7 @@ exclude: >
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.3.0
+    rev: v4.1.0
     hooks:
     - id: check-json
     - id: check-yaml
@@ -18,16 +18,17 @@ repos:
     - id: trailing-whitespace
 
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+    rev: 3.9.2
     hooks:
     - id: flake8
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.6.4
+    rev: 5.10.1
     hooks:
     - id: isort
+      args: ["--profile", "black", "--filter-files"]
 
   - repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.12b0
     hooks:
     - id: black

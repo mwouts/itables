@@ -1,2 +1,2 @@
+jupyterlab>=4.0.0a16
 jupytext
-world_bank_data

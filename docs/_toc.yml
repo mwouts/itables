@@ -1,0 +1,7 @@
+format: jb-book
+root: quick_start
+chapters:
+- file: advanced_parameters
+- file: sample_dataframes
+- file: references
+- file: developing
