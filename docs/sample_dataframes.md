@@ -26,6 +26,6 @@ init_notebook_mode(all_interactive=True)
 
 ```{code-cell}
 for df_name, df in get_dict_of_test_dfs().items():
-    display(Markdown(f"# {df_name}"))
+    display(Markdown(f"## {df_name}"))
     display(show(df, maxBytes=1e5, maxColumns=100))
 ```
