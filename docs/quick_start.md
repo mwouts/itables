@@ -24,6 +24,8 @@ kernelspec:
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
+## Quick start
+
 Install the `itables` package with
 
 ```shell
@@ -32,7 +34,7 @@ pip install itables
 
 Activate the interactive mode for all series and dataframes with
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import init_notebook_mode
 
 init_notebook_mode(all_interactive=True)
@@ -40,7 +42,7 @@ init_notebook_mode(all_interactive=True)
 
 After this, any Pandas object (DataFrame or Series) is displayed as an interactive [datatables.net](https://datatables.net/) table, which lets you explore, filter or sort your data.
 
-```{code-cell}
+```{code-cell} ipython3
 from itables.sample_dfs import get_countries
 
 df = get_countries()
@@ -49,7 +51,7 @@ df
 
 If you prefer to render just one series or dataframe as an interactive table, use `show`:
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import show
 from itables.sample_dfs import get_population
 
@@ -91,7 +93,7 @@ When the data in a table is larger than `maxBytes`, which is equal to 64KB by de
 
 Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
 
-```{code-cell}
+```{code-cell} ipython3
 from itables.sample_dfs import get_indicators
 import itables.options as opt
 
@@ -102,19 +104,19 @@ df = get_indicators()
 df.values.nbytes
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 df
 ```
 
 To show the table in full, we can modify the value of `maxBytes` either locally:
 
-```{code-cell}
+```{code-cell} ipython3
 show(df, maxBytes=0)
 ```
 
 or globally:
 
-```{code-cell}
+```{code-cell} ipython3
 opt.maxBytes = 2 ** 20
 df
 ```
