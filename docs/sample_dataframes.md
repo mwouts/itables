@@ -18,38 +18,11 @@ In this notebook we make sure that our test dataframes are displayed nicely with
 
 ```{code-cell} ipython3
 from itables import init_notebook_mode, show
-from itables.sample_dfs import get_dict_of_test_dfs, get_dict_of_test_series
-from IPython.display import display, Markdown
+from itables.sample_dfs import get_dict_of_test_dfs
 
 dict_of_test_dfs = get_dict_of_test_dfs()
 init_notebook_mode(all_interactive=True)
 ```
-
-````{code-cell} ipython3
-"""
-# We first tried to generate all the examples with this code
-# but that is not supported atm by jp, see
-# https://github.com/executablebooks/jupyter-book/issues/1610
-for df_name, df in get_dict_of_test_dfs().items():
-    display(Markdown(f"## {df_name}"))
-    display(show(df, maxBytes=1e5, maxColumns=100))
-"""
-
-"""
-# So instead we generated the content of this notebook with
-cells = []
-for df_name in dict_of_test_dfs:
-    cells.append(f"## {df_name}")
-    cells.append(f'''
-
-```{{code-cell}}
-show(dict_of_test_dfs["{df_name}"])
-```
-''')
-
-print('\n'.join(cells))
-""";
-````
 
 ## empty
 
