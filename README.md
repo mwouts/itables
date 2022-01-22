@@ -24,7 +24,9 @@ or use `itables.show` to show just one Series or DataFrame as an interactive tab
 
 ## Documentation
 
-Read more about `itables` and advanced use cases in the [documentation](https://mwouts.github.io/itables/)
+Read more about `itables` and advanced use cases in the [documentation](https://mwouts.github.io/itables/).
+
+In particular, the `show` method let you pass custom parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
 
 ## Supported environments
 
@@ -37,12 +39,9 @@ Read more about `itables` and advanced use cases in the [documentation](https://
 - VS Code (for both Jupyter Notebooks and Python scripts)
 - PyCharm (for Jupyter Notebooks)
 
-## Try this on Binder
+## Try ITables on Binder
 
-[![Notebook](https://img.shields.io/badge/Binder-Notebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=docs)
-[![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs)
-
-Open our sample notebooks and run the examples on [Binder](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs)!
+You can run our examples notebooks directly on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs/quick_start.md), without having to install anything on your side.
 
 ## Table not loading?
 

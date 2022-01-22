@@ -61,6 +61,10 @@ show(x)
 
 (NB: In Jupyter Notebook, Jupyter NBconvert and Jupyter Book, you need to call `init_notebook_mode()` before using `show`).
 
+## Advanced parameters
+
+The `show` method let you pass custom parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
+
 ## Supported environments
 
 `itables` has been tested in the following editors:
@@ -74,7 +78,7 @@ show(x)
 
 ## Try ITables on Binder
 
-You can run our examples notebooks directly on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs), without having to install anything on your side.
+You can run our examples notebooks directly on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs/quick_start.md), without having to install anything on your side.
 
 ## Table not loading?
 
