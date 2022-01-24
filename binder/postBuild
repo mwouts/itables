@@ -7,3 +7,6 @@ pip install .
 # Open .md notebooks with the Notebook editor
 mkdir -p ${HOME}/.jupyter/labconfig
 cp binder/labconfig/* ${HOME}/.jupyter/labconfig
+
+# Update the kernel on the documentation notebooks
+jupytext docs/*.md --set-kernel -
