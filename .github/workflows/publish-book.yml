@@ -29,6 +29,11 @@ jobs:
         pip install -r requirements.txt
         pip install .
 
+    - name: Create a kernel
+      run: |
+        pip install ipykernel
+        python -m ipykernel install --name itables --user
+
     # Build the book
     - name: Build the book
       run: |
