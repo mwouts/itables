@@ -62,7 +62,7 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
-def _table_header(df, table_id, show_index, classes):
+def _table_header(df, table_id, show_index, classes, style):
     """This function returns the HTML table header. Rows are not included."""
     thead = ""
     if show_index:
@@ -74,7 +74,12 @@ def _table_header(df, table_id, show_index, classes):
     loading = "<td>Loading... (need <a href=https://github.com/mwouts/itables/#table-not-loading>help</a>?)</td>"
     tbody = f"<tr>{loading}</tr>"
 
-    return f'<table id="{table_id}" class="{classes}"><thead>{thead}</thead><tbody>{tbody}</tbody></table>'
+    if style:
+        style = f'style="{style}"'
+    else:
+        style = ""
+
+    return f'<table id="{table_id}" class="{classes}"{style}><thead>{thead}</thead><tbody>{tbody}</tbody></table>'
 
 
 def eval_functions_dumps(obj):
@@ -117,6 +122,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
+    style = kwargs.pop("style")
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
@@ -148,7 +154,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    table_header = _table_header(df, tableId, showIndex, classes)
+    table_header = _table_header(df, tableId, showIndex, classes, style)
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',

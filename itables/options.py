@@ -7,6 +7,9 @@ showIndex = "auto"
 """Default styling options. See https://datatables.net/manual/styling/classes"""
 classes = ["display"]
 
+"""Default table style"""
+style = "max-width:100%"
+
 """Maximum bytes for displaying a table"""
 maxBytes = 2 ** 16
 
