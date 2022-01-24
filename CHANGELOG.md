@@ -1,3 +1,12 @@
+0.4.5 (2022-01-25)
+==================
+
+Changed
+-------
+- The `itables` documentation now uses Jupyter Book (#56)
+- We have added a new `style` option in `itables.options` and in `show`, with a default value equal to `max-width:100%`.
+
+
 0.4.4 (2022-01-10)
 ==================
 

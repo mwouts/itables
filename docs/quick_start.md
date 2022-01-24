@@ -63,61 +63,8 @@ show(x)
 
 ## Advanced parameters
 
-The `show` method let you pass custom parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
-
-## Supported environments
-
-`itables` has been tested in the following editors:
-- Jupyter Notebook
-- Jupyter Lab
-- Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook)
-- Jupyter Book
-- Google Colab
-- VS Code (for both Jupyter Notebooks and Python scripts)
-- PyCharm (for Jupyter Notebooks)
+The `show` method let you pass parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
 
 ## Try ITables on Binder
 
 You can run our examples notebooks directly on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs/quick_start.md), without having to install anything on your side.
-
-## Table not loading?
-
-If the table just says "Loading...", then maybe
-- You loaded a notebook that is not trusted (run "Trust Notebook" in View / Activate Command Palette)
-- Or you are offline?
-
-At the moment `itables` does not have an [offline mode](https://github.com/mwouts/itables/issues/8). While the table data is embedded in the notebook, the `jquery` and `datatables.net` are loaded from a CDN, see our [require.config](https://github.com/mwouts/itables/blob/main/itables/javascript/load_datatables_connected.js) and our [table template](https://github.com/mwouts/itables/blob/main/itables/datatables_template.html), so an internet connection is required to display the tables.
-
-## Downsampling
-
-When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
-
-Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
-
-```{code-cell} ipython3
-from itables.sample_dfs import get_indicators
-import itables.options as opt
-
-opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
-opt.maxBytes = 10000
-
-df = get_indicators()
-df.values.nbytes
-```
-
-```{code-cell} ipython3
-df
-```
-
-To show the table in full, we can modify the value of `maxBytes` either locally:
-
-```{code-cell} ipython3
-show(df, maxBytes=0)
-```
-
-or globally:
-
-```{code-cell} ipython3
-opt.maxBytes = 2 ** 20
-df
-```
