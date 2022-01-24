@@ -23,7 +23,7 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
             reasons.append("nbytes={}>{}=maxBytes".format(org_bytes, max_bytes))
 
         logger.warning(
-            "showing {}x{} of {}x{} as {}. See https://mwouts.github.io/itables/#downsampling".format(
+            "showing {}x{} of {}x{} as {}. See https://mwouts.github.io/itables/downsampling.html".format(
                 len(df.index),
                 len(df.columns),
                 org_rows,

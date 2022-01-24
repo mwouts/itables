@@ -1,7 +1,10 @@
 format: jb-book
 root: quick_start
 chapters:
+- file: supported_editors
 - file: advanced_parameters
+- file: downsampling
 - file: sample_dataframes
 - file: references
 - file: developing
+- file: troubleshooting

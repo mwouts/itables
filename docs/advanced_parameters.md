@@ -14,7 +14,7 @@ kernelspec:
 
 # Advanced parameters
 
-The `itables` package is a wrapper for the Javascript [datatables.net](https://datatables.net/) library, which has a great [forum](https://datatables.net/forums/) and a huge collection of [examples](https://datatables.net/examples/index).
+The `itables` package is a wrapper for the Javascript [datatables.net](https://datatables.net/) library, which has a great [documentation](https://datatables.net/), a huge collection of [examples](https://datatables.net/examples/index), and a useful [forum](https://datatables.net/forums/).
 
 Below we give a few examples of how the datatables.net examples can be ported to Python with `itables`.
 
@@ -184,6 +184,14 @@ show(
     ),
     paging=False,
 )
+```
+
+## The search option
+
+The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
+
+```{code-cell}
+show(df, search={"regex": True, "caseInsensitive": True, "search":"s.ain"})
 ```
 
 ## Select rows

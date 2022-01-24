@@ -71,7 +71,7 @@ def _table_header(df, table_id, show_index, classes, style):
     for column in df.columns:
         thead += f"<th>{column}</th>"
 
-    loading = "<td>Loading... (need <a href=https://github.com/mwouts/itables/#table-not-loading>help</a>?)</td>"
+    loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
     tbody = f"<tr>{loading}</tr>"
 
     if style:
