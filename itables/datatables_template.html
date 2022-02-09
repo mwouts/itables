@@ -14,9 +14,9 @@
 
     // Import the DataTables library
     import $ from "https://esm.sh/jquery@3.5.0";
-    import initDataTables from "https://esm.sh/datatables.net@1.11.3?deps=jquery@3.5.0";
+    import DataTables from 'https://nightly.datatables.net/js/jquery.dataTables.mjs';
 
-    initDataTables();
+    DataTables($);
 
     // Define the dt_args (some functions might use $)
     let dt_args = {};
