@@ -137,7 +137,7 @@ function (td, cellData, rowData, row, col) {
 
 ## Column width
 
-For tables that are larger than the notebook, the `columnDefs` argument allows to specify the desired width. If you wish you can also change the default in `itables.options`.
+The `columnDefs.width` argument let you set fixed column widths (if you wish you can also set this permanently in `itables.options` as demonstrated in the cell alignment example below).
 
 ```{code-cell}
 from itables.sample_dfs import get_population
