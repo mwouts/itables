@@ -2,6 +2,7 @@
 
 import json
 import logging
+import re
 import uuid
 import warnings
 
@@ -64,12 +65,12 @@ def _formatted_values(df):
 
 def _table_header(df, table_id, show_index, classes, style):
     """This function returns the HTML table header. Rows are not included."""
-    thead = ""
-    if show_index:
-        thead = "<th></th>" * len(df.index.names)
-
-    for column in df.columns:
-        thead += f"<th>{column}</th>"
+    # Generate table head using pandas.to_html(), see issue 63
+    pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
+    match = pattern.match(df.head(0).to_html())
+    thead = match.groups()[0]
+    if not show_index:
+        thead = thead.replace("<th></th>", "", 1)
 
     loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
     tbody = f"<tr>{loading}</tr>"
