@@ -5,6 +5,10 @@ Changed
 -------
 - We have removed the default column width at 70 pixels (#62)
 
+Fixed
+-------
+- We have improved the rendering of multiindex columns (#63)
+
 
 0.4.5 (2022-01-25)
 ==================

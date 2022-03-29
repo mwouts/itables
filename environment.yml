@@ -7,8 +7,10 @@ dependencies:
   - jupyter
   - jupyterlab
   - jupytext
+  - markdown-it-py>=2.0
   - nbconvert
   - ipykernel
+  - pandas
   - pytest
   - pytest-xdist
   - pytest-cov
@@ -20,7 +22,7 @@ dependencies:
   - pip
   - setuptools
   - twine
-  - jupyter-book
   - ghp-import
   - pip:
     - world_bank_data
+    - jupyter_book>=0.12  # jupyter-book-0.12.2-pyhd8ed1ab_0 requires jupytext >=1.11.2,<1.12
