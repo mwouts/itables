@@ -19,3 +19,9 @@ maxBytes = 2**16
 """Maximum number of rows or columns"""
 # maxRows = 10000
 # maxColumns = 1000
+
+"""DataTables imports"""
+requirements = [
+    "https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js",
+    "https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js",
+]

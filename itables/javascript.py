@@ -9,7 +9,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
-from IPython.core.display import HTML, Javascript, display
+from IPython.core.display import HTML, display
 
 import itables.options as opt
 
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
 
-def init_notebook_mode(all_interactive=False):
+def init_notebook_mode(all_interactive=False, requirements=None):
     """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
     activate the datatables representation for all the Pandas DataFrames and Series.
 
@@ -36,9 +36,6 @@ def init_notebook_mode(all_interactive=False):
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
-
-    # TODO remove this when require.js is not used any more, see #51
-    display(Javascript(read_package_file("require_config.js")))
 
 
 def _formatted_values(df):
@@ -109,7 +106,7 @@ def replace_value(template, pattern, value, count=1):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
     assert isinstance(template, str)
-    assert template.count(pattern) == count
+    assert template.count(pattern) == count, pattern
     return template.replace(pattern, value)
 
 
@@ -125,6 +122,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
     tags = kwargs.pop("tags")
+    requirements = kwargs.pop("requirements")
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
@@ -163,6 +161,14 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         table_header,
     )
     output = replace_value(output, "#table_id", f"#{tableId}", count=2)
+
+    # Remplace the template requirements with the actual ones
+    output = replace_value(
+        output,
+        "const requirements = ['https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js', "
+        "'https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js'];",
+        f"const requirements = {requirements};",
+    )
 
     # Export the DT args to JSON
     if eval_functions:

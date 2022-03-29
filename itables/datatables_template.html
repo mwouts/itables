@@ -12,35 +12,60 @@
     // Define the table data
     const data = [];
 
+    const requirements = ['https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js', 'https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js'];
+
     if (typeof require === 'undefined') {
-        // TODO: This should become the default (use a simple import)
-        // when the ESM version works independently of whether
-        // require.js is there or not, see
-        // https://datatables.net/forums/discussion/69066/esm-es6-module-support?
-        const {default: $} = await import("https://esm.sh/jquery@3.5.0");
-        const {default: initDataTables} = await import("https://esm.sh/datatables.net@1.11.3?deps=jquery@3.5.0");
+        // require is not available in Jupyter Lab, VS Code & PyCharm
+        function addScript(src) {
+            return new Promise((resolve, reject) => {
+                var script = document.createElement('script');
+                script.onload = resolve;
+                script.onerror = reject;
+                script.src = src;
+                document.head.appendChild(script);
+            });
+        }
 
-        initDataTables();
-
-        // Define the dt_args
-        let dt_args = {};
-        dt_args["data"] = data;
-
-        // Display the table
-        $(document).ready(function () {
-            $('#table_id').DataTable(dt_args);
-        });
-    } else {
-        require(["jquery", "datatables"], ($, datatables) => {
+        function load_requirements_and_call_datatable(requirements) {
+            if (requirements.length === 0) {
                 // Define the dt_args
                 let dt_args = {};
+
+                // Input the table data
                 dt_args["data"] = data;
 
                 // Display the table
                 $(document).ready(function () {
                     $('#table_id').DataTable(dt_args);
                 });
+            } else {
+                let src = requirements.shift();
+                addScript(src).then(() => load_requirements_and_call_datatable(requirements))
             }
-        )
+        }
+
+        load_requirements_and_call_datatable(requirements);
+    }
+    else {
+        let requirements_as_dict = {}
+        requirements.forEach(requirement => requirements_as_dict[requirement] = requirement)
+        require.config({
+            paths: requirements_as_dict
+        });
+
+        require([requirements.pop()], function () {
+            $(function () {
+                // Define the dt_args
+                let dt_args = {};
+
+                // Input the table data
+                dt_args["data"] = data;
+
+                // Display the table
+                $(document).ready(function () {
+                    $('#table_id').DataTable(dt_args);
+                });
+            });
+        });
     }
 </script>
