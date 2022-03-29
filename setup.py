@@ -1,5 +1,4 @@
 import re
-from io import open
 from os import path
 
 from setuptools import find_packages, setup

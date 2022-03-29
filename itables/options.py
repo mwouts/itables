@@ -11,7 +11,7 @@ classes = ["display"]
 style = "max-width:100%"
 
 """Maximum bytes for displaying a table"""
-maxBytes = 2 ** 16
+maxBytes = 2**16
 
 """Maximum number of rows or columns"""
 # maxRows = 10000

@@ -16,11 +16,11 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     if len(df.index) < org_rows or len(df.columns) < org_columns:
         reasons = []
         if org_rows > max_rows > 0:
-            reasons.append("maxRows={}".format(max_rows))
+            reasons.append(f"maxRows={max_rows}")
         if org_columns > max_columns > 0:
-            reasons.append("maxColumns={}".format(max_columns))
+            reasons.append(f"maxColumns={max_columns}")
         if org_bytes > max_bytes > 0:
-            reasons.append("nbytes={}>{}=maxBytes".format(org_bytes, max_bytes))
+            reasons.append(f"nbytes={org_bytes}>{max_bytes}=maxBytes")
 
         logger.warning(
             "showing {}x{} of {}x{} as {}. See https://mwouts.github.io/itables/downsampling.html".format(
