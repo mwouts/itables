@@ -137,17 +137,27 @@ function (td, cellData, rowData, row, col) {
 
 ## Column width
 
-For tables that are larger than the notebook, the `columnDefs` argument allows to specify the desired width. If you wish you can also change the default in `itables.options`.
+The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.
+
+You can set a fixed width for all the columns with `"targets": "_all":
 
 ```{code-cell}
-from itables.sample_dfs import get_population
-
 show(
-    get_population().to_frame().T,
+    df,
     columnDefs=[{"width": "120px", "targets": "_all"}],
-    maxColumns=300,
 )
 ```
+
+You can also adjust the width of selected columns only:
+
+```{code-cell}
+show(
+    df,
+    columnDefs=[{"width": "20%", "targets": [2, 3]}],
+)
+```
+
+If you wish you can also set a value for `columnDefs` permanently in `itables.options` as demonstrated in the cell alignment example below.
 
 ## Cell alignment
 

@@ -16,6 +16,3 @@ maxBytes = 2 ** 16
 """Maximum number of rows or columns"""
 # maxRows = 10000
 # maxColumns = 1000
-
-"""Default column width for large tables"""
-columnDefs = [{"width": "70px", "targets": "_all"}]
