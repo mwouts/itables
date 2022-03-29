@@ -139,7 +139,7 @@ function (td, cellData, rowData, row, col) {
 
 The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.
 
-You can set a fixed width for all the columns with `"targets": "_all":
+You can set a fixed width for all the columns with `"targets": "_all"`:
 
 ```{code-cell}
 show(
