@@ -1,9 +1,10 @@
-0.4.6 (2022-03-??)
+0.4.6 (2022-03-29)
 ==================
 
 Changed
 -------
 - We have removed the default column width at 70 pixels (#62)
+- We now use `pyupgrade` in our pre-commit hooks
 
 Fixed
 -------
