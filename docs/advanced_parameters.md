@@ -216,13 +216,3 @@ The [search option](https://datatables.net/reference/option/search) let you cont
 ```{code-cell}
 show(df, search={"regex": True, "caseInsensitive": True, "search":"s.ain"})
 ```
-
-## Select rows
-
-Not currently implemented. May be made available at a later stage using the [select](https://datatables.net/extensions/select/) extension for datatables.
-
-+++
-
-## Copy, CSV, PDF and Excel buttons
-
-Not currently implemented. May be made available at a later stage thanks to the [buttons](https://datatables.net/extensions/buttons/) extension for datatable.
