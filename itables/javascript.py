@@ -83,6 +83,7 @@ def _table_header(df, table_id, show_index, classes, style, tags):
         tgs = ""
         for k, v in tags.items():
             tgs += f"<{k}>{v}</{k}>"
+    else: tgs = ""
     return f'<table id="{table_id}" class="{classes}"{style}>{tgs}<thead>{thead}</thead><tbody>{tbody}</tbody></table>'
 
 
