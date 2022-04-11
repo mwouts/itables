@@ -63,7 +63,7 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
-def _table_header(df, table_id, show_index, classes, style):
+def _table_header(df, table_id, show_index, classes, style, tags):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
@@ -79,8 +79,11 @@ def _table_header(df, table_id, show_index, classes, style):
         style = f'style="{style}"'
     else:
         style = ""
-
-    return f'<table id="{table_id}" class="{classes}"{style}><thead>{thead}</thead><tbody>{tbody}</tbody></table>'
+    if tags:
+        tgs = ""
+        for k, v in tags.items():
+            tgs += f"<{k}>{v}</{k}>"
+    return f'<table id="{table_id}" class="{classes}"{style}>{tgs}<thead>{thead}</thead><tbody>{tbody}</tbody></table>'
 
 
 def eval_functions_dumps(obj):
@@ -123,6 +126,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
+    tags = kwargs.pop("tags")
     style = kwargs.pop("style")
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -155,7 +159,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    table_header = _table_header(df, tableId, showIndex, classes, style)
+    table_header = _table_header(df, tableId, showIndex, classes, style, tags)
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',

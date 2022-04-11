@@ -7,6 +7,9 @@ showIndex = "auto"
 """Default styling options. See https://datatables.net/manual/styling/classes"""
 classes = ["display"]
 
+"""Tag options example caption.  See: https://datatables.net/blog/2014-11-07"""
+tags = {}
+
 """Default table style"""
 style = "max-width:100%"
 
