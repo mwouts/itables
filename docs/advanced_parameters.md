@@ -5,7 +5,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.11.5
+    jupytext_version: 1.13.8
 kernelspec:
   display_name: itables
   language: python
@@ -89,6 +89,19 @@ df
 ```{code-cell}
 opt.classes = ["display", "cell-border"]
 df
+```
+
+## Table captions
+
+You can set additional `tags` like a [caption](https://datatables.net/blog/2014-11-07) on the table with the `tags` option:
+
+```{code-cell}
+show(df, tags='<caption>Countries from the World Bank Database</caption>')
+```
+
+The position of the caption can be set explicitly as in the datatables example above (note that the default position may depend on how you render the notebook):
+```{code-cell}
+show(df, tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>')
 ```
 
 ## Float precision

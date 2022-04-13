@@ -10,6 +10,9 @@ classes = ["display"]
 """Default table style"""
 style = "max-width:100%"
 
+"""Additional tags like e.g. caption"""
+tags = ""
+
 """Maximum bytes for displaying a table"""
 maxBytes = 2**16
 
