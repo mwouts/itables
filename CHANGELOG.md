@@ -1,9 +1,18 @@
+0.5.0 (2022-04-??)
+==================
+
+Added
+-----
+- Datatables plugins like buttons or search highlight are supported (#50).
+
+
 0.4.7 (2022-04-13)
 ==================
 
 Added
 -----
-- Additional `tags` like e.g. captions are supported (#10).
+- Additional `tags` like captions are supported (#10).
+
 
 0.4.6 (2022-03-29)
 ==================
