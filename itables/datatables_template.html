@@ -1,5 +1,5 @@
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="/static/itables/datatables.net-dt/css/jquery.dataTables.min.css">
 <style> table td {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -17,10 +17,10 @@
         // when the ESM version works independently of whether
         // require.js is there or not, see
         // https://datatables.net/forums/discussion/69066/esm-es6-module-support?
-        const {default: $} = await import("https://esm.sh/jquery@3.5.0");
-        const {default: initDataTables} = await import("https://esm.sh/datatables.net@1.11.3?deps=jquery@3.5.0");
+        const {default: $} = await import("/static/itables/jquery/dist/jquery.js");
 
-        initDataTables();
+        // Not sure about this one?
+        await import("/static/itables/datatables.net-dt/js/dataTables.dataTables.js");
 
         // Define the dt_args
         let dt_args = {};
