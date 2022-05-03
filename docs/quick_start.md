@@ -61,6 +61,17 @@ show(x)
 
 (NB: In Jupyter Notebook, Jupyter NBconvert and Jupyter Book, you need to call `init_notebook_mode()` before using `show`).
 
+## Offline mode
+
+While the table data is embedded in the notebook, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries are loaded from a CDN, see our [require.config](https://github.com/mwouts/itables/blob/main/itables/javascript/load_datatables_connected.js) and our [table template](https://github.com/mwouts/itables/blob/main/itables/datatables_template.html), so an internet connection is normally required to display the tables.
+
+Only in Jupyter Lab at the moment you can have an offline mode. To activate that mode, you should use `itables>=0.5.0` and install our `jupyterlab-itables` extension with
+```shell
+pip install jupyterlab-itables
+```
+
+:warning: Unlike `itables` which has to be installed in the Python environment used in the notebook (the _kernel_), the `jupyterlab-itables` extension should be installed in the Python enviroment used to serve the notebooks (i.e. the environment in which you execute `jupyter lab`).
+
 ## Advanced parameters
 
 The `show` method let you pass parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
