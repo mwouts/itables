@@ -1,9 +1,18 @@
+0.5.0 (2022-05-??)
+==================
+
+Added
+-----
+- ITables now has an offline mode in Jupyter Lab (#8, #70). I'd like to thank [Allan Jardine](https://sprymedia.co.uk/) for his collaboration on this, and [Balraj Bassi](https://github.com/BBassi) for sponsoring Allan's work.
+
+
 0.4.7 (2022-04-13)
 ==================
 
 Added
 -----
 - Additional `tags` like e.g. captions are supported (#10).
+
 
 0.4.6 (2022-03-29)
 ==================
