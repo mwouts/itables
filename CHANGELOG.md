@@ -1,9 +1,18 @@
+0.5.0 (2022-05-??)
+==================
+
+Added
+-----
+- ITables now has an [offline mode](docs/quick_start.md#Offline-mode) in Jupyter Lab (#8, #70).
+
+
 0.4.7 (2022-04-13)
 ==================
 
 Added
 -----
 - Additional `tags` like e.g. captions are supported (#10).
+
 
 0.4.6 (2022-03-29)
 ==================
