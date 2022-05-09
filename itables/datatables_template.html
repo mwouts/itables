@@ -1,4 +1,9 @@
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<!-- In Jupyter Lab, static files are provided by the jupyterlab-itables extension.
+ TODO: When the extension is not available we have to load the css and libraries from the internet.
+ -->
+<script src="/static/itables/jquery/dist/jquery.js"></script>
+<script src="/static/itables/datatables.net/js/jquery.dataTables.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/itables/datatables.net-dt/css/jquery.dataTables.min.css">
 <style> table td {
     text-overflow: ellipsis;
@@ -13,18 +18,11 @@
     const data = [];
 
     if (typeof require === 'undefined') {
-        // TODO: This should become the default (use a simple import)
-        // when the ESM version works independently of whether
-        // require.js is there or not, see
-        // https://datatables.net/forums/discussion/69066/esm-es6-module-support?
-        const {default: $} = await import("/static/itables/jquery/dist/jquery.js");
-
-        // Not sure about this one?
-        await import("/static/itables/datatables.net-dt/js/dataTables.dataTables.js");
-
         // Define the dt_args
         let dt_args = {};
         dt_args["data"] = data;
+
+        let $ = jQuery;
 
         // Display the table
         $(document).ready(function () {
