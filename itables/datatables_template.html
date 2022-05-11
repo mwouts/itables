@@ -12,40 +12,8 @@
     }
 </style>
 <script type="module">
-    // **************  Technical helpers **************
-    // We need to inject the scripts and CSS into the document header.
-    // Hopefully one day we can use a simpler approach e.g. a simple ES import...
-
-    // This function loads a script in the document header,
-    // after making sure that the script has not been loaded yet.
-    // Inspired by https://stackoverflow.com/a/71209306
-    const loadScript = (url, callback) => {
-        let script;
-        const scripts = Array.from(document.head.querySelectorAll('script'));
-        const existingScript = scripts.find((script) => script.src === url);
-        if (existingScript) {
-            script = existingScript;
-        } else {
-            script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = url;
-            document.head.appendChild(script);
-        }
-
-        if (script.readyState) {
-            script.onreadystatechange = () => {
-                if (script.readyState === 'loaded' || script.readyState === 'complete') {
-                    script.onreadystatechange = null;
-                    callback();
-                }
-            };
-        } else {
-            script.onload = callback;
-        }
-    };
-
     // This function adds the datatables CSS to the HTML header
-    const loadStyle = (url, callback) => {
+    const loadStyle = (url) => {
         let style;
         const styles = Array.from(document.head.querySelectorAll('link'));
         const existingStyle = styles.find((style) => style.href === url);
@@ -56,21 +24,7 @@
             style.href = url;
             document.head.appendChild(style);
         }
-        callback();
     };
-
-    // This function recursively loads the given CSS and scripts
-    function loadStyleAndScripts(urls, callback) {
-        if (urls.length === 0)
-            callback();
-        else {
-            let url = urls.shift();
-            if (url.endsWith('.css'))
-                loadStyle(url, () => loadStyleAndScripts(urls, callback));
-            else
-                loadScript(url, () => loadStyleAndScripts(urls, callback));
-        }
-    }
 
     const url_is_available = (url) => {
         let ok = false;
@@ -84,51 +38,33 @@
         return ok
     };
 
-    // ************** End of technical helpers **************
+    let css_url = "https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css";
+    let jQuery_url = 'https://code.jquery.com/jquery-3.5.1.min.js';
+    let datatables_url = 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
 
-    // In Jupyter Lab, these static urls are made available
-    // by the jupyterlab-itables extension (if installed)
-    const static_urls = ["/static/itables/datatables.net-dt/css/jquery.dataTables.min.css",
-        '/static/itables/jquery/dist/jquery.js',
-        '/static/itables/datatables.net/js/jquery.dataTables.js'];
+    const static_css = "/static/itables/datatables.net-dt/css/jquery.dataTables.min.css";
+    if (false) //url_is_available(static_css))
+    {
+        css_url = static_css;
+        jQuery_url = '/static/itables/jquery/dist/jquery.js';
+        datatables_url = '/static/itables/datatables.net/js/jquery.dataTables.min.mjs';
+    }
 
-    // Otherwise, we use these urls:
-    const connected_urls = ["https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css",
-        'https://code.jquery.com/jquery-3.5.1.min.js',
-        'https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js',
-    ];
+    // Import datatables
+    loadStyle(css_url);
+    const { default: $ } = await import(jQuery_url);
+    const { default: dt } = await import(datatables_url);
+    dt($);
 
     // Define the table data
     const data = [];
 
-    if (typeof require === 'undefined') {
-        // Define the dt_args
-        let dt_args = {};
-        dt_args["data"] = data;
+    // Define the dt_args
+    let dt_args = {};
+    dt_args["data"] = data;
 
-        // Callback that displays the table
-        const display = () => {
-            $(document).ready(function () {
-                $('#table_id').DataTable(dt_args);
-            });
-        };
-
-        loadStyleAndScripts(static_urls.every(url_is_available) ? static_urls : connected_urls, display);
-    }
-    else {
-        // Jupyter Notebook and over environments with require.js where we cannot
-        // use the injection of scripts in the document header.
-        connected_urls.every(url => { if (url.endsWith('.css')) loadStyle(url, () => null) });
-        require(["jquery", "datatables"], ($, datatables) => {
-            // Define the dt_args
-            let dt_args = {};
-            dt_args["data"] = data;
-
-            // Display the table
-            $(document).ready(function () {
-                $('#table_id').DataTable(dt_args);
-            });
-        }
-        )
-    }
+    // Display the table
+    $(document).ready(function () {
+        $('#table_id').DataTable(dt_args);
+    });
 </script>

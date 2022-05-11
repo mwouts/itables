@@ -22,9 +22,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/mwouts/itables",
     packages=find_packages(exclude=["tests"]),
-    package_data={
-        "itables": ["require_config.js", "datatables_template.html", "samples/*.csv"]
-    },
+    package_data={"itables": ["datatables_template.html", "samples/*.csv"]},
     tests_require=["pytest"],
     install_requires=["IPython", "pandas"],
     license="MIT",
