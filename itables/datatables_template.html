@@ -26,42 +26,26 @@
         }
     };
 
-    let css_url = "https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css";
-    let jQuery_url = 'https://esm.sh/jquery@3.6.0';
-    let datatables_url = 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
-
-    const static_css = "/static/itables/datatables.net-dt/css/jquery.dataTables.min.css";
-
-    async function url_is_available(url) {
-        let ok = false;
-        await fetch(url).then(function (response) {
-            console.log(response);
-            if (response.ok) {
-                ok = true;
-            }
-        })
-            .catch(function (error) {
-            });
-        return ok
-    };
-
-    const static_mode = url_is_available(static_css);
-    if (static_mode)
+    // Import jQuery and datatables
+    let $;
+    let dt;
+    try {
+        const { default: static_$ } = await import("/static/itables/jquery/src/jquery.js");
+        const { default: static_dt } = await import("/static/itables/datatables.net/js/jquery.dataTables.mjs");
         console.log("Found jupyterlab-itables - loading jquery and datatables from the local static folder");
-    else
+        loadStyle("/static/itables/datatables.net-dt/css/jquery.dataTables.min.css");
+        $ = static_$;
+        dt = static_dt;
+    } catch (e) {
+        const { default: cdn_$ } = await import("https://esm.sh/jquery@3.6.0");
+        const { default: cdn_dt } = await import("https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs");
         console.log("The jupyterlab-itables extension was not found. " +
-            "The jquery and datatables libraries will be loaded from the web");
-
-    if (static_mode) {
-        css_url = static_css;
-        jQuery_url = '/static/itables/jquery/src/jquery.js';
-        datatables_url = '/static/itables/datatables.net/js/jquery.dataTables.mjs';
+            "The jquery and datatables libraries will be loaded from the web.");
+        loadStyle("https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css");
+        $ = cdn_$;
+        dt = cdn_dt;
     }
 
-    // Import jQuery and datatables
-    loadStyle(css_url);
-    const { default: $ } = await import(jQuery_url);
-    const { default: dt } = await import(datatables_url);
     dt($);
 
     // Define the table data
