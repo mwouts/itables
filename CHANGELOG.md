@@ -1,9 +1,14 @@
-0.5.0 (2022-05-??)
+0.5.0 (2022-06-17)
 ==================
 
 Added
 -----
 - ITables now has an [offline mode](docs/quick_start.md#Offline-mode) in Jupyter Lab (#8, #70).
+
+
+Changed
+-------
+- ITables uses the version 1.12.1 of datatables.net
 
 
 0.4.7 (2022-04-13)
