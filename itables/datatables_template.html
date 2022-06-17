@@ -26,9 +26,16 @@
         }
     };
 
-    const url_is_available = (url) => {
+    let css_url = "https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css";
+    let jQuery_url = 'https://esm.sh/jquery@3.6.0';
+    let datatables_url = 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
+
+    const static_css = "/static/itables/datatables.net-dt/css/jquery.dataTables.min.css";
+
+    async function url_is_available(url) {
         let ok = false;
-        fetch(url).then(function (response) {
+        await fetch(url).then(function (response) {
+            console.log(response);
             if (response.ok) {
                 ok = true;
             }
@@ -38,19 +45,20 @@
         return ok
     };
 
-    let css_url = "https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css";
-    let jQuery_url = 'https://code.jquery.com/jquery-3.5.1.min.js';
-    let datatables_url = 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
+    const static_mode = url_is_available(static_css);
+    if (static_mode)
+        console.log("Found jupyterlab-itables - loading jquery and datatables from the local static folder");
+    else
+        console.log("The jupyterlab-itables extension was not found. " +
+            "The jquery and datatables libraries will be loaded from the web");
 
-    const static_css = "/static/itables/datatables.net-dt/css/jquery.dataTables.min.css";
-    if (false) //url_is_available(static_css))
-    {
+    if (static_mode) {
         css_url = static_css;
-        jQuery_url = '/static/itables/jquery/dist/jquery.js';
-        datatables_url = '/static/itables/datatables.net/js/jquery.dataTables.min.mjs';
+        jQuery_url = '/static/itables/jquery/src/jquery.js';
+        datatables_url = '/static/itables/datatables.net/js/jquery.dataTables.mjs';
     }
 
-    // Import datatables
+    // Import jQuery and datatables
     loadStyle(css_url);
     const { default: $ } = await import(jQuery_url);
     const { default: dt } = await import(datatables_url);
