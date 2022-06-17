@@ -4,10 +4,13 @@
 Added
 -----
 - ITables now has an [offline mode](docs/quick_start.md#Offline-mode) in Jupyter Lab (#8, #70).
+Marc would like to thank [Allan Jardine](https://sprymedia.co.uk/) and [François Wouts](https://github.com/fwouts)
+for their collaboration on the subject.
 
 
 Changed
 -------
+- The `jquery` and `datatables.net` library are now always loaded using an ES import (we don't use `require` anymore).
 - ITables uses the version 1.12.1 of datatables.net
 
 
