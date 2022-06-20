@@ -1,4 +1,4 @@
-name: itables-dev
+name: itables
 channels:
   - defaults
   - conda-forge

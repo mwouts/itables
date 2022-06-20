@@ -13,7 +13,7 @@ mamba env update --file environment.yml
 
 Then, activate that environment with
 ```shell
-conda activate itables-dev
+conda activate itables
 ```
 
 Install the pre-commit hooks with
