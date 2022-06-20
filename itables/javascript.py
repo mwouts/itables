@@ -47,6 +47,8 @@ def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
 
     if inline:
         display(Javascript(read_package_file("javascript/jQuery.js")))
+        # We use datatables' ES module version because the non module version
+        # fails to load as a simple script in the presence of require.js
         dt64 = b64encode(
             read_package_file("javascript/jquery.dataTables.mjs").encode("utf-8")
         ).decode("ascii")
