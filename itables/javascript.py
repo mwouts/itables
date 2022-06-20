@@ -10,7 +10,7 @@ from base64 import b64encode
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
-from IPython.core.display import HTML, display
+from IPython.core.display import HTML, Javascript, display
 
 import itables.options as opt
 
@@ -39,16 +39,13 @@ def init_notebook_mode(all_interactive=False, inline=True):
             del pd.Series._repr_html_
 
     if inline:
-        jquery64 = b64encode(read_package_file("jQuery.mjs").encode("utf-8")).decode(
-            "ascii"
-        )
+        display(Javascript(read_package_file("jQuery.js")))
         dt64 = b64encode(
             read_package_file("jquery.dataTables.mjs").encode("utf-8")
         ).decode("ascii")
         display(
             HTML(
                 f"""<script type="module">
-window.$ = (await import("data:text/javascript;base64,{jquery64}")).default;
 const dt = (await import("data:text/javascript;base64,{dt64}")).default;
 dt(window.$);
 </script>"""

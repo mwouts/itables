@@ -23,7 +23,13 @@ setup(
     url="https://github.com/mwouts/itables",
     packages=find_packages(exclude=["tests"]),
     package_data={
-        "itables": ["*.css", "*.mjs", "datatables_template.html", "samples/*.csv"]
+        "itables": [
+            "*.css",
+            "*.js",
+            "*.mjs",
+            "datatables_template.html",
+            "samples/*.csv",
+        ]
     },
     tests_require=["pytest"],
     install_requires=["IPython", "pandas"],
