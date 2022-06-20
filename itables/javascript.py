@@ -22,8 +22,15 @@ logger = logging.getLogger(__name__)
 
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
+"""jQuery and datatables.net urls (used only when 'inline=False' in init_notebook_mode)"""
+URLS = dict(
+    jquery="https://code.jquery.com/jquery-3.6.0.min.js",
+    dt_mjs="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs",
+    dt_css="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css",
+)
 
-def init_notebook_mode(all_interactive=False, inline=True, urls=opt.urls):
+
+def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
     """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
     activate the datatables representation for all the Pandas DataFrames and Series.
 
