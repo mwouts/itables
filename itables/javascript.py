@@ -39,9 +39,9 @@ def init_notebook_mode(all_interactive=False, inline=True):
             del pd.Series._repr_html_
 
     if inline:
-        display(Javascript(read_package_file("jQuery.js")))
+        display(Javascript(read_package_file("javascript/jQuery.js")))
         dt64 = b64encode(
-            read_package_file("jquery.dataTables.mjs").encode("utf-8")
+            read_package_file("javascript/jquery.dataTables.mjs").encode("utf-8")
         ).decode("ascii")
         display(
             HTML(
@@ -53,7 +53,9 @@ dt(window.$);
         )
         display(
             HTML(
-                "<style>" + read_package_file("jquery.dataTables.min.css") + "</style>"
+                "<style>"
+                + read_package_file("javascript/jquery.dataTables.min.css")
+                + "</style>"
             )
         )
 
@@ -161,7 +163,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         kwargs["paging"] = False
 
     # Load the HTML template
-    output = read_package_file("datatables_template.html")
+    output = read_package_file("javascript/datatables_template.html")
 
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):

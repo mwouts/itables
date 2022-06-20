@@ -24,10 +24,7 @@ setup(
     packages=find_packages(exclude=["tests"]),
     package_data={
         "itables": [
-            "*.css",
-            "*.js",
-            "*.mjs",
-            "datatables_template.html",
+            "javascript/*",
             "samples/*.csv",
         ]
     },
