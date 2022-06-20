@@ -19,3 +19,10 @@ maxBytes = 2**16
 """Maximum number of rows or columns"""
 # maxRows = 10000
 # maxColumns = 1000
+
+"""jQuery and datatables.net urls (used only when 'connected=True' in init_notebook_mode)"""
+urls = dict(
+    jquery="https://code.jquery.com/jquery-3.6.0.min.js",
+    dt_mjs="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs",
+    dt_css="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css",
+)

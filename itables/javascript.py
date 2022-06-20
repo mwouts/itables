@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
 
-def init_notebook_mode(all_interactive=False, inline=True):
+def init_notebook_mode(all_interactive=False, inline=True, urls=opt.urls):
     """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
     activate the datatables representation for all the Pandas DataFrames and Series.
 
@@ -57,6 +57,25 @@ dt(window.$);
                 + read_package_file("javascript/jquery.dataTables.min.css")
                 + "</style>"
             )
+        )
+    else:
+        display(
+            # Here we use 'HTML' rather than 'Javascript' otherwise
+            # the jQuery library (~100kB) is embedded into the notebook
+            HTML(f"""<script src="{urls["jquery"]}"></script>""")
+        )
+        display(
+            # We use 'module' here because datatables.net=1.12.1 can't be
+            # loaded as a simple script when require.js is present
+            HTML(
+                f"""<script type="module">
+                const dt = (await import('{urls["dt_mjs"]}')).default;
+                dt(window.$);
+                </script>"""
+            )
+        )
+        display(
+            HTML(f"""<link rel="stylesheet" type="text/css" href="{urls["dt_css"]}">""")
         )
 
 
