@@ -11,52 +11,19 @@
         overflow: hidden;
     }
 </style>
-<script type="module">
-    // This function adds the datatables CSS to the HTML header
-    const loadStyle = (url) => {
-        let style;
-        const styles = Array.from(document.head.querySelectorAll('link'));
-        const existingStyle = styles.find((style) => style.href === url);
-        if (!existingStyle) {
-            style = document.createElement('link');
-            style.rel = 'stylesheet';
-            style.type = 'text/css';
-            style.href = url;
-            document.head.appendChild(style);
-        }
-    };
+<script>
+    // We use a namespace per table (= the next curly bracket)
+    {
+        // Define the table data
+        const data = [];
 
-    // Import jQuery and datatables
-    let $;
-    let dt;
-    try {
-        const { default: static_$ } = await import("/static/itables/jquery/src/jquery.js");
-        const { default: static_dt } = await import("/static/itables/datatables.net/js/jquery.dataTables.mjs");
-        console.log("Found jupyterlab-itables - loading jquery and datatables from the local static folder");
-        loadStyle("/static/itables/datatables.net-dt/css/jquery.dataTables.min.css");
-        $ = static_$;
-        dt = static_dt;
-    } catch (e) {
-        const { default: cdn_$ } = await import("https://esm.sh/jquery@3.6.0");
-        const { default: cdn_dt } = await import("https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs");
-        console.log("The jupyterlab-itables extension was not found. " +
-            "The jquery and datatables libraries will be loaded from the web.");
-        loadStyle("https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css");
-        $ = cdn_$;
-        dt = cdn_dt;
+        // Define the dt_args
+        let dt_args = {};
+        dt_args["data"] = data;
+
+        // Display the table
+        $(document).ready(function () {
+            $('#table_id').DataTable(dt_args);
+        });
     }
-
-    dt($);
-
-    // Define the table data
-    const data = [];
-
-    // Define the dt_args
-    let dt_args = {};
-    dt_args["data"] = data;
-
-    // Display the table
-    $(document).ready(function () {
-        $('#table_id').DataTable(dt_args);
-    });
 </script>

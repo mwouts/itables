@@ -5,6 +5,7 @@ import logging
 import re
 import uuid
 import warnings
+from base64 import b64encode
 
 import numpy as np
 import pandas as pd
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 
 
-def init_notebook_mode(all_interactive=False):
+def init_notebook_mode(all_interactive=False, inline=True):
     """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
     activate the datatables representation for all the Pandas DataFrames and Series.
 
@@ -36,6 +37,28 @@ def init_notebook_mode(all_interactive=False):
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
+
+    if inline:
+        jquery64 = b64encode(read_package_file("jQuery.mjs").encode("utf-8")).decode(
+            "ascii"
+        )
+        dt64 = b64encode(
+            read_package_file("jquery.dataTables.mjs").encode("utf-8")
+        ).decode("ascii")
+        display(
+            HTML(
+                f"""<script type="module">
+window.$ = (await import("data:text/javascript;base64,{jquery64}")).default;
+const dt = (await import("data:text/javascript;base64,{dt64}")).default;
+dt(window.$);
+</script>"""
+            )
+        )
+        display(
+            HTML(
+                "<style>" + read_package_file("jquery.dataTables.min.css") + "</style>"
+            )
+        )
 
 
 def _formatted_values(df):
