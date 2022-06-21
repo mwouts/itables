@@ -55,7 +55,7 @@ def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
         display(
             HTML(
                 f"""<script type="module">
-const dt = (await import("data:text/javascript;base64,{dt64}")).default;
+import dt from "data:text/javascript;base64,{dt64}";
 dt(window.$);
 </script>"""
             )
@@ -78,7 +78,7 @@ dt(window.$);
             # loaded as a simple script when require.js is present
             HTML(
                 f"""<script type="module">
-                const dt = (await import('{urls["dt_mjs"]}')).default;
+                import dt from "{urls["dt_mjs"]}";
                 dt(window.$);
                 </script>"""
             )
