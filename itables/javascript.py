@@ -21,22 +21,19 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
-
-"""jQuery and datatables.net urls (used only when 'inline=False' in init_notebook_mode)"""
-URLS = dict(
-    jquery="https://code.jquery.com/jquery-3.6.0.min.js",
-    dt_mjs="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs",
-    dt_css="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css",
-)
+_CONNECTED = False
 
 
-def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
+def init_notebook_mode(all_interactive=False, connected=False):
     """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
     activate the datatables representation for all the Pandas DataFrames and Series.
 
     Make sure you don't remove the output of this cell, otherwise the interactive tables won't work when
     your notebook is reloaded.
     """
+    global _CONNECTED
+    _CONNECTED = connected
+
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
@@ -45,51 +42,28 @@ def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
 
-    if inline:
-        display(Javascript(read_package_file("javascript/jQuery.js")))
+    if not connected:
+        display(Javascript(read_package_file("external/jquery.min.js")))
         # We use datatables' ES module version because the non module version
         # fails to load as a simple script in the presence of require.js
         dt64 = b64encode(
-            read_package_file("javascript/jquery.dataTables.mjs").encode("utf-8")
+            read_package_file("external/jquery.dataTables.mjs").encode("utf-8")
         ).decode("ascii")
-        dt_src = f"data:text/javascript;base64,{dt64}"
         display(
             HTML(
                 replace_value(
-                    read_package_file("javascript/itables_render.html"),
+                    read_package_file("html/itables_render.html"),
                     "dt_src",
-                    dt_src,
+                    f"data:text/javascript;base64,{dt64}",
                 )
             )
         )
         display(
             HTML(
                 "<style>"
-                + read_package_file("javascript/jquery.dataTables.min.css")
+                + read_package_file("external/jquery.dataTables.min.css")
                 + "</style>"
             )
-        )
-    else:
-        display(
-            # Here we use 'HTML' rather than 'Javascript' otherwise
-            # the jQuery library (~100kB) is embedded into the notebook
-            HTML(f"""<script src="{urls["jquery"]}"></script>""")
-        )
-        # We load dt using 'import' as datatables.net=1.12.1 can't be
-        # loaded as a simple script when require.js is present
-        # (https://github.com/DataTables/DataTablesSrc/issues/213)
-        dt_src = urls["dt_mjs"]
-        display(
-            HTML(
-                replace_value(
-                    read_package_file("javascript/itables_render.html"),
-                    "dt_src",
-                    dt_src,
-                )
-            )
-        )
-        display(
-            HTML(f"""<link rel="stylesheet" type="text/css" href="{urls["dt_css"]}">""")
         )
 
 
@@ -196,7 +170,10 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         kwargs["paging"] = False
 
     # Load the HTML template
-    output = read_package_file("javascript/datatables_template.html")
+    if _CONNECTED:
+        output = read_package_file("html/datatables_template_connected.html")
+    else:
+        output = read_package_file("html/datatables_template.html")
 
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
