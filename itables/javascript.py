@@ -52,13 +52,14 @@ def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
         dt64 = b64encode(
             read_package_file("javascript/jquery.dataTables.mjs").encode("utf-8")
         ).decode("ascii")
+        dt_src = f"data:text/javascript;base64,{dt64}"
         display(
             HTML(
-                f"""<script type="module">
-{read_package_file("javascript/itables_render.js")}
-import dt from "data:text/javascript;base64,{dt64}";
-dt(window.$);
-</script>"""
+                replace_value(
+                    read_package_file("javascript/itables_render.html"),
+                    "dt_src",
+                    dt_src,
+                )
             )
         )
         display(
@@ -74,15 +75,17 @@ dt(window.$);
             # the jQuery library (~100kB) is embedded into the notebook
             HTML(f"""<script src="{urls["jquery"]}"></script>""")
         )
+        # We load dt using 'import' as datatables.net=1.12.1 can't be
+        # loaded as a simple script when require.js is present
+        # (https://github.com/DataTables/DataTablesSrc/issues/213)
+        dt_src = urls["dt_mjs"]
         display(
-            # We use 'module' here because datatables.net=1.12.1 can't be
-            # loaded as a simple script when require.js is present
             HTML(
-                f"""<script type="module">
-{read_package_file("javascript/itables_render.js")}
-import dt from "{urls["dt_mjs"]}";
-dt(window.$);
-</script>"""
+                replace_value(
+                    read_package_file("javascript/itables_render.html"),
+                    "dt_src",
+                    dt_src,
+                )
             )
         )
         display(
