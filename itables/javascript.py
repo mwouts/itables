@@ -55,6 +55,7 @@ def init_notebook_mode(all_interactive=False, inline=True, urls=URLS):
         display(
             HTML(
                 f"""<script type="module">
+{read_package_file("javascript/itables_render.js")}
 import dt from "data:text/javascript;base64,{dt64}";
 dt(window.$);
 </script>"""
@@ -78,9 +79,10 @@ dt(window.$);
             # loaded as a simple script when require.js is present
             HTML(
                 f"""<script type="module">
-                import dt from "{urls["dt_mjs"]}";
-                dt(window.$);
-                </script>"""
+{read_package_file("javascript/itables_render.js")}
+import dt from "{urls["dt_mjs"]}";
+dt(window.$);
+</script>"""
             )
         )
         display(
