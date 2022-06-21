@@ -1,17 +1,16 @@
-0.5.0 (2022-06-17)
+1.0.0 (2022-06-22)
 ==================
 
 Added
 -----
-- ITables now has an [offline mode](docs/quick_start.md#Offline-mode) in Jupyter Lab (#8, #70).
-Marc would like to thank [Allan Jardine](https://sprymedia.co.uk/) and [François Wouts](https://github.com/fwouts)
-for their collaboration on the subject.
+- ITables works offline! (#8, #70). Marc would like to thank
+[Allan Jardine](https://sprymedia.co.uk/), the author of the [datatables](https://datatables.net/) library,
+and [François Wouts](https://github.com/fwouts) for their precious help on the subject.
 
 
 Changed
 -------
-- The `jquery` and `datatables.net` library are now always loaded using an ES import (we don't use `require` anymore).
-- ITables uses the version 1.12.1 of datatables.net
+- ITables uses the ESM version 1.12.1 of datatables.net
 
 
 0.4.7 (2022-04-13)

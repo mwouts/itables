@@ -63,14 +63,12 @@ show(x)
 
 ## Offline mode
 
-While the table data is embedded in the notebook, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS are normally loaded from a CDN, so an internet connection is required to display the tables.
+Since `itables=1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
+are injected in the notebook when you execute `init_notebook_mode` with the default argument `connected=False`.
+Thanks to this the interactive tables will work even without a connection to the internet.
 
-The only exception to this is Jupyter Lab, which has an offline mode. To activate that mode, you should use `itables>=0.5.0` and install our [`jupyterlab-itables` extension](https://github.com/mwouts/jupyterlab-itables) with
-```shell
-pip install jupyterlab-itables
-```
-
-:warning: Unlike `itables` which has to be installed in the Python environment used in the notebook (the _kernel_), the `jupyterlab-itables` extension should be installed in the Python environment used to serve the notebooks (i.e. the environment in which you execute `jupyter lab`).
+If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
+execute `init_notebook_mode`.
 
 ## Advanced parameters
 
