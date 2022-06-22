@@ -23,9 +23,16 @@ logger = logging.getLogger(__name__)
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 _CONNECTED = True
 
+try:
+    import google.colab  # noqa
+
+    GOOGLE_COLAB = True
+except ImportError:
+    GOOGLE_COLAB = False
+
 
 def init_notebook_mode(
-    all_interactive=False, connected=False, warn_if_call_is_superfluous=True
+    all_interactive=False, connected=GOOGLE_COLAB, warn_if_call_is_superfluous=True
 ):
     """Load the datatables.net library and the corresponding css (if connected=False),
     and (if all_interactive=True), activate the datatables representation for all the Pandas DataFrames and Series.
@@ -34,6 +41,12 @@ def init_notebook_mode(
     otherwise the interactive tables will stop working.
     """
     global _CONNECTED
+    if GOOGLE_COLAB and not connected:
+        warnings.warn(
+            "The offline mode for itables is not supposed to work in Google Colab. "
+            "This is because HTML outputs in Google Colab are encapsulated in iframes."
+        )
+
     if (
         all_interactive is False
         and pd.DataFrame._repr_html_ == _ORIGINAL_DATAFRAME_REPR_HTML
