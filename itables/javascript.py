@@ -10,7 +10,7 @@ from base64 import b64encode
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
-from IPython.core.display import HTML, Javascript, display
+from IPython.display import HTML, Javascript, display
 
 import itables.options as opt
 
