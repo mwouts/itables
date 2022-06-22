@@ -24,7 +24,12 @@ _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 _CONNECTED = True
 
 try:
-    import google.colab  # noqa
+    import google.colab
+
+    # I can't find out how to suppress the LGTM alert...
+    # (Tried with # lgtm[py/unused-import]  # noqa: F401)
+    # So we use the import:
+    assert google.colab.output
 
     GOOGLE_COLAB = True
 except ImportError:
