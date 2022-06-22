@@ -8,3 +8,6 @@ If the table just says "Loading...", then maybe
 Please note that if you change the value of the `connected` argument in
 the `init_notebook_mode` cell, you will need to re-execute all the cells
 that display interactive tables.
+
+If the above does not help, please check out the [ChangeLog](changelog.md)
+and decide whether you should upgrade `itables`.

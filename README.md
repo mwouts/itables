@@ -20,7 +20,12 @@ init_notebook_mode(all_interactive=True)
 ```
 or use `itables.show` to show just one Series or DataFrame as an interactive table.
 
-(NB: In Jupyter Notebook, Jupyter NBconvert and Jupyter Book, you need to call `init_notebook_mode()` before using `show`).
+Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
+are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
+Thanks to this the interactive tables will work even without a connection to the internet.
+
+If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
+execute `init_notebook_mode`.
 
 ## Documentation
 
@@ -53,6 +58,9 @@ If the table just says "Loading...", then maybe
 Please note that if you change the value of the `connected` argument in
 the `init_notebook_mode` cell, you will need to re-execute all the cells
 that display interactive tables.
+
+If the above does not help, please check out the [ChangeLog](docs/changelog.md)
+and decide whether you should upgrade `itables`.
 
 ## <a name="downsampling"></a> Downsampling
 
