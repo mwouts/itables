@@ -21,17 +21,33 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
-_CONNECTED = False
+_CONNECTED = True
 
 
-def init_notebook_mode(all_interactive=False, connected=False):
-    """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
-    activate the datatables representation for all the Pandas DataFrames and Series.
+def init_notebook_mode(
+    all_interactive=False, connected=False, warn_if_call_is_superfluous=True
+):
+    """Load the datatables.net library and the corresponding css (if connected=False),
+    and (if all_interactive=True), activate the datatables representation for all the Pandas DataFrames and Series.
 
-    Make sure you don't remove the output of this cell, otherwise the interactive tables won't work when
-    your notebook is reloaded.
+    Warning: make sure you keep the output of this cell when 'connected=False',
+    otherwise the interactive tables will stop working.
     """
     global _CONNECTED
+    if (
+        all_interactive is False
+        and pd.DataFrame._repr_html_ == _ORIGINAL_DATAFRAME_REPR_HTML
+        and connected is True
+        and _CONNECTED == connected
+    ):
+        if warn_if_call_is_superfluous:
+            warnings.warn(
+                "Did you know? "
+                "init_notebook_mode(all_interactive=False, connected=True) does nothing. "
+                "Feel free to remove this line, or pass warn_if_call_is_superfluous=False."
+            )
+        return
+
     _CONNECTED = connected
 
     if all_interactive:
