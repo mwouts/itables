@@ -26,7 +26,7 @@ _CONNECTED = True
 try:
     import google.colab
 
-    # I can't find out how to suppress the LGTM alert...
+    # I can't find out how to suppress the LGTM alert about unused-import
     # (Tried with # lgtm[py/unused-import]  # noqa: F401)
     # So we use the import:
     assert google.colab.output
