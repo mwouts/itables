@@ -38,4 +38,7 @@ In VS Code, `itables` works both for Jupyter Notebooks and Python scripts
 
 ## PyCharm
 
+In PyCharm we recommend to call `init_notebook_mode` with the `connected=True` argument,
+because otherwise the notebooks do not display the interactive tables when they are reloaded.
+
 ![](images/pycharm.png)
