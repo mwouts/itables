@@ -1,3 +1,3 @@
 """ITables' version number"""
 
-__version__ = "0.4.7"
+__version__ = "1.0.0"

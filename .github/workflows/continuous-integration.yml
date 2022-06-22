@@ -57,8 +57,10 @@ jobs:
           flake8 itables tests
           # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --statistics
+      - name: Install a development version of 'itables'
+        run: pip install -e .
       - name: Install a Jupyter Kernel
-        run: python -m ipykernel install --name itables-dev --user
+        run: python -m ipykernel install --name itables --user
       - name: Test with pytest
         run: pytest --cov=./ --cov-report=xml
       - name: Upload coverage

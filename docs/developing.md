@@ -13,7 +13,7 @@ mamba env update --file environment.yml
 
 Then, activate that environment with
 ```shell
-conda activate itables-dev
+conda activate itables
 ```
 
 Install the pre-commit hooks with
@@ -35,7 +35,11 @@ pytest
 
 The `itables` documentation uses [Jupyter Book](https://jupyterbook.org/).
 
-To build the documentation locally, use
+To build the documentation locally, create a kernel named `itables` with
+```shell
+python -m ipykernel install --name itables --user
+```
+and then build the documentation with
 ```
 jupyter-book build docs
 ```

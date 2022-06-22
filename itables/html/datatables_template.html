@@ -1,0 +1,30 @@
+<table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<style>
+    table td {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+<style>
+    table th {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+<script>
+    // We use a namespace per table (= the next curly bracket)
+    // to avoid conflicts between the various tables' data & dt_args
+    {
+        // Define the table data
+        const data = [];
+
+        // Define the dt_args
+        let dt_args = {};
+        dt_args["data"] = data;
+
+        // Display the table
+        $(document).ready(function () {
+            window.__itables_render('#table_id', dt_args);
+        });
+    }
+</script>

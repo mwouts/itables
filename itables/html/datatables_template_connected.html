@@ -1,0 +1,31 @@
+<table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<style>
+    table td {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+<style>
+    table th {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+<script type="module">
+    // Import jquery and DataTable
+    import 'https://code.jquery.com/jquery-3.6.0.min.js';
+    import dt from 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
+    dt($);
+
+    // Define the table data
+    const data = [];
+
+    // Define the dt_args
+    let dt_args = {};
+    dt_args["data"] = data;
+
+    $(document).ready(function () {
+        $('#table_id').DataTable(dt_args);
+    });
+</script>

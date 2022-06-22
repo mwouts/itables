@@ -20,7 +20,12 @@ init_notebook_mode(all_interactive=True)
 ```
 or use `itables.show` to show just one Series or DataFrame as an interactive table.
 
-(NB: In Jupyter Notebook, Jupyter NBconvert and Jupyter Book, you need to call `init_notebook_mode()` before using `show`).
+Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
+are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
+Thanks to this the interactive tables will work even without a connection to the internet.
+
+If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
+execute `init_notebook_mode`.
 
 ## Documentation
 
@@ -47,9 +52,15 @@ You can run our examples notebooks directly on [![Lab](https://img.shields.io/ba
 
 If the table just says "Loading...", then maybe
 - You loaded a notebook that is not trusted (run "Trust Notebook" in View / Activate Command Palette)
-- Or you are offline?
+- You forgot to run `init_notebook_mode`, or you deleted that cell or its output
+- Or you ran `init_notebook_mode(connected=True)` but you are not connected to the internet?
 
-At the moment `itables` does not have an [offline mode](https://github.com/mwouts/itables/issues/8). While the table data is embedded in the notebook, the `jquery` and `datatables.net` are loaded from a CDN, see our [require.config](https://github.com/mwouts/itables/blob/main/itables/javascript/load_datatables_connected.js) and our [table template](https://github.com/mwouts/itables/blob/main/itables/datatables_template.html), so an internet connection is required to display the tables.
+Please note that if you change the value of the `connected` argument in
+the `init_notebook_mode` cell, you will need to re-execute all the cells
+that display interactive tables.
+
+If the above does not help, please check out the [ChangeLog](docs/changelog.md)
+and decide whether you should upgrade `itables`.
 
 ## <a name="downsampling"></a> Downsampling
 

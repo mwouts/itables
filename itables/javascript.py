@@ -5,11 +5,12 @@ import logging
 import re
 import uuid
 import warnings
+from base64 import b64encode
 
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
-from IPython.core.display import HTML, Javascript, display
+from IPython.display import HTML, Javascript, display
 
 import itables.options as opt
 
@@ -20,15 +21,53 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
+_CONNECTED = True
+
+try:
+    import google.colab
+
+    # I can't find out how to suppress the LGTM alert about unused-import
+    # (Tried with # lgtm[py/unused-import]  # noqa: F401)
+    # So we use the import:
+    assert google.colab.output
+
+    GOOGLE_COLAB = True
+except ImportError:
+    GOOGLE_COLAB = False
 
 
-def init_notebook_mode(all_interactive=False):
-    """Load the datatables.net library and the corresponding css, and if desired (all_interactive=True),
-    activate the datatables representation for all the Pandas DataFrames and Series.
+def init_notebook_mode(
+    all_interactive=False, connected=GOOGLE_COLAB, warn_if_call_is_superfluous=True
+):
+    """Load the datatables.net library and the corresponding css (if connected=False),
+    and (if all_interactive=True), activate the datatables representation for all the Pandas DataFrames and Series.
 
-    Make sure you don't remove the output of this cell, otherwise the interactive tables won't work when
-    your notebook is reloaded.
+    Warning: make sure you keep the output of this cell when 'connected=False',
+    otherwise the interactive tables will stop working.
     """
+    global _CONNECTED
+    if GOOGLE_COLAB and not connected:
+        warnings.warn(
+            "The offline mode for itables is not supposed to work in Google Colab. "
+            "This is because HTML outputs in Google Colab are encapsulated in iframes."
+        )
+
+    if (
+        all_interactive is False
+        and pd.DataFrame._repr_html_ == _ORIGINAL_DATAFRAME_REPR_HTML
+        and connected is True
+        and _CONNECTED == connected
+    ):
+        if warn_if_call_is_superfluous:
+            warnings.warn(
+                "Did you know? "
+                "init_notebook_mode(all_interactive=False, connected=True) does nothing. "
+                "Feel free to remove this line, or pass warn_if_call_is_superfluous=False."
+            )
+        return
+
+    _CONNECTED = connected
+
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
@@ -37,8 +76,29 @@ def init_notebook_mode(all_interactive=False):
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
 
-    # TODO remove this when require.js is not used any more, see #51
-    display(Javascript(read_package_file("require_config.js")))
+    if not connected:
+        display(Javascript(read_package_file("external/jquery.min.js")))
+        # We use datatables' ES module version because the non module version
+        # fails to load as a simple script in the presence of require.js
+        dt64 = b64encode(
+            read_package_file("external/jquery.dataTables.mjs").encode("utf-8")
+        ).decode("ascii")
+        display(
+            HTML(
+                replace_value(
+                    read_package_file("html/itables_render.html"),
+                    "dt_src",
+                    f"data:text/javascript;base64,{dt64}",
+                )
+            )
+        )
+        display(
+            HTML(
+                "<style>"
+                + read_package_file("external/jquery.dataTables.min.css")
+                + "</style>"
+            )
+        )
 
 
 def _formatted_values(df):
@@ -105,11 +165,11 @@ def eval_functions_dumps(obj):
     return json.dumps(obj)
 
 
-def replace_value(template, pattern, value, count=1):
+def replace_value(template, pattern, value):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
     assert isinstance(template, str)
-    assert template.count(pattern) == count
+    assert template.count(pattern) == 1
     return template.replace(pattern, value)
 
 
@@ -144,7 +204,10 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         kwargs["paging"] = False
 
     # Load the HTML template
-    output = read_package_file("datatables_template.html")
+    if _CONNECTED:
+        output = read_package_file("html/datatables_template_connected.html")
+    else:
+        output = read_package_file("html/datatables_template.html")
 
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
@@ -162,7 +225,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
         table_header,
     )
-    output = replace_value(output, "#table_id", f"#{tableId}", count=2)
+    output = replace_value(output, "#table_id", f"#{tableId}")
 
     # Export the DT args to JSON
     if eval_functions:
@@ -176,9 +239,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
                 "To silence this warning, use 'eval_functions=False'."
             )
 
-    output = replace_value(
-        output, "let dt_args = {};", f"let dt_args = {dt_args};", count=2
-    )
+    output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
 
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)

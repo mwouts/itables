@@ -59,7 +59,14 @@ x = get_population()
 show(x)
 ```
 
-(NB: In Jupyter Notebook, Jupyter NBconvert and Jupyter Book, you need to call `init_notebook_mode()` before using `show`).
+## Offline mode
+
+Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
+are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
+Thanks to this the interactive tables will work even without a connection to the internet.
+
+If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
+execute `init_notebook_mode`.
 
 ## Advanced parameters
 
