@@ -236,8 +236,10 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         assert "initComplete" not in kwargs
 
         pre_dt_code = read_package_file("html/column_filters/pre_dt_code.js")
-        kwargs["initComplete"] = read_package_file(
-            "html/column_filters/initComplete.js"
+        kwargs["initComplete"] = replace_value(
+            read_package_file("html/column_filters/initComplete.js"),
+            "const initComplete = ",
+            "",
         )
         eval_functions = True  # TODO make sure this is limited to initComplete?
 

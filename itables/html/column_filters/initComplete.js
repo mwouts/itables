@@ -1,4 +1,4 @@
-function () {
+const initComplete = function () {
     // Apply the search
     this.api()
         .columns()
