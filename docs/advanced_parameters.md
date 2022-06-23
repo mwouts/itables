@@ -96,13 +96,16 @@ df
 You can set additional `tags` like a [caption](https://datatables.net/blog/2014-11-07) on the table with the `tags` option:
 
 ```{code-cell}
-show(df, tags='<caption>Countries from the World Bank Database</caption>')
+show(df, tags="<caption>Countries from the World Bank Database</caption>")
 ```
 
 The position of the caption can be set explicitly as in the datatables example above (note that the default position may depend on how you render the notebook):
 
 ```{code-cell}
-show(df, tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>')
+show(
+    df,
+    tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>',
+)
 ```
 
 ```{code-cell}
@@ -154,7 +157,6 @@ Now we deactivate the column filters for the rest of the notebook
 opt.column_filters = False
 ```
 
-
 ## Float precision
 
 Floats are rounded using `pd.options.display.float_format`. Please change that format according to your preference.
@@ -190,13 +192,15 @@ show(
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": JavascriptFunction("""
+            "createdCell": JavascriptFunction(
+                """
 function (td, cellData, rowData, row, col) {
     if (cellData < 0) {
         $(td).css('color', 'red')
     }
 }
-"""),
+"""
+            ),
         }
     ],
 )
@@ -268,7 +272,7 @@ show(
 The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
 
 ```{code-cell}
-show(df, search={"regex": True, "caseInsensitive": True, "search":"s.ain"})
+show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
 
 ## Select rows
