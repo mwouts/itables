@@ -1,5 +1,5 @@
-// Setup - add a text input to each footer cell
-$('#table_id thead th').each(function () {
+// Setup - add a text input to each header or footer cell
+$('#table_id thead_or_tfoot th').each(function () {
     var title = $(this).text();
     $(this).html('<input type="text" placeholder="Search ' +
         // We use encodeURI to avoid this LGTM error:

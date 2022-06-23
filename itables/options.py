@@ -23,5 +23,9 @@ maxBytes = 2**16
 """Pre dt code"""
 pre_dt_code = ""
 
+"""Table header and footer"""
+header = True
+footer = False
+
 """Column filters"""
-column_filters = True
+column_filters = False

@@ -123,7 +123,9 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
-def _table_header(df, table_id, show_index, classes, style, tags):
+def _table_header(
+    df, table_id, show_index, classes, style, tags, header, footer, column_filters
+):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
@@ -131,6 +133,16 @@ def _table_header(df, table_id, show_index, classes, style, tags):
     thead = match.groups()[0]
     if not show_index:
         thead = thead.replace("<th></th>", "", 1)
+
+    if column_filters:
+        # We use this header in the column filters, so we need to remove any column multiindex first"""
+        thead_flat = ""
+        if show_index:
+            for index in df.index.names:
+                thead_flat += f"<th>{index}</th>"
+
+        for column in df.columns:
+            thead_flat += f"<th>{column}</th>"
 
     loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
     tbody = f"<tr>{loading}</tr>"
@@ -140,7 +152,21 @@ def _table_header(df, table_id, show_index, classes, style, tags):
     else:
         style = ""
 
-    return f'<table id="{table_id}" class="{classes}"{style}>{tags}<thead>{thead}</thead><tbody>{tbody}</tbody></table>'
+    if column_filters == "header":
+        header = f"<thead>{thead_flat}</thead>"
+    elif header:
+        header = f"<thead>{thead}</thead>"
+    else:
+        header = ""
+
+    if column_filters == "footer":
+        footer = f"<tfoot>{thead_flat}</tfoot>"
+    elif footer:
+        footer = f"<tfoot>{thead}</tfoot>"
+    else:
+        footer = ""
+
+    return f"""<table id="{table_id}" class="{classes}"{style}>{tags}{header}<tbody>{tbody}</tbody>{footer}</table>"""
 
 
 def eval_functions_dumps(obj):
@@ -185,7 +211,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
     tags = kwargs.pop("tags")
-    column_filters = kwargs.pop("column_filters")
+
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
@@ -200,6 +226,19 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         df = df.to_frame()
 
     df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
+
+    header = kwargs.pop("header")
+    footer = kwargs.pop("footer")
+    column_filters = kwargs.pop("column_filters")
+    if column_filters == "header":
+        header = True
+    elif column_filters == "footer":
+        footer = True
+    elif column_filters is not False:
+        raise ValueError(
+            f"column_filters should be either "
+            f"'header', 'footer' or False, not {column_filters}"
+        )
 
     # Do not show the page menu when the table has fewer rows than min length menu
     if "paging" not in kwargs and len(df.index) <= kwargs.get("lengthMenu", [10])[0]:
@@ -221,7 +260,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    table_header = _table_header(df, tableId, showIndex, classes, style, tags)
+    table_header = _table_header(
+        df, tableId, showIndex, classes, style, tags, header, footer, column_filters
+    )
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
@@ -241,7 +282,11 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         assert pre_dt_code == ""
         assert "initComplete" not in kwargs
 
-        pre_dt_code = read_package_file("html/column_filters/pre_dt_code.js")
+        pre_dt_code = replace_value(
+            read_package_file("html/column_filters/pre_dt_code.js"),
+            "thead_or_tfoot",
+            "thead" if column_filters == "header" else "tfoot",
+        )
         kwargs["initComplete"] = replace_value(
             read_package_file("html/column_filters/initComplete.js"),
             "const initComplete = ",
