@@ -122,18 +122,15 @@ show(df, footer=True)
 
 ## Column filters
 
-Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters. If you with to remove the global search box, use [`searching=False`](https://datatables.net/reference/option/searching).
+Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters
+(remove the global search box with [`dom='lrtip'`](https://datatables.net/reference/option/dom) if desired).
 
 ```{code-cell}
 alpha_numeric_df = pd.DataFrame(
     [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
 )
 
-show(
-    alpha_numeric_df,
-    column_filters="footer",
-    searching=False,
-)
+show(alpha_numeric_df, column_filters="footer", dom="lrtip")
 ```
 
 As always you can set activate column filters by default with e.g.
