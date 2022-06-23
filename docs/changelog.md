@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.1.0 (2022-06-23)
+------------------
+
+**Added**
+- `itables.options` and the `show` function have a new `column_filters` argument to display individual column search boxes (#69)
+
+
 1.0.0 (2022-06-22)
 ------------------
 

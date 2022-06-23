@@ -100,8 +100,52 @@ show(df, tags='<caption>Countries from the World Bank Database</caption>')
 ```
 
 The position of the caption can be set explicitly as in the datatables example above (note that the default position may depend on how you render the notebook):
+
 ```{code-cell}
 show(df, tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>')
+```
+
+```{code-cell}
+opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
+```
+
+## Table footer
+
+Use `footer = True` if you wish to display a table footer.
+
+```{code-cell}
+show(df, footer=True)
+```
+
+## Column filters
+
+Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters. If you with to remove the global search box, use [`searching=False`](https://datatables.net/reference/option/searching).
+
+```{code-cell}
+alpha_numeric_df = pd.DataFrame(
+    [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
+)
+
+show(
+    alpha_numeric_df,
+    column_filters="footer",
+    searching=False,
+)
+```
+
+As always you can set activate column filters by default with e.g.
+
+```{code-cell}
+opt.column_filters = "footer"
+alpha_numeric_df
+```
+
+Column filters also work on dataframes with multiindex columns:
+
+```{code-cell}
+from itables.sample_dfs import get_dict_of_test_dfs
+
+get_dict_of_test_dfs()["multiindex"]
 ```
 
 ## Float precision
