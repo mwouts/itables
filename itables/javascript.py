@@ -37,7 +37,10 @@ except ImportError:
 
 
 def init_notebook_mode(
-    all_interactive=False, connected=GOOGLE_COLAB, warn_if_call_is_superfluous=True
+    all_interactive=False,
+    connected=GOOGLE_COLAB,
+    warn_if_call_is_superfluous=True,
+    offline_dt_plugins=[],
 ):
     """Load the datatables.net library and the corresponding css (if connected=False),
     and (if all_interactive=True), activate the datatables representation for all the Pandas DataFrames and Series.
@@ -78,6 +81,9 @@ def init_notebook_mode(
 
     if not connected:
         display(Javascript(read_package_file("external/jquery.min.js")))
+        for plugin_file in offline_dt_plugins:
+            with open(plugin_file) as fp:
+                display(Javascript(fp.read()))
         # We use datatables' ES module version because the non module version
         # fails to load as a simple script in the presence of require.js
         dt64 = b64encode(
@@ -229,6 +235,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
     tags = kwargs.pop("tags")
+    dt_plugins = kwargs.pop("dt_plugins")
 
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -264,7 +271,17 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     # Load the HTML template
     if _CONNECTED:
         output = read_package_file("html/datatables_template_connected.html")
+        output = replace_value(
+            output,
+            "// [dt_plugins]",
+            "\n".join(f"import '{url}';" for url in dt_plugins),
+        )
     else:
+        if dt_plugins:
+            warnings.warn(
+                "'dt_plugins' is not used in the offline mode. "
+                "Please use the 'offline_dt_plugins' argument of 'init_notebook_mode'"
+            )
         output = read_package_file("html/datatables_template.html")
 
     tableId = tableId or str(uuid.uuid4())

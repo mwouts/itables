@@ -28,3 +28,6 @@ footer = False
 
 """Column filters"""
 column_filters = False
+
+"""DataTables plugins (connected mode)"""
+dt_plugins = []

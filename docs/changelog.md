@@ -1,6 +1,15 @@
 ITables ChangeLog
 =================
 
+1.2.0 (2022-06-24)
+------------------
+
+**Added**
+- Search highlight using `datatables.mark.js` is supported. This is the first example of a supported plugin!
+See the corresponding [section](https://mwouts.github.io/itables/datatables_plugins.html#search-highlighting)
+in the documentation ([#63](https://github.com/mwouts/jupytext/issues/63))
+
+
 1.1.1 (2022-06-23)
 ------------------
 
