@@ -19,3 +19,10 @@ maxBytes = 2**16
 """Maximum number of rows or columns"""
 # maxRows = 10000
 # maxColumns = 1000
+
+"""Pre and post dt code"""
+pre_dt_code = ""
+post_dt_code = ""
+
+"""Column filters"""
+column_filters = True

@@ -11,6 +11,13 @@
         overflow: hidden;
     }
 </style>
+<style>
+thead input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
 <script>
     // We use a namespace per table (= the next curly bracket)
     // to avoid conflicts between the various tables' data & dt_args
@@ -24,7 +31,9 @@
 
         // Display the table
         $(document).ready(function () {
+            // [pre-dt-code]
             window.__itables_render('#table_id', dt_args);
+            // [post-dt-code]
         });
     }
 </script>

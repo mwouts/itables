@@ -11,6 +11,12 @@
         overflow: hidden;
     }
 </style>
+thead input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 <script type="module">
     // Import jquery and DataTable
@@ -26,6 +32,8 @@
     dt_args["data"] = data;
 
     $(document).ready(function () {
+        // [pre-dt-code]
         $('#table_id').DataTable(dt_args);
+        // [post-dt-code]
     });
 </script>
