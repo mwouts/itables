@@ -34,6 +34,27 @@ from itables.sample_dfs import get_countries
 df = get_countries()
 ```
 
+## Selecting table controls
+
+Use DataTables' [`dom` option](https://datatables.net/reference/option/dom)
+to select the elements of the table that should be displayed:
+- `l`: length changing input control
+- `f`: filtering input
+- `t`: The table!
+- `i`: Table information summary
+- `p`: pagination control
+- `r`: processing display element
+
+For instance, if you don't want the search box, the length input control and the table summary, use
+
+```{code-cell}
+import pandas as pd
+
+show(pd.DataFrame({"a": [2, 1]}), dom="tpr")
+```
+
+Note: you can change the default value of the dom option by setting `opt.dom` as in the examples below.
+
 ## Row sorting
 
 Select the order in which the row are sorted with the [datatables' `order`](https://datatables.net/reference/option/order) argument. By default, the rows are sorted according to the first column (`order = [[0, 'asc']]`).
@@ -41,7 +62,6 @@ Select the order in which the row are sorted with the [datatables' `order`](http
 If you want to deactivate the sorting, set `order = []`, either in the `show` method, or as a global option:
 
 ```{code-cell}
-import pandas as pd
 import itables.options as opt
 
 opt.order = []  # no sorting

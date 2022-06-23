@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Added**
 - `itables.options` and the `show` function have a new `column_filters` argument to display individual column search boxes ([#69](https://github.com/mwouts/jupytext/issues/69))
+- We have documented DataTables' `dom` option.
 - We have introduced a new class `JavascriptFunction` to limit the evaluation of Javascript function to selected ones.
 - The documentation is formatted with `black` thanks to a Jupytext & Black pre-commit hook.
 
