@@ -3,7 +3,7 @@ const initComplete = function () {
     this.api()
         .columns()
         .every(function () {
-            var that = this;
+            const that = this;
 
             $('input', this.header()).on('keyup change clear', function () {
                 if (that.search() !== this.value) {
