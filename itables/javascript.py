@@ -124,7 +124,7 @@ def _formatted_values(df):
 
 
 def _table_header(
-    df, table_id, show_index, classes, style, tags, header, footer, column_filters
+    df, table_id, show_index, classes, style, tags, footer, column_filters
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
@@ -154,10 +154,8 @@ def _table_header(
 
     if column_filters == "header":
         header = f"<thead>{thead_flat}</thead>"
-    elif header:
-        header = f"<thead>{thead}</thead>"
     else:
-        header = ""
+        header = f"<thead>{thead}</thead>"
 
     if column_filters == "footer":
         footer = f"<tfoot>{thead_flat}</tfoot>"
@@ -227,11 +225,10 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
     df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
 
-    header = kwargs.pop("header")
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
     if column_filters == "header":
-        header = True
+        pass
     elif column_filters == "footer":
         footer = True
     elif column_filters is not False:
@@ -261,7 +258,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
     table_header = _table_header(
-        df, tableId, showIndex, classes, style, tags, header, footer, column_filters
+        df, tableId, showIndex, classes, style, tags, footer, column_filters
     )
     output = replace_value(
         output,
@@ -288,9 +285,13 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
             "thead" if column_filters == "header" else "tfoot",
         )
         kwargs["initComplete"] = replace_value(
-            read_package_file("html/column_filters/initComplete.js"),
-            "const initComplete = ",
-            "",
+            replace_value(
+                read_package_file("html/column_filters/initComplete.js"),
+                "const initComplete = ",
+                "",
+            ),
+            "header",
+            column_filters,
         )
         eval_functions = True  # TODO make sure this is limited to initComplete?
 
