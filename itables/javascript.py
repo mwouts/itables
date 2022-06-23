@@ -167,22 +167,33 @@ def _table_header(
     return f"""<table id="{table_id}" class="{classes}"{style}>{tags}{header}<tbody>{tbody}</tbody>{footer}</table>"""
 
 
-def eval_functions_dumps(obj):
+def json_dumps(obj, eval_functions):
     """
     This is a replacement for json.dumps that
     does not quote strings that start with 'function', so that
     these functions are evaluated in the HTML code.
     """
-    if isinstance(obj, str):
-        if obj.lstrip().startswith("function"):
+    if isinstance(obj, JavascriptFunction):
+        assert obj.lstrip().startswith("function")
+        return obj
+    if isinstance(obj, str) and obj.lstrip().startswith("function"):
+        if eval_functions is True:
             return obj
+        if eval_functions is None and obj.lstrip().startswith("function"):
+            warnings.warn(
+                "One of the arguments passed to datatables starts with 'function'. "
+                "To evaluate this function, change it into a 'JavascriptFunction' object "
+                "or use the option 'eval_functions=True'. "
+                "To silence this warning, use 'eval_functions=False'."
+            )
     if isinstance(obj, list):
-        return "[" + ", ".join(eval_functions_dumps(i) for i in obj) + "]"
+        return "[" + ", ".join(json_dumps(i, eval_functions) for i in obj) + "]"
     if isinstance(obj, dict):
         return (
             "{"
             + ", ".join(
-                f'"{key}": {eval_functions_dumps(value)}' for key, value in obj.items()
+                f'"{key}": {json_dumps(value, eval_functions)}'
+                for key, value in obj.items()
             )
             + "}"
         )
@@ -195,6 +206,15 @@ def replace_value(template, pattern, value):
     assert isinstance(template, str)
     assert template.count(pattern) == 1
     return template.replace(pattern, value)
+
+
+class JavascriptFunction(str):
+    """A class that explicitly states that a string is a Javascript function"""
+
+    def __init__(self, value):
+        assert value.lstrip().startswith(
+            "function"
+        ), "A Javascript function is expected to start with 'function'"
 
 
 def _datatables_repr_(df=None, tableId=None, **kwargs):
@@ -275,7 +295,8 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     )
 
     if column_filters:
-        # If the below was false, we'd need to concatenate the JS code
+        # If the below was false, we would need to concatenate the JS code
+        # which might not be trivial...
         assert pre_dt_code == ""
         assert "initComplete" not in kwargs
 
@@ -284,28 +305,20 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
             "thead_or_tfoot",
             "thead" if column_filters == "header" else "tfoot",
         )
-        kwargs["initComplete"] = replace_value(
+        kwargs["initComplete"] = JavascriptFunction(
             replace_value(
-                read_package_file("html/column_filters/initComplete.js"),
-                "const initComplete = ",
-                "",
-            ),
-            "header",
-            column_filters,
+                replace_value(
+                    read_package_file("html/column_filters/initComplete.js"),
+                    "const initComplete = ",
+                    "",
+                ),
+                "header",
+                column_filters,
+            )
         )
-        eval_functions = True  # TODO make sure this is limited to initComplete?
 
     # Export the DT args to JSON
-    if eval_functions:
-        dt_args = eval_functions_dumps(kwargs)
-    else:
-        dt_args = json.dumps(kwargs)
-        if eval_functions is None and _any_function(kwargs):
-            warnings.warn(
-                "One of the arguments passed to datatables starts with 'function'. "
-                "To evaluate this function, use the option 'eval_functions=True'. "
-                "To silence this warning, use 'eval_functions=False'."
-            )
+    dt_args = json_dumps(kwargs, eval_functions)
 
     output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
     output = replace_value(
@@ -318,21 +331,6 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     output = replace_value(output, "const data = [];", f"const data = {dt_data};")
 
     return output
-
-
-def _any_function(value):
-    """Does a value or nested value starts with 'function'?"""
-    if isinstance(value, str) and value.lstrip().startswith("function"):
-        return True
-    elif isinstance(value, list):
-        for nested_value in value:
-            if _any_function(nested_value):
-                return True
-    elif isinstance(value, dict):
-        for key, nested_value in value.items():
-            if _any_function(nested_value):
-                return True
-    return False
 
 
 def show(df=None, **kwargs):

@@ -4,8 +4,8 @@ import warnings
 import pandas as pd
 import pytest
 
-from itables import show
-from itables.javascript import eval_functions_dumps
+from itables import JavascriptFunction, show
+from itables.javascript import json_dumps
 
 
 @pytest.fixture()
@@ -43,18 +43,32 @@ def test_no_warning_when_eval_functions_is_true(df, coloredColumnDefs):
 
 
 @pytest.mark.parametrize("obj", ["a", 1, 1.0, [1.0, "a", {"a": [0, 1]}]])
-def test_eval_functions_dumps_same_as_json_dumps(obj):
-    assert eval_functions_dumps(obj) == json.dumps(obj)
+def test_our_json_dumps_same_as_json_dumps(obj):
+    warnings.simplefilter("error")
+    assert json_dumps(obj, eval_functions=True) == json.dumps(obj)
 
 
-def test_eval_functions_dumps():
-    assert eval_functions_dumps("not a function") == '"not a function"'
-    assert eval_functions_dumps("function(x) {return x;}") == "function(x) {return x;}"
+def test_json_dumps():
+    warnings.simplefilter("error")
+    assert json_dumps("not a function", eval_functions=True) == '"not a function"'
     assert (
-        eval_functions_dumps(["a", "function(x) {return x;}"])
+        json_dumps("function(x) {return x;}", eval_functions=True)
+        == "function(x) {return x;}"
+    )
+    assert (
+        json_dumps(JavascriptFunction("function(x) {return x;}"), eval_functions=False)
+        == "function(x) {return x;}"
+    )
+    assert (
+        json_dumps(["a", "function(x) {return x;}"], eval_functions=True)
         == '["a", function(x) {return x;}]'
     )
     assert (
-        eval_functions_dumps({"f": "function(x) {return x;}"})
+        json_dumps({"f": "function(x) {return x;}"}, eval_functions=True)
         == '{"f": function(x) {return x;}}'
     )
+
+
+def test_json_dumps_issues_warnings():
+    with pytest.warns(UserWarning, match="starts with 'function'"):
+        json_dumps("function(x) {return x;}", eval_functions=None)

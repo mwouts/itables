@@ -148,6 +148,13 @@ from itables.sample_dfs import get_dict_of_test_dfs
 get_dict_of_test_dfs()["multiindex"]
 ```
 
+Now we deactivate the column filters for the rest of the notebook
+
+```{code-cell}
+opt.column_filters = False
+```
+
+
 ## Float precision
 
 Floats are rounded using `pd.options.display.float_format`. Please change that format according to your preference.
@@ -173,22 +180,25 @@ You can use Javascript callbacks to set the cell or row style depending on the c
 
 The example below, in which we color in red the cells with negative numbers, is directly inspired by the corresponding datatables.net [example](https://datatables.net/reference/option/columns.createdCell).
 
+Note how the Javascript callback is declared as `JavascriptFunction` object below.
+
 ```{code-cell}
+from itables import JavascriptFunction
+
 show(
     pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": """
+            "createdCell": JavascriptFunction("""
 function (td, cellData, rowData, row, col) {
     if (cellData < 0) {
         $(td).css('color', 'red')
     }
 }
-""",
+"""),
         }
     ],
-    eval_functions=True,
 )
 ```
 
