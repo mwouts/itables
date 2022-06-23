@@ -16,6 +16,7 @@ pip install itables
 Activate the interactive mode for all series and dataframes with
 ```python
 from itables import init_notebook_mode
+
 init_notebook_mode(all_interactive=True)
 ```
 or use `itables.show` to show just one Series or DataFrame as an interactive table.

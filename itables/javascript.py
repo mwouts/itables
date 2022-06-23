@@ -123,7 +123,9 @@ def _formatted_values(df):
     return formatted_df.values.tolist()
 
 
-def _table_header(df, table_id, show_index, classes, style, tags):
+def _table_header(
+    df, table_id, show_index, classes, style, tags, footer, column_filters
+):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
@@ -131,6 +133,16 @@ def _table_header(df, table_id, show_index, classes, style, tags):
     thead = match.groups()[0]
     if not show_index:
         thead = thead.replace("<th></th>", "", 1)
+
+    if column_filters:
+        # We use this header in the column filters, so we need to remove any column multiindex first"""
+        thead_flat = ""
+        if show_index:
+            for index in df.index.names:
+                thead_flat += f"<th>{index}</th>"
+
+        for column in df.columns:
+            thead_flat += f"<th>{column}</th>"
 
     loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
     tbody = f"<tr>{loading}</tr>"
@@ -140,25 +152,48 @@ def _table_header(df, table_id, show_index, classes, style, tags):
     else:
         style = ""
 
-    return f'<table id="{table_id}" class="{classes}"{style}>{tags}<thead>{thead}</thead><tbody>{tbody}</tbody></table>'
+    if column_filters == "header":
+        header = f"<thead>{thead_flat}</thead>"
+    else:
+        header = f"<thead>{thead}</thead>"
+
+    if column_filters == "footer":
+        footer = f"<tfoot>{thead_flat}</tfoot>"
+    elif footer:
+        footer = f"<tfoot>{thead}</tfoot>"
+    else:
+        footer = ""
+
+    return f"""<table id="{table_id}" class="{classes}"{style}>{tags}{header}<tbody>{tbody}</tbody>{footer}</table>"""
 
 
-def eval_functions_dumps(obj):
+def json_dumps(obj, eval_functions):
     """
     This is a replacement for json.dumps that
     does not quote strings that start with 'function', so that
     these functions are evaluated in the HTML code.
     """
-    if isinstance(obj, str):
-        if obj.lstrip().startswith("function"):
+    if isinstance(obj, JavascriptFunction):
+        assert obj.lstrip().startswith("function")
+        return obj
+    if isinstance(obj, str) and obj.lstrip().startswith("function"):
+        if eval_functions is True:
             return obj
+        if eval_functions is None and obj.lstrip().startswith("function"):
+            warnings.warn(
+                "One of the arguments passed to datatables starts with 'function'. "
+                "To evaluate this function, change it into a 'JavascriptFunction' object "
+                "or use the option 'eval_functions=True'. "
+                "To silence this warning, use 'eval_functions=False'."
+            )
     if isinstance(obj, list):
-        return "[" + ", ".join(eval_functions_dumps(i) for i in obj) + "]"
+        return "[" + ", ".join(json_dumps(i, eval_functions) for i in obj) + "]"
     if isinstance(obj, dict):
         return (
             "{"
             + ", ".join(
-                f'"{key}": {eval_functions_dumps(value)}' for key, value in obj.items()
+                f'"{key}": {json_dumps(value, eval_functions)}'
+                for key, value in obj.items()
             )
             + "}"
         )
@@ -173,6 +208,15 @@ def replace_value(template, pattern, value):
     return template.replace(pattern, value)
 
 
+class JavascriptFunction(str):
+    """A class that explicitly states that a string is a Javascript function"""
+
+    def __init__(self, value):
+        assert value.lstrip().startswith(
+            "function"
+        ), "A Javascript function is expected to start with 'function'"
+
+
 def _datatables_repr_(df=None, tableId=None, **kwargs):
     """Return the HTML/javascript representation of the table"""
 
@@ -185,11 +229,13 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
     tags = kwargs.pop("tags")
+
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     eval_functions = kwargs.pop("eval_functions", None)
+    pre_dt_code = kwargs.pop("pre_dt_code")
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -198,6 +244,18 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         df = df.to_frame()
 
     df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
+
+    footer = kwargs.pop("footer")
+    column_filters = kwargs.pop("column_filters")
+    if column_filters == "header":
+        pass
+    elif column_filters == "footer":
+        footer = True
+    elif column_filters is not False:
+        raise ValueError(
+            f"column_filters should be either "
+            f"'header', 'footer' or False, not {column_filters}"
+        )
 
     # Do not show the page menu when the table has fewer rows than min length menu
     if "paging" not in kwargs and len(df.index) <= kwargs.get("lengthMenu", [10])[0]:
@@ -219,27 +277,53 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    table_header = _table_header(df, tableId, showIndex, classes, style, tags)
+    table_header = _table_header(
+        df, tableId, showIndex, classes, style, tags, footer, column_filters
+    )
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
         table_header,
     )
     output = replace_value(output, "#table_id", f"#{tableId}")
+    output = replace_value(
+        output,
+        "<style></style>",
+        f"""<style>
+{read_package_file("html/style.css")}
+</style>""",
+    )
+
+    if column_filters:
+        # If the below was false, we would need to concatenate the JS code
+        # which might not be trivial...
+        assert pre_dt_code == ""
+        assert "initComplete" not in kwargs
+
+        pre_dt_code = replace_value(
+            read_package_file("html/column_filters/pre_dt_code.js"),
+            "thead_or_tfoot",
+            "thead" if column_filters == "header" else "tfoot",
+        )
+        kwargs["initComplete"] = JavascriptFunction(
+            replace_value(
+                replace_value(
+                    read_package_file("html/column_filters/initComplete.js"),
+                    "const initComplete = ",
+                    "",
+                ),
+                "header",
+                column_filters,
+            )
+        )
 
     # Export the DT args to JSON
-    if eval_functions:
-        dt_args = eval_functions_dumps(kwargs)
-    else:
-        dt_args = json.dumps(kwargs)
-        if eval_functions is None and _any_function(kwargs):
-            warnings.warn(
-                "One of the arguments passed to datatables starts with 'function'. "
-                "To evaluate this function, use the option 'eval_functions=True'. "
-                "To silence this warning, use 'eval_functions=False'."
-            )
+    dt_args = json_dumps(kwargs, eval_functions)
 
     output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
+    output = replace_value(
+        output, "// [pre-dt-code]", pre_dt_code.replace("#table_id", f"#{tableId}")
+    )
 
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)
@@ -247,21 +331,6 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     output = replace_value(output, "const data = [];", f"const data = {dt_data};")
 
     return output
-
-
-def _any_function(value):
-    """Does a value or nested value starts with 'function'?"""
-    if isinstance(value, str) and value.lstrip().startswith("function"):
-        return True
-    elif isinstance(value, list):
-        for nested_value in value:
-            if _any_function(nested_value):
-                return True
-    elif isinstance(value, dict):
-        for key, nested_value in value.items():
-            if _any_function(nested_value):
-                return True
-    return False
 
 
 def show(df=None, **kwargs):

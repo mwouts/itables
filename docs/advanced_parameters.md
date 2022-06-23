@@ -96,12 +96,62 @@ df
 You can set additional `tags` like a [caption](https://datatables.net/blog/2014-11-07) on the table with the `tags` option:
 
 ```{code-cell}
-show(df, tags='<caption>Countries from the World Bank Database</caption>')
+show(df, tags="<caption>Countries from the World Bank Database</caption>")
 ```
 
 The position of the caption can be set explicitly as in the datatables example above (note that the default position may depend on how you render the notebook):
+
 ```{code-cell}
-show(df, tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>')
+show(
+    df,
+    tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>',
+)
+```
+
+```{code-cell}
+opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
+```
+
+## Table footer
+
+Use `footer = True` if you wish to display a table footer.
+
+```{code-cell}
+show(df, footer=True)
+```
+
+## Column filters
+
+Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters
+(remove the global search box with [`dom='lrtip'`](https://datatables.net/reference/option/dom) if desired).
+
+```{code-cell}
+alpha_numeric_df = pd.DataFrame(
+    [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
+)
+
+show(alpha_numeric_df, column_filters="footer", dom="lrtip")
+```
+
+As always you can set activate column filters by default with e.g.
+
+```{code-cell}
+opt.column_filters = "footer"
+alpha_numeric_df
+```
+
+Column filters also work on dataframes with multiindex columns:
+
+```{code-cell}
+from itables.sample_dfs import get_dict_of_test_dfs
+
+get_dict_of_test_dfs()["multiindex"]
+```
+
+Now we deactivate the column filters for the rest of the notebook
+
+```{code-cell}
+opt.column_filters = False
 ```
 
 ## Float precision
@@ -129,22 +179,27 @@ You can use Javascript callbacks to set the cell or row style depending on the c
 
 The example below, in which we color in red the cells with negative numbers, is directly inspired by the corresponding datatables.net [example](https://datatables.net/reference/option/columns.createdCell).
 
+Note how the Javascript callback is declared as `JavascriptFunction` object below.
+
 ```{code-cell}
+from itables import JavascriptFunction
+
 show(
     pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": """
+            "createdCell": JavascriptFunction(
+                """
 function (td, cellData, rowData, row, col) {
     if (cellData < 0) {
         $(td).css('color', 'red')
     }
 }
-""",
+"""
+            ),
         }
     ],
-    eval_functions=True,
 )
 ```
 
@@ -214,7 +269,7 @@ show(
 The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
 
 ```{code-cell}
-show(df, search={"regex": True, "caseInsensitive": True, "search":"s.ain"})
+show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
 
 ## Select rows

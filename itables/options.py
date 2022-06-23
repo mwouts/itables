@@ -19,3 +19,12 @@ maxBytes = 2**16
 """Maximum number of rows or columns"""
 # maxRows = 10000
 # maxColumns = 1000
+
+"""Pre dt code"""
+pre_dt_code = ""
+
+"""Optional table footer"""
+footer = False
+
+"""Column filters"""
+column_filters = False

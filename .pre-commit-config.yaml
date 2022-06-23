@@ -1,12 +1,6 @@
 # Install pre-commit hooks via
 # pre-commit install
 
-exclude: >
-    (?x)^(
-      \.vscode/settings\.json|
-      demo/.*|
-      index.html
-    )$
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -38,3 +32,12 @@ repos:
     hooks:
     - id: pyupgrade
       args: ["--py36-plus"]
+
+  - repo: https://github.com/mwouts/jupytext
+    rev: v1.13.8
+    hooks:
+    - id: jupytext
+      types: ["markdown"]
+      args: ["--pipe", "black"]
+      additional_dependencies:
+        - black==22.3.0 # Matches hook
