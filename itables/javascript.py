@@ -228,6 +228,13 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         table_header,
     )
     output = replace_value(output, "#table_id", f"#{tableId}")
+    output = replace_value(
+        output,
+        "<style></style>",
+        f"""<style>
+{read_package_file("html/style.css")}
+</style>""",
+    )
 
     if column_filters:
         # If the below was false, we'd need to concatenate the JS code
