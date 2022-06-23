@@ -192,7 +192,6 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
-    post_dt_code = kwargs.pop("post_dt_code")
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -258,9 +257,6 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
     output = replace_value(
         output, "// [pre-dt-code]", pre_dt_code.replace("#table_id", f"#{tableId}")
-    )
-    output = replace_value(
-        output, "// [post-dt-code]", post_dt_code.replace("#table_id", f"#{tableId}")
     )
 
     # Export the table data to JSON and include this in the HTML
