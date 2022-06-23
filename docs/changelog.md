@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.1.1 (2022-06-23)
+------------------
+
+**Fixed**
+- Added missing `column_filters` package data.
+
+
 1.1.0 (2022-06-23)
 ------------------
 

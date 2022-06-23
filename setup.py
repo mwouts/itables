@@ -42,9 +42,10 @@ setup(
     packages=find_packages(exclude=["tests"]),
     package_data={
         "itables": [
-            "external/*",
             "html/*",
+            "html/column_filters/*",
             "samples/*.csv",
+            "external/*",
         ]
     },
     tests_require=["pytest"],
