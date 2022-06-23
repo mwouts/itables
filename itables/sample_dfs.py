@@ -26,6 +26,10 @@ def get_indicators():
     return pd.read_csv(find_package_file("samples/indicators.csv"))
 
 
+def get_alpha_numeric_df():
+    return pd.DataFrame([["one", 1.5], ["two", 2.3]], columns=["string", "numeric"])
+
+
 def get_dict_of_test_dfs(N=100, M=100):
     countries = get_countries()
     df_complex_index = countries.set_index(["region", "name"])
@@ -54,6 +58,7 @@ def get_dict_of_test_dfs(N=100, M=100):
                 "math": [math.pi, math.e],
             }
         ),
+        "alpha_numeric": get_alpha_numeric_df(),
         "str": pd.DataFrame(
             {
                 "text_column": ["some", "text"],

@@ -146,10 +146,9 @@ Use `column_filters = "header"` or `"footer"` if you wish to display individual 
 (remove the global search box with [`dom='lrtip'`](https://datatables.net/reference/option/dom) if desired).
 
 ```{code-cell}
-alpha_numeric_df = pd.DataFrame(
-    [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
-)
+from itables.sample_dfs import get_alpha_numeric_df
 
+alpha_numeric_df = get_alpha_numeric_df()
 show(alpha_numeric_df, column_filters="footer", dom="lrtip")
 ```
 
