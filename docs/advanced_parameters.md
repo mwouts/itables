@@ -292,6 +292,15 @@ The [search option](https://datatables.net/reference/option/search) let you cont
 show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
 
+## Search highlight with `mark.js`
+
+Use the `mark` option in either the `show` function or in `itables.options` to highlight
+the current search:
+
+```{code-cell}
+show(df, mark=True)
+```
+
 ## Select rows
 
 Not currently implemented. May be made available at a later stage using the [select](https://datatables.net/extensions/select/) extension for datatables.
