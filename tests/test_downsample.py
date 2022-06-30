@@ -47,13 +47,21 @@ def test_max_one_byte(df, max_bytes=1):
 
 @pytest.mark.parametrize("df", large_tables(N=10000, M=100))
 @pytest.mark.parametrize("max_bytes", [1e3, 1e4, 1e5])
-def test_df_with_many_rows_is_downsampled_on_rows(df, max_bytes):
+def test_df_with_many_rows_is_downsampled_preferentially_on_rows(df, max_bytes):
     dn = downsample(df, max_bytes=max_bytes)
-    assert len(dn.index) < len(df.index) and len(dn.columns) == len(df.columns)
+    if max_bytes == 1e5:
+        assert len(dn.index) < len(df.index) and len(dn.columns) == len(df.columns)
+    else:
+        # aspect ratio is close to 1
+        assert 0.5 < len(dn.index) / len(dn.columns) < 2
 
 
 @pytest.mark.parametrize("df", large_tables(N=100, M=10000))
 @pytest.mark.parametrize("max_bytes", [1e3, 1e4, 1e5])
-def test_df_with_many_columns_is_downsampled_on_columns(df, max_bytes):
+def test_df_with_many_columns_is_downsampled_preferentially_on_columns(df, max_bytes):
     dn = downsample(df, max_bytes=max_bytes)
-    assert len(dn.index) == len(df.index) and len(dn.columns) < len(df.columns)
+    if max_bytes == 1e5:
+        assert len(dn.index) == len(df.index) and len(dn.columns) < len(df.columns)
+    else:
+        # aspect ratio is close to 1
+        assert 0.5 < len(dn.index) / len(dn.columns) < 2

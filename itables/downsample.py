@@ -36,7 +36,7 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     return df
 
 
-def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
+def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=None):
     """Implementation of downsample - may be called recursively"""
     if len(df.index) > max_rows > 0:
         second_half = max_rows // 2
@@ -57,9 +57,11 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     if df.values.nbytes > max_bytes > 0:
         # current and target aspect ratio
         aspect_ratio = len(df.index) / len(df.columns)
-        target_aspect_ratio = (
-            max_rows / max_columns if max_rows > 0 and max_columns > 0 else 1.0
-        )
+        if target_aspect_ratio is None:
+            if max_rows > 0 and max_columns > 0:
+                target_aspect_ratio = max_rows / max_columns
+            else:
+                target_aspect_ratio = 1.0
 
         # Optimization problem:
         # row_shrink_factor * column_shrink_factor = max_bytes / df.values.nbytes
@@ -69,13 +71,19 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
         # we need to decrease the area by this factor
         shrink_factor = max_bytes / df.values.nbytes
 
-        # too many rows?
-        row_shrink_factor = max(target_aspect_ratio / aspect_ratio, shrink_factor)
-        column_shrink_factor = max(aspect_ratio / target_aspect_ratio, shrink_factor)
+        # row and column natural shrink factors
+        row_shrink_factor = min(
+            1, max(target_aspect_ratio / aspect_ratio, shrink_factor)
+        )
+        column_shrink_factor = min(
+            1, max(aspect_ratio / target_aspect_ratio, shrink_factor)
+        )
 
+        # and in case the above is not enough, we shrink in both directions
         common_shrink_factor = math.sqrt(
             shrink_factor / (row_shrink_factor * column_shrink_factor)
         )
+
         row_shrink_factor *= common_shrink_factor
         column_shrink_factor *= common_shrink_factor
 
@@ -83,7 +91,9 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
         max_columns = int(len(df.columns) * column_shrink_factor)
 
         if max_rows > 0 and max_columns > 0:
-            return _downsample(df, max_rows, max_columns, max_bytes)
+            return _downsample(
+                df, max_rows, max_columns, max_bytes, target_aspect_ratio
+            )
 
         # max_bytes is smaller than the average size of one cell
         df = df.iloc[:1, :1]
