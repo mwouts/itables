@@ -1,4 +1,5 @@
 import logging
+import math
 
 import pandas as pd
 
@@ -54,22 +55,37 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
             df = df.iloc[:, :first_half]
 
     if df.values.nbytes > max_bytes > 0:
-        max_rows = len(df.index)
-        max_columns = len(df.columns)
+        # current and target aspect ratio
+        aspect_ratio = len(df.index) / len(df.columns)
+        target_aspect_ratio = (
+            max_rows / max_columns if max_rows > 0 and max_columns > 0 else 1.0
+        )
 
-        # we want to decrease max_rows * max_columns by df.values.nbytes / max_bytes
-        max_product = max_rows * max_columns / (float(df.values.nbytes) / max_bytes)
+        # Optimization problem:
+        # row_shrink_factor * column_shrink_factor = max_bytes / df.values.nbytes
+        # row_shrink_factor / column_shrink_factor * aspect_ratio = target_aspect_ratio (equal or closer to)
+        # with 0 < row_shrink_factor, column_shrink_factor <= 1
 
-        while max_product >= 1:
-            max_rows = max(max_rows // 2, 1)
-            if max_rows * max_columns <= max_product:
-                return _downsample(df, max_rows, max_columns, max_bytes)
+        # we need to decrease the area by this factor
+        shrink_factor = max_bytes / df.values.nbytes
 
-            max_columns = max(max_columns // 2, 1)
-            if max_rows * max_columns <= max_product:
-                return _downsample(df, max_rows, max_columns, max_bytes)
+        # too many rows?
+        row_shrink_factor = max(target_aspect_ratio / aspect_ratio, shrink_factor)
+        column_shrink_factor = max(aspect_ratio / target_aspect_ratio, shrink_factor)
 
-        # max_product < 1.0:
+        common_shrink_factor = math.sqrt(
+            shrink_factor / (row_shrink_factor * column_shrink_factor)
+        )
+        row_shrink_factor *= common_shrink_factor
+        column_shrink_factor *= common_shrink_factor
+
+        max_rows = int(len(df.index) * row_shrink_factor)
+        max_columns = int(len(df.columns) * column_shrink_factor)
+
+        if max_rows > 0 and max_columns > 0:
+            return _downsample(df, max_rows, max_columns, max_bytes)
+
+        # max_bytes is smaller than the average size of one cell
         df = df.iloc[:1, :1]
         df.iloc[0, 0] = "..."
         return df

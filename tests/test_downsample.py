@@ -6,11 +6,11 @@ import pytest
 from itables.downsample import downsample
 
 
-def large_tables(N=1000):
+def large_tables(N=1000, M=1000):
     return [
-        pd.DataFrame(5, columns=range(N), index=range(N)),
-        pd.DataFrame(3.14159, columns=range(N), index=range(N)),
-        pd.DataFrame("abcdefg", columns=range(N), index=range(N)),
+        pd.DataFrame(5, columns=range(M), index=range(N)),
+        pd.DataFrame(3.14159, columns=range(M), index=range(N)),
+        pd.DataFrame("abcdefg", columns=range(M), index=range(N)),
     ]
 
 
@@ -43,3 +43,17 @@ def test_max_one_byte(df, max_bytes=1):
     dn = downsample(df, max_bytes=max_bytes)
     assert len(dn.columns) == len(dn.index) == 1
     assert dn.iloc[0, 0] == "..."
+
+
+@pytest.mark.parametrize("df", large_tables(N=10000, M=100))
+@pytest.mark.parametrize("max_bytes", [1e3, 1e4, 1e5])
+def test_df_with_many_rows_is_downsampled_on_rows(df, max_bytes):
+    dn = downsample(df, max_bytes=max_bytes)
+    assert len(dn.index) < len(df.index) and len(dn.columns) == len(df.columns)
+
+
+@pytest.mark.parametrize("df", large_tables(N=100, M=10000))
+@pytest.mark.parametrize("max_bytes", [1e3, 1e4, 1e5])
+def test_df_with_many_columns_is_downsampled_on_columns(df, max_bytes):
+    dn = downsample(df, max_bytes=max_bytes)
+    assert len(dn.index) == len(df.index) and len(dn.columns) < len(df.columns)
