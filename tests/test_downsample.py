@@ -1,7 +1,5 @@
 """Test that the code in all the test notebooks work, including README.md"""
 
-import itertools
-
 import pandas as pd
 import pytest
 
@@ -16,23 +14,24 @@ def large_tables(N=1000):
     ]
 
 
-@pytest.mark.parametrize("df,max_rows", itertools.product(large_tables(), [99, 100]))
+@pytest.mark.parametrize("df", large_tables())
+@pytest.mark.parametrize("max_rows", [99, 100])
 def test_max_rows(df, max_rows):
     dn = downsample(df, max_rows=max_rows)
     assert len(dn.index) == max_rows
     pd.testing.assert_index_equal(dn.columns, df.columns)
 
 
-@pytest.mark.parametrize("df,max_columns", itertools.product(large_tables(), [99, 100]))
+@pytest.mark.parametrize("df", large_tables())
+@pytest.mark.parametrize("max_columns", [99, 100])
 def test_max_columns(df, max_columns):
     dn = downsample(df, max_columns=max_columns)
     pd.testing.assert_index_equal(dn.index, df.index)
     assert len(dn.columns) == max_columns
 
 
-@pytest.mark.parametrize(
-    "df,max_bytes", itertools.product(large_tables(), [10, 1e2, 1e3, 1e4, 1e5])
-)
+@pytest.mark.parametrize("df", large_tables())
+@pytest.mark.parametrize("max_bytes", [10, 1e2, 1e3, 1e4, 1e5])
 def test_max_bytes(df, max_bytes):
     dn = downsample(df, max_bytes=max_bytes)
     assert dn.values.nbytes <= max_bytes
