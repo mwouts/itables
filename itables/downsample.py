@@ -1,4 +1,5 @@
 import logging
+import math
 
 import pandas as pd
 
@@ -35,7 +36,35 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     return df
 
 
-def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
+def shrink_towards_target_aspect_ratio(
+    rows, columns, shrink_factor, target_aspect_ratio
+):
+    # current and target aspect ratio
+    aspect_ratio = rows / columns
+
+    # Optimization problem:
+    # row_shrink_factor * column_shrink_factor = shrink_factor
+    # row_shrink_factor / column_shrink_factor * aspect_ratio = target_aspect_ratio (equal or closer to)
+    # with 0 < row_shrink_factor, column_shrink_factor <= 1
+
+    # row and column natural shrink factors
+    row_shrink_factor = min(1, max(target_aspect_ratio / aspect_ratio, shrink_factor))
+    column_shrink_factor = min(
+        1, max(aspect_ratio / target_aspect_ratio, shrink_factor)
+    )
+
+    # and in case the above is not enough, we shrink in both directions
+    common_shrink_factor = math.sqrt(
+        shrink_factor / (row_shrink_factor * column_shrink_factor)
+    )
+
+    row_shrink_factor *= common_shrink_factor
+    column_shrink_factor *= common_shrink_factor
+
+    return int(rows * row_shrink_factor), int(columns * column_shrink_factor)
+
+
+def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=None):
     """Implementation of downsample - may be called recursively"""
     if len(df.index) > max_rows > 0:
         second_half = max_rows // 2
@@ -54,22 +83,25 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0):
             df = df.iloc[:, :first_half]
 
     if df.values.nbytes > max_bytes > 0:
-        max_rows = len(df.index)
-        max_columns = len(df.columns)
+        if target_aspect_ratio is None:
+            if max_rows > 0 and max_columns > 0:
+                target_aspect_ratio = max_rows / max_columns
+            else:
+                target_aspect_ratio = 1.0
 
-        # we want to decrease max_rows * max_columns by df.values.nbytes / max_bytes
-        max_product = max_rows * max_columns / (float(df.values.nbytes) / max_bytes)
+        max_rows, max_columns = shrink_towards_target_aspect_ratio(
+            len(df.index),
+            len(df.columns),
+            shrink_factor=max_bytes / df.values.nbytes,
+            target_aspect_ratio=target_aspect_ratio,
+        )
 
-        while max_product >= 1:
-            max_rows = max(max_rows // 2, 1)
-            if max_rows * max_columns <= max_product:
-                return _downsample(df, max_rows, max_columns, max_bytes)
+        if max_rows > 0 and max_columns > 0:
+            return _downsample(
+                df, max_rows, max_columns, max_bytes, target_aspect_ratio
+            )
 
-            max_columns = max(max_columns // 2, 1)
-            if max_rows * max_columns <= max_product:
-                return _downsample(df, max_rows, max_columns, max_bytes)
-
-        # max_product < 1.0:
+        # max_bytes is smaller than the average size of one cell
         df = df.iloc[:1, :1]
         df.iloc[0, 0] = "..."
         return df

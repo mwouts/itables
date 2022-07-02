@@ -116,7 +116,7 @@ def _formatted_values(df):
         formatted_df[col] = np.array(fmt.format_array(x.values, None))
         if x.dtype.kind == "f":
             try:
-                formatted_df[col] = formatted_df[col].astype(np.float)
+                formatted_df[col] = formatted_df[col].astype(float)
             except ValueError:
                 pass
 

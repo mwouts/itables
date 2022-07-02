@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.1.2 (2022-06-30)
+------------------
+
+**Changed**
+- Tables with many rows are preferentially downsampled on rows, while tables with many columns are preferentially downsampled on columns ([#84](https://github.com/mwouts/jupytext/issues/84))
+
+
 1.1.1 (2022-06-23)
 ------------------
 
