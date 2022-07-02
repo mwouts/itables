@@ -3,7 +3,7 @@
 import pandas as pd
 import pytest
 
-from itables.downsample import downsample
+from itables.downsample import downsample, shrink_towards_target_aspect_ratio
 
 
 def large_tables(N=1000, M=1000):
@@ -43,6 +43,24 @@ def test_max_one_byte(df, max_bytes=1):
     dn = downsample(df, max_bytes=max_bytes)
     assert len(dn.columns) == len(dn.index) == 1
     assert dn.iloc[0, 0] == "..."
+
+
+def test_shrink_towards_target_aspect_ratio():
+    # Shrink on rows only
+    assert shrink_towards_target_aspect_ratio(100, 10, 0.1, 1.0) == (10, 10)
+    assert shrink_towards_target_aspect_ratio(200, 10, 0.1, 1.0) == (20, 10)
+
+    # Shrink on columns only
+    assert shrink_towards_target_aspect_ratio(10, 100, 0.1, 1.0) == (10, 10)
+    assert shrink_towards_target_aspect_ratio(10, 200, 0.1, 1.0) == (10, 20)
+
+    # Shrink on rows and columns and achieve target aspect ratio
+    assert shrink_towards_target_aspect_ratio(100, 10, 0.1 / 4, 1.0) == (5, 5)
+    assert shrink_towards_target_aspect_ratio(200, 10, 0.1 / 8, 1.0) == (5, 5)
+
+    # Aspect ratio not one
+    assert shrink_towards_target_aspect_ratio(100, 10, 0.1 / 2, 2.0) == (10, 5)
+    assert shrink_towards_target_aspect_ratio(200, 10, 0.1 / 4, 2.0) == (10, 5)
 
 
 @pytest.mark.parametrize("df", large_tables(N=10000, M=100))
