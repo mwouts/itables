@@ -105,18 +105,18 @@ def _formatted_values(df):
     """Return the table content as a list of lists for DataTables"""
     formatted_df = df.copy()
     for col in range(len(formatted_df.columns)):
-        x = formatted_df.iloc[:,col]
+        x = formatted_df.iloc[:, col]
         if x.dtype.kind in ["b", "i", "s"]:
             continue
 
         if x.dtype.kind == "O":
-            formatted_df.iloc[:,col] = formatted_df.iloc[:,col].astype(str)
+            formatted_df.iloc[:, col] = formatted_df.iloc[:, col].astype(str)
             continue
 
-        formatted_df.iloc[:,col] = np.array(fmt.format_array(x.values, None))
+        formatted_df.iloc[:, col] = np.array(fmt.format_array(x.values, None))
         if x.dtype.kind == "f":
             try:
-                formatted_df.iloc[:,col] = formatted_df.iloc[:,col].astype(float)
+                formatted_df.iloc[:, col] = formatted_df.iloc[:, col].astype(float)
             except ValueError:
                 pass
 
