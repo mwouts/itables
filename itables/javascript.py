@@ -105,7 +105,7 @@ def _formatted_values(df):
     """Return the table content as a list of lists for DataTables"""
     formatted_df = df.copy()
     # We iterate over columns using an index rather than the column name
-    # to avoid an issue in case of duplicate column names #89
+    # to avoid an issue in case of duplicated column names #89
     for j, col in enumerate(formatted_df):
         x = formatted_df.iloc[:, j]
         if x.dtype.kind in ["b", "i", "s"]:

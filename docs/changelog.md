@@ -5,7 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
-- Tables with duplicate column names are now supported, thanks to Antonio Commisso's fix ([#89](https://github.com/mwouts/itables/issues/89))
+- Tables with duplicated column names are now supported, thanks to Antonio Commisso's fix ([#89](https://github.com/mwouts/itables/issues/89))
 
 
 1.1.2 (2022-06-30)
