@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 from itables import show
@@ -39,3 +40,9 @@ def test_show_test_dfs(df_name, df):
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_show_test_series(series_name, series):
     show(series)
+
+
+def test_show_df_with_duplicate_column_names():
+    df = pd.DataFrame({"a": [0], "b": [0.0], "c": ["str"]})
+    df.columns = ["duplicated_name"] * 3
+    show(df)
