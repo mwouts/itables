@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.1.3 (2022-08-11)
+------------------
+
+**Fixed**
+- Tables with duplicate column names are now supported, thanks to Antonio Commisso's fix ([#89](https://github.com/mwouts/jupytext/issues/89))
+
+
 1.1.2 (2022-06-30)
 ------------------
 
