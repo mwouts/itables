@@ -1,4 +1,5 @@
 import runpy
+import sys
 from pathlib import Path
 
 import pytest
@@ -19,5 +20,8 @@ def test_get_app_file_list():
 
 
 @pytest.mark.parametrize("app_file", get_app_file_list(), ids=lambda path: path.stem)
+@pytest.mark.skipif(
+    sys.version_info < (3, 7), reason="Shiny does not seem to support Python 3.6"
+)
 def test_app_file(app_file):
     runpy.run_path(str(app_file))
