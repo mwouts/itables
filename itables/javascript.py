@@ -220,8 +220,11 @@ class JavascriptFunction(str):
 
 
 def _datatables_repr_(df=None, tableId=None, **kwargs):
-    """Return the HTML/javascript representation of the table"""
+    return to_html_datatable(df, tableId, connected=_CONNECTED, **kwargs)
 
+
+def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
+    """Return the HTML representation of the given dataframe as an interactive datatable"""
     # Default options
     for option in dir(opt):
         if option not in kwargs and not option.startswith("__"):
@@ -264,7 +267,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
         kwargs["paging"] = False
 
     # Load the HTML template
-    if _CONNECTED:
+    if connected:
         output = read_package_file("html/datatables_template_connected.html")
     else:
         output = read_package_file("html/datatables_template.html")
@@ -337,5 +340,5 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
 
 def show(df=None, **kwargs):
     """Show a dataframe"""
-    html = _datatables_repr_(df, **kwargs)
+    html = to_html_datatable(df, connected=_CONNECTED, **kwargs)
     display(HTML(html))

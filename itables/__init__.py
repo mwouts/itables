@@ -1,4 +1,10 @@
-from .javascript import JavascriptFunction, init_notebook_mode, show
+from .javascript import JavascriptFunction, init_notebook_mode, show, to_html_datatable
 from .version import __version__
 
-__all__ = ["__version__", "show", "init_notebook_mode", "JavascriptFunction"]
+__all__ = [
+    "__version__",
+    "to_html_datatable",
+    "show",
+    "init_notebook_mode",
+    "JavascriptFunction",
+]
