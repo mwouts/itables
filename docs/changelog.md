@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+1.2.0 (2022-08-15)
+------------------
+
+**Added**
+- New `to_html_datatable` function to export a DataFrame to an HTML div (#88)
+- We have added examples on how to use `itables` in [Shiny](https://shiny.rstudio.com/py/) for Python (#86)
+
+
 1.1.3 (2022-08-11)
 ------------------
 
