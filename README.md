@@ -19,7 +19,11 @@ from itables import init_notebook_mode
 
 init_notebook_mode(all_interactive=True)
 ```
-or use `itables.show` to show just one Series or DataFrame as an interactive table.
+and then render any Pandas DataFrame as an interactive table that you can sort, search and explore:
+![df](docs/df_example.png)
+
+If you prefer to render only selected DataFrames as interactive tables, use `itables.show` to show just one Series or DataFrame as an interactive table:
+![show](docs/show_df.png)
 
 Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
 are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
