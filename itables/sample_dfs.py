@@ -43,8 +43,26 @@ def get_dict_of_test_dfs(N=100, M=100):
 
     return {
         "empty": pd.DataFrame(),
+        "bool": pd.DataFrame(
+            [[True, True, False, False], [True, False, True, False]],
+            columns=list("abcd"),
+        ),
+        "nullable_boolean": pd.DataFrame(
+            [
+                [True, True, False, None],
+                [True, False, None, False],
+                [None, False, True, False],
+            ],
+            columns=list("abcd"),
+            dtype="boolean",
+        ),
         "int": pd.DataFrame(
             [[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")
+        ),
+        "nullable_int": pd.DataFrame(
+            [[-1, 2, -3], [4, -5, 6], [None, 7, None]],
+            columns=list("abc"),
+            dtype="Int64",
         ),
         "float": pd.DataFrame(
             {

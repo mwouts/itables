@@ -122,7 +122,10 @@ def _formatted_values(df):
             except ValueError:
                 pass
 
-    return formatted_df.values.tolist()
+    rows = formatted_df.values.tolist()
+
+    # Replace pd.NA with None
+    return [[cell if cell is not pd.NA else None for cell in row] for row in rows]
 
 
 def _table_header(

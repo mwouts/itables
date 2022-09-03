@@ -30,10 +30,28 @@ init_notebook_mode(all_interactive=True)
 show(dict_of_test_dfs["empty"])
 ```
 
+## bool
+
+```{code-cell}
+show(dict_of_test_dfs["bool"])
+```
+
+## Nullable boolean
+
+```{code-cell}
+show(dict_of_test_dfs["nullable_boolean"])
+```
+
 ## int
 
 ```{code-cell}
 show(dict_of_test_dfs["int"])
+```
+
+## Nullable integer
+
+```{code-cell}
+show(dict_of_test_dfs["nullable_int"])
 ```
 
 ## float
