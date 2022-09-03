@@ -250,6 +250,20 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
 
     df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
 
+    # Unless an 'order' parameter is given, we preserve the current order of rows #99
+    order = kwargs.pop("order", None)
+
+    if order is None:
+        order = []
+
+        if showIndex:
+            if df.index.is_monotonic_increasing:
+                order = [[i, "asc"] for i, _ in enumerate(df.index.names)]
+            elif df.index.is_monotonic_decreasing:
+                order = [[i, "desc"] for i, _ in enumerate(df.index.names)]
+
+    kwargs["order"] = order
+
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
     if column_filters == "header":

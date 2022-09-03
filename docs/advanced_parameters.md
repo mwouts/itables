@@ -55,19 +55,6 @@ show(pd.DataFrame({"a": [2, 1]}), dom="tpr")
 
 Note: you can change the default value of the dom option by setting `opt.dom` as in the examples below.
 
-## Row sorting
-
-Select the order in which the row are sorted with the [datatables' `order`](https://datatables.net/reference/option/order) argument. By default, the rows are sorted according to the first column (`order = [[0, 'asc']]`).
-
-If you want to deactivate the sorting, set `order = []`, either in the `show` method, or as a global option:
-
-```{code-cell}
-import itables.options as opt
-
-opt.order = []  # no sorting
-pd.DataFrame({"a": [2, 1]})
-```
-
 ## Pagination
 
 ### How many rows per page
@@ -191,6 +178,29 @@ You may also choose to convert floating numbers to strings:
 ```{code-cell}
 with pd.option_context("display.float_format", "${:,.2f}".format):
     show(pd.Series([i * math.pi for i in range(1, 6)]))
+```
+
+## Row order
+
+Since `itables>=1.3.0`, the interactive datatable shows the rows in the same order as the original dataframe (rows are sorted on the index columns when the dataframe index is both shown and monotonic, and not sorted otherwise)
+
+```{code-cell}
+from itables.sample_dfs import get_dict_of_test_dfs
+
+for name, test_df in get_dict_of_test_dfs().items():
+    if "sorted" in name:
+        show(
+            test_df,
+            tags=f"<caption>{name}</caption>".replace("_", " ").title(),
+            dom="tpr",
+        )
+```
+
+You can also set an explicit [`order`](https://datatables.net/reference/option/order) argument, and e.g. deactivate the sorting with `order = []`:
+
+```{code-cell}
+sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
+show(sorted_df, order=[], dom="tpr")
 ```
 
 ## Advanced cell formatting with JS callbacks
