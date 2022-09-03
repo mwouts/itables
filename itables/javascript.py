@@ -122,7 +122,10 @@ def _formatted_values(df):
             except ValueError:
                 pass
 
-    return formatted_df.values.tolist()
+    rows = formatted_df.values.tolist()
+
+    # Replace pd.NA with None
+    return [[cell if cell is not pd.NA else None for cell in row] for row in rows]
 
 
 def _table_header(
@@ -250,20 +253,6 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
 
     df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
 
-    # Unless an 'order' parameter is given, we preserve the current order of rows #99
-    order = kwargs.pop("order", None)
-
-    if order is None:
-        order = []
-
-        if showIndex:
-            if df.index.is_monotonic_increasing:
-                order = [[i, "asc"] for i, _ in enumerate(df.index.names)]
-            elif df.index.is_monotonic_decreasing:
-                order = [[i, "desc"] for i, _ in enumerate(df.index.names)]
-
-    kwargs["order"] = order
-
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
     if column_filters == "header":
@@ -295,6 +284,20 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
 
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
+
+    # Unless an 'order' parameter is given, we preserve the current order of rows #99
+    order = kwargs.pop("order", None)
+
+    if order is None:
+        order = []
+
+        if showIndex:
+            if df.index.is_monotonic_increasing:
+                order = [[i, "asc"] for i, _ in enumerate(df.index.names)]
+            elif df.index.is_monotonic_decreasing:
+                order = [[i, "desc"] for i, _ in enumerate(df.index.names)]
+
+    kwargs["order"] = order
 
     table_header = _table_header(
         df, tableId, showIndex, classes, style, tags, footer, column_filters

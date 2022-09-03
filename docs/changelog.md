@@ -5,15 +5,18 @@ ITables ChangeLog
 ------------------
 
 **Changed**
-- The order of rows is preserved by default (unless you explicitly pass an `order` parameter).
+- The order of rows is preserved by default (unless you explicitly pass an `order` parameter) ([#99](https://github.com/mwouts/itables/issues/99)).
+
+**Fixed**
+- Nullable types (bool, int) are now supported ([#98](https://github.com/mwouts/itables/issues/98))
 
 
 1.2.0 (2022-08-15)
 ------------------
 
 **Added**
-- New `to_html_datatable` function to export a DataFrame to an HTML div (#88)
-- We have added examples on how to use `itables` in [Shiny](https://shiny.rstudio.com/py/) for Python (#86)
+- New `to_html_datatable` function to export a DataFrame to an HTML div ([#88](https://github.com/mwouts/itables/issues/88))
+- We have added examples on how to use `itables` in [Shiny](https://shiny.rstudio.com/py/) for Python ([#86](https://github.com/mwouts/itables/issues/86))
 
 
 1.1.3 (2022-08-11)
