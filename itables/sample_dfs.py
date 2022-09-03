@@ -103,6 +103,18 @@ def get_dict_of_test_dfs(N=100, M=100):
                 "nospacein" + "very" * 100 + "longname": [3] * 5,
             }
         ),
+        "sorted_index": pd.DataFrame(
+            {"i": [0, 1, 2], "x": [0.0, 1.0, 2.0], "y": [0.0, 0.1, 0.2]}
+        ).set_index(["i"]),
+        "reverse_sorted_index": pd.DataFrame(
+            {"i": [2, 1, 0], "x": [0.0, 1.0, 2.0], "y": [0.0, 0.1, 0.2]}
+        ).set_index(["i"]),
+        "sorted_multiindex": pd.DataFrame(
+            {"i": [0, 1, 2], "j": [3, 4, 5], "x": [0.0, 1.0, 2.0], "y": [0.0, 0.1, 0.2]}
+        ).set_index(["i", "j"]),
+        "unsorted_index": pd.DataFrame(
+            {"i": [0, 2, 1], "x": [0.0, 1.0, 2.0], "y": [0.0, 0.1, 0.2]}
+        ).set_index(["i"]),
     }
 
 

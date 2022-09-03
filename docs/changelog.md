@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.0 (2022-09-04)
+------------------
+
+**Changed**
+- The order of rows is preserved by default (unless you explicitly pass an `order` parameter).
+
+
 1.2.0 (2022-08-15)
 ------------------
 
