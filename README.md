@@ -1,6 +1,7 @@
 # Interactive Tables
 
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
@@ -8,9 +9,14 @@
 
 Pandas DataFrames and Series as interactive [datatables](https://datatables.net)!
 
-Install the package with
-```
+Install the `itables` package with either
+```shell
 pip install itables
+```
+
+or
+```shell
+conda install itables -c conda-forge
 ```
 
 Activate the interactive mode for all series and dataframes with
