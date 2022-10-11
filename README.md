@@ -42,7 +42,7 @@ execute `init_notebook_mode`.
 
 Read more about `itables` and advanced use cases in the [documentation](https://mwouts.github.io/itables/).
 
-In particular, the `show` method let you pass custom parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
+In particular, the `show` method let you pass custom parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](docs/advanced_parameters.md).
 
 ## Supported environments
 
