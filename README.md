@@ -9,6 +9,13 @@
 
 Pandas DataFrames and Series as interactive [datatables](https://datatables.net)!
 
+## Documentation
+
+Browse the [documentation](https://mwouts.github.io/itables/) to see
+examples of Pandas datatables rendered as interactive datatables.
+
+## Quick start
+
 Install the `itables` package with either
 ```shell
 pip install itables
@@ -37,12 +44,6 @@ Thanks to this the interactive tables will work even without a connection to the
 
 If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
 execute `init_notebook_mode`.
-
-## Documentation
-
-Read more about `itables` and advanced use cases in the [documentation](https://mwouts.github.io/itables/).
-
-In particular, the `show` method let you pass custom parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
 
 ## Supported environments
 
