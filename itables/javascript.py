@@ -236,6 +236,7 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
+    css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
     showIndex = kwargs.pop("showIndex")
@@ -311,9 +312,7 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     output = replace_value(
         output,
         "<style></style>",
-        f"""<style>
-{read_package_file("html/style.css")}
-</style>""",
+        f"""<style>{css}</style>""",
     )
 
     if column_filters:
