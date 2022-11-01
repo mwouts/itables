@@ -84,6 +84,19 @@ If you prefer to replace the pagination with a [vertical scroll](https://datatab
 show(df, scrollY="200px", scrollCollapse=True, paging=False)
 ```
 
+## Custom CSS
+
+You can render one table with a custom CSS, or change `opt.css` to affect all tables. In the example below we
+increase the font size for both the header and the rows:
+
+```{code-cell}
+show(
+    df,
+    css="""table th { text-overflow: ellipsis; overflow: hidden; font-size: 3em; }
+table td { text-overflow: ellipsis; overflow: hidden; font-size: 2em; }""",
+)
+```
+
 ## Table and cell style
 
 Select how your table should look like with the `classes` argument of the `show` function, or by changing `itables.options.classes`. For the list of possible values, see [datatables' default style](https://datatables.net/manual/styling/classes) and [the style examples](https://datatables.net/examples/styling/).
