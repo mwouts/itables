@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.1 (2022-11-01)
+------------------
+
+**Added**
+- The `show` method has a new `css` argument (defaults to `itables.options.css`) ([#104](https://github.com/mwouts/itables/issues/104)).
+
+
 1.3.0 (2022-09-04)
 ------------------
 

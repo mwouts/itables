@@ -1,4 +1,5 @@
 """Global options for the Interactive Tables"""
+from .utils import read_package_file
 
 """Show the index? Possible values: True, False and 'auto'. In mode 'auto', the index is not shown
 if it has no name and its content is range(N)"""
@@ -28,3 +29,6 @@ footer = False
 
 """Column filters"""
 column_filters = False
+
+"""Table CSS"""
+css = read_package_file("html/itables.css")
