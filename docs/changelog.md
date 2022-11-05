@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.2 (2022-11-05)
+------------------
+
+**Fixed**
+- We have modified our code to avoid triggering FutureWarnings when using `pandas>=1.5` ([#107](https://github.com/mwouts/itables/issues/107)).
+
+
 1.3.1 (2022-11-05)
 ------------------
 
