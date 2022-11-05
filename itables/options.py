@@ -1,4 +1,5 @@
 """Global options for the Interactive Tables"""
+from .utils import read_package_file
 
 """Show the index? Possible values: True, False and 'auto'. In mode 'auto', the index is not shown
 if it has no name and its content is range(N)"""
@@ -30,26 +31,4 @@ footer = False
 column_filters = False
 
 """Table CSS"""
-css = """
-table th {
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-table td {
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-thead input {
-    width: 100%;
-    padding: 3px;
-    box-sizing: border-box;
-}
-
-tfoot input {
-    width: 100%;
-    padding: 3px;
-    box-sizing: border-box;
-}
-"""
+css = read_package_file("html/itables.css")

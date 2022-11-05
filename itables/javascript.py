@@ -230,7 +230,11 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     """Return the HTML representation of the given dataframe as an interactive datatable"""
     # Default options
     for option in dir(opt):
-        if option not in kwargs and not option.startswith("__"):
+        if (
+            option not in kwargs
+            and not option.startswith("__")
+            and option != "read_package_file"
+        ):
             kwargs[option] = getattr(opt, option)
 
     # These options are used here, not in DataTable
