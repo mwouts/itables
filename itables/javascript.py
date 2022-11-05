@@ -101,32 +101,49 @@ def init_notebook_mode(
         )
 
 
+def _format_column(x):
+    if x.dtype.kind == "O":
+        return x.astype(str)
+
+    if x.dtype.kind == "f":
+        x = np.array(fmt.format_array(x.values, None))
+        try:
+            return x.astype(float)
+        except ValueError:
+            pass
+
+    return x
+
+
 def _formatted_values(df):
-    """Return the table content as a list of lists for DataTables"""
+    """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    columns = {}
-    for j, col in enumerate(df.columns):
-        x = df.iloc[:, j]
-        x_kind = x.dtype.kind
-        if x_kind in ["b", "i", "s"]:
-            continue
+    return list(
+        zip(
+            *(
+                _format_column(df.iloc[:, j]).tolist()
+                for j, col in enumerate(df.columns)
+            )
+        )
+    )
 
-        if x_kind == "O":
-            columns[j] = x.astype(str)
-            continue
 
-        x = np.array(fmt.format_array(x.values, None))
-        if x_kind == "f":
-            try:
-                columns[j] = x.astype(float)
-            except ValueError:
-                columns[j] = x
-
-    rows = pd.DataFrame(columns).values.tolist()
-
-    # Replace pd.NA with None
-    return [[cell if cell is not pd.NA else None for cell in row] for row in rows]
+class TableValuesEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if obj is pd.NA:
+            return None
+        if isinstance(obj, np.bool_):
+            return bool(obj)
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, pd.Timedelta):
+            return str(obj)
+        if isinstance(obj, pd.Timestamp):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 def _table_header(
@@ -353,7 +370,7 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
 
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)
-    dt_data = json.dumps(data)
+    dt_data = json.dumps(data, cls=TableValuesEncoder)
     output = replace_value(output, "const data = [];", f"const data = {dt_data};")
 
     return output

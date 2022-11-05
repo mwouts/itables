@@ -1,7 +1,10 @@
+import json
+
 import pandas as pd
 import pytest
 
 from itables import show
+from itables.javascript import TableValuesEncoder, _format_column
 from itables.sample_dfs import (
     get_countries,
     get_dict_of_test_dfs,
@@ -35,6 +38,12 @@ def test_get_indicators():
 @pytest.mark.parametrize("df_name,df", get_dict_of_test_dfs().items())
 def test_show_test_dfs(df_name, df):
     show(df)
+
+
+@pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
+def test_format_column(series_name, series):
+    values = _format_column(series).tolist()
+    json.dumps(values, cls=TableValuesEncoder)
 
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
