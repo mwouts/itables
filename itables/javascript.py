@@ -103,26 +103,27 @@ def init_notebook_mode(
 
 def _formatted_values(df):
     """Return the table content as a list of lists for DataTables"""
-    formatted_df = df.copy()
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    for j, col in enumerate(formatted_df):
-        x = formatted_df.iloc[:, j]
-        if x.dtype.kind in ["b", "i", "s"]:
+    columns = {}
+    for j, col in enumerate(df.columns):
+        x = df.iloc[:, j]
+        x_kind = x.dtype.kind
+        if x_kind in ["b", "i", "s"]:
             continue
 
-        if x.dtype.kind == "O":
-            formatted_df.iloc[:, j] = formatted_df.iloc[:, j].astype(str)
+        if x_kind == "O":
+            columns[j] = x.astype(str)
             continue
 
-        formatted_df.iloc[:, j] = np.array(fmt.format_array(x.values, None))
-        if x.dtype.kind == "f":
+        x = np.array(fmt.format_array(x.values, None))
+        if x_kind == "f":
             try:
-                formatted_df.iloc[:, j] = formatted_df.iloc[:, j].astype(float)
+                columns[j] = x.astype(float)
             except ValueError:
-                pass
+                columns[j] = x
 
-    rows = formatted_df.values.tolist()
+    rows = pd.DataFrame(columns).values.tolist()
 
     # Replace pd.NA with None
     return [[cell if cell is not pd.NA else None for cell in row] for row in rows]
