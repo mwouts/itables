@@ -84,6 +84,9 @@ def get_dict_of_test_dfs(N=100, M=100):
                 "timedelta": [timedelta(days=2), timedelta(seconds=50)],
             }
         ),
+        "date_range": pd.DataFrame(
+            {"timestamps": pd.date_range("now", periods=5, freq="S")}
+        ),
         "object": pd.DataFrame(
             {"dict": [{"a": 1}, {"b": 2, "c": 3}], "list": [["a"], [1, 2]]}
         ),
