@@ -5,7 +5,8 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
-- We have modified our code to avoid triggering FutureWarnings when using `pandas>=1.5` ([#107](https://github.com/mwouts/itables/issues/107)).
+- We have reimplemented the function that encodes the Pandas dataframes to JSON
+to avoid triggering FutureWarnings when using `pandas>=1.5` ([#107](https://github.com/mwouts/itables/issues/107)).
 
 
 1.3.1 (2022-11-05)
