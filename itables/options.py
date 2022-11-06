@@ -21,6 +21,9 @@ maxBytes = 2**16
 # maxRows = 10000
 # maxColumns = 1000
 
+"""Horizontal scroll by default"""
+scrollX = True
+
 """Pre dt code"""
 pre_dt_code = ""
 
