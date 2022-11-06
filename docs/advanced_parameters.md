@@ -78,7 +78,10 @@ show(df.head(), paging=False)
 
 ### Scroll
 
-If you prefer to replace the pagination with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html), use for instance
+By default, wide tables have a horizontal scroll bar (since `itables>=1.3.3`).
+You can remove it by setting `scrollX = False` in either `itables.opt` or in the `show` function.
+
+The pagination can be replaced with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
 
 ```{code-cell}
 show(df, scrollY="200px", scrollCollapse=True, paging=False)
