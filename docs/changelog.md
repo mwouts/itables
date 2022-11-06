@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.3 (2022-11-06)
+------------------
+
+**Changed**
+- We have added `scrollX = True` to the default options to make the rendering of wide tables more similar to Pandas.
+
+
 1.3.2 (2022-11-06)
 ------------------
 
