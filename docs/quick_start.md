@@ -49,6 +49,8 @@ init_notebook_mode(all_interactive=True)
 After this, any Pandas object (DataFrame or Series) is displayed as an interactive [datatables.net](https://datatables.net/) table, which lets you explore, filter or sort your data.
 
 ```{code-cell}
+:tags: [full-width]
+
 from itables.sample_dfs import get_countries
 
 df = get_countries()
