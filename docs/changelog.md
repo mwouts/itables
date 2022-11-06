@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.4 (2022-11-07)
+------------------
+
+**Fixed**
+- We have removed `scrollX = True` which was causing issues with non-wide tables ([#110](https://github.com/mwouts/itables/issues/110)). Instead, we now use `style = "width:auto"`.
+
+
 1.3.3 (2022-11-06)
 ------------------
 
