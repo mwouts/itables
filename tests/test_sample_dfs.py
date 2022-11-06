@@ -13,6 +13,9 @@ from itables.sample_dfs import (
     get_population,
 )
 
+# Make sure that displaying a dataframe does not trigger a warning  #107
+pytestmark = pytest.mark.filterwarnings("error")
+
 
 def test_get_countries():
     df = get_countries()
