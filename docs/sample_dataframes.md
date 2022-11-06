@@ -117,7 +117,7 @@ show(dict_of_test_dfs["int_float_str"])
 ```{code-cell}
 :tags: [full-width]
 
-show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
+show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100, scrollX=True)
 ```
 
 ## long_column_names
@@ -125,5 +125,5 @@ show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
 ```{code-cell}
 :tags: [full-width]
 
-show(dict_of_test_dfs["long_column_names"])
+show(dict_of_test_dfs["long_column_names"], scrollX=True)
 ```

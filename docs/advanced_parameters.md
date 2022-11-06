@@ -82,9 +82,6 @@ show(df.head(), paging=False)
 
 ### Scroll
 
-By default, wide tables have a horizontal scroll bar (since `itables>=1.3.3`).
-You can remove it by setting `scrollX = False` in either `itables.opt` or in the `show` function.
-
 The pagination can be replaced with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
 
 ```{code-cell}
@@ -93,13 +90,18 @@ The pagination can be replaced with a [vertical scroll](https://datatables.net/e
 show(df, scrollY="200px", scrollCollapse=True, paging=False)
 ```
 
+In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
+
 ## Table and cell style
+
+### Datatable classes
 
 Select how your table should look like with the `classes` argument of the `show` function, or by changing `itables.options.classes`. For the list of possible values, see [datatables' default style](https://datatables.net/manual/styling/classes) and [the style examples](https://datatables.net/examples/styling/).
 
 ```{code-cell}
 :tags: [full-width]
 
+opt.scrollX = True
 opt.classes = ["display", "nowrap"]
 df
 ```
@@ -109,6 +111,18 @@ df
 
 opt.classes = ["display", "cell-border"]
 df
+```
+
+### Table position and width
+
+You can set the `width` of a particular table, or center it by adding `margin:auto` to the `style` argument:
+
+```{code-cell}
+:tags: [full-width]
+
+opt.scrollX = False
+
+show(df, style="width:80%; margin:auto;")
 ```
 
 ## Table captions
@@ -204,8 +218,6 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
 Since `itables>=1.3.0`, the interactive datatable shows the rows in the same order as the original dataframe (rows are sorted on the index columns when the dataframe index is both shown and monotonic, and not sorted otherwise)
 
 ```{code-cell}
-:tags: [full-width]
-
 from itables.sample_dfs import get_dict_of_test_dfs
 
 for name, test_df in get_dict_of_test_dfs().items():
@@ -220,8 +232,6 @@ for name, test_df in get_dict_of_test_dfs().items():
 You can also set an explicit [`order`](https://datatables.net/reference/option/order) argument, and e.g. deactivate the sorting with `order = []`:
 
 ```{code-cell}
-:tags: [full-width]
-
 sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
 show(sorted_df, order=[], dom="tpr")
 ```
@@ -235,8 +245,6 @@ The example below, in which we color in red the cells with negative numbers, is 
 Note how the Javascript callback is declared as `JavascriptFunction` object below.
 
 ```{code-cell}
-:tags: [full-width]
-
 from itables import JavascriptFunction
 
 show(
@@ -265,18 +273,19 @@ The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) 
 You can set a fixed width for all the columns with `"targets": "_all"`:
 
 ```{code-cell}
-show(
-    df,
-    columnDefs=[{"width": "120px", "targets": "_all"}],
-)
+:tags: [full-width]
+
+show(df, columnDefs=[{"width": "120px", "targets": "_all"}], scrollX=True)
 ```
 
 You can also adjust the width of selected columns only:
 
 ```{code-cell}
+:tags: [full-width]
+
 show(
     df,
-    columnDefs=[{"width": "20%", "targets": [2, 3]}],
+    columnDefs=[{"width": "30%", "targets": [2, 3]}],
 )
 ```
 
