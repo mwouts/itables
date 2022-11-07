@@ -62,6 +62,8 @@ Note: you can change the default value of the dom option by setting `opt.dom` as
 Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`:
 
 ```{code-cell}
+:tags: [full-width]
+
 import itables.options as opt
 
 opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
@@ -73,32 +75,54 @@ df
 Show the table in full with the [`paging` argument](https://datatables.net/reference/option/paging), either in the `show` method, or in the options:
 
 ```{code-cell}
+:tags: [full-width]
+
 show(df.head(), paging=False)
 ```
 
 ### Scroll
 
-By default, wide tables have a horizontal scroll bar (since `itables>=1.3.3`).
-You can remove it by setting `scrollX = False` in either `itables.opt` or in the `show` function.
-
 The pagination can be replaced with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
 
 ```{code-cell}
+:tags: [full-width]
+
 show(df, scrollY="200px", scrollCollapse=True, paging=False)
 ```
 
+In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
+
 ## Table and cell style
+
+### Datatable classes
 
 Select how your table should look like with the `classes` argument of the `show` function, or by changing `itables.options.classes`. For the list of possible values, see [datatables' default style](https://datatables.net/manual/styling/classes) and [the style examples](https://datatables.net/examples/styling/).
 
 ```{code-cell}
+:tags: [full-width]
+
+opt.scrollX = True
 opt.classes = ["display", "nowrap"]
 df
 ```
 
 ```{code-cell}
+:tags: [full-width]
+
 opt.classes = ["display", "cell-border"]
 df
+```
+
+### Table position and width
+
+You can set the `width` of a particular table, or center it by adding `margin:auto` to the `style` argument:
+
+```{code-cell}
+:tags: [full-width]
+
+opt.scrollX = False
+
+show(df, style="width:80%; margin:auto;")
 ```
 
 ## Table captions
@@ -106,12 +130,16 @@ df
 You can set additional `tags` like a [caption](https://datatables.net/blog/2014-11-07) on the table with the `tags` option:
 
 ```{code-cell}
+:tags: [full-width]
+
 show(df, tags="<caption>Countries from the World Bank Database</caption>")
 ```
 
 The position of the caption can be set explicitly as in the datatables example above (note that the default position may depend on how you render the notebook):
 
 ```{code-cell}
+:tags: [full-width]
+
 show(
     df,
     tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>',
@@ -127,6 +155,8 @@ opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 Use `footer = True` if you wish to display a table footer.
 
 ```{code-cell}
+:tags: [full-width]
+
 show(df, footer=True)
 ```
 
@@ -243,18 +273,19 @@ The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) 
 You can set a fixed width for all the columns with `"targets": "_all"`:
 
 ```{code-cell}
-show(
-    df,
-    columnDefs=[{"width": "120px", "targets": "_all"}],
-)
+:tags: [full-width]
+
+show(df, columnDefs=[{"width": "120px", "targets": "_all"}], scrollX=True)
 ```
 
 You can also adjust the width of selected columns only:
 
 ```{code-cell}
+:tags: [full-width]
+
 show(
     df,
-    columnDefs=[{"width": "20%", "targets": [2, 3]}],
+    columnDefs=[{"width": "30%", "targets": [2, 3]}],
 )
 ```
 

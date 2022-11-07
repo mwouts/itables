@@ -38,18 +38,24 @@ df.values.nbytes
 ```
 
 ```{code-cell}
+:tags: [full-width]
+
 df
 ```
 
 To show the table in full, we can modify the value of `maxBytes` either locally:
 
 ```{code-cell}
+:tags: [full-width]
+
 show(df, maxBytes=0)
 ```
 
 or globally:
 
 ```{code-cell}
+:tags: [full-width]
+
 opt.maxBytes = 2**20
 df
 ```

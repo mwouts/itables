@@ -9,7 +9,7 @@ showIndex = "auto"
 classes = ["display"]
 
 """Default table style"""
-style = "max-width:100%"
+style = "width:auto;"
 
 """Additional tags like e.g. caption"""
 tags = ""
@@ -20,9 +20,6 @@ maxBytes = 2**16
 """Maximum number of rows or columns"""
 # maxRows = 10000
 # maxColumns = 1000
-
-"""Horizontal scroll by default"""
-scrollX = True
 
 """Pre dt code"""
 pre_dt_code = ""

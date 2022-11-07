@@ -87,6 +87,8 @@ show(dict_of_test_dfs["multiindex"])
 ## countries
 
 ```{code-cell}
+:tags: [full-width]
+
 show(dict_of_test_dfs["countries"])
 ```
 
@@ -99,6 +101,8 @@ show(dict_of_test_dfs["capital"])
 ## complex_index
 
 ```{code-cell}
+:tags: [full-width]
+
 show(dict_of_test_dfs["complex_index"])
 ```
 
@@ -111,11 +115,15 @@ show(dict_of_test_dfs["int_float_str"])
 ## wide
 
 ```{code-cell}
-show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
+:tags: [full-width]
+
+show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100, scrollX=True)
 ```
 
 ## long_column_names
 
 ```{code-cell}
-show(dict_of_test_dfs["long_column_names"])
+:tags: [full-width]
+
+show(dict_of_test_dfs["long_column_names"], scrollX=True)
 ```
