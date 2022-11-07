@@ -1,4 +1,5 @@
 import os
+from io import open
 
 
 def find_package_file(*path):

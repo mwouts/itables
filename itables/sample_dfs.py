@@ -54,7 +54,7 @@ def get_dict_of_test_dfs(N=100, M=100):
                 [None, False, True, False],
             ],
             columns=list("abcd"),
-            dtype="boolean",
+            dtype="bool",
         ),
         "int": pd.DataFrame(
             [[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")
@@ -111,8 +111,8 @@ def get_dict_of_test_dfs(N=100, M=100):
         ),
         "wide": pd.DataFrame(
             NM_values,
-            index=[f"row_{i}" for i in range(N)],
-            columns=[f"column_{j}" for j in range(M)],
+            index=["row_{}".format(i) for i in range(N)],
+            columns=["column_{}".format(j) for j in range(M)],
         ),
         "long_column_names": pd.DataFrame(
             {
@@ -145,5 +145,5 @@ def get_dict_of_test_series():
         if len(df.columns) > 6:
             continue
         for col in df.columns:
-            series[f"{df_name}.{col}"] = df[col]
+            series["{}.{}".format(df_name, col)] = df[col]
     return series

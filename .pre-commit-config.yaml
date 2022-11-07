@@ -27,12 +27,6 @@ repos:
     hooks:
     - id: black
 
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
-    hooks:
-    - id: pyupgrade
-      args: ["--py36-plus"]
-
   - repo: https://github.com/mwouts/jupytext
     rev: v1.13.8
     hooks:
