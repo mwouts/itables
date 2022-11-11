@@ -40,7 +40,7 @@ def shrink_towards_target_aspect_ratio(
     rows, columns, shrink_factor, target_aspect_ratio
 ):
     # current and target aspect ratio
-    aspect_ratio = rows / columns
+    aspect_ratio = rows / float(columns)
 
     # Optimization problem:
     # row_shrink_factor * column_shrink_factor = shrink_factor
