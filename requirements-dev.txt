@@ -1,3 +1,4 @@
+pathlib
 pre-commit
 isort
 flake8
