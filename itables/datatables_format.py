@@ -42,7 +42,5 @@ def datatables_rows(df):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    data = list(
-        zip(*(_format_column(df.iloc[:, j]) for j, col in enumerate(df.columns)))
-    )
+    data = list(zip(*(_format_column(x) for _, x in df.items())))
     return json.dumps(data, cls=TableValuesEncoder)
