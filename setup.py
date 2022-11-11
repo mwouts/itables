@@ -1,4 +1,5 @@
 import re
+from io import open
 from os import path
 from pathlib import Path
 
@@ -15,7 +16,8 @@ with open(path.join(this_directory, "itables/version.py")) as f:
     version = version_match.group(1)
 
 external = Path(__file__).parent / "itables" / "external"
-external.mkdir(exist_ok=True)
+if not external.is_dir():
+    external.mkdir()
 for name, url in [
     ("jquery.min.js", "https://code.jquery.com/jquery-3.6.0.min.js"),
     (
@@ -28,7 +30,8 @@ for name, url in [
     ),
 ]:
     r = requests.get(url)
-    (external / name).write_bytes(r.content)
+    with open(str(external / name), "wb") as fp:
+        fp.write(r.content)
 
 setup(
     name="itables",
@@ -58,6 +61,7 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

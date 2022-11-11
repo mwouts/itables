@@ -17,11 +17,11 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     if len(df.index) < org_rows or len(df.columns) < org_columns:
         reasons = []
         if org_rows > max_rows > 0:
-            reasons.append(f"maxRows={max_rows}")
+            reasons.append("maxRows={}".format(max_rows))
         if org_columns > max_columns > 0:
-            reasons.append(f"maxColumns={max_columns}")
+            reasons.append("maxColumns={}".format(max_columns))
         if org_bytes > max_bytes > 0:
-            reasons.append(f"nbytes={org_bytes}>{max_bytes}=maxBytes")
+            reasons.append("nbytes={}>{}=maxBytes".format(org_bytes, max_bytes))
 
         logger.warning(
             "showing {}x{} of {}x{} as {}. See https://mwouts.github.io/itables/downsampling.html".format(
@@ -40,7 +40,7 @@ def shrink_towards_target_aspect_ratio(
     rows, columns, shrink_factor, target_aspect_ratio
 ):
     # current and target aspect ratio
-    aspect_ratio = rows / columns
+    aspect_ratio = rows / float(columns)
 
     # Optimization problem:
     # row_shrink_factor * column_shrink_factor = shrink_factor

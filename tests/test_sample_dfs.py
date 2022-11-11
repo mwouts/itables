@@ -1,4 +1,5 @@
 import json
+import sys
 
 import pandas as pd
 import pytest
@@ -14,11 +15,12 @@ from itables.sample_dfs import (
 )
 
 # Make sure that displaying a dataframe does not trigger a warning  #107
-pytestmark = [
-    pytest.mark.filterwarnings("error"),
-    # Seen on the CI on Py38 and Py39
-    pytest.mark.filterwarnings("ignore::ResourceWarning"),
-]
+if sys.version_info >= (3,):
+    pytestmark = [
+        pytest.mark.filterwarnings("error"),
+        # Seen on the CI on Py38 and Py39
+        pytest.mark.filterwarnings("ignore::ResourceWarning"),
+    ]
 
 
 def test_get_countries():

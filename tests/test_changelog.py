@@ -1,4 +1,5 @@
 import re
+import sys
 from pathlib import Path
 
 import pytest
@@ -29,6 +30,10 @@ def test_replace_issue_numbers_with_links(input, output):
     assert replace_issue_number_with_links(input) == output
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3,),
+    reason="'PosixPath' object has no attribute 'read_text' in Py2",
+)
 def test_update_changelog():
     changelog_file = Path(__file__).parent.parent / "docs" / "changelog.md"
     cur_text = changelog_file.read_text()

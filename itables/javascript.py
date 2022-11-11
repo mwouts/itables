@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
 from IPython.display import HTML, Javascript, display
+from six import string_types
 
 import itables.options as opt
 
@@ -88,7 +89,7 @@ def init_notebook_mode(
                 replace_value(
                     read_package_file("html/itables_render.html"),
                     "dt_src",
-                    f"data:text/javascript;base64,{dt64}",
+                    "data:text/javascript;base64,{}".format(dt64),
                 )
             )
         )
@@ -131,8 +132,11 @@ def _formatted_values(df):
 
 class TableValuesEncoder(json.JSONEncoder):
     def default(self, obj):
-        if obj is pd.NA:
-            return None
+        try:
+            if obj is pd.NA:
+                return None
+        except AttributeError:
+            pass
         if isinstance(obj, np.bool_):
             return bool(obj)
         if isinstance(obj, np.integer):
@@ -162,32 +166,40 @@ def _table_header(
         thead_flat = ""
         if show_index:
             for index in df.index.names:
-                thead_flat += f"<th>{index}</th>"
+                thead_flat += "<th>{}</th>".format(index)
 
         for column in df.columns:
-            thead_flat += f"<th>{column}</th>"
+            thead_flat += "<th>{}</th>".format(column)
 
     loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
-    tbody = f"<tr>{loading}</tr>"
+    tbody = "<tr>{}</tr>".format(loading)
 
     if style:
-        style = f'style="{style}"'
+        style = 'style="{}"'.format(style)
     else:
         style = ""
 
     if column_filters == "header":
-        header = f"<thead>{thead_flat}</thead>"
+        header = "<thead>{}</thead>".format(thead_flat)
     else:
-        header = f"<thead>{thead}</thead>"
+        header = "<thead>{}</thead>".format(thead)
 
     if column_filters == "footer":
-        footer = f"<tfoot>{thead_flat}</tfoot>"
+        footer = "<tfoot>{}</tfoot>".format(thead_flat)
     elif footer:
-        footer = f"<tfoot>{thead}</tfoot>"
+        footer = "<tfoot>{}</tfoot>".format(thead)
     else:
         footer = ""
 
-    return f"""<table id="{table_id}" class="{classes}"{style}>{tags}{header}<tbody>{tbody}</tbody>{footer}</table>"""
+    return """<table id="{table_id}" class="{classes}"{style}>{tags}{header}<tbody>{tbody}</tbody>{footer}</table>""".format(
+        table_id=table_id,
+        classes=classes,
+        style=style,
+        tags=tags,
+        header=header,
+        tbody=tbody,
+        footer=footer,
+    )
 
 
 def json_dumps(obj, eval_functions):
@@ -215,7 +227,7 @@ def json_dumps(obj, eval_functions):
         return (
             "{"
             + ", ".join(
-                f'"{key}": {json_dumps(value, eval_functions)}'
+                '"{}": {}'.format(key, json_dumps(value, eval_functions))
                 for key, value in obj.items()
             )
             + "}"
@@ -226,7 +238,7 @@ def json_dumps(obj, eval_functions):
 def replace_value(template, pattern, value):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
-    assert isinstance(template, str)
+    assert isinstance(template, string_types)
     assert template.count(pattern) == 1
     return template.replace(pattern, value)
 
@@ -284,8 +296,8 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
         footer = True
     elif column_filters is not False:
         raise ValueError(
-            f"column_filters should be either "
-            f"'header', 'footer' or False, not {column_filters}"
+            "column_filters should be either "
+            "'header', 'footer' or False, not {}".format(column_filters)
         )
 
     # Do not show the page menu when the table has fewer rows than min length menu
@@ -330,11 +342,11 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
         table_header,
     )
-    output = replace_value(output, "#table_id", f"#{tableId}")
+    output = replace_value(output, "#table_id", "#{}".format(tableId))
     output = replace_value(
         output,
         "<style></style>",
-        f"""<style>{css}</style>""",
+        "<style>{}</style>".format(css),
     )
 
     if column_filters:
@@ -363,15 +375,21 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     # Export the DT args to JSON
     dt_args = json_dumps(kwargs, eval_functions)
 
-    output = replace_value(output, "let dt_args = {};", f"let dt_args = {dt_args};")
     output = replace_value(
-        output, "// [pre-dt-code]", pre_dt_code.replace("#table_id", f"#{tableId}")
+        output, "let dt_args = {};", "let dt_args = {};".format(dt_args)
+    )
+    output = replace_value(
+        output,
+        "// [pre-dt-code]",
+        pre_dt_code.replace("#table_id", "#{}".format(tableId)),
     )
 
     # Export the table data to JSON and include this in the HTML
     data = _formatted_values(df.reset_index() if showIndex else df)
     dt_data = json.dumps(data, cls=TableValuesEncoder)
-    output = replace_value(output, "const data = [];", f"const data = {dt_data};")
+    output = replace_value(
+        output, "const data = [];", "const data = {};".format(dt_data)
+    )
 
     return output
 
