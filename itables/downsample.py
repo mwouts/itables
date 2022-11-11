@@ -7,9 +7,13 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 
+def nbytes(df):
+    return sum(x.values.nbytes for _, x in df.items())
+
+
 def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     """Return a subset of the dataframe that fits the limits"""
-    org_rows, org_columns, org_bytes = len(df.index), len(df.columns), df.values.nbytes
+    org_rows, org_columns, org_bytes = len(df.index), len(df.columns), nbytes(df)
     df = _downsample(
         df, max_rows=max_rows, max_columns=max_columns, max_bytes=max_bytes
     )
@@ -82,17 +86,18 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
         else:
             df = df.iloc[:, :first_half]
 
-    if df.values.nbytes > max_bytes > 0:
+    df_nbytes = nbytes(df)
+    if df_nbytes > max_bytes > 0:
         if target_aspect_ratio is None:
             if max_rows > 0 and max_columns > 0:
-                target_aspect_ratio = max_rows / max_columns
+                target_aspect_ratio = max_rows / float(max_columns)
             else:
                 target_aspect_ratio = 1.0
 
         max_rows, max_columns = shrink_towards_target_aspect_ratio(
             len(df.index),
             len(df.columns),
-            shrink_factor=max_bytes / df.values.nbytes,
+            shrink_factor=max_bytes / float(df_nbytes),
             target_aspect_ratio=target_aspect_ratio,
         )
 
