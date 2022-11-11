@@ -1,10 +1,12 @@
 import math
 import string
+import sys
 from datetime import datetime, timedelta
 from itertools import cycle
 
 import numpy as np
 import pandas as pd
+import pytz
 
 from .utils import find_package_file
 
@@ -54,7 +56,7 @@ def get_dict_of_test_dfs(N=100, M=100):
                 [None, False, True, False],
             ],
             columns=list("abcd"),
-            dtype="bool",
+            dtype="boolean" if sys.version_info > (3,) else "bool",
         ),
         "int": pd.DataFrame(
             [[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")
@@ -80,8 +82,26 @@ def get_dict_of_test_dfs(N=100, M=100):
         ),
         "time": pd.DataFrame(
             {
-                "datetime": [datetime(2000, 1, 1), datetime(2001, 1, 1)],
-                "timedelta": [timedelta(days=2), timedelta(seconds=50)],
+                "datetime": [datetime(2000, 1, 1), datetime(2001, 1, 1), pd.NaT],
+                "timestamp": [
+                    pd.NaT,
+                    datetime(2000, 1, 1, 18, 55, 33),
+                    datetime(
+                        2001,
+                        1,
+                        1,
+                        18,
+                        55,
+                        55,
+                        456654,
+                        tzinfo=pytz.timezone("US/Eastern"),
+                    ),
+                ],
+                "timedelta": [
+                    timedelta(days=2),
+                    timedelta(seconds=50),
+                    pd.NaT - datetime(2000, 1, 1),
+                ],
             }
         ),
         "date_range": pd.DataFrame(
