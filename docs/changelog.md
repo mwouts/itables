@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.5 (2022-11-11)
+------------------
+
+**Added**
+- We have added support for Python 2 ([#115](https://github.com/mwouts/itables/issues/115)).
+
+
 1.3.4 (2022-11-07)
 ------------------
 
