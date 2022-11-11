@@ -9,12 +9,12 @@ from base64 import b64encode
 
 import numpy as np
 import pandas as pd
-import pandas.io.formats.format as fmt
 from IPython.display import HTML, Javascript, display
 from six import string_types
 
 import itables.options as opt
 
+from .datatables_format import datatables_rows
 from .downsample import downsample
 from .utils import read_package_file
 
@@ -100,54 +100,6 @@ def init_notebook_mode(
                 + "</style>"
             )
         )
-
-
-def _format_column(x):
-    if x.dtype.kind == "O":
-        return x.astype(str)
-
-    if x.dtype.kind == "f":
-        x = np.array(fmt.format_array(x.values, None))
-        try:
-            return x.astype(float)
-        except ValueError:
-            pass
-
-    return x
-
-
-def _formatted_values(df):
-    """Format the values in the table and return the data, row by row, as requested by DataTables"""
-    # We iterate over columns using an index rather than the column name
-    # to avoid an issue in case of duplicated column names #89
-    return list(
-        zip(
-            *(
-                _format_column(df.iloc[:, j]).tolist()
-                for j, col in enumerate(df.columns)
-            )
-        )
-    )
-
-
-class TableValuesEncoder(json.JSONEncoder):
-    def default(self, obj):
-        try:
-            if obj is pd.NA:
-                return None
-        except AttributeError:
-            pass
-        if isinstance(obj, np.bool_):
-            return bool(obj)
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        if isinstance(obj, pd.Timedelta):
-            return str(obj)
-        if isinstance(obj, pd.Timestamp):
-            return str(obj)
-        return json.JSONEncoder.default(self, obj)
 
 
 def _table_header(
@@ -385,8 +337,7 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     )
 
     # Export the table data to JSON and include this in the HTML
-    data = _formatted_values(df.reset_index() if showIndex else df)
-    dt_data = json.dumps(data, cls=TableValuesEncoder)
+    dt_data = datatables_rows(df.reset_index() if showIndex else df)
     output = replace_value(
         output, "const data = [];", "const data = {};".format(dt_data)
     )
