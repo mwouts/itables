@@ -1,5 +1,6 @@
 import json
 import math
+import sys
 from datetime import date, datetime
 
 import numpy as np
@@ -9,12 +10,18 @@ import pytest
 from itables.datatables_format import datatables_rows
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3,), reason="pandas formatting has changed since Py2"
+)
 @pytest.mark.parametrize(
     "df,expected",
     [
         (pd.DataFrame({"x": [True, False]}), [[True], [False]]),
         (
-            pd.DataFrame({"x": [True, False, None]}, dtype="boolean"),
+            pd.DataFrame(
+                {"x": [True, False, None]},
+                dtype="boolean" if sys.version_info > (3,) else "bool",
+            ),
             [[True], [False], ["<NA>"]],
         ),
         (pd.DataFrame({"x": [0, 1]}), [[0], [1]]),

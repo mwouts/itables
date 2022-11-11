@@ -30,6 +30,7 @@ def test_get_countries():
     show(df)
 
 
+@pytest.mark.skipif(sys.version_info < (3,), reason="fails in Py2")
 def test_get_population():
     x = get_population()
     assert len(x) > 30
