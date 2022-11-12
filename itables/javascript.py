@@ -241,7 +241,16 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     if showIndex == "auto":
         showIndex = df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
 
-    df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
+    df, downsampling_warning = downsample(
+        df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
+    )
+
+    if downsampling_warning and "fnInfoCallback" not in kwargs:
+        kwargs["fnInfoCallback"] = JavascriptFunction(
+            "function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {{ return sPre + ' ({warning})'; }}".format(
+                warning=downsampling_warning
+            )
+        )
 
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
