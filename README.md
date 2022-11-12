@@ -82,13 +82,14 @@ Note that datatables support [server-side processing](https://datatables.net/exa
 
 ```{code-cell}
 from itables.sample_dfs import get_indicators
+from itables.downsample import nbytes
 import itables.options as opt
 
 opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
 opt.maxBytes = 10000
 
 df = get_indicators()
-df.values.nbytes
+nbytes(df)
 ```
 
 ```{code-cell}
