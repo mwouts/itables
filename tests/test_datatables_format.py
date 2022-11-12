@@ -67,6 +67,9 @@ def test_datatables_rows(df, expected):
     assert actual == json.dumps(expected)
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3,), reason="str(Exception) has changed since Py2"
+)
 def test_TableValuesEncoder():
     assert json.dumps(['"str"'], cls=TableValuesEncoder) == r'["\"str\""]'
     with pytest.warns(RuntimeWarning, match="Unexpected type"):
