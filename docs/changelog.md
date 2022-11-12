@@ -5,7 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
-- We use `pandas.io.formats.format` to format non-trivial dtypes (as in `itables<=1.3.1`) ([#112](https://github.com/mwouts/itables/issues/112))
+- We use `pandas.io.formats.format.format_array` to format non-trivial dtypes (as in `itables<=1.3.1`) ([#112](https://github.com/mwouts/itables/issues/112))
 
 **Added**
 - We have added support for Python 2 ([#115](https://github.com/mwouts/itables/issues/115)).

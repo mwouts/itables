@@ -1,13 +1,15 @@
 import json
 import math
 import sys
+import warnings
 from datetime import date, datetime
 
 import numpy as np
 import pandas as pd
 import pytest
 
-from itables.datatables_format import datatables_rows
+import itables.options as opt
+from itables.datatables_format import TableValuesEncoder, datatables_rows
 
 
 @pytest.mark.skipif(
@@ -63,3 +65,19 @@ from itables.datatables_format import datatables_rows
 def test_datatables_rows(df, expected):
     actual = datatables_rows(df)
     assert actual == json.dumps(expected)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3,), reason="str(Exception) has changed since Py2"
+)
+def test_TableValuesEncoder():
+    assert json.dumps(['"str"'], cls=TableValuesEncoder) == r'["\"str\""]'
+    with pytest.warns(RuntimeWarning, match="Unexpected type"):
+        json.dumps(Exception, cls=TableValuesEncoder)
+
+    opt.warn_on_unexpected_types = False
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        assert (
+            json.dumps(Exception, cls=TableValuesEncoder) == "\"<class 'Exception'>\""
+        )
