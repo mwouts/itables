@@ -7,6 +7,7 @@ ITables ChangeLog
 **Fixed**
 - We use `pandas.io.formats.format.format_array` to format non-trivial dtypes (as in `itables<=1.3.1`) ([#112](https://github.com/mwouts/itables/issues/112))
 - The downsampling of large tables is faster. We have also added a new function `generate_random_df` to generate large tables on demand ([#113](https://github.com/mwouts/itables/issues/113))
+- We don't raise a warning anymore when a table is downsampled. Instead, we add this information to the table summary ([#114](https://github.com/mwouts/itables/issues/114))
 
 **Added**
 - We have added support for Python 2 ([#115](https://github.com/mwouts/itables/issues/115)).
