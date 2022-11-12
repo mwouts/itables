@@ -41,14 +41,14 @@ class TableValuesEncoder(json.JSONEncoder):
 
         if opt.warn_on_unexpected_types:
             warnings.warn(
-                "Unexpected type {} for value {}. "
-                "To ignore this warning, please set opt.warn_on_unexpected_types = False. "
-                "You can also report this warning at https://github.com/mwouts/itables/issues".format(
-                    type(obj), obj
-                ),
+                "Unexpected type '{}' for '{}'.\n"
+                "You can report this warning at https://github.com/mwouts/itables/issues\n"
+                "To ignore the warning, please run:\n"
+                "    import itables.options as opt\n"
+                "    opt.warn_on_unexpected_types = False".format(type(obj), obj),
                 category=RuntimeWarning,
             )
-        return json.JSONEncoder.default(self, str(obj))
+        return str(obj)
 
 
 def datatables_rows(df):
