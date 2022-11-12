@@ -238,6 +238,9 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     if isinstance(df, pd.Series):
         df = df.to_frame()
 
+    if showIndex == "auto":
+        showIndex = df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
+
     df = downsample(df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes)
 
     footer = kwargs.pop("footer")
@@ -265,9 +268,6 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
         classes = " ".join(classes)
-
-    if showIndex == "auto":
-        showIndex = df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
 
     if not showIndex:
         df = df.set_index(pd.RangeIndex(len(df.index)))
