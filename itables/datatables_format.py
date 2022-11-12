@@ -48,7 +48,7 @@ class TableValuesEncoder(json.JSONEncoder):
                 ),
                 category=RuntimeWarning,
             )
-        return str(obj)
+        return json.JSONEncoder.default(self, str(obj))
 
 
 def datatables_rows(df):
