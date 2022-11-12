@@ -32,3 +32,6 @@ column_filters = False
 
 """Table CSS"""
 css = read_package_file("html/itables.css")
+
+"""Should a warning appear when we have to encode an unexpected type?"""
+warn_on_unexpected_types = True
