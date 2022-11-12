@@ -2,6 +2,12 @@ import math
 import string
 import sys
 from datetime import datetime, timedelta
+
+try:
+    from functools import lru_cache
+except ImportError:
+    from functools32 import lru_cache
+
 from itertools import cycle
 
 import numpy as np
@@ -9,6 +15,22 @@ import pandas as pd
 import pytz
 
 from .utils import find_package_file
+
+COLUMN_TYPES = [
+    "bool",
+    "int",
+    "float",
+    "str",
+    "categories",
+    "boolean",
+    "Int64",
+    "date",
+    "datetime",
+    "timedelta",
+]
+
+if sys.version_info < (3,):
+    COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
 
 
 def get_countries():
@@ -167,3 +189,65 @@ def get_dict_of_test_series():
         for col in df.columns:
             series["{}.{}".format(df_name, col)] = df[col]
     return series
+
+
+@lru_cache()
+def generate_date_series():
+    return pd.Series(pd.date_range("1677-09-23", "2262-04-10", freq="D"))
+
+
+def generate_random_series(rows, type):
+    if type == "bool":
+        return pd.Series(np.random.binomial(n=1, p=0.5, size=rows), dtype=bool)
+    if type == "boolean":
+        x = generate_random_series(rows, "bool").astype(type)
+        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
+        return x
+    if type == "int":
+        return pd.Series(np.random.geometric(p=0.1, size=rows), dtype=int)
+    if type == "Int64":
+        x = generate_random_series(rows, "int").astype(type)
+        if sys.version_info >= (3,):
+            x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
+        return x
+    if type == "float":
+        x = pd.Series(np.random.normal(size=rows), dtype=float)
+        x.loc[np.random.binomial(n=1, p=0.05, size=rows) == 0] = float("nan")
+        x.loc[np.random.binomial(n=1, p=0.05, size=rows) == 0] = float("inf")
+        x.loc[np.random.binomial(n=1, p=0.05, size=rows) == 0] = float("-inf")
+        return x
+    if type == "str":
+        return get_countries()["name"].sample(n=rows, replace=True)
+    if type == "categories":
+        x = generate_random_series(rows, "str")
+        return pd.Series(x, dtype="category")
+    if type == "date":
+        x = generate_date_series().sample(rows, replace=True)
+        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NaT
+        return x
+    if type == "datetime":
+        x = generate_random_series(rows, "date") + np.random.uniform(
+            0, 1, rows
+        ) * pd.Timedelta(1, unit="D")
+        return x
+    if type == "timedelta":
+        x = generate_random_series(rows, "datetime").sample(frac=1)
+        return x.diff()
+    raise NotImplementedError(type)
+
+
+def generate_random_df(rows, columns, column_types=COLUMN_TYPES):
+    rows = int(rows)
+    types = np.random.choice(column_types, size=columns)
+    columns = [
+        "Column{}OfType{}".format(col, type.title()) for col, type in enumerate(types)
+    ]
+
+    series = {
+        col: generate_random_series(rows, type) for col, type in zip(columns, types)
+    }
+    index = pd.Index(range(rows))
+    for x in series.values():
+        x.index = index
+
+    return pd.DataFrame(series)

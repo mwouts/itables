@@ -7,6 +7,9 @@ import pytest
 from itables import show
 from itables.datatables_format import TableValuesEncoder, _format_column
 from itables.sample_dfs import (
+    COLUMN_TYPES,
+    generate_random_df,
+    generate_random_series,
     get_countries,
     get_dict_of_test_dfs,
     get_dict_of_test_series,
@@ -65,3 +68,16 @@ def test_show_df_with_duplicate_column_names():
     df = pd.DataFrame({"a": [0], "b": [0.0], "c": ["str"]})
     df.columns = ["duplicated_name"] * 3
     show(df)
+
+
+@pytest.mark.parametrize("type", COLUMN_TYPES)
+def test_generate_random_series(type, rows=2000):
+    x = generate_random_series(rows, type)
+    assert isinstance(x, pd.Series)
+    assert len(x.index) == rows
+
+
+def test_generate_random_df(rows=2000, cols=30):
+    x = generate_random_df(rows, cols)
+    assert len(x.index) == rows
+    assert len(x.columns) == cols
