@@ -39,6 +39,16 @@ from itables.datatables_format import TableValuesEncoder, datatables_rows
             [["2022-01-01 18:05:27"], ["NaT"]],
         ),
         (
+            pd.DataFrame(
+                {
+                    "t": pd.to_datetime(
+                        [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]
+                    ).tz_localize("US/Eastern")
+                }
+            ),
+            [["2022-01-01 18:05:27-05:00"], ["NaT"]],
+        ),
+        (
             pd.DataFrame({"dt": [pd.Timedelta(1, unit="h"), pd.NaT - pd.NaT]}),
             [["0 days 01:00:00"], ["NaT"]],
         ),
@@ -57,6 +67,7 @@ from itables.datatables_format import TableValuesEncoder, datatables_rows
         "str",
         "date",
         "datetime",
+        "datetime_with_tz",
         "timedelta",
         "object_list",
         "object_dict",
