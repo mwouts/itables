@@ -1,0 +1,17 @@
+name: itables2
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python<3
+  - IPython
+  - pandas==0.22
+  - pytest
+  - pytest-xdist
+  - pytest-cov
+  - pathlib
+  - functools32
+  - pip
+  - pip:
+      - world_bank_data
+      - jupytext

@@ -13,7 +13,11 @@ def _format_column(x):
     if dtype_kind in ["b", "i", "s"]:
         return x
 
-    x = fmt.format_array(x.values, None, justify="all", leading_space=False)
+    try:
+        x = fmt.format_array(x.values, None, justify="all", leading_space=False)
+    except TypeError:
+        # Older versions of Pandas don't have 'leading_space'
+        x = fmt.format_array(x.values, None, justify="all")
     if dtype_kind == "f":
         try:
             return np.array(x).astype(float)
