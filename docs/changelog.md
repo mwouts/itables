@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.3.5+dev
+------------------
+
+**Fixed**
+- We have improved the support for dark themes by using the CSS from datatables.net in version 1.13.1 ([#103](https://github.com/mwouts/itables/issues/103))
+
+
 1.3.5 (2022-11-12)
 ------------------
 
