@@ -14,10 +14,10 @@ def _format_column(x):
         return x
 
     try:
-        x = fmt.format_array(x.values, None, justify="all", leading_space=False)
+        x = fmt.format_array(x._values, None, justify="all", leading_space=False)
     except TypeError:
         # Older versions of Pandas don't have 'leading_space'
-        x = fmt.format_array(x.values, None, justify="all")
+        x = fmt.format_array(x._values, None, justify="all")
     if dtype_kind == "f":
         try:
             return np.array(x).astype(float)
