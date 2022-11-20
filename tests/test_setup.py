@@ -1,11 +1,11 @@
 # Test setup.py with and without the import requests
 
 
-import pytest
 import subprocess
 import sys
-
 from unittest import mock
+
+import pytest
 
 
 def test_setup_with_requests():
