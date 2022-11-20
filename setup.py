@@ -3,7 +3,12 @@ from io import open
 from os import path
 from pathlib import Path
 
-import requests
+try:
+    import requests
+except ImportError:
+    print("Please install requests")
+    exit(1)
+
 from setuptools import find_packages, setup
 
 this_directory = path.abspath(path.dirname(__file__))
@@ -18,6 +23,7 @@ with open(path.join(this_directory, "itables/version.py")) as f:
 external = Path(__file__).parent / "itables" / "external"
 if not external.is_dir():
     external.mkdir()
+
 for name, url in [
     ("jquery.min.js", "https://code.jquery.com/jquery-3.6.0.min.js"),
     (
@@ -29,6 +35,7 @@ for name, url in [
         "https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs",
     ),
 ]:
+
     r = requests.get(url)
     with open(str(external / name), "wb") as fp:
         fp.write(r.content)
