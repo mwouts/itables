@@ -7,7 +7,10 @@ ITables ChangeLog
 **Fixed**
 - We have improved the support for dark themes by using the CSS from datatables.net in version 1.13.1 ([#103](https://github.com/mwouts/itables/issues/103))
 - We have fixed a compatibility issue with old versions of pandas
-- We added a test to make sure that timezones are preserved
+- We have added a test to make sure that timezones are preserved
+- `requests` was added as a build dependency ([#123](https://github.com/mwouts/itables/issues/123))
+- and the `flake8` pre-commit hook was fixed ([#124](https://github.com/mwouts/itables/issues/124)) - thanks
+to [Anselm Hahn](https://github.com/Anselmoo) for these two contributions!
 
 
 1.3.5 (2022-11-12)
