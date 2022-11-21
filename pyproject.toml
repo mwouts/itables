@@ -1,2 +1,2 @@
 [build-system]
-requires = ["setuptools", "requests"]
+requires = ["setuptools", "requests", "pathlib"]
