@@ -9,7 +9,7 @@ showIndex = "auto"
 classes = ["display"]
 
 """Default table style"""
-style = "width:auto;"
+style = "table-layout:auto"
 
 """Additional tags like e.g. caption"""
 tags = ""
