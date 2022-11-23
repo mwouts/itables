@@ -1,3 +1,4 @@
+import contextlib
 import json
 import warnings
 
@@ -13,17 +14,15 @@ def _format_column(x):
     if dtype_kind in ["b", "i", "s"]:
         return x
 
-    try:
+    # If pandas version >= 0.25.0 use the new method format_array with parameter 'leading_space'
+    if pd.__version__ >= "0.25.0":
         x = fmt.format_array(x._values, None, justify="all", leading_space=False)
-    except TypeError:
-        # Older versions of Pandas don't have 'leading_space'
+    else:
+        # If pandas version < 0.25.0 use the old method format_array with parameter 'leading_space'
         x = fmt.format_array(x._values, None, justify="all")
     if dtype_kind == "f":
-        try:
+        with contextlib.suppress(ValueError):
             return np.array(x).astype(float)
-        except ValueError:
-            pass
-
     return x
 
 
@@ -37,12 +36,9 @@ class TableValuesEncoder(json.JSONEncoder):
             return int(obj)
         if isinstance(obj, np.floating):
             return float(obj)
-        try:
+        with contextlib.suppress(AttributeError):
             if obj is pd.NA:
                 return str(obj)
-        except AttributeError:
-            pass
-
         if opt.warn_on_unexpected_types:
             warnings.warn(
                 "Unexpected type '{}' for '{}'.\n"

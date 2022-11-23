@@ -126,11 +126,7 @@ def _table_header(
     loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
     tbody = "<tr>{}</tr>".format(loading)
 
-    if style:
-        style = 'style="{}"'.format(style)
-    else:
-        style = ""
-
+    style = 'style="{}"'.format(style) if style else ""
     if column_filters == "header":
         header = "<thead>{}</thead>".format(thead_flat)
     else:
