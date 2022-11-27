@@ -129,6 +129,24 @@ def get_dict_of_test_dfs(N=100, M=100):
         "date_range": pd.DataFrame(
             {"timestamps": pd.date_range("now", periods=5, freq="S")}
         ),
+        "ordered_categories": pd.DataFrame(
+            {"int": np.arange(4)},
+            index=pd.CategoricalIndex(
+                ["first", "second", "third", "fourth"],
+                categories=["first", "second", "third", "fourth"],
+                ordered=True,
+                name="categorical_index",
+            ),
+        ),
+        "ordered_categories_in_multiindex": pd.DataFrame(
+            {"int": np.arange(4), "integer_index": np.arange(4)},
+            index=pd.CategoricalIndex(
+                ["first", "second", "third", "fourth"],
+                categories=["first", "second", "third", "fourth"],
+                ordered=True,
+                name="categorical_index",
+            ),
+        ).set_index("integer_index", append=True),
         "object": pd.DataFrame(
             {"dict": [{"a": 1}, {"b": 2, "c": 3}], "list": [["a"], [1, 2]]}
         ),

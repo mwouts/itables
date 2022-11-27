@@ -78,6 +78,18 @@ show(dict_of_test_dfs["time"])
 show(dict_of_test_dfs["object"])
 ```
 
+## ordered_categories
+
+```{code-cell}
+show(dict_of_test_dfs["ordered_categories"])
+```
+
+## ordered_categories_in_multiindex
+
+```{code-cell}
+show(dict_of_test_dfs["ordered_categories_in_multiindex"])
+```
+
 ## multiindex
 
 ```{code-cell}

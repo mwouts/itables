@@ -53,6 +53,12 @@ def test_show_test_dfs(df_name, df):
     show(df)
 
 
+def test_ordered_categories():
+    df = get_dict_of_test_dfs()["ordered_categories"]
+    assert df.index.is_monotonic_increasing
+    assert df["int"].is_monotonic_increasing
+
+
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_format_column(series_name, series):
     values = list(_format_column(series))
