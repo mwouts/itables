@@ -178,6 +178,13 @@ def get_dict_of_test_dfs(N=100, M=100):
         "unsorted_index": pd.DataFrame(
             {"i": [0, 2, 1], "x": [0.0, 1.0, 2.0], "y": [0.0, 0.1, 0.2]}
         ).set_index(["i"]),
+        "duplicated_columns": pd.DataFrame(
+            np.arange(4, 8).reshape((2, 2)),
+            columns=pd.Index(["A", "A"]),
+            index=pd.MultiIndex.from_arrays(
+                np.arange(4).reshape((2, 2)), names=["A", "A"]
+            ),
+        ),
     }
 
 
@@ -187,6 +194,9 @@ def get_dict_of_test_series():
         if len(df.columns) > 6:
             continue
         for col in df.columns:
+            # Case of duplicate columns
+            if not isinstance(df[col], pd.Series):
+                continue
             series["{}.{}".format(df_name, col)] = df[col]
     return series
 

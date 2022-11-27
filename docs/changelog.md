@@ -11,12 +11,13 @@ ITables ChangeLog
 - `requests` was added as a build dependency ([#123](https://github.com/mwouts/itables/issues/123))
 - and the `flake8` pre-commit hook was fixed ([#124](https://github.com/mwouts/itables/issues/124)) - thanks
 to [Anselm Hahn](https://github.com/Anselmoo) for these two contributions!
+- Duplicated column and index names are supported ([#134](https://github.com/mwouts/itables/issues/134))
 
 **Added**
 - The examples in the documentation are now executed as part of the test suite to increase the coverage.
 
 **Changed**
-- We have changed the default table to `style = "table-layout:auto"` to fix an issue on the width of index columns (default `style` was `width:auto` previously) (#130)
+- We have changed the default table to `style = "table-layout:auto"` to fix an issue on the width of index columns (default `style` was `width:auto` previously) ([#130](https://github.com/mwouts/itables/issues/130))
 
 
 1.3.5 (2022-11-12)
