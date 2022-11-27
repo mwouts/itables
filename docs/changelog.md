@@ -15,6 +15,9 @@ to [Anselm Hahn](https://github.com/Anselmoo) for these two contributions!
 **Added**
 - The examples in the documentation are now executed as part of the test suite to increase the coverage.
 
+**Changed**
+- We have changed the default table to `style = "table-layout:auto"` to fix an issue on the width of index columns (default `style` was `width:auto` previously) (#130)
+
 
 1.3.5 (2022-11-12)
 ------------------
