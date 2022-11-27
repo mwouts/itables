@@ -1,8 +1,10 @@
 import sys
 from pathlib import Path
 
+import jupytext
 import pytest
-from jupytext.cli import jupytext
+
+from itables import init_notebook_mode
 
 pytestmark = pytest.mark.skipif(sys.version_info < (3,), reason="Not supported in Py2")
 
@@ -17,6 +19,10 @@ def list_doc_notebooks():
 @pytest.mark.parametrize(
     "notebook", list_doc_notebooks(), ids=lambda notebook: notebook.stem
 )
-def test_documentation(notebook, tmp_path):
-    notebook.hardlink_to(tmp_path / notebook.name)
-    jupytext([str(tmp_path / notebook.name), "--set-kernel", "itables", "--execute"])
+def test_run_documentation_notebooks(notebook):
+    nb = jupytext.read(notebook)
+    py_notebook = jupytext.writes(nb, "py:percent")
+    exec(py_notebook, {})
+
+    # Revert back to the non initialized mode
+    init_notebook_mode(all_interactive=False, connected=True)
