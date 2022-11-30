@@ -347,24 +347,7 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
 
     # Export the table data to JSON and include this in the HTML
     if showIndex:
-        try:
-            df = df.reset_index()
-        except ValueError:
-            # Issue #134: the above might fail if the index has duplicated names or if one of the
-            # index names is already a column, with e.g "ValueError: cannot insert A, already exists"
-            index_levels = [
-                pd.Series(
-                    df.index.get_level_values(i),
-                    name=name
-                    or (
-                        "index{}".format(i)
-                        if isinstance(df.index, pd.MultiIndex)
-                        else "index"
-                    ),
-                )
-                for i, name in enumerate(df.index.names)
-            ]
-            df = pd.concat(index_levels + [df.reset_index(drop=True)], axis=1)
+        df = safe_reset_index(df)
 
     dt_data = datatables_rows(df)
 
@@ -373,6 +356,27 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     )
 
     return output
+
+
+def safe_reset_index(df):
+    try:
+        return df.reset_index()
+    except ValueError:
+        # Issue #134: the above might fail if the index has duplicated names or if one of the
+        # index names is already a column, with e.g "ValueError: cannot insert A, already exists"
+        index_levels = [
+            pd.Series(
+                df.index.get_level_values(i),
+                name=name
+                or (
+                    "index{}".format(i)
+                    if isinstance(df.index, pd.MultiIndex)
+                    else "index"
+                ),
+            )
+            for i, name in enumerate(df.index.names)
+        ]
+        return pd.concat(index_levels + [df.reset_index(drop=True)], axis=1)
 
 
 def show(df=None, **kwargs):
