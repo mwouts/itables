@@ -215,7 +215,7 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
 
 ## Row order
 
-Since `itables>=1.3.0`, the interactive datatable shows the rows in the same order as the original dataframe (rows are sorted on the index columns when the dataframe index is both shown and monotonic, and not sorted otherwise)
+Since `itables>=1.3.0`, the interactive datatable shows the rows in the same order as the original dataframe:
 
 ```{code-cell}
 from itables.sample_dfs import get_dict_of_test_dfs
@@ -229,11 +229,11 @@ for name, test_df in get_dict_of_test_dfs().items():
         )
 ```
 
-You can also set an explicit [`order`](https://datatables.net/reference/option/order) argument, and e.g. deactivate the sorting with `order = []`:
+You can also set an explicit [`order`](https://datatables.net/reference/option/order) argument:
 
 ```{code-cell}
 sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
-show(sorted_df, order=[], dom="tpr")
+show(sorted_df, order=[[1, "asc"]], dom="tpr")
 ```
 
 ## Advanced cell formatting with JS callbacks
