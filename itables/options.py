@@ -21,6 +21,9 @@ maxBytes = 2**16
 # maxRows = 10000
 # maxColumns = 1000
 
+"""By default we don't sort the table"""
+order = []
+
 """Pre dt code"""
 pre_dt_code = ""
 
