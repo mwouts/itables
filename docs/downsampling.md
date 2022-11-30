@@ -18,7 +18,7 @@ When an interactive table is displayed by `itables`, the table data is embedded 
 
 When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`, and display a warning that points to the `itables` documentation.
 
-If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0`). Similarly you can set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
+If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0`). Similarly, you can set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `200`).
 
 ```{code-cell}
 from itables import init_notebook_mode, show

@@ -102,27 +102,30 @@ Select how your table should look like with the `classes` argument of the `show`
 :tags: [full-width]
 
 opt.scrollX = True
-opt.classes = ["display", "nowrap"]
+opt.classes = ["display"]
 df
 ```
 
 ```{code-cell}
 :tags: [full-width]
 
-opt.classes = ["display", "cell-border"]
+opt.classes = ["display", "nowrap", "cell-border"]
 df
 ```
 
 ### Table position and width
 
-You can set the `width` of a particular table, or center it by adding `margin:auto` to the `style` argument:
+The default value for `style` is `table-layout:auto`. You can adjust the table width to the content
+(when the table only has a few columns) by adding `width:auto` like in this example:
 
 ```{code-cell}
-:tags: [full-width]
+show(df[["name", "region"]], style="table-layout:auto;width:auto")
+```
 
-opt.scrollX = False
+You can also center it by adding `margin:auto` to the `style` argument (try this in Jupyter)
 
-show(df, style="width:80%; margin:auto;")
+```{code-cell}
+show(df[["name", "region"]], style="table-layout:auto;width:auto;margin:auto")
 ```
 
 ## Table captions
