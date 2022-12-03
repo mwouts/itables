@@ -15,6 +15,7 @@ to [Anselm Hahn](https://github.com/Anselmoo) for these two contributions!
 
 **Added**
 - The examples in the documentation are now executed as part of the test suite to increase the coverage.
+- We have added a new `caption` argument to the `show` function to make it easier to add captions on tables.
 
 **Changed**
 - We have changed the default table to `style = "table-layout:auto;width:auto;margin:auto"` to fix an issue on the width of index columns (default `style` was `width:auto` previously) ([#130](https://github.com/mwouts/itables/issues/130))
