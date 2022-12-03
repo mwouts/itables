@@ -9,12 +9,15 @@ from .utils import read_package_file
 if it has no name and its content is range(N)"""
 showIndex = "auto"
 
-"""Default styling options. See https://datatables.net/manual/styling/classes"""
+"""Default datatables classes. See https://datatables.net/manual/styling/classes"""
 classes = ["display", "nowrap"]
 
-"""Default table style. Use 'width:auto' to fit the table width to its content,
-and 'margin:auto' to center the table. Combine multiple options using ';'."""
-style = "table-layout:auto"
+"""Default table style. Use
+- 'table-layout:auto' to compute the layout automatically
+- 'width:auto' to fit the table width to its content
+- 'margin:auto' to center the table.
+Combine multiple options using ';'."""
+style = "table-layout:auto;width:auto;margin;auto"
 
 """Additional tags like e.g. caption"""
 tags = ""
