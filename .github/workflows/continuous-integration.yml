@@ -9,7 +9,7 @@ on:
 
 jobs:
   skip_duplicate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
@@ -21,7 +21,7 @@ jobs:
   pre-commit:
     needs: skip_duplicate
     if: ${{ needs.skip_duplicate.outputs.should_skip == 'false' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         python-version: [ 2.7, 3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -73,7 +73,7 @@ jobs:
   publish:
     name: Publish to PyPi
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
