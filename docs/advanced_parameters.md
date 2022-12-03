@@ -115,21 +115,22 @@ df
 
 ### Table position and width
 
-The default value for `style` is `table-layout:auto;width:auto;margin:auto`.
+The default value for `style` is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
 Without `width:auto`, tables with few columns will still take the full notebook width in Jupyter.
 And without `margin:auto`, tables with few columns appear on the left.
 
 ## Table captions
 
-You can set additional `tags` like a [caption](https://datatables.net/blog/2014-11-07) on the table with the `tags` option:
+You can set additional `tags` on the table like e.g. a [caption](https://datatables.net/blog/2014-11-07):
 
 ```{code-cell}
 :tags: [full-width]
 
-show(df, tags="<caption>Countries from the World Bank Database</caption>")
+show(df, "Countries from the World Bank Database")
 ```
 
-The position of the caption can be set explicitly as in the datatables example above (note that the default position may depend on how you render the notebook):
+The caption appears at the bottom of the table by default. This is governed by the `style` option which you can change.
+You can also override this in the caption tag itself:
 
 ```{code-cell}
 :tags: [full-width]

@@ -208,7 +208,7 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     return to_html_datatable(df, tableId, connected=_CONNECTED, **kwargs)
 
 
-def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
+def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwargs):
     """Return the HTML representation of the given dataframe as an interactive datatable"""
     # Default options
     for option in dir(opt):
@@ -224,6 +224,11 @@ def to_html_datatable(df=None, tableId=None, connected=True, **kwargs):
     style = kwargs.pop("style")
     css = kwargs.pop("css")
     tags = kwargs.pop("tags")
+
+    if caption is not None:
+        tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
+            tags, caption
+        )
 
     showIndex = kwargs.pop("showIndex")
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -365,7 +370,7 @@ def safe_reset_index(df):
         return pd.concat(index_levels + [df.reset_index(drop=True)], axis=1)
 
 
-def show(df=None, **kwargs):
+def show(df=None, caption=None, **kwargs):
     """Show a dataframe"""
-    html = to_html_datatable(df, connected=_CONNECTED, **kwargs)
+    html = to_html_datatable(df, caption=caption, connected=_CONNECTED, **kwargs)
     display(HTML(html))
