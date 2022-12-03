@@ -10,7 +10,7 @@ if it has no name and its content is range(N)"""
 showIndex = "auto"
 
 """Default datatables classes. See https://datatables.net/manual/styling/classes"""
-classes = ["display", "nowrap"]
+classes = "display nowrap"
 
 """Default table style. Use
 - 'table-layout:auto' to compute the layout automatically
