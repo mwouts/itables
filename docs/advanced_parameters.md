@@ -115,18 +115,9 @@ df
 
 ### Table position and width
 
-The default value for `style` is `table-layout:auto`. You can adjust the table width to the content
-(when the table only has a few columns) by adding `width:auto` like in this example:
-
-```{code-cell}
-show(df[["name", "region"]], style="table-layout:auto;width:auto")
-```
-
-You can also center it by adding `margin:auto` to the `style` argument (try this in Jupyter)
-
-```{code-cell}
-show(df[["name", "region"]], style="table-layout:auto;width:auto;margin:auto")
-```
+The default value for `style` is `table-layout:auto;width:auto;margin:auto`.
+Without `width:auto`, tables with few columns will still take the full notebook width in Jupyter.
+And without `margin:auto`, tables with few columns appear on the left.
 
 ## Table captions
 
