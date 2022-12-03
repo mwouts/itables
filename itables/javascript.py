@@ -215,7 +215,7 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
         if (
             option not in kwargs
             and not option.startswith("__")
-            and option != "read_package_file"
+            and option not in ["read_package_file", "warn_on_unexpected_types"]
         ):
             kwargs[option] = getattr(opt, option)
 
