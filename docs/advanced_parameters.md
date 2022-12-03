@@ -26,100 +26,73 @@ from itables import init_notebook_mode, show
 init_notebook_mode(all_interactive=True)
 ```
 
-and we load a sample dataframe
-
-```{code-cell}
-from itables.sample_dfs import get_countries
-
-df = get_countries()
-```
-
-## Selecting table controls
-
-Use DataTables' [`dom` option](https://datatables.net/reference/option/dom)
-to select the elements of the table that should be displayed:
-- `l`: length changing input control
-- `f`: filtering input
-- `t`: The table!
-- `i`: Table information summary
-- `p`: pagination control
-- `r`: processing display element
-
-For instance, if you don't want the search box, the length input control and the table summary, use
+Then we create two sample dataframes:
 
 ```{code-cell}
 import pandas as pd
+from itables.sample_dfs import get_countries
 
-show(pd.DataFrame({"a": [2, 1]}), dom="tpr")
+df_small = pd.DataFrame({"a": [2, 1]})
+df = get_countries()
 ```
 
-Note: you can change the default value of the dom option by setting `opt.dom` as in the examples below.
+## Position and width
 
-## Pagination
+The default value for the table CSS is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
+Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
+Using `margin:auto` makes non-wide tables centered in Jupyter.
 
-### How many rows per page
-
-Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`:
+You can change the CSS used for a single table with e.g.
 
 ```{code-cell}
-:tags: [full-width]
+show(df_small, style="table-layout:auto;width:50%;float:right")
+```
+
+or you can also change it for all tables by changing `itables.options.style`:
+
+```python
+import itables.options as opt
+
+opt.style = "table-layout:auto;width:auto"
+```
+
+```{code-cell}
+:tags: [remove-cell]
 
 import itables.options as opt
 
-opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
-df
+opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 ```
 
-### Show the table in full
+## Theme
 
-Show the table in full with the [`paging` argument](https://datatables.net/reference/option/paging), either in the `show` method, or in the options:
+Select how your table looks like with the `classes` argument (defaults to `"display nowrap"`) of the `show` function, or by changing `itables.options.classes`.
+
+Add `"compact"` if you want a denser table:
 
 ```{code-cell}
 :tags: [full-width]
 
-show(df.head(), paging=False)
+show(df, classes="display nowrap compact")
 ```
 
-### Scroll
-
-The pagination can be replaced with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
+Remove `"nowrap"` if you want the cell content to be wrapped:
 
 ```{code-cell}
 :tags: [full-width]
 
-show(df, scrollY="200px", scrollCollapse=True, paging=False)
+show(df, classes="display", scrollX=True)
 ```
 
-In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
-
-## Table and cell style
-
-### Datatable classes
-
-Select how your table should look like with the `classes` argument of the `show` function, or by changing `itables.options.classes`. For the list of possible values, see [datatables' default style](https://datatables.net/manual/styling/classes) and [the style examples](https://datatables.net/examples/styling/).
+[More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
 
 ```{code-cell}
 :tags: [full-width]
 
-opt.scrollX = True
-opt.classes = ["display"]
-df
+show(df, classes="display nowrap cell-border")
 ```
 
-```{code-cell}
-:tags: [full-width]
-
-opt.classes = ["display", "nowrap", "cell-border"]
-df
-```
-
-### Table position and width
-
-The default value for `style` is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
-Without `width:auto`, tables with few columns will still take the full notebook width in Jupyter.
-And without `margin:auto`, tables with few columns appear on the left.
-
-## Table captions
+## Caption
 
 You can set additional `tags` on the table like e.g. a [caption](https://datatables.net/blog/2014-11-07):
 
@@ -129,8 +102,8 @@ You can set additional `tags` on the table like e.g. a [caption](https://datatab
 show(df, "Countries from the World Bank Database")
 ```
 
-The caption appears at the bottom of the table by default. This is governed by the `style` option which you can change.
-You can also override this in the caption tag itself:
+The caption appears at the bottom of the table by default. This is governed by `caption-side:bottom`
+in the `style` option which you can change. You can also override the location of the caption in the caption tag itself:
 
 ```{code-cell}
 :tags: [full-width]
@@ -142,8 +115,70 @@ show(
 ```
 
 ```{code-cell}
+:tags: [remove-input]
+
 opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 ```
+
+## Remove the search box
+
+By default, datatables comes with a search box, a pagination control, a table summary, etc.
+You can select which elements are actually displayed using
+DataTables' [`dom` option](https://datatables.net/reference/option/dom) with e.g.:
+
+```{code-cell}
+show(df_small, dom="tpr")
+```
+
+The available elements are:
+- `l`: length changing input control
+- `f`: filtering input
+- `t`: the table itself
+- `i`: table information summary
+- `p`: pagination control
+- `r`: processing display element
+
+Like for the other arguments of `show`, you can change the default value of the dom option with e.g.:
+
+```{code-cell}
+import itables.options as opt
+
+opt.dom = "lfrtip"  # (default value)
+```
+
+## Pagination
+
+### How many rows per page
+
+Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, lengthMenu=[2, 5, 10, 20, 50])
+```
+
+### Show the table in full
+
+Use [`paging=False`](https://datatables.net/reference/option/paging) to show the table in full:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df.head(8), paging=False)
+```
+
+### Scroll
+
+You can replace the pagination with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, scrollY="200px", scrollCollapse=True, paging=False)
+```
+
+In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
 
 ## Table footer
 
@@ -172,7 +207,6 @@ As always you can set activate column filters by default with e.g.
 
 ```{code-cell}
 opt.column_filters = "footer"
-alpha_numeric_df
 ```
 
 Column filters also work on dataframes with multiindex columns:
@@ -183,15 +217,17 @@ from itables.sample_dfs import get_dict_of_test_dfs
 get_dict_of_test_dfs()["multiindex"]
 ```
 
-Now we deactivate the column filters for the rest of the notebook
-
 ```{code-cell}
+:tags: [remove-cell]
+
 opt.column_filters = False
 ```
 
-## Float precision
+## Pandas formatting
 
-Floats are rounded using `pd.options.display.float_format`. Please change that format according to your preference.
+`itables` builds the HTML representation of your Pandas dataframes using Pandas itself, so
+you can use [Pandas' formatting options](https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html).
+For instance, you can change the precision used to display floating numbers:
 
 ```{code-cell}
 import math
@@ -201,7 +237,7 @@ with pd.option_context("display.float_format", "{:,.2f}".format):
     show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
-You may also choose to convert floating numbers to strings:
+Or you can use a custom formatter:
 
 ```{code-cell}
 with pd.option_context("display.float_format", "${:,.2f}".format):
@@ -288,7 +324,7 @@ If you wish you can also set a value for `columnDefs` permanently in `itables.op
 
 ## Cell alignment
 
-You can use the datatables.net [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
+You can use the datatables.net [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc. to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
 
 ```{code-cell}
 show(df, columnDefs=[{"className": "dt-center", "targets": "_all"}])
