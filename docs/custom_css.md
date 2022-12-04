@@ -12,12 +12,15 @@ kernelspec:
   name: itables
 ---
 
-## Custom CSS
+# Custom CSS
 
-You can change the CSS used to render the tables
+You can change the global CSS used to render the tables
 by either passing a custom CSS to the `show` function, or by
-changing `opt.css`. Note that the CSS must be the same for all the tables
-in a given notebook.
+changing `opt.css`.
+
+Note that the CSS must be the same for all the tables
+in a given notebook. To change the CSS for just one table,
+use the [`style`](advanced_parameters.html#position-and-width) argument of the `show` function.
 
 ```{code-cell}
 from itables import init_notebook_mode, show

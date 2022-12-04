@@ -120,7 +120,7 @@ show(
 opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 ```
 
-## Remove the search box
+## Removing the search box
 
 By default, datatables comes with a search box, a pagination control, a table summary, etc.
 You can select which elements are actually displayed using
