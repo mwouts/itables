@@ -5,6 +5,17 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
+- We have added `setuptools.build_meta` as the build backend in `pyproject.toml` ([#142](https://github.com/mwouts/itables/issues/142))
+- We have fixed a typo in `itables.options.style`
+
+**Changed**
+- We have updated the development status of the project to _Production/Stable_
+
+
+1.4.0 (2022-12-04)
+------------------
+
+**Fixed**
 - We have improved the support for dark themes by using the CSS from datatables.net in version 1.13.1 ([#103](https://github.com/mwouts/itables/issues/103))
 - We have fixed a compatibility issue with old versions of pandas
 - We have added a test to make sure that timezones are preserved

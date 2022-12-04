@@ -1,16 +1,15 @@
 import re
 from io import open
-from os import path
 from pathlib import Path
 
 import requests
 from setuptools import find_packages, setup
 
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
+this_directory = Path(__file__).parent
+with open(str(this_directory / "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
-with open(path.join(this_directory, "itables/version.py")) as f:
+with open(str(this_directory / "itables/version.py")) as f:
     version_file = f.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     version = version_match.group(1)
@@ -55,7 +54,7 @@ setup(
     install_requires=["IPython", "pandas"],
     license="MIT",
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Framework :: Jupyter",
         "Intended Audience :: Developers",
