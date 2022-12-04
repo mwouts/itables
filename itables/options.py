@@ -17,7 +17,7 @@ classes = "display nowrap"
 - 'width:auto' to fit the table width to its content
 - 'margin:auto' to center the table.
 Combine multiple options using ';'."""
-style = "table-layout:auto;width:auto;margin;auto;caption-side:bottom"
+style = "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
 
 """Additional tags like e.g. caption"""
 tags = ""
