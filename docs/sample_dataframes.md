@@ -145,3 +145,9 @@ show(dict_of_test_dfs["long_column_names"], scrollX=True)
 ```{code-cell}
 show(dict_of_test_dfs["duplicated_columns"])
 ```
+
+## named_column_index
+
+```{code-cell}
+show(dict_of_test_dfs["named_column_index"])
+```
