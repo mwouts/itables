@@ -340,13 +340,20 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     if showIndex:
         df = safe_reset_index(df)
 
-    dt_data = datatables_rows(df)
+    # When the header has an extra column, we add
+    # an extra empty column in the table data #141
+    column_count = _column_count_in_header(table_header)
+    dt_data = datatables_rows(df, column_count)
 
     output = replace_value(
         output, "const data = [];", "const data = {};".format(dt_data)
     )
 
     return output
+
+
+def _column_count_in_header(table_header):
+    return max(line.count("</th>") for line in table_header.split("</tr>"))
 
 
 def safe_reset_index(df):

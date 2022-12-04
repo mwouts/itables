@@ -55,9 +55,23 @@ class TableValuesEncoder(json.JSONEncoder):
         return str(obj)
 
 
-def datatables_rows(df):
+def datatables_rows(df, count=None):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    data = list(zip(*(_format_column(x) for _, x in df.items())))
+    if count is None or len(df.columns) == count:
+        data = list(zip(*(_format_column(x) for _, x in df.items())))
+    else:
+        # When the header requires more columns (#141), we append empty columns on the left
+        missing_columns = count - len(df.columns)
+        assert missing_columns > 0
+        empty_col = [[None] * len(df)]
+        data = list(
+            zip(
+                *(
+                    empty_col * missing_columns
+                    + [_format_column(x) for _, x in df.items()]
+                )
+            )
+        )
     return json.dumps(data, cls=TableValuesEncoder)

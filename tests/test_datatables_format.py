@@ -10,6 +10,7 @@ import pytest
 
 import itables.options as opt
 from itables.datatables_format import TableValuesEncoder, datatables_rows
+from itables.javascript import _column_count_in_header, _table_header
 
 
 @pytest.mark.skipif(
@@ -57,6 +58,13 @@ from itables.datatables_format import TableValuesEncoder, datatables_rows
             pd.DataFrame({"dict": [{"a": 1}, {"b": [1, 2]}]}),
             [["{'a': 1}"], ["{'b': [1, 2]}"]],
         ),
+        (pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1), [[None, 1]]),
+        (
+            pd.DataFrame({"a": [1, 2]}, index=pd.Index([1, 2], name="index"))
+            .rename_axis("columns", axis=1)
+            .T.reset_index(),
+            [[None, "a", 1, 2]],
+        ),
     ],
     ids=[
         "bool",
@@ -71,10 +79,23 @@ from itables.datatables_format import TableValuesEncoder, datatables_rows
         "timedelta",
         "object_list",
         "object_dict",
+        "df_with_named_column_axis",
+        "transposed_df",
     ],
 )
 def test_datatables_rows(df, expected):
-    actual = datatables_rows(df)
+    table_header = _table_header(
+        df,
+        table_id="table",
+        show_index=False,
+        classes="display",
+        style="",
+        tags="",
+        footer=False,
+        column_filters=False,
+    )
+    column_count = _column_count_in_header(table_header)
+    actual = datatables_rows(df, count=column_count)
     assert actual == json.dumps(expected)
 
 
