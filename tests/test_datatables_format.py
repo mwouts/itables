@@ -86,9 +86,9 @@ from itables.javascript import _column_count_in_header, _table_header
 def test_datatables_rows(df, expected):
     table_header = _table_header(
         df,
-        table_id="table",
+        table_id="",
         show_index=False,
-        classes="display",
+        classes="",
         style="",
         tags="",
         footer=False,
