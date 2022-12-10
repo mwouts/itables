@@ -9,7 +9,11 @@ import pandas as pd
 import pytest
 
 import itables.options as opt
-from itables.datatables_format import TableValuesEncoder, datatables_rows
+from itables.datatables_format import (
+    TableValuesEncoder,
+    _format_column,
+    datatables_rows,
+)
 
 
 @pytest.mark.skipif(
@@ -92,3 +96,26 @@ def test_TableValuesEncoder():
         assert (
             json.dumps(Exception, cls=TableValuesEncoder) == "\"<class 'Exception'>\""
         )
+
+
+@pytest.mark.skipif(
+    sys.version_info > (2,), reason="older pandas has no 'leading_space'"
+)
+def test_format_column_1():
+
+    with pytest.raises(TypeError):
+        x = _format_column(pd.Series([1, 2, 3], dtype="Float64"))
+    assert x.dtype == float
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3,), reason="newer pandas has no 'leading_space'"
+)
+def test_format_column_2():
+    x = _format_column(pd.Series([1, 2, 3], dtype="Float64"))
+    assert x.dtype == float
+
+
+def test_format_column_dtype():
+    x = _format_column(pd.Series([True, False, True], dtype="bool"))
+    assert x.dtype == bool

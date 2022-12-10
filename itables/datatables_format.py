@@ -13,11 +13,10 @@ def _format_column(x):
     if dtype_kind in ["b", "i", "s"]:
         return x
 
-    # If pandas version >= 0.25.0 use the new method format_array with parameter 'leading_space'
-    if pd.__version__ >= "0.25.0":
+    try:
         x = fmt.format_array(x._values, None, justify="all", leading_space=False)
-    else:
-        # If pandas version < 0.25.0 use the old method format_array with parameter 'leading_space'
+    except TypeError:
+        # Older versions of Pandas don't have 'leading_space'
         x = fmt.format_array(x._values, None, justify="all")
     if dtype_kind == "f":
         try:
