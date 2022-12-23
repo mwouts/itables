@@ -301,12 +301,21 @@ function (td, cellData, rowData, row, col) {
 
 The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.
 
+Note that the default value of `style`, or of `autoWidth` (defaults to `True`), might override custom column widths,
+so you might have to change their values as in the examples below.
+
 You can set a fixed width for all the columns with `"targets": "_all"`:
 
 ```{code-cell}
 :tags: [full-width]
 
-show(df, columnDefs=[{"width": "120px", "targets": "_all"}], scrollX=True)
+show(
+    df,
+    columnDefs=[{"width": "120px", "targets": "_all"}],
+    scrollX=True,
+    style="width:1200px",
+    autoWidth=False,
+)
 ```
 
 You can also adjust the width of selected columns only:
@@ -317,6 +326,7 @@ You can also adjust the width of selected columns only:
 show(
     df,
     columnDefs=[{"width": "30%", "targets": [2, 3]}],
+    style="width:100%;margin:auto",
 )
 ```
 
