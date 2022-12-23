@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.4.2-dev (2022-12-??)
+------------------
+
+**Fixed**
+- We make sure that the table content has the same number of columns as the header ([#141](https://github.com/mwouts/itables/issues/141))
+
+
 1.4.1 (2022-12-04)
 ------------------
 

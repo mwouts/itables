@@ -203,6 +203,7 @@ def get_dict_of_test_dfs(N=100, M=100):
                 np.arange(4).reshape((2, 2)), names=["A", "A"]
             ),
         ),
+        "named_column_index": pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1),
     }
 
 
