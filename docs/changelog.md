@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.4.3 (2023-01-14)
+------------------
+
+**Changed**
+- When a table is made of only a few rows, we display just the table (not the search box, pagination control, etc)
+
+
 1.4.2 (2022-12-23)
 ------------------
 
