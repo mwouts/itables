@@ -50,7 +50,7 @@ setup(
             "external/*",
         ]
     },
-    tests_require=["pytest"],
+    tests_require=["pytest", "pytz"],
     install_requires=["IPython", "pandas", "numpy"],
     license="MIT",
     classifiers=[

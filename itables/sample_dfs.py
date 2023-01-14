@@ -12,7 +12,11 @@ from itertools import cycle
 
 import numpy as np
 import pandas as pd
-import pytz
+
+try:
+    import pytz
+except ImportError:
+    pytz = None
 
 from .utils import find_package_file
 
@@ -116,7 +120,7 @@ def get_dict_of_test_dfs(N=100, M=100):
                         55,
                         55,
                         456654,
-                        tzinfo=pytz.timezone("US/Eastern"),
+                        tzinfo=None if pytz is None else pytz.timezone("US/Eastern"),
                     ),
                 ],
                 "timedelta": [
