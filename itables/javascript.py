@@ -3,6 +3,7 @@
 import json
 import logging
 import re
+import sys
 import uuid
 import warnings
 from base64 import b64encode
@@ -10,7 +11,6 @@ from base64 import b64encode
 import numpy as np
 import pandas as pd
 from IPython.display import HTML, Javascript, display
-from six import string_types
 
 import itables.options as opt
 
@@ -190,7 +190,8 @@ def json_dumps(obj, eval_functions):
 def replace_value(template, pattern, value):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
-    assert isinstance(template, string_types)
+    if sys.version_info >= (3,):
+        assert isinstance(template, str)
     assert template.count(pattern) == 1
     return template.replace(pattern, value)
 
