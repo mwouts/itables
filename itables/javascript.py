@@ -225,6 +225,11 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
+    # Only display the table if the rows fit on one 'page'
+    if "dom" not in kwargs and len(df) <= 10:  # the default page has 10 rows
+        if "lengthMenu" not in kwargs or len(df) <= min(kwargs["lengthMenu"]):
+            kwargs["dom"] = "t"
+
     if caption is not None:
         tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
             tags, caption
