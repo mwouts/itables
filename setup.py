@@ -51,7 +51,7 @@ setup(
         ]
     },
     tests_require=["pytest"],
-    install_requires=["IPython", "pandas"],
+    install_requires=["IPython", "pandas", "numpy"],
     license="MIT",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
