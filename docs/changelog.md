@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+1.4.4 (2023-01-15)
+------------------
+
+**Fixed**
+- We have added `numpy` to the dependencies, `pytz` is an optional dependency (used in the sample dataframes only), and we do not depend on `six` anymore ([#149](https://github.com/mwouts/itables/issues/149))
+The build time dependencies `pathlib` and `requests` are listed in `pyproject.toml` (since [#123](https://github.com/mwouts/itables/issues/123), `itables==1.4.0`)
+
+
 1.4.3 (2023-01-14)
 ------------------
 
