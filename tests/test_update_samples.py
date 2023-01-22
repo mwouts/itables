@@ -1,25 +1,26 @@
 from pathlib import Path
 
-import pytest
 import world_bank_data as wb
 
-sample_dir = Path(__file__).parent / ".." / "itables" / "samples"
+SAMPLE_DIR = Path(__file__).parent / ".." / "itables" / "samples"
 
 
-def test_update_countries():
+def create_csv_file_if_missing(df, csv_file):
+    if not csv_file.exists():
+        with open(str(csv_file), "w") as fp:
+            fp.write(df.to_csv())
+
+
+def test_update_countries(csv_file=SAMPLE_DIR / "countries.csv"):
     df = wb.get_countries()
-    with open(str(sample_dir / "countries.csv"), "w") as fp:
-        fp.write(df.to_csv())
+    create_csv_file_if_missing(df, csv_file)
 
 
-def test_update_population():
+def test_update_population(csv_file=SAMPLE_DIR / "population.csv"):
     x = wb.get_series("SP.POP.TOTL", mrv=1, simplify_index=True)
-    with open(str(sample_dir / "population.csv"), "w") as fp:
-        fp.write(x.to_csv())
+    create_csv_file_if_missing(x, csv_file)
 
 
-@pytest.mark.skip("The indicators appear to change often")
-def test_update_indicators():
+def test_update_indicators(csv_file=SAMPLE_DIR / "indicators.csv"):
     df = wb.get_indicators().sort_index().head(500)
-    with open(str(sample_dir / "indicators.csv"), "w") as fp:
-        fp.write(df.to_csv())
+    create_csv_file_if_missing(df, csv_file)
