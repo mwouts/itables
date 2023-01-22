@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+1.4.5-dev (2023-01-??)
+------------------
+
+**Changed**
+- We make sure that no argument passed to `show` is equal to `None` (for most options this results in a datatable not loading)
+- Running the test collection will not update the CSV files used for testing anymore
+
+
 1.4.4 (2023-01-15)
 ------------------
 

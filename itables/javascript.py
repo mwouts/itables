@@ -220,6 +220,14 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
         ):
             kwargs[option] = getattr(opt, option)
 
+    for name, value in kwargs.items():
+        if value is None:
+            raise ValueError(
+                "Please don't pass an option with a value equal to None ('{}=None')".format(
+                    name
+                )
+            )
+
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
