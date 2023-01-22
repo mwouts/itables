@@ -240,6 +240,16 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             ),
         ),
         "named_column_index": pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1),
+        "long_integers": pd.DataFrame(
+            {
+                "long": [1234567890123456789, 2345678901234567890, 3456789012345678901],
+                "expected": [
+                    "1234567890123456789",
+                    "2345678901234567890",
+                    "3456789012345678901",
+                ],
+            }
+        ),
     }
 
     if polars:

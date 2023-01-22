@@ -8,7 +8,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from itables.datatables_format import datatables_rows, generate_encoder
+from itables.datatables_format import (
+    JS_MAX_SAFE_INTEGER,
+    JS_MIN_SAFE_INTEGER,
+    datatables_rows,
+    generate_encoder,
+    n_suffix_for_bigints,
+)
 from itables.javascript import _column_count_in_header, _table_header
 
 
@@ -64,6 +70,18 @@ from itables.javascript import _column_count_in_header, _table_header
             .T.reset_index(),
             [[None, "a", 1, 2]],
         ),
+        (
+            pd.DataFrame(
+                {
+                    "long": [
+                        1234567890123456789,
+                        2345678901234567890,
+                        3456789012345678901,
+                    ]
+                }
+            ),
+            '[[BigInt("1234567890123456789")], [BigInt("2345678901234567890")], [BigInt("3456789012345678901")]]',
+        ),
     ],
     ids=[
         "bool",
@@ -80,6 +98,7 @@ from itables.javascript import _column_count_in_header, _table_header
         "object_dict",
         "df_with_named_column_axis",
         "transposed_df",
+        "long_integers",
     ],
 )
 def test_datatables_rows(df, expected):
@@ -95,7 +114,10 @@ def test_datatables_rows(df, expected):
     )
     column_count = _column_count_in_header(table_header)
     actual = datatables_rows(df, count=column_count)
-    assert actual == json.dumps(expected)
+    if isinstance(expected, str):
+        assert actual == expected
+    else:
+        assert actual == json.dumps(expected)
 
 
 @pytest.mark.skipif(
@@ -112,3 +134,24 @@ def test_TableValuesEncoder():
             json.dumps(Exception, cls=generate_encoder(False))
             == "\"<class 'Exception'>\""
         )
+
+
+def test_encode_large_int_to_bigint(large=3456789012345678901):
+    assert (
+        n_suffix_for_bigints(json.dumps([large])) == '[BigInt("3456789012345678901")]'
+    )
+    assert (
+        n_suffix_for_bigints(json.dumps([large * 100, large]))
+        == '[BigInt("345678901234567890100"), BigInt("3456789012345678901")]'
+    )
+
+
+@pytest.mark.parametrize("large", [JS_MIN_SAFE_INTEGER, JS_MAX_SAFE_INTEGER])
+def test_encode_max_int(large):
+    assert n_suffix_for_bigints(json.dumps([large])) == '[BigInt("{}")]'.format(large)
+
+
+@pytest.mark.parametrize("large", [JS_MIN_SAFE_INTEGER, JS_MAX_SAFE_INTEGER])
+def test_encode_not_max_int(large):
+    large //= 10
+    assert n_suffix_for_bigints(json.dumps([large])) == "[{}]".format(large)

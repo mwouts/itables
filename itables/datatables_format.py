@@ -1,4 +1,5 @@
 import json
+import re
 import warnings
 
 import numpy as np
@@ -6,6 +7,9 @@ import pandas as pd
 import pandas.io.formats.format as fmt
 
 import itables.options as opt
+
+JS_MAX_SAFE_INTEGER = 2**53 - 1
+JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
 
 def _format_column(x):
@@ -73,8 +77,32 @@ def datatables_rows(df, count=None):
     try:
         # Pandas DataFrame
         data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
-        return json.dumps(data, cls=generate_encoder(opt.warn_on_unexpected_types))
+        has_bigints = any(
+            x.dtype.kind == "i"
+            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
+            for _, x in df.items()
+        )
+        js = json.dumps(data, cls=generate_encoder(opt.warn_on_unexpected_types))
     except AttributeError:
         # Polars DataFrame
         data = list(df.iter_rows())
-        return json.dumps(data, cls=generate_encoder(False))
+        import polars as pl
+
+        has_bigints = any(
+            x.dtype in [pl.Int64, pl.UInt64]
+            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
+            for x in (df[col] for col in df.columns)
+        )
+        js = json.dumps(data, cls=generate_encoder(False))
+
+    if has_bigints:
+        js = n_suffix_for_bigints(js)
+
+    return js
+
+
+def n_suffix_for_bigints(js):
+    def n_suffix(matchobj):
+        return 'BigInt("' + matchobj.group(1) + '")' + matchobj.group(2)
+
+    return re.sub(r"(-?\d{16,})(,|])", n_suffix, js)

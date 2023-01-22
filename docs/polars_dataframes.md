@@ -140,3 +140,9 @@ show(dict_of_test_dfs["long_column_names"], scrollX=True)
 ```{code-cell}
 show(dict_of_test_dfs["named_column_index"])
 ```
+
+## long_integers
+
+```{code-cell}
+show(dict_of_test_dfs["long_integers"])
+```
