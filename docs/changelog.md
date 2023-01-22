@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Changed**
 - ITables uses the latest version `2.0.1` of `datatables-net` ([#121](https://github.com/mwouts/itables/issues/121))
+- Large Python integers are now mapped to JavaScript `BigInt` ([#172](https://github.com/mwouts/itables/issues/172))
 
 **Added**
 - The CSV, Excel and Print buttons are now included ([#50](https://github.com/mwouts/itables/issues/50))

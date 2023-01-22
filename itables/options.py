@@ -56,8 +56,5 @@ css = read_package_file("html/itables.css")
 """Should a warning appear when we have to encode an unexpected type?"""
 warn_on_unexpected_types = True
 
-"""Should a warning appear when we convert large integers to str?"""
-warn_on_int_to_str_conversion = True
-
 """Should a warning appear when the deprecated 'dom' is used?"""
 warn_on_dom = True

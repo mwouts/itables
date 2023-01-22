@@ -72,8 +72,6 @@ def kwargs_remove_none(**kwargs):
 
 
 def test_show_test_dfs(df, connected, use_to_html, lengthMenu, monkeypatch):
-    if "bigint" in df.columns:
-        monkeypatch.setattr("itables.options.warn_on_int_to_str_conversion", False)
     show(
         df,
         connected=connected,
@@ -83,8 +81,6 @@ def test_show_test_dfs(df, connected, use_to_html, lengthMenu, monkeypatch):
 
 
 def test_to_html_datatable(df, connected, use_to_html, lengthMenu, monkeypatch):
-    if "bigint" in df.columns:
-        monkeypatch.setattr("itables.options.warn_on_int_to_str_conversion", False)
     html = to_html_datatable(
         df,
         connected=connected,
@@ -111,8 +107,6 @@ def test_format_column(series_name, series):
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_show_test_series(series_name, series, connected, use_to_html, monkeypatch):
-    if "bigint" in series_name:
-        monkeypatch.setattr("itables.options.warn_on_int_to_str_conversion", False)
     show(series, connected=connected, use_to_html=use_to_html)
 
 

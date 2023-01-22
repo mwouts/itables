@@ -47,7 +47,6 @@ _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "maxColumns",
     "warn_on_dom",
     "warn_on_unexpected_types",
-    "warn_on_int_to_str_conversion",
 }
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 _ORIGINAL_DATAFRAME_STYLE_REPR_HTML = (
@@ -338,7 +337,6 @@ def to_html_datatable(
     maxRows = kwargs.pop("maxRows", 0)
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
-    warn_on_int_to_str_conversion = kwargs.pop("warn_on_int_to_str_conversion", False)
 
     df, downsampling_warning = downsample(
         df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
@@ -415,7 +413,6 @@ def to_html_datatable(
         df,
         column_count,
         warn_on_unexpected_types=warn_on_unexpected_types,
-        warn_on_int_to_str_conversion=warn_on_int_to_str_conversion,
     )
 
     return html_table_from_template(
