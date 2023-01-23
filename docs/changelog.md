@@ -1,6 +1,18 @@
 ITables ChangeLog
 =================
 
+1.4.5 (2023-01-23)
+------------------
+
+**Fixed**
+- Fixed an issue when `lengthMenu` is a 2D array ([#151](https://github.com/mwouts/itables/issues/151))
+
+
+**Changed**
+- We make sure that no argument passed to `show` is equal to `None` (for all tested options, passing `None` results in a datatable that never loads)
+- Running the test collection will not update the CSV files used for testing anymore
+
+
 1.4.4 (2023-01-15)
 ------------------
 

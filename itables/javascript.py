@@ -220,16 +220,21 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
         ):
             kwargs[option] = getattr(opt, option)
 
+    for name, value in kwargs.items():
+        if value is None:
+            raise ValueError(
+                "Please don't pass an option with a value equal to None ('{}=None')".format(
+                    name
+                )
+            )
+
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
     css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
-    # Only display the table if the rows fit on one 'page'
-    if "dom" not in kwargs and len(df) <= 10:  # the default page has 10 rows
-        if "lengthMenu" not in kwargs or len(df) <= min(kwargs["lengthMenu"]):
-            kwargs["dom"] = "t"
+    _set_dom_equals_t_if_df_fits_in_one_page(df, kwargs)
 
     if caption is not None:
         tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
@@ -274,10 +279,6 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
             "column_filters should be either "
             "'header', 'footer' or False, not {}".format(column_filters)
         )
-
-    # Do not show the page menu when the table has fewer rows than min length menu
-    if "paging" not in kwargs and len(df.index) <= kwargs.get("lengthMenu", [10])[0]:
-        kwargs["paging"] = False
 
     # Load the HTML template
     if connected:
@@ -360,6 +361,29 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
 
 def _column_count_in_header(table_header):
     return max(line.count("</th>") for line in table_header.split("</tr>"))
+
+
+def _min_rows(kwargs):
+    if "lengthMenu" not in kwargs:
+        return 10
+
+    lengthMenu = kwargs["lengthMenu"]
+    min_rows = lengthMenu[0]
+
+    if isinstance(min_rows, (int, float)):
+        return min_rows
+
+    return min_rows[0]
+
+
+def _set_dom_equals_t_if_df_fits_in_one_page(df, kwargs):
+    """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
+    if "dom" in kwargs:
+        return
+
+    if len(df) <= _min_rows(kwargs):
+        kwargs["dom"] = "t"
+        return
 
 
 def safe_reset_index(df):

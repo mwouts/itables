@@ -4,7 +4,7 @@ import sys
 import pandas as pd
 import pytest
 
-from itables import show
+from itables import show, to_html_datatable
 from itables.datatables_format import TableValuesEncoder, _format_column
 from itables.sample_dfs import (
     COLUMN_TYPES,
@@ -48,9 +48,16 @@ def test_get_indicators():
     show(df)
 
 
-@pytest.mark.parametrize("df_name,df", get_dict_of_test_dfs().items())
-def test_show_test_dfs(df_name, df):
-    show(df)
+def kwargs_remove_none(**kwargs):
+    return {key: value for key, value in kwargs.items() if value is not None}
+
+
+def test_show_test_dfs(df, lengthMenu):
+    show(df, **kwargs_remove_none(lengthMenu=lengthMenu))
+
+
+def test_to_html_datatable(df, lengthMenu):
+    to_html_datatable(df, **kwargs_remove_none(lengthMenu=lengthMenu))
 
 
 def test_ordered_categories():
