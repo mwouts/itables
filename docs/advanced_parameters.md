@@ -244,6 +244,31 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
     show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
+## Javascript formatting
+
+Numbers are formatted using Pandas, then are converted back to float to ensure they come in the right order when sorted.
+Therefore, to achieve a particular formatting you might have to resort to the
+[`columns.render` option](https://datatables.net/examples/advanced_init/column_render.html)
+of datatables.
+
+For instance, this [example](https://datatables.net/forums/discussion/61407/how-to-apply-a-numeric-format-to-a-column)
+can be ported like this:
+
+```{code-cell}
+from itables import JavascriptCode
+
+
+show(
+    pd.Series([i * math.pi * 1e4 for i in range(1, 6)]),
+    columnDefs=[
+        {
+            "targets": "_all",
+            "render": JavascriptCode("$.fn.dataTable.render.number(',', '.', 3, '$')"),
+        }
+    ],
+)
+```
+
 ## Row order
 
 Since `itables>=1.3.0`, the interactive datatable shows the rows in the same order as the original dataframe:
