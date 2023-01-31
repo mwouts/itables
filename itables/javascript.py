@@ -87,7 +87,7 @@ def init_notebook_mode(
         display(
             HTML(
                 replace_value(
-                    read_package_file("html/itables_render.html"),
+                    read_package_file("html/initialize_offline_datatable.html"),
                     "dt_src",
                     "data:text/javascript;base64,{}".format(dt64),
                 )
