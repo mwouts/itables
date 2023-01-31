@@ -7,16 +7,18 @@
     {
         // Define the table data
         const data = [];
-
-        // Define the dt_args
-        let dt_args = {};
-        dt_args["data"] = data;
-
         // Display the table
         $(document).ready(function () {
-            // [pre-dt-code]
-            window.__itables_render('#table_id', dt_args);
-        });
+            window.initializeDataTable().then(() => {
+
+                // Define the dt_args
+                let dt_args = {};
+                dt_args["data"] = data;
+
+                // [pre-dt-code]
+                $('#table_id').DataTable(dt_args);
+            });
+        })
     }
 </script>
 </div>

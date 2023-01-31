@@ -87,7 +87,7 @@ def init_notebook_mode(
         display(
             HTML(
                 replace_value(
-                    read_package_file("html/itables_render.html"),
+                    read_package_file("html/initialize_offline_datatable.html"),
                     "dt_src",
                     "data:text/javascript;base64,{}".format(dt64),
                 )
@@ -163,6 +163,8 @@ def json_dumps(obj, eval_functions):
     if isinstance(obj, JavascriptFunction):
         assert obj.lstrip().startswith("function")
         return obj
+    if isinstance(obj, JavascriptCode):
+        return obj
     if isinstance(obj, str) and obj.lstrip().startswith("function"):
         if eval_functions is True:
             return obj
@@ -203,6 +205,12 @@ class JavascriptFunction(str):
         assert value.lstrip().startswith(
             "function"
         ), "A Javascript function is expected to start with 'function'"
+
+
+class JavascriptCode(str):
+    """A class that explicitly states that a string is a Javascript code"""
+
+    pass
 
 
 def _datatables_repr_(df=None, tableId=None, **kwargs):

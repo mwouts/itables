@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+1.4.6 (2023-01-31)
+------------------
+
+**Added**
+- We have added a new `JavascriptCode` class to encapsulate JS Code.
+This will let the user set JS values for some options like `columnDefs.render` ([#154](https://github.com/mwouts/itables/issues/154)).
+
+
 1.4.5 (2023-01-23)
 ------------------
 

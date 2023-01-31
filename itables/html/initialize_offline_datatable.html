@@ -1,0 +1,9 @@
+<script type="module">
+  window.initializeDataTable = async () => {
+    if ($.prototype.DataTable) {
+      return;
+    }
+    const dt = (await import("dt_src")).default;
+    dt(window.$);
+  }
+</script>
