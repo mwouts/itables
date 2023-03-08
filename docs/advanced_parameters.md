@@ -376,7 +376,7 @@ df
 del opt.columnDefs
 ```
 
-## HTML in cells
+## HTML and images in cells
 
 ```{code-cell}
 import pandas as pd
@@ -387,6 +387,7 @@ show(
             "<b>bold</b>",
             "<i>italic</i>",
             '<a href="https://github.com/mwouts/itables">link</a>',
+            '<img src="https://storage.googleapis.com/tfds-data/visualization/fig/mnist-3.0.1.png" alt="MNIST">',
         ],
         name="HTML",
     ),
