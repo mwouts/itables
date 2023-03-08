@@ -7,18 +7,34 @@
     {
         // Define the table data
         const data = [];
+
         // Display the table
-        $(document).ready(function () {
-            window.initializeDataTable().then(() => {
+        function init_and_load(retry_in) {
+            try {
+                window.initializeDataTable().then(() => {
+                    // Define the dt_args
+                    let dt_args = {};
+                    dt_args["data"] = data;
 
-                // Define the dt_args
-                let dt_args = {};
-                dt_args["data"] = data;
+                    // [pre-dt-code]
+                    $('#table_id').DataTable(dt_args);
+                });
+            }
+            catch (err) {
+                if (!err.message.includes('initializeDataTable')) {
+                    throw err;
+                }
+                if (retry_in<20000) {
+                    console.log(`Cannot display the table, retrying in ${retry_in/1000.0} seconds: ${err}`)
+                    setTimeout(() => init_and_load(retry_in * 2), retry_in);
+                }
+                else {
+                    console.log(`Cannot display the table, giving up: ${err}`);
+                }
+            }
+        }
 
-                // [pre-dt-code]
-                $('#table_id').DataTable(dt_args);
-            });
-        })
+        $(document).ready(() => init_and_load(100));
     }
 </script>
 </div>
