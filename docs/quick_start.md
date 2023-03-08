@@ -72,6 +72,26 @@ x = get_population()
 show(x)
 ```
 
+The default rendering should make sense in most cases. You can also
+have a look at the [advanced parameters](advanced_parameters.md)
+if you wish to pass specific arguments to the underlying
+[datatables.net](https://datatables.net/) library:
+
+```{code-cell}
+from itables import JavascriptCode
+
+x = get_population()
+show(
+    x,
+    columnDefs=[
+        {
+            "targets": "_all",
+            "render": JavascriptCode("$.fn.dataTable.render.number(',')"),
+        }
+    ],
+)
+```
+
 ## Offline mode
 
 Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
