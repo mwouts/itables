@@ -78,19 +78,27 @@ def get_indicators():
     return pd.read_csv(find_package_file("samples/indicators.csv"))
 
 
-def get_dict_of_test_dfs(N=100, M=100):
-    countries = get_countries()
-    df_complex_index = countries.set_index(["region", "name"])
-    df_complex_index.columns = (
-        pd.DataFrame(
-            {"category": ["code"] * 2 + ["property"] * 2 + ["localisation"] * 4},
-            index=df_complex_index.columns.rename("detail"),
-        )
-        .set_index("category", append=True)
-        .swaplevel()
-        .index
+def get_df_complex_index():
+    df = get_countries()
+    df = df.reset_index().set_index(["region", "country"])
+    df.columns = pd.MultiIndex.from_arrays(
+        [
+            [
+                "code"
+                if col == "code"
+                else "localisation"
+                if col in ["longitude", "latitude"]
+                else "data"
+                for col in df.columns
+            ],
+            df.columns,
+        ],
+        names=["category", "detail"],
     )
+    return df
 
+
+def get_dict_of_test_dfs(N=100, M=100):
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     return {
@@ -183,11 +191,9 @@ def get_dict_of_test_dfs(N=100, M=100):
             columns=pd.MultiIndex.from_product((["A", "B"], [1, 2])),
             index=pd.MultiIndex.from_product((["C", "D"], [3, 4])),
         ),
-        "countries": countries,
-        "capital": countries.query('region!="Aggregates"').set_index(
-            ["region", "name"]
-        )[["capitalCity"]],
-        "complex_index": df_complex_index,
+        "countries": get_countries(),
+        "capital": get_countries().set_index(["region", "country"])[["capital"]],
+        "complex_index": get_df_complex_index(),
         "int_float_str": pd.DataFrame(
             {
                 "int": range(N),
@@ -274,7 +280,7 @@ def generate_random_series(rows, type):
         x.loc[np.random.binomial(n=1, p=0.05, size=rows) == 0] = float("-inf")
         return x
     if type == "str":
-        return get_countries()["name"].sample(n=rows, replace=True)
+        return get_countries()["region"].sample(n=rows, replace=True)
     if type == "categories":
         x = generate_random_series(rows, "str")
         return pd.Series(x, dtype="category")
