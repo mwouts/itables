@@ -47,7 +47,11 @@ from itables import init_notebook_mode
 init_notebook_mode(all_interactive=True)
 ```
 
-After this, any Pandas object (DataFrame or Series) is displayed as an interactive [datatables.net](https://datatables.net/) table, which lets you explore, filter or sort your data.
+After this, any Pandas object (DataFrame or Series) is displayed as an interactive [datatables.net](https://datatables.net/) table,
+which lets you explore, filter or sort your data.
+
+HTML content is supported, which means that you can have formatted text,
+links or even images in your tables:
 
 ```{code-cell}
 :tags: [full-width]
