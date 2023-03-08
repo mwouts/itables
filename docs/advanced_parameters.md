@@ -81,7 +81,7 @@ Remove `"nowrap"` if you want the cell content to be wrapped:
 ```{code-cell}
 :tags: [full-width]
 
-show(df, classes="display", scrollX=True)
+show(df, classes="display")
 ```
 
 [More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
