@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.4.7 (2023-03-??)
+------------------
+
+**Changed**
+- We have updated the pre-commit hooks
+
+
 1.4.6 (2023-01-31)
 ------------------
 
