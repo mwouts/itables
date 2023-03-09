@@ -391,10 +391,10 @@ pd.Series(
 
 ## Images in cells
 
-Since HTML is supported you can also display images in your tables.
-Images can either be loaded from an url using `<img src="...">`, or alternatively
-you can also embed their base64 representation using `<img src="data:image/png;base64, ...">`
-(the example below comes from [stackoverflow](https://stackoverflow.com/a/8499716/9817073)).
+Since HTML is supported you can display images in your tables.
+You can use either
+- `<img src="https://...">` with an url
+- `<img src="data:image/png;base64, ...">` with a [base64 encoded image](https://stackoverflow.com/a/8499716/9817073).
 
 ```{code-cell}
 pd.Series(
