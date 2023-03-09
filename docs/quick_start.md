@@ -14,7 +14,7 @@ kernelspec:
 
 # Interactive Tables
 
-**Pandas DataFrames as Interactive DataTables**
+**Pandas and Polars DataFrames as Interactive DataTables**
 
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
@@ -47,7 +47,7 @@ from itables import init_notebook_mode
 init_notebook_mode(all_interactive=True)
 ```
 
-After this, any Pandas object (DataFrame or Series) is displayed as an interactive [datatables.net](https://datatables.net/) table,
+After this, any DataFrame or Series is displayed as an interactive [datatables.net](https://datatables.net/) table,
 which lets you explore, filter or sort your data.
 
 HTML content is supported, which means that you can have formatted text,

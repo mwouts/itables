@@ -27,32 +27,35 @@ def _format_column(x):
     return x
 
 
-class TableValuesEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, (bool, int, float, str)):
-            return json.JSONEncoder.default(self, obj)
-        if isinstance(obj, np.bool_):
-            return bool(obj)
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        try:
-            if obj is pd.NA:
-                return str(obj)
-        except AttributeError:
-            pass
+def generate_encoder(warn_on_unexpected_types=True):
+    class TableValuesEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, (bool, int, float, str)):
+                return json.JSONEncoder.default(self, obj)
+            if isinstance(obj, np.bool_):
+                return bool(obj)
+            if isinstance(obj, np.integer):
+                return int(obj)
+            if isinstance(obj, np.floating):
+                return float(obj)
+            try:
+                if obj is pd.NA:
+                    return str(obj)
+            except AttributeError:
+                pass
 
-        if opt.warn_on_unexpected_types:
-            warnings.warn(
-                "Unexpected type '{}' for '{}'.\n"
-                "You can report this warning at https://github.com/mwouts/itables/issues\n"
-                "To ignore the warning, please run:\n"
-                "    import itables.options as opt\n"
-                "    opt.warn_on_unexpected_types = False".format(type(obj), obj),
-                category=RuntimeWarning,
-            )
-        return str(obj)
+            if warn_on_unexpected_types:
+                warnings.warn(
+                    "Unexpected type '{}' for '{}'.\n"
+                    "You can report this warning at https://github.com/mwouts/itables/issues\n"
+                    "To ignore the warning, please run:\n"
+                    "    import itables.options as opt\n"
+                    "    opt.warn_on_unexpected_types = False".format(type(obj), obj),
+                    category=RuntimeWarning,
+                )
+            return str(obj)
+
+    return TableValuesEncoder
 
 
 def datatables_rows(df, count=None):
@@ -67,5 +70,11 @@ def datatables_rows(df, count=None):
         assert missing_columns > 0
         empty_columns = [[None] * len(df)] * missing_columns
 
-    data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
-    return json.dumps(data, cls=TableValuesEncoder)
+    try:
+        # Pandas DataFrame
+        data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
+        return json.dumps(data, cls=generate_encoder(opt.warn_on_unexpected_types))
+    except AttributeError:
+        # Polars DataFrame
+        data = list(df.iter_rows())
+        return json.dumps(data, cls=generate_encoder(False))

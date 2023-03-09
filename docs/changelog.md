@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Added**
 - We have addressed the `window.initializeDataTable` is not a function error when a notebook is reloaded.
+- Polars DataFrames are supported ([#159](https://github.com/mwouts/itables/issues/159))
 
 **Changed**
 - We have updated the pre-commit hooks

@@ -97,10 +97,10 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100):
+def get_dict_of_test_dfs(N=100, M=100, polars=False):
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
-    return {
+    test_dfs = {
         "empty": pd.DataFrame(),
         "bool": pd.DataFrame(
             [[True, True, False, False], [True, False, True, False]],
@@ -239,8 +239,22 @@ def get_dict_of_test_dfs(N=100, M=100):
         "named_column_index": pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1),
     }
 
+    if polars:
+        import polars as pl
+        import pyarrow as pa
 
-def get_dict_of_test_series():
+        polars_dfs = {}
+        for key in test_dfs:
+            try:
+                polars_dfs[key] = pl.from_pandas(test_dfs[key])
+            except (pa.ArrowInvalid, ValueError):
+                pass
+        return polars_dfs
+
+    return test_dfs
+
+
+def get_dict_of_test_series(polars=False):
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -250,6 +264,19 @@ def get_dict_of_test_series():
             if not isinstance(df[col], pd.Series):
                 continue
             series["{}.{}".format(df_name, col)] = df[col]
+
+    if polars:
+        import polars as pl
+        import pyarrow as pa
+
+        polars_series = {}
+        for key in series:
+            try:
+                polars_series[key] = pl.from_pandas(series[key])
+            except (pa.ArrowInvalid, ValueError):
+                pass
+        return polars_series
+
     return series
 
 

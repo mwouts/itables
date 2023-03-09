@@ -52,6 +52,7 @@ setup(
     },
     tests_require=["pytest", "pytz"],
     install_requires=["IPython", "pandas", "numpy"],
+    extras_require={"polars": ["polars", "pyarrow"]},
     license="MIT",
     classifiers=[
         "Development Status :: 5 - Production/Stable",

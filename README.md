@@ -8,12 +8,12 @@
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Pandas DataFrames and Series as interactive [datatables](https://datatables.net)!
+Pandas or Polars DataFrames as interactive [datatables](https://datatables.net)!
 
 ## Documentation
 
 Browse the [documentation](https://mwouts.github.io/itables/) to see
-examples of Pandas datatables rendered as interactive datatables.
+examples of Python DataFrames rendered as interactive datatables.
 
 ## Quick start
 
@@ -33,7 +33,7 @@ from itables import init_notebook_mode
 
 init_notebook_mode(all_interactive=True)
 ```
-and then render any Pandas DataFrame as an interactive table that you can sort, search and explore:
+and then render any DataFrame as an interactive table that you can sort, search and explore:
 ![df](docs/df_example.png)
 
 If you prefer to render only selected DataFrames as interactive tables, use `itables.show` to show just one Series or DataFrame as an interactive table:

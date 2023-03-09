@@ -8,8 +8,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import itables.options as opt
-from itables.datatables_format import TableValuesEncoder, datatables_rows
+from itables.datatables_format import datatables_rows, generate_encoder
 from itables.javascript import _column_count_in_header, _table_header
 
 
@@ -103,13 +102,13 @@ def test_datatables_rows(df, expected):
     sys.version_info < (3,), reason="str(Exception) has changed since Py2"
 )
 def test_TableValuesEncoder():
-    assert json.dumps(['"str"'], cls=TableValuesEncoder) == r'["\"str\""]'
+    assert json.dumps(['"str"'], cls=generate_encoder()) == r'["\"str\""]'
     with pytest.warns(RuntimeWarning, match="Unexpected type"):
-        json.dumps(Exception, cls=TableValuesEncoder)
+        json.dumps(Exception, cls=generate_encoder())
 
-    opt.warn_on_unexpected_types = False
     with warnings.catch_warnings():
         warnings.simplefilter("error")
         assert (
-            json.dumps(Exception, cls=TableValuesEncoder) == "\"<class 'Exception'>\""
+            json.dumps(Exception, cls=generate_encoder(False))
+            == "\"<class 'Exception'>\""
         )
