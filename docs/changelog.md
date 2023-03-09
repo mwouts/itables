@@ -6,6 +6,10 @@ ITables ChangeLog
 
 **Changed**
 - We have updated the pre-commit hooks
+- We have added links and images (flags from https://flagpedia.net) to the sample countries df ([#158](https://github.com/mwouts/itables/issues/158)).
+
+**Added**
+- We have added an example to show how to include images in tables ([#158](https://github.com/mwouts/itables/issues/158))
 
 
 1.4.6 (2023-01-31)

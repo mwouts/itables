@@ -81,7 +81,7 @@ Remove `"nowrap"` if you want the cell content to be wrapped:
 ```{code-cell}
 :tags: [full-width]
 
-show(df, classes="display", scrollX=True)
+show(df, classes="display")
 ```
 
 [More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
@@ -140,7 +140,7 @@ The available elements are:
 
 Like for the other arguments of `show`, you can change the default value of the dom option with e.g.:
 
-```{code-cell}
+```
 import itables.options as opt
 
 opt.dom = "lfrtip"  # (default value)
@@ -379,18 +379,32 @@ del opt.columnDefs
 ## HTML in cells
 
 ```{code-cell}
-import pandas as pd
+pd.Series(
+    [
+        "<b>bold</b>",
+        "<i>italic</i>",
+        '<a href="https://github.com/mwouts/itables">link</a>',
+    ],
+    name="HTML",
+)
+```
 
-show(
-    pd.Series(
-        [
-            "<b>bold</b>",
-            "<i>italic</i>",
-            '<a href="https://github.com/mwouts/itables">link</a>',
-        ],
-        name="HTML",
-    ),
-    paging=False,
+## Images in cells
+
+Since HTML is supported you can display images in your tables.
+You can use either
+- `<img src="https://...">` with an url
+- `<img src="data:image/png;base64, ...">` with a [base64 encoded image](https://stackoverflow.com/a/8499716/9817073).
+
+```{code-cell}
+pd.Series(
+    {
+        "url": '<img src="https://storage.googleapis.com/tfds-data/visualization/fig/mnist-3.0.1.png" height="50" alt="MNIST">',
+        "base64": '<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA'
+        "AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO"
+        '9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot">',
+    },
+    name="Images",
 )
 ```
 
