@@ -7,6 +7,7 @@ chapters:
 - file: downsampling
 - file: sample_dataframes
 - file: references
+- file: contributing
 - file: developing
 - file: troubleshooting
 - file: changelog
