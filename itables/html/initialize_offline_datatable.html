@@ -1,9 +1,17 @@
+<script>
+  // Create a pending promise immediately (this script is not deferred).
+  window.dataTablePromise = new Promise((resolve) => {
+    window.__resolveDataTablePromise__ = resolve;
+  });
+</script>
 <script type="module">
-  window.initializeDataTable = async () => {
-    if ($.prototype.DataTable) {
-      return;
-    }
-    const dt = (await import("dt_src")).default;
-    dt(window.$);
+  // Module scripts are automatically deferred, so this code will not execute immediately.
+  // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules#other_differences_between_modules_and_standard_scripts
+  if ($.prototype.DataTable) {
+    return;
   }
+  const dt = (await import("dt_src")).default;
+  dt(window.$);
+  // Resolve the pending promise above, indicating that DataTable is now ready to be used.
+  window.__resolveDataTablePromise__();
 </script>

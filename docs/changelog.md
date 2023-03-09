@@ -5,7 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Added**
-- We have added a catch/retry logic to handle the error `window.initializeDataTable` is not a function when a notebook is reloaded.
+- We have addressed the `window.initializeDataTable` is not a function error when a notebook is reloaded.
 
 **Changed**
 - We have updated the pre-commit hooks
