@@ -39,21 +39,20 @@ if sys.version_info < (3,):
 
 def get_countries():
     """A Pandas DataFrame with the world countries (from the world bank data)
-    Flags are loaded from www.countryflags.com"""
+    Flags are loaded from https://flagpedia.net/"""
     df = pd.read_csv(find_package_file("samples/countries.csv"))
     df = df.rename(columns={"capitalCity": "capital", "name": "country"})
+    df["iso2Code"] = df["iso2Code"].fillna("NA")  # Namibia
     df = df.set_index("iso2Code")[
         ["region", "country", "capital", "longitude", "latitude"]
     ].dropna()
     df.index.name = "code"
 
     df["flag"] = [
-        '<a href="https://www.countryflags.com/flag-of-{code}">'
-        '<img src="https://cdn.countryflags.com/thumbs/{code}/flag-square-250.png" '
-        'style="height:30px;width:auto;" alt="Flag of {country}"></a>'.format(
-            code=country.lower().replace(" ", "-"), country=country
-        )
-        for country in df["country"]
+        '<a href="https://flagpedia.net/{code}">'
+        '<img src="https://flagpedia.net/data/flags/h80/{code}.webp" '
+        'alt="Flag of {country}"></a>'.format(code=code.lower(), country=country)
+        for code, country in zip(df.index, df["country"])
     ]
     df["country"] = [
         '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(country, country)
