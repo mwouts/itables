@@ -140,7 +140,7 @@ The available elements are:
 
 Like for the other arguments of `show`, you can change the default value of the dom option with e.g.:
 
-```{code-cell}
+```
 import itables.options as opt
 
 opt.dom = "lfrtip"  # (default value)
