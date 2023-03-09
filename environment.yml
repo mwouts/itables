@@ -11,6 +11,8 @@ dependencies:
   - nbconvert
   - ipykernel
   - pandas
+  - polars
+  - pyarrow
   - pytest
   - pytest-xdist
   - pytest-cov

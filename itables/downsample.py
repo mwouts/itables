@@ -8,17 +8,21 @@ logger = logging.getLogger(__name__)
 
 
 def nbytes(df):
-    return sum(x.values.nbytes for _, x in df.items())
+    try:
+        return sum(x.values.nbytes for _, x in df.items())
+    except AttributeError:
+        # Polars DataFrame
+        return df.estimated_size()
 
 
 def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     """Return a subset of the dataframe that fits the limits"""
-    org_rows, org_columns, org_bytes = len(df.index), len(df.columns), nbytes(df)
+    org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
     df = _downsample(
         df, max_rows=max_rows, max_columns=max_columns, max_bytes=max_bytes
     )
 
-    if len(df.index) < org_rows or len(df.columns) < org_columns:
+    if len(df) < org_rows or len(df.columns) < org_columns:
         link = '<a href="https://mwouts.github.io/itables/downsampling.html">downsampled</a>'
         reasons = []
         if org_rows > max_rows > 0:
@@ -32,7 +36,7 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
             link,
             org_rows,
             org_columns,
-            len(df.index),
+            len(df),
             len(df.columns),
             " and ".join(reasons),
         )
@@ -72,21 +76,35 @@ def shrink_towards_target_aspect_ratio(
 
 def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=None):
     """Implementation of downsample - may be called recursively"""
-    if len(df.index) > max_rows > 0:
+    if len(df) > max_rows > 0:
         second_half = max_rows // 2
         first_half = max_rows - second_half
         if second_half:
-            df = pd.concat((df.iloc[:first_half], df.iloc[-second_half:]))
+            try:
+                df = pd.concat((df.iloc[:first_half], df.iloc[-second_half:]))
+            except AttributeError:
+                df = df.head(first_half).vstack(df.tail(second_half))
         else:
-            df = df.iloc[:first_half]
+            try:
+                df = df.iloc[:first_half]
+            except AttributeError:
+                df = df.limit(first_half)
 
     if len(df.columns) > max_columns > 0:
         second_half = max_columns // 2
         first_half = max_columns - second_half
         if second_half:
-            df = pd.concat((df.iloc[:, :first_half], df.iloc[:, -second_half:]), axis=1)
+            try:
+                df = pd.concat(
+                    (df.iloc[:, :first_half], df.iloc[:, -second_half:]), axis=1
+                )
+            except AttributeError:
+                df = df[df.columns[:first_half]].hstack(df[df.columns[-second_half:]])
         else:
-            df = df.iloc[:, :first_half]
+            try:
+                df = df.iloc[:, :first_half]
+            except AttributeError:
+                df = df[df.columns[:first_half]]
 
     df_nbytes = nbytes(df)
     if df_nbytes > max_bytes > 0:
@@ -97,7 +115,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
                 target_aspect_ratio = 1.0
 
         max_rows, max_columns = shrink_towards_target_aspect_ratio(
-            len(df.index),
+            len(df),
             len(df.columns),
             shrink_factor=max_bytes / float(df_nbytes),
             target_aspect_ratio=target_aspect_ratio,

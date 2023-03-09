@@ -10,6 +10,13 @@ from base64 import b64encode
 
 import numpy as np
 import pandas as pd
+
+try:
+    import polars as pl
+except ImportError:
+    # Define pl.Series as pd.Series
+    import pandas as pl
+
 from IPython.display import HTML, Javascript, display
 
 import itables.options as opt
@@ -22,6 +29,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
+_ORIGINAL_POLARS_DATAFRAME_REPR_HTML = pl.DataFrame._repr_html_
 _CONNECTED = True
 
 try:
@@ -72,10 +80,15 @@ def init_notebook_mode(
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
+        pl.DataFrame._repr_html_ = _datatables_repr_
+        pl.Series._repr_html_ = _datatables_repr_
     else:
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
+        pl.DataFrame._repr_html_ = _ORIGINAL_POLARS_DATAFRAME_REPR_HTML
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
+        if hasattr(pl.Series, "_repr_html_"):
+            del pl.Series._repr_html_
 
     if not connected:
         display(Javascript(read_package_file("external/jquery.min.js")))
@@ -108,7 +121,12 @@ def _table_header(
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    match = pattern.match(df.head(0).to_html())
+    try:
+        html_header = df.head(0).to_html()
+    except AttributeError:
+        # Polars DataFrames
+        html_header = pd.DataFrame(data=[], columns=df.columns).to_html()
+    match = pattern.match(html_header)
     thead = match.groups()[0]
     if not show_index:
         thead = thead.replace("<th></th>", "", 1)
@@ -259,11 +277,17 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
 
-    if isinstance(df, pd.Series):
+    if isinstance(df, (pd.Series, pl.Series)):
         df = df.to_frame()
 
     if showIndex == "auto":
-        showIndex = df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
+        try:
+            showIndex = df.index.name is not None or not isinstance(
+                df.index, pd.RangeIndex
+            )
+        except AttributeError:
+            # Polars DataFrame
+            showIndex = False
 
     df, downsampling_warning = downsample(
         df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
@@ -299,7 +323,11 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
         classes = " ".join(classes)
 
     if not showIndex:
-        df = df.set_index(pd.RangeIndex(len(df.index)))
+        try:
+            df = df.set_index(pd.RangeIndex(len(df.index)))
+        except AttributeError:
+            # Polars DataFrames
+            pass
 
     table_header = _table_header(
         df, tableId, showIndex, classes, style, tags, footer, column_filters

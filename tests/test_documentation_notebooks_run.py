@@ -6,6 +6,11 @@ import pytest
 
 from itables import init_notebook_mode
 
+try:
+    import polars as pl
+except ImportError:
+    pl = None
+
 pytestmark = pytest.mark.skipif(sys.version_info < (3,), reason="Not supported in Py2")
 
 
@@ -20,6 +25,9 @@ def list_doc_notebooks():
     "notebook", list_doc_notebooks(), ids=lambda notebook: notebook.stem
 )
 def test_run_documentation_notebooks(notebook):
+    if "polars" in notebook.stem and pl is None:
+        pytest.skip(msg="Polars is not available")
+
     nb = jupytext.read(notebook)
     py_notebook = jupytext.writes(nb, "py:percent")
     exec(py_notebook, {})

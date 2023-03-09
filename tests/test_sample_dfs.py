@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from itables import show, to_html_datatable
-from itables.datatables_format import TableValuesEncoder, _format_column
+from itables.datatables_format import _format_column, generate_encoder
 from itables.sample_dfs import (
     COLUMN_TYPES,
     generate_random_df,
@@ -69,7 +69,7 @@ def test_ordered_categories():
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_format_column(series_name, series):
     values = list(_format_column(series))
-    json.dumps(values, cls=TableValuesEncoder)
+    json.dumps(values, cls=generate_encoder())
 
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
