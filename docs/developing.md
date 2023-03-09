@@ -69,14 +69,21 @@ In the `itables` conda environment, you can start Jupyter with
 jupyter lab
 ```
 
-Then you should go to the `docs` folder and open for instance
+You should test at least this code snippet:
+```python
+from itables import init_notebook_mode
+from itables.sample_dfs import get_countries
+
+# try both connected=False (the default) and connected=True
+init_notebook_mode(all_interactive=True, connected=False)
+
+get_countries()
+```
+
+Note that you can also open the documentation in Jupyter:
+go to the `docs` folder and open e.g.
 [`advanced_parameters.md`](advanced_parameters.md)
 _as a notebook_ (using a right click).
-Please execute the cells and make sure that the tables are well rendered.
-
-As in the other contexts, you will need to make sure that
-the tables work both in the offline and online mode
-(`connected=False`, the default, or `connected=True` in the call to `init_notebook_mode`).
 
 ## Other notebook editors
 
