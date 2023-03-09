@@ -376,22 +376,35 @@ df
 del opt.columnDefs
 ```
 
-## HTML and images in cells
+## HTML in cells
 
 ```{code-cell}
-import pandas as pd
+pd.Series(
+    [
+        "<b>bold</b>",
+        "<i>italic</i>",
+        '<a href="https://github.com/mwouts/itables">link</a>',
+    ],
+    name="HTML",
+)
+```
 
-show(
-    pd.Series(
-        [
-            "<b>bold</b>",
-            "<i>italic</i>",
-            '<a href="https://github.com/mwouts/itables">link</a>',
-            '<img src="https://storage.googleapis.com/tfds-data/visualization/fig/mnist-3.0.1.png" alt="MNIST">',
-        ],
-        name="HTML",
-    ),
-    paging=False,
+## Images in cells
+
+Since HTML is supported you can also display images in your tables.
+Images can either be loaded from an url using `<img src="...">`, or alternatively
+you can also embed their base64 representation using `<img src="data:image/png;base64, ...">`
+(the example below comes from [stackoverflow](https://stackoverflow.com/a/8499716/9817073)).
+
+```{code-cell}
+pd.Series(
+    {
+        "url": '<img src="https://storage.googleapis.com/tfds-data/visualization/fig/mnist-3.0.1.png" height="50" alt="MNIST">',
+        "base64": '<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA'
+        "AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO"
+        '9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot">',
+    },
+    name="Images",
 )
 ```
 
