@@ -1,0 +1,23 @@
+codecov:
+    notify:
+        after_n_builds: 14
+
+comment:
+  after_n_builds: 14
+
+coverage:
+  status:
+    project:
+      default: false  # disable the default status that measures entire project
+      tests:
+        paths:
+          - "tests/"
+        target: 99%
+      source:
+        paths:
+          - "itables/"
+        target: 93%
+        threshold: 0.002
+    patch:
+      default:
+        target: 80%  # new contributions should have a coverage at least equal to target
