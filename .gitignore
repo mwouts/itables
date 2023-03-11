@@ -11,6 +11,7 @@ dist
 # Notebooks
 *.ipynb
 .ipynb_checkpoints
+!tests/test_notebook.ipynb
 
 # Jupyter Book
 _build

@@ -80,6 +80,8 @@ init_notebook_mode(all_interactive=True, connected=False)
 get_countries()
 ```
 
+You can do this using for instance the notebook at `tests/test_notebook.ipynb`.
+
 Note that you can also open the documentation in Jupyter:
 go to the `docs` folder and open e.g.
 [`advanced_parameters.md`](advanced_parameters.md)
