@@ -14,8 +14,6 @@ kernelspec:
 
 # Interactive Tables
 
-**Pandas and Polars DataFrames as Interactive DataTables**
-
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
@@ -25,6 +23,19 @@ kernelspec:
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+## Turn your Python DataFrames into Interactive Tables
+
+This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
+With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
+that you can sort, paginate, scroll or filter.
+
+ITables is just about how tables are displayed. You can turn it on and off in just two lines,
+with no other impact on your data workflow.
+
+The `itables` package only depends on `numpy`, `pandas` and `IPython`
+which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
+work with Polars DataFrames).
 
 ## Quick start
 
@@ -47,7 +58,8 @@ from itables import init_notebook_mode
 init_notebook_mode(all_interactive=True)
 ```
 
-After this, any DataFrame or Series is displayed as an interactive [datatables.net](https://datatables.net/) table,
+After this, any Pandas or Polars DataFrame, or Series,
+is displayed as an interactive [datatables.net](https://datatables.net/) table,
 which lets you explore, filter or sort your data.
 
 HTML content is supported, which means that you can have formatted text,

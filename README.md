@@ -8,12 +8,23 @@
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Pandas or Polars DataFrames as interactive [datatables](https://datatables.net)!
+## Turn your Python DataFrames into Interactive Tables
+
+This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
+With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
+that you can sort, paginate, scroll or filter.
+
+ITables is just about how tables are displayed. You can turn it on and off in just two lines,
+with no other impact on your data workflow.
+
+The `itables` package only depends on `numpy`, `pandas` and `IPython`
+which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
+work with Polars DataFrames).
 
 ## Documentation
 
 Browse the [documentation](https://mwouts.github.io/itables/) to see
-examples of Python DataFrames rendered as interactive datatables.
+examples of Pandas or Polars DataFrames rendered as interactive datatables.
 
 ## Quick start
 
