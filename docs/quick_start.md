@@ -33,11 +33,11 @@ that you can sort, paginate, scroll or filter.
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 with no other impact on your data workflow.
 
-The `itables` package only depends on `numpy`, `pandas` and `IPython`
+The `itables` package depends only on `numpy`, `pandas` and `IPython`
 which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
 work with Polars DataFrames).
 
-## Quick start
+## Installation
 
 Install the `itables` package with either
 
@@ -49,6 +49,8 @@ or
 ```shell
 conda install itables -c conda-forge
 ```
+
+## Activate ITables
 
 Activate the interactive mode for all series and dataframes with
 
@@ -62,60 +64,64 @@ After this, any Pandas or Polars DataFrame, or Series,
 is displayed as an interactive [datatables.net](https://datatables.net/) table,
 which lets you explore, filter or sort your data.
 
+```{code-cell}
+from itables.sample_dfs import get_countries
+
+df = get_countries(html=False)
+df
+```
+
+## Offline mode versus connected mode
+
+ITables use two Javascript libraries:
+[jquery](https://jquery.com/) and [datatables.net](https://datatables.net/).
+
+By default `itables` works offline. No internet connection is required
+as the two libraries are embedded into the notebook itself
+when you execute `init_notebook_mode`.
+
+In some contexts (Jupyter Book, Jupyter Colab, etc...) you might
+prefer to load the libraries dynamically from the internet.
+To do so, add the argument `connected=True` when you
+execute `init_notebook_mode`. This will also make your notebook lighter by
+about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py).
+
+## Formatting specific tables only
+
+If you prefer to render only certain series or dataframes using `itables`,
+or you want to use the [advanced parameters](advanced_parameters.md), then
+use `init_notebook_mode(all_interactive=False)` then `show`:
+
+```{code-cell}
+from itables import show
+
+show(df, lengthMenu=[2, 5, 10, 25, 50, 100, 250])
+```
+
+## HTML content
+
 HTML content is supported, which means that you can have formatted text,
 links or even images in your tables:
 
 ```{code-cell}
 :tags: [full-width]
 
-from itables.sample_dfs import get_countries
-
-df = get_countries()
+df["flag"] = [
+    '<a href="https://flagpedia.net/{code}">'
+    '<img src="https://flagpedia.net/data/flags/h80/{code}.webp" '
+    'alt="Flag of {country}"></a>'.format(code=code.lower(), country=country)
+    for code, country in zip(df.index, df["country"])
+]
+df["country"] = [
+    '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(country, country)
+    for country in df["country"]
+]
+df["capital"] = [
+    '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(capital, capital)
+    for capital in df["capital"]
+]
 df
 ```
-
-If you prefer to render just one series or dataframe as an interactive table, use `show`:
-
-```{code-cell}
-from itables import show
-from itables.sample_dfs import get_population
-
-x = get_population()
-show(x)
-```
-
-The default rendering should make sense in most cases. You can also
-have a look at the [advanced parameters](advanced_parameters.md)
-if you wish to pass specific arguments to the underlying
-[datatables.net](https://datatables.net/) library:
-
-```{code-cell}
-from itables import JavascriptCode
-
-x = get_population()
-show(
-    x,
-    columnDefs=[
-        {
-            "targets": "_all",
-            "render": JavascriptCode("$.fn.dataTable.render.number(',')"),
-        }
-    ],
-)
-```
-
-## Offline mode
-
-Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
-are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
-Thanks to this the interactive tables will work even without a connection to the internet.
-
-If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
-execute `init_notebook_mode`.
-
-## Advanced parameters
-
-The `show` method let you pass parameters to [datatables.net](https://datatables.net/)'s `DataTable()`'s constructor - see the [advanced parameters examples](advanced_parameters.md).
 
 ## Try ITables on Binder
 
