@@ -27,7 +27,7 @@ jobs:
       run: |
         pip install jupyter-book
         pip install -r requirements.txt
-        pip install .
+        pip install .[polars]
 
     - name: Create a kernel
       run: |
