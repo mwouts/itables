@@ -14,13 +14,11 @@ def df(request):
 
 @pytest.fixture(params=["None", "1D-array", "2D-array"])
 def lengthMenu(request):
-    if request.param == "None":
-        return None
     if request.param == "1D-array":
         return [2, 5, 10, 20, 50]
     if request.param == "2D-array":
         return [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
-    raise KeyError(request.param)
+    return None
 
 
 @pytest.fixture(params=["None", "lfrtip"])

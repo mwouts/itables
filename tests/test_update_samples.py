@@ -7,7 +7,7 @@ SAMPLE_DIR = Path(__file__).parent / ".." / "itables" / "samples"
 
 def create_csv_file_if_missing(df, csv_file):
     if not csv_file.exists():
-        with open(str(csv_file), "w") as fp:
+        with open(str(csv_file), "w") as fp:  # pragma: no cover
             fp.write(df.to_csv())
 
 
