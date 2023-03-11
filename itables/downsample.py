@@ -88,7 +88,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             try:
                 df = df.iloc[:first_half]
             except AttributeError:
-                df = df.limit(first_half)
+                df = df.head(first_half)
 
     if len(df.columns) > max_columns > 0:
         second_half = max_columns // 2
@@ -127,8 +127,13 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             )
 
         # max_bytes is smaller than the average size of one cell
-        df = df.iloc[:1, :1]
-        df.iloc[0, 0] = "..."
+        try:
+            df = df.iloc[:1, :1]
+            df.iloc[0, 0] = "..."
+        except AttributeError:
+            import polars as pl  # noqa
+
+            df = pl.DataFrame({df.columns[0]: ["..."]})
         return df
 
     return df
