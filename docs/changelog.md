@@ -1,19 +1,21 @@
 ITables ChangeLog
 =================
 
-1.4.7 (2023-03-??)
+1.5.0 (2023-03-11)
 ------------------
 
+**Fixed**
+- We have addressed the `window.initializeDataTable` is not a function error when a notebook is reloaded
+([#160](https://github.com/mwouts/itables/issues/160), [#163](https://github.com/mwouts/itables/issues/163)).
+Many thanks again to [François Wouts](https://github.com/fwouts) for providing the right fix!
+
 **Added**
-- We have addressed the `window.initializeDataTable` is not a function error when a notebook is reloaded.
 - Polars DataFrames are supported ([#159](https://github.com/mwouts/itables/issues/159))
+- We have added an example to show how to include images in tables ([#158](https://github.com/mwouts/itables/issues/158))
+- We have added links and images (flags from https://flagpedia.net) to the sample countries df ([#158](https://github.com/mwouts/itables/issues/158)).
 
 **Changed**
 - We have updated the pre-commit hooks
-- We have added links and images (flags from https://flagpedia.net) to the sample countries df ([#158](https://github.com/mwouts/itables/issues/158)).
-
-**Added**
-- We have added an example to show how to include images in tables ([#158](https://github.com/mwouts/itables/issues/158))
 
 
 1.4.6 (2023-01-31)
