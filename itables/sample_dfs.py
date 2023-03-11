@@ -37,7 +37,7 @@ if sys.version_info < (3,):
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
 
 
-def get_countries():
+def get_countries(html=True):
     """A Pandas DataFrame with the world countries (from the world bank data)
     Flags are loaded from https://flagpedia.net/"""
     df = pd.read_csv(find_package_file("samples/countries.csv"))
@@ -47,6 +47,9 @@ def get_countries():
         ["region", "country", "capital", "longitude", "latitude"]
     ].dropna()
     df.index.name = "code"
+
+    if not html:
+        return df
 
     df["flag"] = [
         '<a href="https://flagpedia.net/{code}">'
