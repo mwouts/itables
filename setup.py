@@ -21,11 +21,11 @@ for name, url in [
     ("jquery.min.js", "https://code.jquery.com/jquery-3.6.0.min.js"),
     (
         "jquery.dataTables.min.css",
-        "https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css",
+        "https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css",
     ),
     (
         "jquery.dataTables.mjs",
-        "https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs",
+        "https://cdn.datatables.net/1.13.3/js/jquery.dataTables.mjs",
     ),
 ]:
     r = requests.get(url)
