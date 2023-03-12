@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.5.1 (2023-03-12)
+------------------
+
+**Fixed**
+- Empty Polars DataFrame are now rendered correctly ([#167](https://github.com/mwouts/itables/issues/167))
+
+
 1.5.0 (2023-03-11)
 ------------------
 
