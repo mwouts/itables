@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Interactive Tables
+# Quick Start
 
 ![CI](https://github.com/mwouts/itables/workflows/CI/badge.svg)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
