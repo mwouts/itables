@@ -126,6 +126,9 @@ def _table_header(
     except AttributeError:
         # Polars DataFrames
         html_header = pd.DataFrame(data=[], columns=df.columns).to_html()
+        # Don't remove the index header for empty dfs
+        if not len(df.columns):
+            show_index = True
     match = pattern.match(html_header)
     thead = match.groups()[0]
     if not show_index:
