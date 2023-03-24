@@ -5,7 +5,14 @@ import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
 
-import itables.options as opt
+try:
+    import polars as pl
+except ImportError:
+    pl = None
+
+
+JS_MAX_SAFE_INTEGER = 2**53 - 1
+JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
 
 def _format_column(x):
@@ -48,7 +55,7 @@ def generate_encoder(warn_on_unexpected_types=True):
                 warnings.warn(
                     "Unexpected type '{}' for '{}'.\n"
                     "You can report this warning at https://github.com/mwouts/itables/issues\n"
-                    "To ignore the warning, please run:\n"
+                    "To silence this warning, please run:\n"
                     "    import itables.options as opt\n"
                     "    opt.warn_on_unexpected_types = False".format(type(obj), obj),
                     category=RuntimeWarning,
@@ -58,8 +65,48 @@ def generate_encoder(warn_on_unexpected_types=True):
     return TableValuesEncoder
 
 
-def datatables_rows(df, count=None):
+def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
+    """In Javascript, integers have to remain between JS_MIN_SAFE_INTEGER and JS_MAX_SAFE_INTEGER."""
+    converted = []
+    for i, col in enumerate(df.columns):
+        try:
+            x = df.iloc[:, i]
+            if (
+                x.dtype.kind == "i"
+                and (
+                    ~x.isnull()
+                    & ((x < JS_MIN_SAFE_INTEGER) | (x > JS_MAX_SAFE_INTEGER))
+                ).any()
+            ):
+                df.iloc[:, i] = x.astype(str)
+                converted.append(col)
+        except AttributeError:
+            x = df[col]
+            if (
+                x.dtype in pl.INTEGER_DTYPES
+                and ((x < JS_MIN_SAFE_INTEGER) | (x > JS_MAX_SAFE_INTEGER)).any()
+            ):
+                df = df.with_columns(pl.col(col).cast(pl.Utf8))
+                converted.append(col)
+
+    if converted and warn_on_int_to_str_conversion:
+        warnings.warn(
+            "The columns {} contains integers that are too large for Javascript.\n"
+            "They have been converted to str.\n"
+            "To silence this warning, please run:\n"
+            "    import itables.options as opt\n"
+            "    opt.warn_on_int_to_str_conversion = False".format(converted)
+        )
+
+    return df
+
+
+def datatables_rows(
+    df, count=None, warn_on_unexpected_types=False, warn_on_int_to_str_conversion=False
+):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
+    df = convert_bigints_to_str(df, warn_on_int_to_str_conversion)
+
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
     if count is None or len(df.columns) == count:
@@ -73,7 +120,7 @@ def datatables_rows(df, count=None):
     try:
         # Pandas DataFrame
         data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
-        return json.dumps(data, cls=generate_encoder(opt.warn_on_unexpected_types))
+        return json.dumps(data, cls=generate_encoder(warn_on_unexpected_types))
     except AttributeError:
         # Polars DataFrame
         data = list(df.iter_rows())

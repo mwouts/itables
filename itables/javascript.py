@@ -245,7 +245,7 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
         if (
             option not in kwargs
             and not option.startswith("__")
-            and option not in ["read_package_file", "warn_on_unexpected_types"]
+            and option not in ["read_package_file"]
         ):
             kwargs[option] = getattr(opt, option)
 
@@ -274,6 +274,8 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
+    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
+    warn_on_int_to_str_conversion = kwargs.pop("warn_on_int_to_str_conversion", False)
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -390,7 +392,12 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     # When the header has an extra column, we add
     # an extra empty column in the table data #141
     column_count = _column_count_in_header(table_header)
-    dt_data = datatables_rows(df, column_count)
+    dt_data = datatables_rows(
+        df,
+        column_count,
+        warn_on_unexpected_types=warn_on_unexpected_types,
+        warn_on_int_to_str_conversion=warn_on_int_to_str_conversion,
+    )
 
     output = replace_value(
         output, "const data = [];", "const data = {};".format(dt_data)
