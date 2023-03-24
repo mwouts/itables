@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.5.2 (2023-03-??)
+------------------
+
+**Added**
+- We have added a CI configuration where we test `itables` against `pandas` in pre-release versions
+
+
 1.5.1 (2023-03-12)
 ------------------
 
