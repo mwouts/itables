@@ -6,6 +6,11 @@ def test_warn_on_unexpected_types_not_in_html(df):
     assert "warn_on_unexpected_types" not in html
 
 
+def test_warn_on_int_to_str_conversion_not_in_html(df):
+    html = to_html_datatable(df)
+    assert "warn_on_int_to_str_conversion" not in html
+
+
 def test_df_fits_in_one_page(df, lengthMenu):
     kwargs = dict(lengthMenu=lengthMenu)
     kwargs = {key: value for key, value in kwargs.items() if value is not None}

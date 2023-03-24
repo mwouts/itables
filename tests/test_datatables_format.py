@@ -64,6 +64,18 @@ from itables.javascript import _column_count_in_header, _table_header
             .T.reset_index(),
             [[None, "a", 1, 2]],
         ),
+        (
+            pd.DataFrame(
+                {
+                    "long": [
+                        1234567890123456789,
+                        2345678901234567890,
+                        3456789012345678901,
+                    ]
+                }
+            ),
+            '[["1234567890123456789"], ["2345678901234567890"], ["3456789012345678901"]]',
+        ),
     ],
     ids=[
         "bool",
@@ -80,6 +92,7 @@ from itables.javascript import _column_count_in_header, _table_header
         "object_dict",
         "df_with_named_column_axis",
         "transposed_df",
+        "big_integers",
     ],
 )
 def test_datatables_rows(df, expected):
@@ -95,7 +108,10 @@ def test_datatables_rows(df, expected):
     )
     column_count = _column_count_in_header(table_header)
     actual = datatables_rows(df, count=column_count)
-    assert actual == json.dumps(expected)
+    if isinstance(expected, str):
+        assert actual == expected
+    else:
+        assert actual == json.dumps(expected)
 
 
 @pytest.mark.skipif(

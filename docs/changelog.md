@@ -4,11 +4,12 @@ ITables ChangeLog
 1.5.2 (2023-03-??)
 ------------------
 
+**Fixed**
+- Integers that are too big for Javascript are converted to str ([#152](https://github.com/mwouts/itables/issues/152))
+- If a downsampling occurs, the downsampling message is displayed even if the table only has a few rows
+
 **Added**
 - We have added a CI configuration where we test `itables` against `pandas` in pre-release versions
-
-**Fixed**
-- If a downsampling occurs, the downsampling message is displayed even if the table only has a few rows
 
 
 1.5.1 (2023-03-12)

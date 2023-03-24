@@ -151,3 +151,13 @@ show(dict_of_test_dfs["duplicated_columns"])
 ```{code-cell}
 show(dict_of_test_dfs["named_column_index"])
 ```
+
+## big_integers
+
+```{code-cell}
+import itables.options as opt
+
+opt.warn_on_int_to_str_conversion = False
+
+show(dict_of_test_dfs["big_integers"])
+```
