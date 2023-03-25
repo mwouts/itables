@@ -263,8 +263,6 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
-    _set_dom_equals_t_if_df_fits_in_one_page(df, kwargs)
-
     if caption is not None:
         tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
             tags, caption
@@ -302,6 +300,9 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
                 warning=downsampling_warning
             )
         )
+
+    if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
+        kwargs["dom"] = "ti" if downsampling_warning else "t"
 
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
@@ -415,14 +416,9 @@ def _min_rows(kwargs):
     return min_rows[0]
 
 
-def _set_dom_equals_t_if_df_fits_in_one_page(df, kwargs):
+def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
-    if "dom" in kwargs:
-        return
-
-    if len(df) <= _min_rows(kwargs):
-        kwargs["dom"] = "t"
-        return
+    return len(df) <= _min_rows(kwargs)
 
 
 def safe_reset_index(df):

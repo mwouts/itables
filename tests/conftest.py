@@ -19,10 +19,3 @@ def lengthMenu(request):
     if request.param == "2D-array":
         return [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
     return None
-
-
-@pytest.fixture(params=["None", "lfrtip"])
-def dom(request):
-    if request.param == "None":
-        return None
-    return request.param
