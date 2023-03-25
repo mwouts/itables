@@ -7,6 +7,9 @@ ITables ChangeLog
 **Added**
 - We have added a CI configuration where we test `itables` against `pandas` in pre-release versions
 
+**Fixed**
+- If a downsampling occurs, the downsampling message is displayed even if the table only has a few rows
+
 
 1.5.1 (2023-03-12)
 ------------------
