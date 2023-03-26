@@ -92,7 +92,7 @@ def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
     if converted and warn_on_int_to_str_conversion:
         warnings.warn(
             "The columns {} contains integers that are too large for Javascript.\n"
-            "They have been converted to str.\n"
+            "They have been converted to str. See https://github.com/mwouts/itables/issues/172.\n"
             "To silence this warning, please run:\n"
             "    import itables.options as opt\n"
             "    opt.warn_on_int_to_str_conversion = False".format(converted)
