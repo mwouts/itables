@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.5.3 (2023-03-??)
+------------------
+
+**Added**
+- We have added support for LaTeX/MathJax equations ([#154](https://github.com/mwouts/itables/issues/154))
+
+
 1.5.2 (2023-03-26)
 ------------------
 
