@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 from itables.datatables_format import datatables_rows, generate_encoder
-from itables.javascript import _column_count_in_header, _table_header
+from itables.datatables_repr import _column_count_in_header, _table_header
 
 
 @pytest.mark.skipif(

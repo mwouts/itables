@@ -1,4 +1,4 @@
-from itables.javascript import _df_fits_in_one_page, to_html_datatable
+from itables.datatables_repr import _df_fits_in_one_page, to_html_datatable
 
 
 def test_warn_on_unexpected_types_not_in_html(df):
