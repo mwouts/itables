@@ -161,3 +161,9 @@ opt.warn_on_int_to_str_conversion = False
 
 show(dict_of_test_dfs["big_integers"])
 ```
+
+## maths
+
+```{code-cell}
+show(dict_of_test_dfs["maths"])
+```
