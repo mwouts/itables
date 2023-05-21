@@ -1,6 +1,6 @@
 <style></style>
 <div class="itables">
-<table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<table id="table_id"><thead><tr><th>$\pi+\epsilon$</th></tr></thead></table>
 <script>
     // We use a namespace per table (= the next curly bracket)
     // to avoid conflicts between the various tables' data & dt_args
@@ -13,6 +13,9 @@
                 // Define the dt_args
                 let dt_args = {};
                 dt_args["data"] = data;
+
+                // Default MathJax Callback
+                dt_args["drawCallback"] = function(settings) {MathJax.Hub.Queue(["Typeset",MathJax.Hub]);};
 
                 // [pre-dt-code]
                 $('#table_id').DataTable(dt_args);

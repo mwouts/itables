@@ -179,8 +179,8 @@ def replace_value(template, pattern, value):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
     if sys.version_info >= (3,):
-        assert isinstance(template, str)
-    assert template.count(pattern) == 1
+        assert isinstance(template, str), template
+    assert template.count(pattern) == 1, pattern
     return template.replace(pattern, value)
 
 
@@ -290,7 +290,7 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
     )
     output = replace_value(
         output,
-        '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
+        '<table id="table_id"><thead><tr><th>$\\pi+\\epsilon$</th></tr></thead></table>',
         table_header,
     )
     output = replace_value(output, "#table_id", "#{}".format(tableId))
