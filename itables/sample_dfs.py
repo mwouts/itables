@@ -254,6 +254,17 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 ],
             }
         ),
+        "maths": pd.DataFrame(
+            {
+                "$N_{\\text{event}}$": ["$\\alpha$", "$\\beta$", "$\\gamma$"] * 10,
+                "Value": [
+                    "$0.8_{-0.1}^{+0.3}$",
+                    "$3.2_{-0.4}^{+0.2}$",
+                    "$-0.1_{-0.5}^{+0.8}$",
+                ]
+                * 10,
+            }
+        ),
     }
 
     if polars:

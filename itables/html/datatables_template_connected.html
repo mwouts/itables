@@ -1,7 +1,12 @@
 <style></style>
 <div class="itables">
-<table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<table id="table_id"><thead><tr><th>$\pi+\epsilon$</th></tr></thead></table>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
 <script type="module">
     // Import jquery and DataTable
     import 'https://code.jquery.com/jquery-3.6.0.min.js';
@@ -14,6 +19,9 @@
     // Define the dt_args
     let dt_args = {};
     dt_args["data"] = data;
+
+    // Default MathJax Callback
+    dt_args["drawCallback"] = function(settings) {MathJax.Hub.Queue(["Typeset",MathJax.Hub]);};
 
     $(document).ready(function () {
         // [pre-dt-code]

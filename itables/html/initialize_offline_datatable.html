@@ -1,3 +1,9 @@
+<!--TODO we will have to inline this library -->
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+</script>
 <script>
   // Create a pending promise immediately (this script is not deferred).
   window.dataTablePromise = new Promise((resolve) => {

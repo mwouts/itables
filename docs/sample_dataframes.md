@@ -21,7 +21,7 @@ from itables import init_notebook_mode, show
 from itables.sample_dfs import get_dict_of_test_dfs
 
 dict_of_test_dfs = get_dict_of_test_dfs()
-init_notebook_mode(all_interactive=True)
+init_notebook_mode(all_interactive=True, connected=True)
 ```
 
 ## empty
@@ -160,4 +160,10 @@ import itables.options as opt
 opt.warn_on_int_to_str_conversion = False
 
 show(dict_of_test_dfs["big_integers"])
+```
+
+## maths
+
+```{code-cell}
+show(dict_of_test_dfs["maths"])
 ```
