@@ -238,7 +238,9 @@ def _datatables_repr_(df=None, tableId=None, **kwargs):
     return to_html_datatable(df, tableId, connected=_CONNECTED, **kwargs)
 
 
-def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwargs):
+def to_html_datatable(
+    df=None, caption=None, tableId=None, connected=True, import_jquery=True, **kwargs
+):
     """Return the HTML representation of the given dataframe as an interactive datatable"""
     # Default options
     for option in dir(opt):
@@ -323,6 +325,14 @@ def to_html_datatable(df=None, caption=None, tableId=None, connected=True, **kwa
         output = read_package_file("html/datatables_template_connected.html")
     else:
         output = read_package_file("html/datatables_template.html")
+
+    if not import_jquery:
+        assert (
+            connected
+        ), "In the offline mode, jQuery is imported through init_notebook_mode"
+        output = replace_value(
+            output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
+        )
 
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):

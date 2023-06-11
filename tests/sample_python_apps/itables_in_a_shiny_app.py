@@ -1,7 +1,7 @@
 from shiny import App, ui
 
-from itables import to_html_datatable as DT
 from itables.sample_dfs import get_countries
+from itables.shiny import DT
 
 df = get_countries()
 

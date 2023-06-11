@@ -1,7 +1,7 @@
 from shiny import App, ui
 
-from itables import to_html_datatable as DT
 from itables.sample_dfs import get_dict_of_test_dfs
+from itables.shiny import DT
 
 app_ui = ui.page_fluid(
     # Display the different tables in different tabs
