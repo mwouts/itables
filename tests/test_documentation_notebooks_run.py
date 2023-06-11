@@ -11,7 +11,7 @@ try:
 except ImportError:
     pl = None
 
-pytestmark = pytest.mark.skipif(sys.version_info < (3,), reason="Not supported in Py2")
+pytestmark = pytest.mark.skipif(sys.version_info < (3, 7), reason="Require Python>=3.7")
 
 
 def list_doc_notebooks():
