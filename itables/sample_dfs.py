@@ -104,7 +104,13 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     test_dfs = {
-        "empty": pd.DataFrame(),
+        "empty": pd.DataFrame(dtype=float),
+        "no_rows": pd.DataFrame(dtype=float, columns=["a"]),
+        "no_columns": pd.DataFrame(dtype=float, index=["a"]),
+        "no_rows_one_column": pd.DataFrame([1.0], index=["a"], columns=["a"]).iloc[:0],
+        "no_columns_one_row": pd.DataFrame([1.0], index=["a"], columns=["a"]).iloc[
+            :, :0
+        ],
         "bool": pd.DataFrame(
             [[True, True, False, False], [True, False, True, False]],
             columns=list("abcd"),
