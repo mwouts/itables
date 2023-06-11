@@ -31,6 +31,30 @@ init_notebook_mode(all_interactive=True)
 show(dict_of_test_dfs["empty"])
 ```
 
+## No rows
+
+```{code-cell}
+show(dict_of_test_dfs["no_rows"])
+```
+
+## No rows one column
+
+```{code-cell}
+show(dict_of_test_dfs["no_rows_one_column"])
+```
+
+## No columns
+
+```{code-cell}
+show(dict_of_test_dfs["no_columns"])
+```
+
+## No columns one row
+
+```{code-cell}
+show(dict_of_test_dfs["no_columns_one_row"])
+```
+
 ## bool
 
 ```{code-cell}
