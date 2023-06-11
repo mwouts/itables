@@ -47,15 +47,23 @@ because otherwise the notebooks do not display the interactive tables when they 
 
 To get the HTML representation of a Pandas DataFrame `df` as an interactive [datatable](https://datatables.net/), you can use `to_html_datatable` as below:
 ```python
-from itables import to_html_datatable as DT
+from itables import to_html_datatable
 from itables.sample_dfs import get_countries
 
 df = get_countries()
-html = DT(df)
+html = to_html_datatable(df)
 ```
 
 # Using ITables in Shiny
 
-You can use ITables in Web applications generated with [Shiny](https://shiny.rstudio.com/py/) for Python, see our [tested examples](https://github.com/mwouts/itables/tree/main/tests/sample_python_apps).
+You can use ITables in Web applications generated with [Shiny](https://shiny.rstudio.com/py/) for Python with e.g.
+```python
+from shiny import ui
+from itables.shiny import DT
 
-ITables can't be used in Dash because jQuery is not usable in Dash (see the [Dash FAQ](https://dash.plotly.com/faqs)).
+ui.HTML(DT(df))
+```
+
+See also our [tested examples](https://github.com/mwouts/itables/tree/main/tests/sample_python_apps).
+
+ITables won't work in Dash because jQuery is not usable in Dash (see the [Dash FAQ](https://dash.plotly.com/faqs)).
