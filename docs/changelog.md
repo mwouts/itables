@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.5.3+dev (2023-06-??)
+------------------
+
+**Changed**
+- We have refactored the GitHub Action workflows. Python 2 was removed since it is not supported anymore.
+
+
 1.5.3 (2023-06-11)
 ------------------
 
