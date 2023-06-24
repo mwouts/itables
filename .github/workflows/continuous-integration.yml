@@ -3,126 +3,91 @@ on:
   push:
     paths-ignore:
       - 'CHANGELOG.md'
+    branches: [main]
   pull_request:
+    branches: [main]
   schedule:
     - cron: '0 11 * * 4'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  skip_duplicate:
-    runs-on: ubuntu-20.04
-    outputs:
-      should_skip: ${{ steps.skip_check.outputs.should_skip }}
-    steps:
-      - id: skip_check
-        uses: fkirc/skip-duplicate-actions@master
-        with:
-          github_token: ${{ github.token }}
-
   pre-commit:
-    needs: skip_duplicate
-    if: ${{ needs.skip_duplicate.outputs.should_skip == 'false' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-      - uses: pre-commit/action@v2.0.0
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - uses: pre-commit/action@v3.0.0
 
-  test-pip:
-    needs: skip_duplicate
-    if: ${{ needs.skip_duplicate.outputs.should_skip == 'false' }}
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python, javascript
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  pytest:
     strategy:
+      fail-fast: false
       matrix:
-        python-version: [ 2.7, 3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
+        python-version: [3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
+        pandas-version: [latest]
+        include:
+          - python-version: 3.6
+            pandas-version: 0.22
+          - python-version: 3.9
+            pandas-version: 1.5
+          - python-version: "3.11"
+            pandas-version: pre
+            polars: true
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-          if("${{ matrix.python-version }}" -eq "2.7")
-          then
-            pip install pandas==0.22
-          fi
-      - name: Lint with flake8
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # all Python files should follow PEP8
-          flake8 itables tests
-          # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --statistics
+
       - name: Install a development version of 'itables'
         run: pip install -e .
-      - name: Install a Jupyter Kernel
-        run: python -m ipykernel install --name itables --user
-      - name: Test with pytest
-        run: pytest --cov=./ --cov-report=xml
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1
 
-  test-pip-pandas-pre:
-    needs: skip_duplicate
-    if: ${{ needs.skip_duplicate.outputs.should_skip == 'false' }}
-    strategy:
-      matrix:
-        python-version: [ "3.11"]
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pandas --pre
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-      - name: Install a development version of 'itables'
-        run: pip install -e .
-      - name: Install a Jupyter Kernel
-        run: python -m ipykernel install --name itables --user
-      - name: Test with pytest
-        run: pytest --cov=./ --cov-report=xml
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1
+      - name: Install pandas latest
+        if: matrix.pandas-version == 'latest'
+        run: pip install pandas
+      - name: Install pandas pre-release
+        if: matrix.pandas-version == 'pre'
+        run: pip install pandas --pre
+      - name: Install pandas ${{ matrix.pandas-version }}
+        if: matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
+        run: pip install pandas==${{ matrix.pandas-version }}
 
-  test-pip-polars:
-    needs: skip_duplicate
-    if: ${{ needs.skip_duplicate.outputs.should_skip == 'false' }}
-    strategy:
-      matrix:
-        python-version: [ 3.7, 3.8, 3.9, "3.10", "3.11"]
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-      - name: Install a development version of 'itables'
+      - name: Install polars
+        if: matrix.polars
         run: pip install -e .[polars]
+
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user
+
       - name: Test with pytest
         run: pytest --cov=./ --cov-report=xml
+
       - name: Upload coverage
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
