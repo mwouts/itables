@@ -1,6 +1,5 @@
 import math
 import string
-import sys
 from datetime import datetime, timedelta
 
 try:
@@ -33,7 +32,8 @@ COLUMN_TYPES = [
     "timedelta",
 ]
 
-if sys.version_info < (3,):
+PANDAS_VERSION_MAJOR = int(pd.__version__.split(".", 1)[0])
+if PANDAS_VERSION_MAJOR == 0:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
 
 
@@ -122,7 +122,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 [None, False, True, False],
             ],
             columns=list("abcd"),
-            dtype="boolean" if sys.version_info > (3,) else "bool",
+            dtype="bool" if PANDAS_VERSION_MAJOR == 0 else "boolean",
         ),
         "int": pd.DataFrame(
             [[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")
@@ -319,7 +319,7 @@ def generate_random_series(rows, type):
         return pd.Series(np.random.geometric(p=0.1, size=rows), dtype=int)
     if type == "Int64":
         x = generate_random_series(rows, "int").astype(type)
-        if sys.version_info >= (3,):
+        if PANDAS_VERSION_MAJOR >= 1:
             x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
         return x
     if type == "float":
