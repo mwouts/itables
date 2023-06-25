@@ -10,10 +10,11 @@ import pytest
 
 from itables.datatables_format import datatables_rows, generate_encoder
 from itables.javascript import _column_count_in_header, _table_header
+from itables.sample_dfs import PANDAS_VERSION_MAJOR
 
 
 @pytest.mark.skipif(
-    sys.version_info < (3,), reason="pandas formatting has changed since Py2"
+    PANDAS_VERSION_MAJOR == 0, reason="pandas formats have changed in pandas==1.0"
 )
 @pytest.mark.parametrize(
     "df,expected",
@@ -22,7 +23,7 @@ from itables.javascript import _column_count_in_header, _table_header
         (
             pd.DataFrame(
                 {"x": [True, False, None]},
-                dtype="boolean" if sys.version_info > (3,) else "bool",
+                dtype="bool" if PANDAS_VERSION_MAJOR == 0 else "boolean",
             ),
             [[True], [False], ["<NA>"]],
         ),

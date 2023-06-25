@@ -8,6 +8,7 @@ from itables import show, to_html_datatable
 from itables.datatables_format import _format_column, generate_encoder
 from itables.sample_dfs import (
     COLUMN_TYPES,
+    PANDAS_VERSION_MAJOR,
     generate_random_df,
     generate_random_series,
     get_countries,
@@ -18,12 +19,16 @@ from itables.sample_dfs import (
 )
 
 # Make sure that displaying a dataframe does not trigger a warning  #107
-if sys.version_info >= (3,):
-    pytestmark = [
-        pytest.mark.filterwarnings("error"),
-        # Seen on the CI on Py38 and Py39
-        pytest.mark.filterwarnings("ignore::ResourceWarning"),
-    ]
+pytestmark = [
+    pytest.mark.filterwarnings("error"),
+    # Seen on the CI on Py38 and Py39
+    pytest.mark.filterwarnings("ignore::ResourceWarning"),
+]
+
+if PANDAS_VERSION_MAJOR < 2:
+    # DeprecationWarning: `cumproduct` is deprecated as of NumPy 1.25.0,
+    # and will be removed in NumPy 2.0. Please use `cumprod` instead.
+    pytestmark.append(pytest.mark.filterwarnings("ignore::DeprecationWarning"))
 
 
 def test_get_countries():
