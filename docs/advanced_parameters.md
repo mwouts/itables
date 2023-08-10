@@ -292,6 +292,26 @@ sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
 show(sorted_df, order=[[1, "asc"]], dom="tpr")
 ```
 
+## Showing the index
+
+By default, the index of a Series/DataFrame is shown only when it is not trivial, i.e. when
+it has a name, or when it differs from a range index. If you prefer, you can change the value of
+`showIndex` to either `True` or `False` to always or never show the index (the default value being `"auto"`).
+
+You can change this behavior globally with e.g.
+```python
+import itables.options as opt
+
+opt.showIndex = True
+```
+
+or locally by passing an argument `showIndex` to the `show` function:
+
+```{code-cell}
+df_with_range_index = pd.DataFrame({"letter": list("abcd")})
+show(df_with_range_index, showIndex=True)
+```
+
 ## Advanced cell formatting with JS callbacks
 
 You can use Javascript callbacks to set the cell or row style depending on the cell content.
