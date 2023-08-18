@@ -298,6 +298,13 @@ def get_dict_of_test_series(polars=False):
                 polars_series[key] = pl.from_pandas(series[key])
             except (pa.ArrowInvalid, ValueError):
                 pass
+
+        # Add a Polar table with unsigned integers
+        # https://github.com/mwouts/itables/issues/192
+        polars_series["u32"] = (
+            pl.DataFrame({"foo": [1, 1, 3, 1]}).groupby("foo").count()
+        )
+
         return polars_series
 
     return series
