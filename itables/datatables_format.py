@@ -81,10 +81,10 @@ def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
                 df.iloc[:, i] = x.astype(str)
                 converted.append(col)
         except AttributeError:
+            # Polars
             x = df[col]
-            if (
-                x.dtype in pl.INTEGER_DTYPES
-                and ((x < JS_MIN_SAFE_INTEGER) | (x > JS_MAX_SAFE_INTEGER)).any()
+            if x.dtype in pl.INTEGER_DTYPES and (
+                (x.min() < JS_MIN_SAFE_INTEGER) or (x.max() > JS_MAX_SAFE_INTEGER)
             ):
                 df = df.with_columns(pl.col(col).cast(pl.Utf8))
                 converted.append(col)
