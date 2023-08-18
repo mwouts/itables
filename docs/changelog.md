@@ -1,8 +1,11 @@
 ITables ChangeLog
 =================
 
-1.5.3+dev (2023-06-??)
+1.5.4 (2023-08-18)
 ------------------
+
+**Fixed**
+- Fixed an OverflowError when displaying Polar tables containing unsigned integers ([#192](https://github.com/mwouts/itables/issues/192))
 
 **Changed**
 - We have refactored the GitHub Action workflows. Python 2 was removed since it is not supported anymore.
