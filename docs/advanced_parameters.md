@@ -342,6 +342,8 @@ function (td, cellData, rowData, row, col) {
 )
 ```
 
+Note: starting with `itables==1.6.0`, you can also render [Pandas style](pandas_style.md) objects as interactive datatables.
+
 ## Column width
 
 The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.

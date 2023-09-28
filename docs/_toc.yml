@@ -6,6 +6,7 @@ chapters:
 - file: custom_css
 - file: downsampling
 - file: sample_dataframes
+- file: pandas_style
 - file: polars_dataframes
 - file: references
 - file: contributing

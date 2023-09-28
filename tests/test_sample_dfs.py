@@ -15,6 +15,7 @@ from itables.sample_dfs import (
     get_dict_of_test_dfs,
     get_dict_of_test_series,
     get_indicators,
+    get_pandas_style,
     get_population,
 )
 
@@ -51,6 +52,11 @@ def test_get_indicators():
     assert len(df.index) == 500
     assert len(df.columns)
     show(df)
+
+
+def test_get_pandas_style():
+    style = get_pandas_style()
+    show(style)
 
 
 def kwargs_remove_none(**kwargs):

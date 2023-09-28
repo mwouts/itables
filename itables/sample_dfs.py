@@ -375,3 +375,108 @@ def generate_random_df(rows, columns, column_types=COLUMN_TYPES):
         x.index = index
 
     return pd.DataFrame(series)
+
+
+def get_pandas_style():
+    """This function returns the Pandas style object given as an example
+    in the Pandas documentation:
+
+    https://pandas.pydata.org/docs/user_guide/style.html#Styler-Object-and-HTML
+    """
+    df = pd.DataFrame(
+        [[38.0, 2.0, 18.0, 22.0, 21, np.nan], [19, 439, 6, 452, 226, 232]],
+        index=pd.Index(
+            ["Tumour (Positive)", "Non-Tumour (Negative)"], name="Actual Label:"
+        ),
+        columns=pd.MultiIndex.from_product(
+            [["Decision Tree", "Regression", "Random"], ["Tumour", "Non-Tumour"]],
+            names=["Model:", "Predicted:"],
+        ),
+    )
+
+    s = df.style.format("{:.0f}").hide(
+        [("Random", "Tumour"), ("Random", "Non-Tumour")], axis="columns"
+    )
+
+    cell_hover = {  # for row hover use <tr> instead of <td>
+        "selector": "td:hover",
+        "props": [("background-color", "#ffffb3")],
+    }
+    index_names = {
+        "selector": ".index_name",
+        "props": "font-style: italic; color: darkgrey; font-weight:normal;",
+    }
+    headers = {
+        "selector": "th:not(.index_name)",
+        "props": "background-color: #000066; color: white;",
+    }
+    s.set_table_styles([cell_hover, index_names, headers])
+
+    s.set_table_styles(
+        [
+            {"selector": "th.col_heading", "props": "text-align: center;"},
+            {"selector": "th.col_heading.level0", "props": "font-size: 1.5em;"},
+            {"selector": "td", "props": "text-align: center; font-weight: bold;"},
+        ],
+        overwrite=False,
+    )
+
+    s.set_table_styles(
+        [  # create internal CSS classes
+            {"selector": ".true", "props": "background-color: #e6ffe6;"},
+            {"selector": ".false", "props": "background-color: #ffe6e6;"},
+        ],
+        overwrite=False,
+    )
+
+    cell_color = pd.DataFrame(
+        [
+            ["true ", "false ", "true ", "false "],
+            ["false ", "true ", "false ", "true "],
+        ],
+        index=df.index,
+        columns=df.columns[:4],
+    )
+
+    s.set_td_classes(cell_color)
+
+    s.set_caption(
+        "Confusion matrix for multiple cancer prediction models."
+    ).set_table_styles(
+        [{"selector": "caption", "props": "caption-side: bottom; font-size:1.25em;"}],
+        overwrite=False,
+    )
+
+    tt = pd.DataFrame(
+        [
+            [
+                "This model has a very strong true positive rate",
+                "This model's total number of false negatives is too high",
+            ]
+        ],
+        index=["Tumour (Positive)"],
+        columns=df.columns[[0, 3]],
+    )
+    s.set_tooltips(
+        tt,
+        props="visibility: hidden; position: absolute; z-index: 1; border: 1px solid #000066;"
+        "background-color: white; color: #000066; font-size: 0.8em;"
+        "transform: translate(0px, -24px); padding: 0.6em; border-radius: 0.5em;",
+    )
+
+    s.set_table_styles(
+        [  # create internal CSS classes
+            {"selector": ".border-red", "props": "border: 2px dashed red;"},
+            {"selector": ".border-green", "props": "border: 2px dashed green;"},
+        ],
+        overwrite=False,
+    )
+
+    cell_border = pd.DataFrame(
+        [["border-green ", " ", " ", "border-red "], [" ", " ", " ", " "]],
+        index=df.index,
+        columns=df.columns[:4],
+    )
+    s.set_td_classes(cell_color + cell_border)
+
+    return s
