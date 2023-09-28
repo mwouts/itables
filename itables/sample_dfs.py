@@ -394,9 +394,13 @@ def get_pandas_style():
         ),
     )
 
-    s = df.style.format("{:.0f}").hide(
-        [("Random", "Tumour"), ("Random", "Non-Tumour")], axis="columns"
-    )
+    s = df.style.format("{:.0f}")
+
+    try:
+        s = s.hide([("Random", "Tumour"), ("Random", "Non-Tumour")], axis="columns")
+    except AttributeError:
+        # Python 3.7
+        pass
 
     cell_hover = {  # for row hover use <tr> instead of <td>
         "selector": "td:hover",
