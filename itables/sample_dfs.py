@@ -32,9 +32,14 @@ COLUMN_TYPES = [
     "timedelta",
 ]
 
-PANDAS_VERSION_MAJOR = int(pd.__version__.split(".", 1)[0])
+PANDAS_VERSION_MAJOR, PANDAS_VERSION_MINOR, _ = pd.__version__.split(".", 2)
+PANDAS_VERSION_MAJOR = int(PANDAS_VERSION_MAJOR)
+PANDAS_VERSION_MINOR = int(PANDAS_VERSION_MINOR)
 if PANDAS_VERSION_MAJOR == 0:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
+if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
+    # https://github.com/pandas-dev/pandas/issues/55080
+    COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "timedelta"]
 
 
 def get_countries(html=True):
