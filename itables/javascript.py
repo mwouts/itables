@@ -579,7 +579,12 @@ def _min_rows(kwargs):
 
 def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
-    return len(df.index) <= _min_rows(kwargs)
+    try:
+        # Pandas DF or Style
+        return len(df.index) <= _min_rows(kwargs)
+    except AttributeError:
+        # Polars
+        return len(df) <= _min_rows(kwargs)
 
 
 def safe_reset_index(df):
