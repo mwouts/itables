@@ -416,22 +416,26 @@ def get_pandas_style():
     }
     s.set_table_styles([cell_hover, index_names, headers])
 
-    s.set_table_styles(
-        [
-            {"selector": "th.col_heading", "props": "text-align: center;"},
-            {"selector": "th.col_heading.level0", "props": "font-size: 1.5em;"},
-            {"selector": "td", "props": "text-align: center; font-weight: bold;"},
-        ],
-        overwrite=False,
-    )
+    try:
+        s.set_table_styles(
+            [
+                {"selector": "th.col_heading", "props": "text-align: center;"},
+                {"selector": "th.col_heading.level0", "props": "font-size: 1.5em;"},
+                {"selector": "td", "props": "text-align: center; font-weight: bold;"},
+            ],
+            overwrite=False,
+        )
 
-    s.set_table_styles(
-        [  # create internal CSS classes
-            {"selector": ".true", "props": "background-color: #e6ffe6;"},
-            {"selector": ".false", "props": "background-color: #ffe6e6;"},
-        ],
-        overwrite=False,
-    )
+        s.set_table_styles(
+            [  # create internal CSS classes
+                {"selector": ".true", "props": "background-color: #e6ffe6;"},
+                {"selector": ".false", "props": "background-color: #ffe6e6;"},
+            ],
+            overwrite=False,
+        )
+    except TypeError:
+        # Python 3.6 AttributeError: 'Styler' object has no attribute 'hide'
+        pass
 
     cell_color = pd.DataFrame(
         [
