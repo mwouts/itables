@@ -54,6 +54,10 @@ def test_get_indicators():
     show(df)
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 7),
+    reason="AttributeError: 'Styler' object has no attribute 'to_html'",
+)
 def test_get_pandas_styler():
     styler = get_pandas_styler()
     show(styler)
