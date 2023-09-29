@@ -2,6 +2,7 @@ pathlib
 pre-commit
 isort
 flake8
+matplotlib
 pytest
 pytest-cov
 jupytext
