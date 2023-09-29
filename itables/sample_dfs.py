@@ -395,7 +395,6 @@ def get_pandas_styler():
         "A Pandas Styler object with background colors and tooltips"
     ).set_table_styles(
         [{"selector": "caption", "props": "caption-side: bottom; font-size:1.25em;"}],
-        overwrite=False,
     )
 
     ttips = pd.DataFrame(

@@ -66,8 +66,7 @@ s.format("{:.3f}")
 
 ```{code-cell}
 s.set_caption("A Pandas Styler object with background colors").set_table_styles(
-    [{"selector": "caption", "props": "caption-side: bottom; font-size:1em;"}],
-    overwrite=False,
+    [{"selector": "caption", "props": "caption-side: bottom; font-size:1em;"}]
 )
 ```
 
