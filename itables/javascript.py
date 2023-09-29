@@ -32,7 +32,6 @@ logger = logging.getLogger(__name__)
 _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "footer",
     "column_filters",
-    "showIndex",
     "maxBytes",
     "maxRows",
     "maxColumns",
@@ -488,8 +487,25 @@ def to_html_datatable_using_to_html(
             tags, caption
         )
 
+    showIndex = kwargs.pop("showIndex")
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
+
+    if showIndex == "auto":
+        try:
+            showIndex = df.index.name is not None or not isinstance(
+                df.index, pd.RangeIndex
+            )
+        except AttributeError:
+            # Polars DataFrame
+            showIndex = False
+
+    if not showIndex:
+        try:
+            df.hide()
+        except AttributeError:
+            # Not a Pandas Styler object
+            pass
 
     if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
         kwargs["dom"] = "t"
