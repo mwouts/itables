@@ -524,12 +524,12 @@ def to_html_datatable_using_to_html(
             output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
         )
 
+    tableId = tableId or str(uuid.uuid4())
     if isinstance(df, pd_style.Styler):
-        assert tableId is None, "Styler objects already have an uuid"
-        tableId = "T_" + df.uuid
+        df.set_uuid(tableId)
+        tableId = "T_" + tableId
         table_html = df.to_html()
     else:
-        tableId = tableId or str(uuid.uuid4())
         table_html = df.to_html(table_id=tableId)
 
     if style:
