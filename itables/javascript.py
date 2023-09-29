@@ -269,22 +269,7 @@ def to_html_datatable(
         )
 
     """Return the HTML representation of the given dataframe as an interactive datatable"""
-    # Default options
-    for option in dir(opt):
-        if (
-            option not in kwargs
-            and not option.startswith("__")
-            and option not in ["read_package_file"]
-        ):
-            kwargs[option] = getattr(opt, option)
-
-    for name, value in kwargs.items():
-        if value is None:
-            raise ValueError(
-                "Please don't pass an option with a value equal to None ('{}=None')".format(
-                    name
-                )
-            )
+    set_default_options(kwargs, use_to_html=False)
 
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
@@ -443,25 +428,21 @@ def to_html_datatable(
     return output
 
 
-def to_html_datatable_using_to_html(
-    df=None, caption=None, tableId=None, connected=True, import_jquery=True, **kwargs
-):
-    """Return the HTML representation of the given dataframe as an interactive datatable,
-    using df.to_html() rather than the underlying dataframe data."""
-    options_not_available = set(kwargs).intersection(
-        _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML
-    )
-    if options_not_available:
-        raise TypeError(
-            "These options are not available when using df.to_html: {}".format(
-                options_not_available
-            )
+def set_default_options(kwargs, use_to_html):
+    if use_to_html:
+        options_not_available = set(kwargs).intersection(
+            _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML
         )
-
+        if options_not_available:
+            raise TypeError(
+                "These options are not available when using df.to_html: {}".format(
+                    set(kwargs).intersection(options_not_available)
+                )
+            )
     # Default options
     for option in dir(opt):
         if (
-            option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML
+            (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
             and option not in ["read_package_file"]
@@ -475,6 +456,14 @@ def to_html_datatable_using_to_html(
                     name
                 )
             )
+
+
+def to_html_datatable_using_to_html(
+    df=None, caption=None, tableId=None, connected=True, import_jquery=True, **kwargs
+):
+    """Return the HTML representation of the given dataframe as an interactive datatable,
+    using df.to_html() rather than the underlying dataframe data."""
+    set_default_options(kwargs, use_to_html=True)
 
     # These options are used here, not in DataTable
     css = kwargs.pop("css")
