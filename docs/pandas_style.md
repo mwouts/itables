@@ -23,13 +23,13 @@ activated:
 
 ```{code-cell}
 from itables import init_notebook_mode
-from itables.sample_dfs import get_pandas_style
+from itables.sample_dfs import get_pandas_styler
 
 init_notebook_mode(all_interactive=True)
 ```
 
 ```{code-cell}
-get_pandas_style()
+get_pandas_styler()
 ```
 
 ```{note}
