@@ -387,7 +387,9 @@ def get_pandas_styler():
         {"sin": np.sin(x), "cos": np.cos(x)}, index=pd.Index(x, name="alpha")
     )
 
-    s = df.style.format("{:.3f}").background_gradient(axis=0, cmap="YlOrRd")
+    s = df.style
+    s.background_gradient(axis=None, cmap="YlOrRd")
+    s.format("{:.3f}")
 
     s.set_caption(
         "A Pandas Styler object with background colors and tooltips"
@@ -398,8 +400,8 @@ def get_pandas_styler():
 
     ttips = pd.DataFrame(
         {
-            "sin": [f"The sinus of {t} is {math.sin(t)}" for t in x],
-            "cos": [f"The cosinus of {t} is {math.cos(t)}" for t in x],
+            "sin": ["The sinus of {:.6f} is {:.6f}".format(t, np.sin(t)) for t in x],
+            "cos": ["The cosinus of {:.6f} is {:.6f}".format(t, np.cos(t)) for t in x],
         },
         index=df.index,
     )

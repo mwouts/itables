@@ -244,6 +244,10 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
     show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
+```{tip}
+ITables will also render [Pandas Style](pandas_style.md) objects as interactive datatables.
+```
+
 ## Javascript formatting
 
 Numbers are formatted using Pandas, then are converted back to float to ensure they come in the right order when sorted.

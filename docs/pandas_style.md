@@ -14,26 +14,83 @@ kernelspec:
 
 # Pandas Style
 
-Starting with `itable>=1.6.0`, ITables provides support for the Pandas Styler objects.
-
-For instance, the `Styler` object below was constructed following the
-[Pandas Style guide](https://pandas.pydata.org/docs/user_guide/style.html),
-and is rendered as an interactive datatable when the `all_interactive` mode is
-activated:
+Starting with `itable>=1.6.0`, ITables provides support for
+[Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html).
 
 ```{code-cell}
+import pandas as pd
+import numpy as np
 from itables import init_notebook_mode
-from itables.sample_dfs import get_pandas_styler
 
 init_notebook_mode(all_interactive=True)
 ```
 
 ```{code-cell}
-get_pandas_styler()
+:tags: [remove-input]
+
+import itables.options as opt
+
+opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
+```
+
+This is the DataFrame that we are going to style:
+
+```{code-cell}
+x = np.linspace(0, np.pi, 21)
+df = pd.DataFrame({"sin": np.sin(x), "cos": np.cos(x)}, index=pd.Index(x, name="alpha"))
+
+df
+```
+
+## Color
+
+From now on we will display `df.style`
+(a Pandas `Styler` object) rather than our DataFrame `df`.
+
+Let's start with a background gradient:
+
+```{code-cell}
+s = df.style
+s.background_gradient(axis=None, cmap="YlOrRd")
+```
+
+## Format
+
+We can also choose how the data is formatted:
+
+```{code-cell}
+s.format("{:.3f}")
+```
+
+## Caption
+
+```{code-cell}
+s.set_caption("A Pandas Styler object with background colors").set_table_styles(
+    [{"selector": "caption", "props": "caption-side: bottom; font-size:1em;"}],
+    overwrite=False,
+)
+```
+
+## Tooltips
+
+```{code-cell}
+ttips = pd.DataFrame(
+    {
+        "sin": ["The sinus of {:.6f} is {:.6f}".format(t, np.sin(t)) for t in x],
+        "cos": ["The cosinus of {:.6f} is {:.6f}".format(t, np.cos(t)) for t in x],
+    },
+    index=df.index,
+)
+s.set_tooltips(ttips).set_caption("With tooltips")
 ```
 
 ```{note}
-Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using the object's
-`.to_html` method. For this reason the rendering might slightly differ from the rendering
-of DataFrames. Similarly, the downsampling is not available for these objects.
+Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using their
+`to_html` method, rather than passing the underlying table data to the datatables.net
+library.
+
+Because of this, the rendering of the table might differ slightly from the rendering of the
+corresponding DataFrame. In prarticular,
+- The downsampling is not available - please pay attention to the size of the table being rendered
+- Sorting of numbers will not work if the column contains NaNs.
 ```
