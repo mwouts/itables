@@ -283,13 +283,8 @@ def to_html_datatable(
         )
 
     showIndex = kwargs.pop("showIndex")
-    maxBytes = kwargs.pop("maxBytes", 0)
-    maxRows = kwargs.pop("maxRows", 0)
-    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
-    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
-    warn_on_int_to_str_conversion = kwargs.pop("warn_on_int_to_str_conversion", False)
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -305,6 +300,12 @@ def to_html_datatable(
         except AttributeError:
             # Polars DataFrame
             showIndex = False
+
+    maxBytes = kwargs.pop("maxBytes", 0)
+    maxRows = kwargs.pop("maxRows", 0)
+    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
+    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
+    warn_on_int_to_str_conversion = kwargs.pop("warn_on_int_to_str_conversion", False)
 
     df, downsampling_warning = downsample(
         df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
@@ -466,9 +467,9 @@ def to_html_datatable_using_to_html(
     set_default_options(kwargs, use_to_html=True)
 
     # These options are used here, not in DataTable
-    css = kwargs.pop("css")
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
+    css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
     if caption is not None:
@@ -479,6 +480,12 @@ def to_html_datatable_using_to_html(
     showIndex = kwargs.pop("showIndex")
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
+
+    if isinstance(df, (np.ndarray, np.generic)):
+        df = pd.DataFrame(df)
+
+    if isinstance(df, (pd.Series, pl.Series)):
+        df = df.to_frame()
 
     if showIndex == "auto":
         try:
