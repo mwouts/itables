@@ -404,6 +404,9 @@ def get_pandas_styler():
         },
         index=df.index,
     )
-    s.set_tooltips(ttips)
+    try:
+        s.set_tooltips(ttips)
+    except AttributeError:
+        pass
 
     return s
