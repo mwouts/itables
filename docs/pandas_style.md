@@ -14,7 +14,7 @@ kernelspec:
 
 # Pandas Style
 
-Starting with `itable>=1.6.0`, ITables provides support for
+Starting with `itables>=1.6.0`, ITables provides support for
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html).
 
 ```{code-cell}
@@ -89,7 +89,7 @@ Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using 
 library.
 
 Because of this, the rendering of the table might differ slightly from the rendering of the
-corresponding DataFrame. In prarticular,
+corresponding DataFrame. In particular,
 - The downsampling is not available - please pay attention to the size of the table being rendered
 - Sorting of numbers will not work if the column contains NaNs.
 ```
