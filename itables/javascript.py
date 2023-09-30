@@ -10,6 +10,7 @@ from base64 import b64encode
 
 import numpy as np
 import pandas as pd
+import pandas.io.formats.style as pd_style
 
 try:
     import polars as pl
@@ -28,7 +29,17 @@ from .utils import read_package_file
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
+_OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
+    "footer",
+    "column_filters",
+    "maxBytes",
+    "maxRows",
+    "maxColumns",
+    "warn_on_unexpected_types",
+    "warn_on_int_to_str_conversion",
+}
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
+_ORIGINAL_DATAFRAME_STYLE_REPR_HTML = pd_style.Styler._repr_html_
 _ORIGINAL_POLARS_DATAFRAME_REPR_HTML = pl.DataFrame._repr_html_
 _CONNECTED = True
 
@@ -80,10 +91,12 @@ def init_notebook_mode(
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
+        pd_style.Styler._repr_html_ = _datatables_repr_
         pl.DataFrame._repr_html_ = _datatables_repr_
         pl.Series._repr_html_ = _datatables_repr_
     else:
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
+        pd_style.Styler._repr_html_ = _ORIGINAL_DATAFRAME_STYLE_REPR_HTML
         pl.DataFrame._repr_html_ = _ORIGINAL_POLARS_DATAFRAME_REPR_HTML
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
@@ -232,35 +245,35 @@ class JavascriptCode(str):
     pass
 
 
-def _datatables_repr_(df=None, tableId=None, **kwargs):
-    return to_html_datatable(df, tableId, connected=_CONNECTED, **kwargs)
+def _datatables_repr_(df):
+    return to_html_datatable(df, connected=_CONNECTED)
 
 
 def to_html_datatable(
-    df=None, caption=None, tableId=None, connected=True, import_jquery=True, **kwargs
+    df=None,
+    caption=None,
+    tableId=None,
+    connected=True,
+    import_jquery=True,
+    use_to_html=False,
+    **kwargs
 ):
-    """Return the HTML representation of the given dataframe as an interactive datatable"""
-    # Default options
-    for option in dir(opt):
-        if (
-            option not in kwargs
-            and not option.startswith("__")
-            and option not in ["read_package_file"]
-        ):
-            kwargs[option] = getattr(opt, option)
+    if use_to_html or isinstance(df, pd_style.Styler):
+        return to_html_datatable_using_to_html(
+            df=df,
+            caption=caption,
+            tableId=tableId,
+            connected=connected,
+            import_jquery=import_jquery,
+            **kwargs
+        )
 
-    for name, value in kwargs.items():
-        if value is None:
-            raise ValueError(
-                "Please don't pass an option with a value equal to None ('{}=None')".format(
-                    name
-                )
-            )
+    """Return the HTML representation of the given dataframe as an interactive datatable"""
+    set_default_options(kwargs, use_to_html=False)
 
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
-    css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
     if caption is not None:
@@ -269,13 +282,6 @@ def to_html_datatable(
         )
 
     showIndex = kwargs.pop("showIndex")
-    maxBytes = kwargs.pop("maxBytes", 0)
-    maxRows = kwargs.pop("maxRows", 0)
-    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
-    eval_functions = kwargs.pop("eval_functions", None)
-    pre_dt_code = kwargs.pop("pre_dt_code")
-    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
-    warn_on_int_to_str_conversion = kwargs.pop("warn_on_int_to_str_conversion", False)
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -291,6 +297,12 @@ def to_html_datatable(
         except AttributeError:
             # Polars DataFrame
             showIndex = False
+
+    maxBytes = kwargs.pop("maxBytes", 0)
+    maxRows = kwargs.pop("maxRows", 0)
+    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
+    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
+    warn_on_int_to_str_conversion = kwargs.pop("warn_on_int_to_str_conversion", False)
 
     df, downsampling_warning = downsample(
         df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
@@ -318,20 +330,6 @@ def to_html_datatable(
             "'header', 'footer' or False, not {}".format(column_filters)
         )
 
-    # Load the HTML template
-    if connected:
-        output = read_package_file("html/datatables_template_connected.html")
-    else:
-        output = read_package_file("html/datatables_template.html")
-
-    if not import_jquery:
-        assert (
-            connected
-        ), "In the offline mode, jQuery is imported through init_notebook_mode"
-        output = replace_value(
-            output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
-        )
-
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
         classes = " ".join(classes)
@@ -346,12 +344,165 @@ def to_html_datatable(
     table_header = _table_header(
         df, tableId, showIndex, classes, style, tags, footer, column_filters
     )
+
+    # Export the table data to JSON and include this in the HTML
+    if showIndex:
+        df = safe_reset_index(df)
+
+    # When the header has an extra column, we add
+    # an extra empty column in the table data #141
+    column_count = _column_count_in_header(table_header)
+    dt_data = datatables_rows(
+        df,
+        column_count,
+        warn_on_unexpected_types=warn_on_unexpected_types,
+        warn_on_int_to_str_conversion=warn_on_int_to_str_conversion,
+    )
+
+    return html_table_from_template(
+        table_header,
+        table_id=tableId,
+        data=dt_data,
+        kwargs=kwargs,
+        connected=connected,
+        import_jquery=import_jquery,
+        column_filters=column_filters,
+    )
+
+
+def set_default_options(kwargs, use_to_html):
+    if use_to_html:
+        options_not_available = set(kwargs).intersection(
+            _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML
+        )
+        if options_not_available:
+            raise TypeError(
+                "These options are not available when using df.to_html: {}".format(
+                    set(kwargs).intersection(options_not_available)
+                )
+            )
+    # Default options
+    for option in dir(opt):
+        if (
+            (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
+            and option not in kwargs
+            and not option.startswith("__")
+            and option not in ["read_package_file"]
+        ):
+            kwargs[option] = getattr(opt, option)
+
+    for name, value in kwargs.items():
+        if value is None:
+            raise ValueError(
+                "Please don't pass an option with a value equal to None ('{}=None')".format(
+                    name
+                )
+            )
+
+
+def to_html_datatable_using_to_html(
+    df=None, caption=None, tableId=None, connected=True, import_jquery=True, **kwargs
+):
+    """Return the HTML representation of the given dataframe as an interactive datatable,
+    using df.to_html() rather than the underlying dataframe data."""
+    set_default_options(kwargs, use_to_html=True)
+
+    # These options are used here, not in DataTable
+    classes = kwargs.pop("classes")
+    style = kwargs.pop("style")
+    tags = kwargs.pop("tags")
+
+    if caption is not None:
+        tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
+            tags, caption
+        )
+
+    showIndex = kwargs.pop("showIndex")
+
+    if isinstance(df, (np.ndarray, np.generic)):
+        df = pd.DataFrame(df)
+
+    if isinstance(df, (pd.Series, pl.Series)):
+        df = df.to_frame()
+
+    if showIndex == "auto":
+        try:
+            showIndex = df.index.name is not None or not isinstance(
+                df.index, pd.RangeIndex
+            )
+        except AttributeError:
+            # Polars DataFrame
+            showIndex = False
+
+    if not showIndex:
+        try:
+            df.hide()
+        except AttributeError:
+            # Not a Pandas Styler object
+            pass
+
+    if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
+        kwargs["dom"] = "t"
+
+    tableId = tableId or str(uuid.uuid4())
+    if isinstance(df, pd_style.Styler):
+        df.set_uuid(tableId)
+        tableId = "T_" + tableId
+        table_html = df.to_html()
+    else:
+        table_html = df.to_html(table_id=tableId)
+
+    if style:
+        style = 'style="{}"'.format(style)
+    else:
+        style = ""
+
+    html_table = replace_value(
+        table_html,
+        '<table id="{}">'.format(tableId),
+        """<table id="{tableId}" class="{classes}"{style}>{tags}""".format(
+            tableId=tableId, classes=classes, style=style, tags=tags
+        ),
+    )
+
+    return html_table_from_template(
+        html_table,
+        table_id=tableId,
+        data=None,
+        kwargs=kwargs,
+        connected=connected,
+        import_jquery=import_jquery,
+        column_filters=None,
+    )
+
+
+def html_table_from_template(
+    html_table, table_id, data, kwargs, connected, import_jquery, column_filters
+):
+    css = kwargs.pop("css")
+    eval_functions = kwargs.pop("eval_functions", None)
+    pre_dt_code = kwargs.pop("pre_dt_code")
+
+    # Load the HTML template
+    if connected:
+        output = read_package_file("html/datatables_template_connected.html")
+    else:
+        output = read_package_file("html/datatables_template.html")
+
+    if not import_jquery:
+        assert (
+            connected
+        ), "In the offline mode, jQuery is imported through init_notebook_mode"
+        output = replace_value(
+            output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
+        )
+
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
-        table_header,
+        html_table,
     )
-    output = replace_value(output, "#table_id", "#{}".format(tableId))
+    output = replace_value(output, "#table_id", "#{}".format(table_id))
     output = replace_value(
         output,
         "<style></style>",
@@ -390,26 +541,17 @@ def to_html_datatable(
     output = replace_value(
         output,
         "// [pre-dt-code]",
-        pre_dt_code.replace("#table_id", "#{}".format(tableId)),
+        pre_dt_code.replace("#table_id", "#{}".format(table_id)),
     )
 
-    # Export the table data to JSON and include this in the HTML
-    if showIndex:
-        df = safe_reset_index(df)
-
-    # When the header has an extra column, we add
-    # an extra empty column in the table data #141
-    column_count = _column_count_in_header(table_header)
-    dt_data = datatables_rows(
-        df,
-        column_count,
-        warn_on_unexpected_types=warn_on_unexpected_types,
-        warn_on_int_to_str_conversion=warn_on_int_to_str_conversion,
-    )
-
-    output = replace_value(
-        output, "const data = [];", "const data = {};".format(dt_data)
-    )
+    if data is not None:
+        output = replace_value(
+            output, "const data = [];", "const data = {};".format(data)
+        )
+    else:
+        # No data since we pass the html table
+        output = replace_value(output, 'dt_args["data"] = data;', "")
+        output = replace_value(output, "const data = [];", "")
 
     return output
 
@@ -433,7 +575,12 @@ def _min_rows(kwargs):
 
 def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
-    return len(df) <= _min_rows(kwargs)
+    try:
+        # Pandas DF or Style
+        return len(df.index) <= _min_rows(kwargs)
+    except AttributeError:
+        # Polars
+        return len(df) <= _min_rows(kwargs)
 
 
 def safe_reset_index(df):

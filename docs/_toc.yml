@@ -3,6 +3,7 @@ root: quick_start
 chapters:
 - file: supported_editors
 - file: advanced_parameters
+- file: pandas_style
 - file: custom_css
 - file: downsampling
 - file: sample_dataframes

@@ -15,6 +15,7 @@ from itables.sample_dfs import (
     get_dict_of_test_dfs,
     get_dict_of_test_series,
     get_indicators,
+    get_pandas_styler,
     get_population,
 )
 
@@ -51,6 +52,15 @@ def test_get_indicators():
     assert len(df.index) == 500
     assert len(df.columns)
     show(df)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 7),
+    reason="AttributeError: 'Styler' object has no attribute 'to_html'",
+)
+def test_get_pandas_styler():
+    styler = get_pandas_styler()
+    show(styler)
 
 
 def kwargs_remove_none(**kwargs):

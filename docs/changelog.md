@@ -1,11 +1,14 @@
 ITables ChangeLog
 =================
 
-1.6.0-dev (2023-09-??)
+1.6.0 (2023-09-30)
 ------------------
 
+**Added**
+- We have added support for [Pandas style](https://pandas.pydata.org/docs/user_guide/style.html) ([#194](https://github.com/mwouts/itables/issues/194))
+
 **Fixed**
-- We do not generate timedeltas in the sample dataframes when using `pandas==2.1` as this fails ([pandas-#55080](https://github.com/pandas-dev/pandas/issues/55080))
+- We do not generate timedeltas in the sample dataframes when using `pandas==2.1` as this fails ([pandas-55080](https://github.com/pandas-dev/pandas/issues/55080))
 
 
 1.5.4 (2023-08-18)

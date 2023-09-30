@@ -244,6 +244,16 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
     show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
+```{tip}
+ITables in version 1.6.0+ can also render
+[Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html)
+objects as interactive datatables.
+
+This way, you can easily add background color, and even
+tooltips to your dataframes, and still get them
+displayed using datatables.net - see our [example](pandas_style.md).
+```
+
 ## Javascript formatting
 
 Numbers are formatted using Pandas, then are converted back to float to ensure they come in the right order when sorted.
@@ -340,6 +350,13 @@ function (td, cellData, rowData, row, col) {
         }
     ],
 )
+```
+
+```{tip}
+Since `itables==1.6.0`, you can also render
+[Pandas style](pandas_style.md) objects as interactive datatables -
+that might be a simpler alternative to the JavaScript callbacks
+ documented here.
 ```
 
 ## Column width
