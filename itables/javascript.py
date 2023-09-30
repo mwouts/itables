@@ -274,7 +274,6 @@ def to_html_datatable(
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
-    css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
     if caption is not None:
@@ -283,8 +282,6 @@ def to_html_datatable(
         )
 
     showIndex = kwargs.pop("showIndex")
-    eval_functions = kwargs.pop("eval_functions", None)
-    pre_dt_code = kwargs.pop("pre_dt_code")
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -333,20 +330,6 @@ def to_html_datatable(
             "'header', 'footer' or False, not {}".format(column_filters)
         )
 
-    # Load the HTML template
-    if connected:
-        output = read_package_file("html/datatables_template_connected.html")
-    else:
-        output = read_package_file("html/datatables_template.html")
-
-    if not import_jquery:
-        assert (
-            connected
-        ), "In the offline mode, jQuery is imported through init_notebook_mode"
-        output = replace_value(
-            output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
-        )
-
     tableId = tableId or str(uuid.uuid4())
     if isinstance(classes, list):
         classes = " ".join(classes)
@@ -360,52 +343,6 @@ def to_html_datatable(
 
     table_header = _table_header(
         df, tableId, showIndex, classes, style, tags, footer, column_filters
-    )
-    output = replace_value(
-        output,
-        '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
-        table_header,
-    )
-    output = replace_value(output, "#table_id", "#{}".format(tableId))
-    output = replace_value(
-        output,
-        "<style></style>",
-        "<style>{}</style>".format(css),
-    )
-
-    if column_filters:
-        # If the below was false, we would need to concatenate the JS code
-        # which might not be trivial...
-        assert pre_dt_code == ""
-        assert "initComplete" not in kwargs
-
-        pre_dt_code = replace_value(
-            read_package_file("html/column_filters/pre_dt_code.js"),
-            "thead_or_tfoot",
-            "thead" if column_filters == "header" else "tfoot",
-        )
-        kwargs["initComplete"] = JavascriptFunction(
-            replace_value(
-                replace_value(
-                    read_package_file("html/column_filters/initComplete.js"),
-                    "const initComplete = ",
-                    "",
-                ),
-                "header",
-                column_filters,
-            )
-        )
-
-    # Export the DT args to JSON
-    dt_args = json_dumps(kwargs, eval_functions)
-
-    output = replace_value(
-        output, "let dt_args = {};", "let dt_args = {};".format(dt_args)
-    )
-    output = replace_value(
-        output,
-        "// [pre-dt-code]",
-        pre_dt_code.replace("#table_id", "#{}".format(tableId)),
     )
 
     # Export the table data to JSON and include this in the HTML
@@ -422,11 +359,15 @@ def to_html_datatable(
         warn_on_int_to_str_conversion=warn_on_int_to_str_conversion,
     )
 
-    output = replace_value(
-        output, "const data = [];", "const data = {};".format(dt_data)
+    return html_table_from_template(
+        table_header,
+        table_id=tableId,
+        data=dt_data,
+        kwargs=kwargs,
+        connected=connected,
+        import_jquery=import_jquery,
+        column_filters=column_filters,
     )
-
-    return output
 
 
 def set_default_options(kwargs, use_to_html):
@@ -469,7 +410,6 @@ def to_html_datatable_using_to_html(
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
-    css = kwargs.pop("css")
     tags = kwargs.pop("tags")
 
     if caption is not None:
@@ -478,8 +418,6 @@ def to_html_datatable_using_to_html(
         )
 
     showIndex = kwargs.pop("showIndex")
-    eval_functions = kwargs.pop("eval_functions", None)
-    pre_dt_code = kwargs.pop("pre_dt_code")
 
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
@@ -506,6 +444,45 @@ def to_html_datatable_using_to_html(
     if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
         kwargs["dom"] = "t"
 
+    tableId = tableId or str(uuid.uuid4())
+    if isinstance(df, pd_style.Styler):
+        df.set_uuid(tableId)
+        tableId = "T_" + tableId
+        table_html = df.to_html()
+    else:
+        table_html = df.to_html(table_id=tableId)
+
+    if style:
+        style = 'style="{}"'.format(style)
+    else:
+        style = ""
+
+    html_table = replace_value(
+        table_html,
+        '<table id="{}">'.format(tableId),
+        """<table id="{tableId}" class="{classes}"{style}>{tags}""".format(
+            tableId=tableId, classes=classes, style=style, tags=tags
+        ),
+    )
+
+    return html_table_from_template(
+        html_table,
+        table_id=tableId,
+        data=None,
+        kwargs=kwargs,
+        connected=connected,
+        import_jquery=import_jquery,
+        column_filters=None,
+    )
+
+
+def html_table_from_template(
+    html_table, table_id, data, kwargs, connected, import_jquery, column_filters
+):
+    css = kwargs.pop("css")
+    eval_functions = kwargs.pop("eval_functions", None)
+    pre_dt_code = kwargs.pop("pre_dt_code")
+
     # Load the HTML template
     if connected:
         output = read_package_file("html/datatables_template_connected.html")
@@ -520,38 +497,40 @@ def to_html_datatable_using_to_html(
             output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
         )
 
-    tableId = tableId or str(uuid.uuid4())
-    if isinstance(df, pd_style.Styler):
-        df.set_uuid(tableId)
-        tableId = "T_" + tableId
-        table_html = df.to_html()
-    else:
-        table_html = df.to_html(table_id=tableId)
-
-    if style:
-        style = 'style="{}"'.format(style)
-    else:
-        style = ""
-
-    table_html = replace_value(
-        table_html,
-        '<table id="{}">'.format(tableId),
-        """<table id="{tableId}" class="{classes}"{style}>{tags}""".format(
-            tableId=tableId, classes=classes, style=style, tags=tags
-        ),
-    )
-
     output = replace_value(
         output,
         '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
-        table_html,
+        html_table,
     )
-    output = replace_value(output, "#table_id", "#{}".format(tableId))
+    output = replace_value(output, "#table_id", "#{}".format(table_id))
     output = replace_value(
         output,
         "<style></style>",
         "<style>{}</style>".format(css),
     )
+
+    if column_filters:
+        # If the below was false, we would need to concatenate the JS code
+        # which might not be trivial...
+        assert pre_dt_code == ""
+        assert "initComplete" not in kwargs
+
+        pre_dt_code = replace_value(
+            read_package_file("html/column_filters/pre_dt_code.js"),
+            "thead_or_tfoot",
+            "thead" if column_filters == "header" else "tfoot",
+        )
+        kwargs["initComplete"] = JavascriptFunction(
+            replace_value(
+                replace_value(
+                    read_package_file("html/column_filters/initComplete.js"),
+                    "const initComplete = ",
+                    "",
+                ),
+                "header",
+                column_filters,
+            )
+        )
 
     # Export the DT args to JSON
     dt_args = json_dumps(kwargs, eval_functions)
@@ -562,12 +541,17 @@ def to_html_datatable_using_to_html(
     output = replace_value(
         output,
         "// [pre-dt-code]",
-        pre_dt_code.replace("#table_id", "#{}".format(tableId)),
+        pre_dt_code.replace("#table_id", "#{}".format(table_id)),
     )
 
-    # No data since we pass the html table
-    output = replace_value(output, 'dt_args["data"] = data;', "")
-    output = replace_value(output, "const data = [];", "")
+    if data is not None:
+        output = replace_value(
+            output, "const data = [];", "const data = {};".format(data)
+        )
+    else:
+        # No data since we pass the html table
+        output = replace_value(output, 'dt_args["data"] = data;', "")
+        output = replace_value(output, "const data = [];", "")
 
     return output
 
