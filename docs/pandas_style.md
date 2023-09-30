@@ -59,7 +59,7 @@ s.background_gradient(axis=None, cmap="YlOrRd")
 We can also choose how the data is formatted:
 
 ```{code-cell}
-s.format("{:.3f}")
+s.format("{:.3f}").format_index("{:.3f}")
 ```
 
 ## Caption
