@@ -1,4 +1,4 @@
-# Only run this when the main branch changes
+  # Only run this when the main branch changes
 on:
   push:
     branches:
@@ -27,6 +27,7 @@ jobs:
       run: |
         pip install jupyter-book
         pip install -r requirements.txt
+        pip install matplotlib  # Pandas style
         pip install .[polars]
 
     - name: Create a kernel
