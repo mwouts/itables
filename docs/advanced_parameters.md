@@ -245,7 +245,13 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
 ```
 
 ```{tip}
-ITables will also render [Pandas Style](pandas_style.md) objects as interactive datatables.
+ITables in version 1.6.0+ can also render
+[Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html)
+objects as interactive datatables.
+
+This way, you can easily add background color, and even
+tooltips to your dataframes, and still get them
+displayed using datatables.net - see our [example](pandas_style.md).
 ```
 
 ## Javascript formatting
@@ -346,7 +352,12 @@ function (td, cellData, rowData, row, col) {
 )
 ```
 
-Note: starting with `itables==1.6.0`, you can also render [Pandas style](pandas_style.md) objects as interactive datatables.
+```{tip}
+Since `itables==1.6.0`, you can also render
+[Pandas style](pandas_style.md) objects as interactive datatables -
+that might be a simpler alternative to the JavaScript callbacks
+ documented here.
+```
 
 ## Column width
 
