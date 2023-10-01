@@ -457,13 +457,22 @@ def to_html_datatable_using_to_html(
         else:
             style = ""
 
-        html_table = df.to_html(
-            table_uuid=tableId,
-            table_attributes="""class="{classes}"{style}""".format(
-                classes=classes, style=style
-            ),
-            caption=caption,
-        )
+        try:
+            to_html_args = dict(
+                table_uuid=tableId,
+                table_attributes="""class="{classes}"{style}""".format(
+                    classes=classes, style=style
+                ),
+                caption=caption,
+            )
+            html_table = df.to_html(**to_html_args)
+        except TypeError:
+            if caption is not None:
+                warnings.warn(
+                    "caption is not supported by Styler.to_html in your version of Pandas"
+                )
+            del to_html_args["caption"]
+            html_table = df.to_html(**to_html_args)
         tableId = "T_" + tableId
     else:
         if caption is not None:
