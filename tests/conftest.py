@@ -24,3 +24,8 @@ def lengthMenu(request):
 @pytest.fixture(params=[False, True])
 def connected(request):
     return request.param
+
+
+@pytest.fixture(params=[False, True])
+def use_to_html(request):
+    return request.param

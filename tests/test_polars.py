@@ -12,12 +12,12 @@ except ImportError as e:
 @pytest.mark.parametrize(
     "name,x", [(name, x) for name, x in get_dict_of_test_series(polars=True).items()]
 )
-def test_show_polars_series(name, x):
-    to_html_datatable(x)
+def test_show_polars_series(name, x, use_to_html):
+    to_html_datatable(x, use_to_html)
 
 
 @pytest.mark.parametrize(
     "name,df", [(name, df) for name, df in get_dict_of_test_dfs(polars=True).items()]
 )
-def test_show_polars_df(name, df):
-    to_html_datatable(df)
+def test_show_polars_df(name, df, use_to_html):
+    to_html_datatable(df, use_to_html)
