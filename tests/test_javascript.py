@@ -1,4 +1,26 @@
-from itables.javascript import _df_fits_in_one_page, to_html_datatable
+import pytest
+
+from itables.javascript import _df_fits_in_one_page, replace_value, to_html_datatable
+
+
+def test_replace_value(
+    template="line1\nline2\nline3\n", pattern="line2", value="new line2"
+):
+    assert replace_value(template, pattern, value) == "line1\nnew line2\nline3\n"
+
+
+def test_replace_value_not_found(
+    template="line1\nline2\nline3\n", pattern="line4", value="new line4"
+):
+    with pytest.raises(ValueError, match="not found"):
+        assert replace_value(template, pattern, value)
+
+
+def test_replace_value_multiple(
+    template="line1\nline2\nline2\n", pattern="line2", value="new line2"
+):
+    with pytest.raises(ValueError, match="found multiple times"):
+        assert replace_value(template, pattern, value)
 
 
 def test_warn_on_unexpected_types_not_in_html(df):

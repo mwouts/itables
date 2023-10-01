@@ -27,19 +27,19 @@ def coloredColumnDefs():
     ]
 
 
-def test_warning_when_eval_functions_is_missing(df, coloredColumnDefs):
+def test_warning_when_eval_functions_is_missing(df, coloredColumnDefs, connected):
     with pytest.warns(UserWarning, match="starts with 'function'"):
-        show(df, columnDefs=coloredColumnDefs)
+        show(df, connected=connected, columnDefs=coloredColumnDefs)
 
 
-def test_no_warning_when_eval_functions_is_false(df, coloredColumnDefs):
+def test_no_warning_when_eval_functions_is_false(df, coloredColumnDefs, connected):
     warnings.simplefilter("error")
-    show(df, columnDefs=coloredColumnDefs, eval_functions=False)
+    show(df, connected=connected, columnDefs=coloredColumnDefs, eval_functions=False)
 
 
-def test_no_warning_when_eval_functions_is_true(df, coloredColumnDefs):
+def test_no_warning_when_eval_functions_is_true(df, coloredColumnDefs, connected):
     warnings.simplefilter("error")
-    show(df, columnDefs=coloredColumnDefs, eval_functions=True)
+    show(df, connected=connected, columnDefs=coloredColumnDefs, eval_functions=True)
 
 
 @pytest.mark.parametrize("obj", ["a", 1, 1.0, [1.0, "a", {"a": [0, 1]}]])

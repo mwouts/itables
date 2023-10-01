@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.6.1 (2023-10-01)
+------------------
+
+**Fixed**
+- We have fixed an issue when rendering Pandas style objects in Google Colab ([#199](https://github.com/mwouts/itables/issues/199))
+
+
 1.6.0 (2023-09-30)
 ------------------
 

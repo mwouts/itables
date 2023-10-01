@@ -32,51 +32,61 @@ if PANDAS_VERSION_MAJOR < 2:
     pytestmark.append(pytest.mark.filterwarnings("ignore::DeprecationWarning"))
 
 
-def test_get_countries():
+def test_get_countries(connected, use_to_html):
     df = get_countries()
     assert len(df.columns) > 5
     assert len(df.index) > 100
-    show(df)
+    show(df, connected=connected, use_to_html=use_to_html)
 
 
 @pytest.mark.skipif(sys.version_info < (3,), reason="fails in Py2")
-def test_get_population():
+def test_get_population(connected, use_to_html):
     x = get_population()
     assert len(x) > 30
     assert x.max() > 7e9
-    show(x)
+    show(x, connected=connected, use_to_html=use_to_html)
 
 
-def test_get_indicators():
+def test_get_indicators(connected, use_to_html):
     df = get_indicators()
     assert len(df.index) == 500
     assert len(df.columns)
-    show(df)
+    show(df, connected=connected, use_to_html=use_to_html)
 
 
 @pytest.mark.skipif(
     sys.version_info < (3, 7),
     reason="AttributeError: 'Styler' object has no attribute 'to_html'",
 )
-def test_get_pandas_styler():
+def test_get_pandas_styler(connected, use_to_html):
     styler = get_pandas_styler()
-    show(styler)
+    show(styler, connected=connected, use_to_html=use_to_html)
 
 
 def kwargs_remove_none(**kwargs):
     return {key: value for key, value in kwargs.items() if value is not None}
 
 
-def test_show_test_dfs(df, lengthMenu, monkeypatch):
+def test_show_test_dfs(df, connected, use_to_html, lengthMenu, monkeypatch):
     if "bigint" in df.columns:
         monkeypatch.setattr("itables.options.warn_on_int_to_str_conversion", False)
-    show(df, **kwargs_remove_none(lengthMenu=lengthMenu))
+    show(
+        df,
+        connected=connected,
+        use_to_html=use_to_html,
+        **kwargs_remove_none(lengthMenu=lengthMenu)
+    )
 
 
-def test_to_html_datatable(df, lengthMenu, monkeypatch):
+def test_to_html_datatable(df, connected, use_to_html, lengthMenu, monkeypatch):
     if "bigint" in df.columns:
         monkeypatch.setattr("itables.options.warn_on_int_to_str_conversion", False)
-    to_html_datatable(df, **kwargs_remove_none(lengthMenu=lengthMenu))
+    to_html_datatable(
+        df,
+        connected=connected,
+        use_to_html=use_to_html,
+        **kwargs_remove_none(lengthMenu=lengthMenu)
+    )
 
 
 def test_ordered_categories():
@@ -92,16 +102,16 @@ def test_format_column(series_name, series):
 
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
-def test_show_test_series(series_name, series, monkeypatch):
+def test_show_test_series(series_name, series, connected, use_to_html, monkeypatch):
     if "bigint" in series_name:
         monkeypatch.setattr("itables.options.warn_on_int_to_str_conversion", False)
-    show(series)
+    show(series, connected=connected, use_to_html=use_to_html)
 
 
-def test_show_df_with_duplicate_column_names():
+def test_show_df_with_duplicate_column_names(connected, use_to_html):
     df = pd.DataFrame({"a": [0], "b": [0.0], "c": ["str"]})
     df.columns = ["duplicated_name"] * 3
-    show(df)
+    show(df, connected=connected, use_to_html=use_to_html)
 
 
 @pytest.mark.parametrize("type", COLUMN_TYPES)

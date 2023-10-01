@@ -30,6 +30,7 @@ logging.basicConfig()
 logger = logging.getLogger(__name__)
 
 _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
+    "tags",
     "footer",
     "column_filters",
     "maxBytes",
@@ -226,7 +227,15 @@ def replace_value(template, pattern, value):
     after making sure that the pattern is found exactly once."""
     if sys.version_info >= (3,):
         assert isinstance(template, str)
-    assert template.count(pattern) == 1
+    count = template.count(pattern)
+    if not count:
+        raise ValueError("pattern={} was not found in template".format(pattern))
+    elif count > 1:
+        raise ValueError(
+            "pattern={} was found multiple times ({}) in template".format(
+                pattern, count
+            )
+        )
     return template.replace(pattern, value)
 
 
@@ -410,12 +419,6 @@ def to_html_datatable_using_to_html(
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
-    tags = kwargs.pop("tags")
-
-    if caption is not None:
-        tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
-            tags, caption
-        )
 
     showIndex = kwargs.pop("showIndex")
 
@@ -434,36 +437,51 @@ def to_html_datatable_using_to_html(
             # Polars DataFrame
             showIndex = False
 
-    if not showIndex:
-        try:
-            df.hide()
-        except AttributeError:
-            # Not a Pandas Styler object
-            pass
-
     if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
         kwargs["dom"] = "t"
 
-    tableId = tableId or str(uuid.uuid4())
-    if isinstance(df, pd_style.Styler):
-        df.set_uuid(tableId)
-        tableId = "T_" + tableId
-        table_html = df.to_html()
-    else:
-        table_html = df.to_html(table_id=tableId)
-
-    if style:
-        style = 'style="{}"'.format(style)
-    else:
-        style = ""
-
-    html_table = replace_value(
-        table_html,
-        '<table id="{}">'.format(tableId),
-        """<table id="{tableId}" class="{classes}"{style}>{tags}""".format(
-            tableId=tableId, classes=classes, style=style, tags=tags
-        ),
+    tableId = (
+        tableId
+        # default UUID in Pandas styler objects has uuid_len=5
+        or str(uuid.uuid4())[:5]
     )
+    if isinstance(df, pd_style.Styler):
+        if not showIndex:
+            try:
+                df = df.hide()
+            except AttributeError:
+                pass
+
+        if style:
+            style = 'style="{}"'.format(style)
+        else:
+            style = ""
+
+        try:
+            to_html_args = dict(
+                table_uuid=tableId,
+                table_attributes="""class="{classes}"{style}""".format(
+                    classes=classes, style=style
+                ),
+                caption=caption,
+            )
+            html_table = df.to_html(**to_html_args)
+        except TypeError:
+            if caption is not None:
+                warnings.warn(
+                    "caption is not supported by Styler.to_html in your version of Pandas"
+                )
+            del to_html_args["caption"]
+            html_table = df.to_html(**to_html_args)
+        tableId = "T_" + tableId
+    else:
+        if caption is not None:
+            raise NotImplementedError(
+                "caption is not supported when using df.to_html. "
+                "Use either Pandas Style, or set use_to_html=False."
+            )
+        # NB: style is not available neither
+        html_table = df.to_html(table_id=tableId, classes=classes)
 
     return html_table_from_template(
         html_table,
@@ -606,5 +624,6 @@ def safe_reset_index(df):
 
 def show(df=None, caption=None, **kwargs):
     """Show a dataframe"""
-    html = to_html_datatable(df, caption=caption, connected=_CONNECTED, **kwargs)
+    connected = kwargs.pop("connected", _CONNECTED)
+    html = to_html_datatable(df, caption=caption, connected=connected, **kwargs)
     display(HTML(html))
