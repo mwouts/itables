@@ -226,7 +226,17 @@ def replace_value(template, pattern, value):
     after making sure that the pattern is found exactly once."""
     if sys.version_info >= (3,):
         assert isinstance(template, str)
-    assert template.count(pattern) == 1
+    count = template.count(pattern)
+    if not count:
+        raise ValueError(
+            "pattern={} was not found in template={}".format(pattern, template)
+        )
+    elif count > 1:
+        raise ValueError(
+            "pattern={} was found multiple times ({}) in template={}".format(
+                pattern, count, template
+            )
+        )
     return template.replace(pattern, value)
 
 
@@ -606,5 +616,6 @@ def safe_reset_index(df):
 
 def show(df=None, caption=None, **kwargs):
     """Show a dataframe"""
-    html = to_html_datatable(df, caption=caption, connected=_CONNECTED, **kwargs)
+    connected = kwargs.pop("connected", _CONNECTED)
+    html = to_html_datatable(df, caption=caption, connected=connected, **kwargs)
     display(HTML(html))

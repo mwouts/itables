@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.6.1 (2023-10-01)
+------------------
+
+**Fixed**
+- We have fixed an issue when using Pandas style in the connected mode.
+
+
 1.6.0 (2023-09-30)
 ------------------
 
