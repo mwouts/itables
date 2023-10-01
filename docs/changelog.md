@@ -5,7 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
-- We have fixed an issue when using Pandas style in the connected mode.
+- We have fixed an issue when rendering Pandas style objects in Google Colab ([#199](https://github.com/mwouts/itables/issues/199))
 
 
 1.6.0 (2023-09-30)
