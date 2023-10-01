@@ -228,13 +228,11 @@ def replace_value(template, pattern, value):
         assert isinstance(template, str)
     count = template.count(pattern)
     if not count:
-        raise ValueError(
-            "pattern={} was not found in template={}".format(pattern, template)
-        )
+        raise ValueError("pattern={} was not found in template".format(pattern))
     elif count > 1:
         raise ValueError(
-            "pattern={} was found multiple times ({}) in template={}".format(
-                pattern, count, template
+            "pattern={} was found multiple times ({}) in template".format(
+                pattern, count
             )
         )
     return template.replace(pattern, value)
