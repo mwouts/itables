@@ -87,7 +87,7 @@ jobs:
 
       - name: Uninstall jinja2
         if: matrix.uninstall_jinja2
-        run: pip uninstall jinja2
+        run: pip uninstall jinja2 -y
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user
