@@ -6,6 +6,7 @@ import pytest
 
 from itables import show, to_html_datatable
 from itables.datatables_format import _format_column, generate_encoder
+from itables.javascript import pd_style
 from itables.sample_dfs import (
     COLUMN_TYPES,
     PANDAS_VERSION_MAJOR,
@@ -57,6 +58,10 @@ def test_get_indicators(connected, use_to_html):
 @pytest.mark.skipif(
     sys.version_info < (3, 7),
     reason="AttributeError: 'Styler' object has no attribute 'to_html'",
+)
+@pytest.mark.skipif(
+    pd_style is None,
+    reason="Missing optional dependency 'Jinja2'. DataFrame.style requires jinja2.",
 )
 def test_get_pandas_styler(connected, use_to_html):
     styler = get_pandas_styler()

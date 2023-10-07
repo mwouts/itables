@@ -5,6 +5,7 @@ import jupytext
 import pytest
 
 from itables import init_notebook_mode
+from itables.javascript import pd_style
 
 try:
     import polars as pl
@@ -27,6 +28,8 @@ def list_doc_notebooks():
 def test_run_documentation_notebooks(notebook):
     if "polars" in notebook.stem and pl is None:
         pytest.skip(msg="Polars is not available")
+    if "pandas_style" in notebook.stem and pd_style is None:
+        pytest.skip(msg="Pandas Style is not available")
 
     nb = jupytext.read(notebook)
     py_notebook = jupytext.writes(nb, "py:percent")

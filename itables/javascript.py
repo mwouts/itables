@@ -10,7 +10,11 @@ from base64 import b64encode
 
 import numpy as np
 import pandas as pd
-import pandas.io.formats.style as pd_style
+
+try:
+    import pandas.io.formats.style as pd_style
+except ImportError:
+    pd_style = None
 
 try:
     import polars as pl
@@ -40,7 +44,9 @@ _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "warn_on_int_to_str_conversion",
 }
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
-_ORIGINAL_DATAFRAME_STYLE_REPR_HTML = pd_style.Styler._repr_html_
+_ORIGINAL_DATAFRAME_STYLE_REPR_HTML = (
+    None if pd_style is None else pd_style.Styler._repr_html_
+)
 _ORIGINAL_POLARS_DATAFRAME_REPR_HTML = pl.DataFrame._repr_html_
 _CONNECTED = True
 
@@ -92,12 +98,14 @@ def init_notebook_mode(
     if all_interactive:
         pd.DataFrame._repr_html_ = _datatables_repr_
         pd.Series._repr_html_ = _datatables_repr_
-        pd_style.Styler._repr_html_ = _datatables_repr_
+        if pd_style is not None:
+            pd_style.Styler._repr_html_ = _datatables_repr_
         pl.DataFrame._repr_html_ = _datatables_repr_
         pl.Series._repr_html_ = _datatables_repr_
     else:
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
-        pd_style.Styler._repr_html_ = _ORIGINAL_DATAFRAME_STYLE_REPR_HTML
+        if pd_style is not None:
+            pd_style.Styler._repr_html_ = _ORIGINAL_DATAFRAME_STYLE_REPR_HTML
         pl.DataFrame._repr_html_ = _ORIGINAL_POLARS_DATAFRAME_REPR_HTML
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
@@ -267,7 +275,7 @@ def to_html_datatable(
     use_to_html=False,
     **kwargs
 ):
-    if use_to_html or isinstance(df, pd_style.Styler):
+    if use_to_html or (pd_style is not None and isinstance(df, pd_style.Styler)):
         return to_html_datatable_using_to_html(
             df=df,
             caption=caption,
@@ -445,7 +453,7 @@ def to_html_datatable_using_to_html(
         # default UUID in Pandas styler objects has uuid_len=5
         or str(uuid.uuid4())[:5]
     )
-    if isinstance(df, pd_style.Styler):
+    if pd_style is not None and isinstance(df, pd_style.Styler):
         if not showIndex:
             try:
                 df = df.hide()

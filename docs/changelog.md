@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.6.2 (2023-10-07)
+------------------
+
+**Fixed**
+- We have removed an indirect dependency on `jinja2` caused by the Pandas style objects ([#202](https://github.com/mwouts/itables/issues/202))
+
+
 1.6.1 (2023-10-01)
 ------------------
 
