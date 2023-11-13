@@ -415,3 +415,9 @@ def get_pandas_styler():
         pass
 
     return s
+
+ #133
+------
+import pandas as pd
+df = pd.DataFrame({'list':['[a]','[1,2]','[1,2,3]']})
+
