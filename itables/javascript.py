@@ -144,7 +144,7 @@ def _table_header(
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
     try:
-        html_header = df.head(0).to_html()
+        html_header = df.head(0).to_html(escape=False)
     except AttributeError:
         # Polars DataFrames
         html_header = pd.DataFrame(data=[], columns=df.columns).to_html()
