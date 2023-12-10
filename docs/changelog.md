@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.6.3 (2023-12-10)
+------------------
+
+**Changed**
+- HTML in table columns is supported ([#213](https://github.com/mwouts/itables/issues/213))
+
+
 1.6.2 (2023-10-07)
 ------------------
 
