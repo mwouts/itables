@@ -105,7 +105,7 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100, polars=False):
+def get_dict_of_test_dfs(N=100, M=100, polars=False, ibis=False):
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     test_dfs = {
@@ -278,6 +278,19 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             except (pa.ArrowInvalid, ValueError):
                 pass
         return polars_dfs
+
+    if ibis:
+        import ibis as ib
+
+        con = ib.pandas.connect(test_dfs)
+        ibis_dfs = {}
+        for key in test_dfs:
+            try:
+                ibis_dfs[key] = con.table(key)
+            except (TypeError, AttributeError):
+                pass
+
+        return ibis_dfs
 
     return test_dfs
 

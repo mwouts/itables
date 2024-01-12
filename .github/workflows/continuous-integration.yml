@@ -51,6 +51,8 @@ jobs:
             pandas-version: pre
             polars: true
           - python-version: "3.11"
+            ibis: true
+          - python-version: "3.11"
             uninstall_jinja2: true
     runs-on: ubuntu-20.04
     steps:
@@ -84,6 +86,10 @@ jobs:
       - name: Install polars
         if: matrix.polars
         run: pip install -e .[polars]
+
+      - name: Install Ibis
+        if: matrix.ibis
+        run: pip install -e .[ibis]
 
       - name: Uninstall jinja2
         if: matrix.uninstall_jinja2
