@@ -52,7 +52,10 @@ setup(
     },
     tests_require=["pytest", "pytz"],
     install_requires=["IPython", "pandas", "numpy"],
-    extras_require={"polars": ["polars", "pyarrow"]},
+    extras_require={
+        "polars": ["polars", "pyarrow"],
+        "ibis": ["ibis-framework[pandas]"],
+    },
     license="MIT",
     classifiers=[
         "Development Status :: 5 - Production/Stable",

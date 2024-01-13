@@ -21,7 +21,7 @@ dataframes are displayed nicely with the default `itables` settings.
 from itables import init_notebook_mode, show
 from itables.sample_dfs import get_dict_of_test_dfs
 
-dict_of_test_dfs = get_dict_of_test_dfs(polars=True)
+dict_of_test_dfs = get_dict_of_test_dfs(type="polars")
 init_notebook_mode(all_interactive=True)
 ```
 

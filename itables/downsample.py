@@ -3,6 +3,14 @@ import math
 
 import pandas as pd
 
+try:
+    from ibis.common.exceptions import ExpressionError
+except ImportError:
+
+    class ExpressionError(Exception):
+        pass
+
+
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
@@ -11,18 +19,37 @@ def nbytes(df):
     try:
         return sum(x.values.nbytes for _, x in df.items())
     except AttributeError:
-        # Polars DataFrame
-        return df.estimated_size()
+        try:
+            # Polars DataFrame
+            return df.estimated_size()
+        except AttributeError:
+            # Ibis Table
+            # TODO: find a more direct way to estimate the size of the table
+            nrows = df.count().execute()
+            if not nrows:
+                return 0
+            return nrows * (nbytes(df.head(5).to_pandas()) / min(nrows, 5))
+
+
+def nrows(df):
+    try:
+        return len(df)
+    except TypeError:
+        # Pandas Styler
+        return len(df.index)
+    except ExpressionError:
+        # ibis table
+        return df.count().execute()
 
 
 def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     """Return a subset of the dataframe that fits the limits"""
-    org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
+    org_rows, org_columns, org_bytes = nrows(df), len(df.columns), nbytes(df)
     df = _downsample(
         df, max_rows=max_rows, max_columns=max_columns, max_bytes=max_bytes
     )
 
-    if len(df) < org_rows or len(df.columns) < org_columns:
+    if nrows(df) < org_rows or len(df.columns) < org_columns:
         link = '<a href="https://mwouts.github.io/itables/downsampling.html">downsampled</a>'
         reasons = []
         if org_rows > max_rows > 0:
@@ -76,7 +103,7 @@ def shrink_towards_target_aspect_ratio(
 
 def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=None):
     """Implementation of downsample - may be called recursively"""
-    if len(df) > max_rows > 0:
+    if nrows(df) > max_rows > 0:
         second_half = max_rows // 2
         first_half = max_rows - second_half
         if second_half:
@@ -134,6 +161,10 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             import polars as pl  # noqa
 
             df = pl.DataFrame({df.columns[0]: ["..."]})
-        return df
 
-    return df
+    try:
+        len(df)
+        return df
+    except ExpressionError:
+        # Ibis
+        return df.to_pandas()

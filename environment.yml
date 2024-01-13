@@ -6,21 +6,17 @@ dependencies:
   - python
   - jupyter
   - jupyterlab
-  - jupytext>=1.13.8
-  - markdown-it-py>=2.0
+  - jupytext
   - nbconvert
   - ipykernel
   - pandas
   - polars
   - pyarrow
+  - ibis-duckdb
   - pytest
   - pytest-xdist
   - pytest-cov
   - pre-commit
-  - pylint
-  - flake8
-  - black
-  - isort
   - pip
   - setuptools
   - twine
@@ -29,4 +25,4 @@ dependencies:
   - shiny
   - pip:
     - world_bank_data
-    - jupyter_book>=0.12  # jupyter-book-0.12.2-pyhd8ed1ab_0 requires jupytext >=1.11.2,<1.12
+    - jupyter_book

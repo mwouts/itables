@@ -1,12 +1,7 @@
 import math
 import string
 from datetime import datetime, timedelta
-
-try:
-    from functools import lru_cache
-except ImportError:
-    from functools32 import lru_cache
-
+from functools import lru_cache
 from itertools import cycle
 
 import numpy as np
@@ -105,7 +100,7 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100, polars=False):
+def get_dict_of_test_dfs(N=100, M=100, type="pandas"):
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     test_dfs = {
@@ -266,8 +261,10 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             }
         ),
     }
+    if type == "pandas":
+        return test_dfs
 
-    if polars:
+    if type == "polars":
         import polars as pl
         import pyarrow as pa
 
@@ -279,10 +276,42 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 pass
         return polars_dfs
 
-    return test_dfs
+    if type == "ibis_memtable":
+        import ibis
+
+        ibis_dfs = {}
+        for key, df in test_dfs.items():
+            # Ibis does not support tables with no columns
+            if not len(df.columns):
+                continue
+            try:
+                ibis_dfs[key] = ibis.memtable(df, name=key)
+            except (TypeError, ibis.common.exceptions.IbisInputError):
+                pass
+
+        return ibis_dfs
+
+    if type == "ibis_connect":
+        import ibis
+
+        con = ibis.pandas.connect(test_dfs)
+        ibis_dfs = {}
+        for key, df in test_dfs.items():
+            # Ibis does not support tables with no columns
+            if not len(df.columns):
+                continue
+
+            try:
+                ibis_dfs[f"{key}_connect"] = con.table(key)
+            except (TypeError, AttributeError):
+                pass
+
+        return ibis_dfs
+
+    raise NotImplementedError(type)
 
 
-def get_dict_of_test_series(polars=False):
+def get_dict_of_test_series(type="pandas"):
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -293,7 +322,10 @@ def get_dict_of_test_series(polars=False):
                 continue
             series["{}.{}".format(df_name, col)] = df[col]
 
-    if polars:
+    if type == "pandas":
+        return series
+
+    if type == "polars":
         import polars as pl
         import pyarrow as pa
 
@@ -312,7 +344,7 @@ def get_dict_of_test_series(polars=False):
 
         return polars_series
 
-    return series
+    raise NotImplementedError(type)
 
 
 @lru_cache()
