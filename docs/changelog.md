@@ -5,7 +5,7 @@ ITables ChangeLog
 ----------------------
 
 **Added**
-- Added support for Ibis tables (#215)
+- Added support for Ibis tables ([#215](https://github.com/mwouts/itables/issues/215))
 
 
 1.6.3 (2023-12-10)

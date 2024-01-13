@@ -11,6 +11,8 @@ from base64 import b64encode
 import numpy as np
 import pandas as pd
 
+from .downsample import nrows
+
 try:
     import pandas.io.formats.style as pd_style
 except ImportError:
@@ -21,6 +23,12 @@ try:
 except ImportError:
     # Define pl.Series as pd.Series
     import pandas as pl
+
+try:
+    import ibis.expr.types.relations as ibis_relations
+except ImportError:
+    ibis_relations = None
+
 
 from IPython.display import HTML, Javascript, display
 
@@ -102,6 +110,8 @@ def init_notebook_mode(
             pd_style.Styler._repr_html_ = _datatables_repr_
         pl.DataFrame._repr_html_ = _datatables_repr_
         pl.Series._repr_html_ = _datatables_repr_
+        if ibis_relations is not None:
+            ibis_relations.Table._repr_html_ = _datatables_repr_
     else:
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
         if pd_style is not None:
@@ -111,6 +121,9 @@ def init_notebook_mode(
             del pd.Series._repr_html_
         if hasattr(pl.Series, "_repr_html_"):
             del pl.Series._repr_html_
+        if ibis_relations is not None:
+            if hasattr(ibis_relations.Table, "_repr_html_"):
+                del ibis_relations.Table._repr_html_
 
     if not connected:
         display(Javascript(read_package_file("external/jquery.min.js")))
@@ -601,12 +614,7 @@ def _min_rows(kwargs):
 
 def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
-    try:
-        # Pandas DF or Style
-        return len(df.index) <= _min_rows(kwargs)
-    except AttributeError:
-        # Polars
-        return len(df) <= _min_rows(kwargs)
+    return nrows(df) <= _min_rows(kwargs)
 
 
 def safe_reset_index(df):
