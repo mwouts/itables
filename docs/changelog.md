@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.6.4 (2024-02-03)
+------------------
+
+**Fixed**
+- Complex table footers are now in the correct order ([#219](https://github.com/mwouts/itables/issues/219))
+
+
 1.6.3 (2023-12-10)
 ------------------
 
