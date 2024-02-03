@@ -44,7 +44,6 @@ def test_get_countries(connected, use_to_html):
     show(df, connected=connected, use_to_html=use_to_html)
 
 
-@pytest.mark.skipif(sys.version_info < (3,), reason="fails in Py2")
 def test_get_population(connected, use_to_html):
     x = get_population()
     assert len(x) > 30

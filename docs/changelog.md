@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.7.0-dev (2024-02-??)
+------------------
+
+**Changed**
+- We have removed legacy Python 2 code.
+
+
 1.6.4 (2024-02-03)
 ------------------
 
