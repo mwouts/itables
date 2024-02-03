@@ -176,7 +176,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             }
         ),
         "date_range": pd.DataFrame(
-            {"timestamps": pd.date_range("now", periods=5, freq="S")}
+            {"timestamps": pd.date_range("now", periods=5, freq="s")}
         ),
         "ordered_categories": pd.DataFrame(
             {"int": np.arange(4)},
