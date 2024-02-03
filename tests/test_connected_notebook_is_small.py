@@ -1,9 +1,4 @@
-import sys
-
-import pytest
 from jupytext.cli import jupytext
-
-pytestmark = pytest.mark.skipif(sys.version_info < (3,), reason="Not supported in Py2")
 
 
 def text_notebook(connected):

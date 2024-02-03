@@ -3,7 +3,6 @@
 import json
 import logging
 import re
-import sys
 import uuid
 import warnings
 from base64 import b64encode
@@ -243,8 +242,6 @@ def json_dumps(obj, eval_functions):
 def replace_value(template, pattern, value):
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
-    if sys.version_info >= (3,):
-        assert isinstance(template, str)
     count = template.count(pattern)
     if not count:
         raise ValueError("pattern={} was not found in template".format(pattern))
