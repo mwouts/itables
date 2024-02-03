@@ -25,6 +25,10 @@ pytestmark = [
     pytest.mark.filterwarnings("error"),
     # Seen on the CI on Py38 and Py39
     pytest.mark.filterwarnings("ignore::ResourceWarning"),
+    # TODO: https://github.com/mwouts/itables/issues/223
+    pytest.mark.filterwarnings(
+        "ignore:Setting an item of incompatible dtype is deprecated:FutureWarning"
+    ),
 ]
 
 if PANDAS_VERSION_MAJOR < 2:

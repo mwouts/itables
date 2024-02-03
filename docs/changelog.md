@@ -6,6 +6,10 @@ ITables ChangeLog
 
 **Fixed**
 - Complex table footers are now in the correct order ([#219](https://github.com/mwouts/itables/issues/219))
+- We have adjusted the test suite for `pandas==2.2.0`
+([#223](https://github.com/mwouts/itables/issues/223),
+[pandas-57229](https://github.com/pandas-dev/pandas/issues/57229),
+[pandas-55080](https://github.com/pandas-dev/pandas/issues/55080))
 
 
 1.6.3 (2023-12-10)
