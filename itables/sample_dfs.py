@@ -1,12 +1,7 @@
 import math
 import string
 from datetime import datetime, timedelta
-
-try:
-    from functools import lru_cache
-except ImportError:
-    from functools32 import lru_cache
-
+from functools import lru_cache
 from itertools import cycle
 
 import numpy as np
