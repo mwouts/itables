@@ -1,12 +1,7 @@
 import math
 import string
 from datetime import datetime, timedelta
-
-try:
-    from functools import lru_cache
-except ImportError:
-    from functools32 import lru_cache
-
+from functools import lru_cache
 from itertools import cycle
 
 import numpy as np
@@ -176,7 +171,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             }
         ),
         "date_range": pd.DataFrame(
-            {"timestamps": pd.date_range("now", periods=5, freq="S")}
+            {"timestamps": pd.date_range("now", periods=5, freq="s")}
         ),
         "ordered_categories": pd.DataFrame(
             {"int": np.arange(4)},
@@ -317,6 +312,9 @@ def get_dict_of_test_series(polars=False):
 
 @lru_cache()
 def generate_date_series():
+    if pd.__version__ >= "2.2.0":
+        # https://github.com/pandas-dev/pandas/issues/55080 is back in 2.2.0?
+        return pd.Series(pd.date_range("1970-01-01", "2099-12-31", freq="D"))
     return pd.Series(pd.date_range("1677-09-23", "2262-04-10", freq="D"))
 
 

@@ -154,16 +154,6 @@ def _table_header(
     if not show_index and len(df.columns):
         thead = thead.replace("<th></th>", "", 1)
 
-    if column_filters:
-        # We use this header in the column filters, so we need to remove any column multiindex first"""
-        thead_flat = ""
-        if show_index:
-            for index in df.index.names:
-                thead_flat += "<th>{}</th>".format(index)
-
-        for column in df.columns:
-            thead_flat += "<th>{}</th>".format(column)
-
     loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
     tbody = "<tr>{}</tr>".format(loading)
 
@@ -172,15 +162,14 @@ def _table_header(
     else:
         style = ""
 
-    if column_filters == "header":
-        header = "<thead>{}</thead>".format(thead_flat)
-    else:
-        header = "<thead>{}</thead>".format(thead)
+    header = "<thead>{}</thead>".format(
+        _flat_header(df, show_index) if column_filters == "header" else thead
+    )
 
     if column_filters == "footer":
-        footer = "<tfoot>{}</tfoot>".format(thead_flat)
+        footer = "<tfoot>{}</tfoot>".format(_flat_header(df, show_index))
     elif footer:
-        footer = "<tfoot>{}</tfoot>".format(thead)
+        footer = "<tfoot>{}</tfoot>".format(_tfoot_from_thead(thead))
     else:
         footer = ""
 
@@ -193,6 +182,27 @@ def _table_header(
         tbody=tbody,
         footer=footer,
     )
+
+
+def _flat_header(df, show_index):
+    """When column filters are shown, we need to remove any column multiindex"""
+    header = ""
+    if show_index:
+        for index in df.index.names:
+            header += "<th>{}</th>".format(index)
+
+    for column in df.columns:
+        header += "<th>{}</th>".format(column)
+
+    return header
+
+
+def _tfoot_from_thead(thead):
+    header_rows = thead.split("</tr>")
+    last_row = header_rows[-1]
+    assert not last_row.strip(), last_row
+    header_rows = header_rows[:-1]
+    return "".join(row + "</tr>" for row in header_rows[::-1] if "<tr" in row) + "\n"
 
 
 def json_dumps(obj, eval_functions):

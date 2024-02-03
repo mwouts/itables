@@ -1,6 +1,11 @@
 import pytest
 
-from itables.javascript import _df_fits_in_one_page, replace_value, to_html_datatable
+from itables.javascript import (
+    _df_fits_in_one_page,
+    _tfoot_from_thead,
+    replace_value,
+    to_html_datatable,
+)
 
 
 def test_replace_value(
@@ -46,3 +51,48 @@ def test_df_fits_in_one_page(df, lengthMenu):
         min_rows = min_rows[0]
 
     assert _df_fits_in_one_page(df, kwargs) == (len(df) <= min_rows)
+
+
+def test_tfoot_from_thead(
+    thead="""
+    <tr style="text-align: right;">
+      <th></th>
+      <th>region</th>
+      <th>country</th>
+      <th>capital</th>
+      <th>longitude</th>
+      <th>latitude</th>
+      <th>flag</th>
+    </tr>
+    <tr>
+      <th>code</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+""",
+    expected_tfoot="""
+    <tr>
+      <th>code</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>region</th>
+      <th>country</th>
+      <th>capital</th>
+      <th>longitude</th>
+      <th>latitude</th>
+      <th>flag</th>
+    </tr>
+""",
+):
+    assert _tfoot_from_thead(thead) == expected_tfoot
