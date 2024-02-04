@@ -1,4 +1,4 @@
-# Supported Notebook Editors
+# Supported Editors
 
 `itables` has been tested in many development environments.
 
@@ -42,6 +42,12 @@ In PyCharm we recommend to call `init_notebook_mode` with the `connected=True` a
 because otherwise the notebooks do not display the interactive tables when they are reloaded.
 
 ![](images/pycharm.png)
+
+## Quarto
+
+ITables works well with Quarto - check out our `html` and `revealjs` [examples](quarto.md).
+
+<iframe src=quarto_revealjs.html width="750px" height="500px"></iframe>
 
 # Exporting a DataFrame to an HTML table
 

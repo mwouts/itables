@@ -18,3 +18,8 @@ _build
 
 # External dependencies
 itables/external
+
+# Quarto
+.jupyter_cache
+docs/quarto/*.html
+docs/quarto/*_files/

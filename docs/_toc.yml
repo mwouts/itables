@@ -8,6 +8,7 @@ chapters:
 - file: downsampling
 - file: sample_dataframes
 - file: polars_dataframes
+- file: quarto
 - file: references
 - file: contributing
 - file: developing

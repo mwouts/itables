@@ -1,0 +1,132 @@
+---
+title: ITables in Quarto
+subtitle: Interactive Tables in HTML reports
+standalone: true
+format:
+  html:
+    code-line-numbers: false
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.16.1
+  kernelspec:
+    display_name: itables
+    language: python
+    name: itables
+---
+
+## How to use ITables in Quarto
+
+::: {.callout-note}
+## Activate ITables (same as in Jupyter, VS Code, PyCharm, Google Colab...)
+
+```{python}
+#| echo: false
+
+import itables.options as opt
+
+# show 5 rows per 'page'
+opt.lengthMenu = [5]
+
+# don't show the length control
+opt.dom = "frtip"
+
+# use a smaller font (default is medium)
+# see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
+opt.css += ".dataTables_wrapper { font-size: small; }"
+```
+
+```{python}
+#| echo: true
+
+from itables import init_notebook_mode
+
+init_notebook_mode(all_interactive=True)
+```
+:::
+
+```{python}
+#| echo: true
+#| code-fold: true
+#| code-summary: "... and all DataFrames become interactive!"
+from itables.sample_dfs import get_countries
+
+get_countries(html=False)
+```
+
+## How to make my table fit in the report?
+
+::: {.callout-tip}
+## How to make your table smaller
+
+- display only a few rows with `lengthMenu`,
+- adjust the [style or font](https://mwouts.github.io/itables/custom_css.html) with a custom `css`
+:::
+
+::: {.callout-note}
+## This document uses
+
+```python
+import itables.options as opt
+
+
+# show 5 rows per 'page'
+opt.lengthMenu = [5]
+
+# don't show the length control
+opt.dom = "frtip"
+
+# use a smaller font (default is medium)
+# see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
+opt.css += ".dataTables_wrapper { font-size: x-small; }"
+```
+:::
+
+## Advanced Parameters
+
+::: {.callout-tip}
+## Parameters
+
+ITables' [advanced parameters](https://mwouts.github.io/itables/advanced_parameters.html):
+
+- Can be set globally on `opt`, or
+- Passed as arguments to the `show` function.
+- Table-specific arguments like [caption](https://mwouts.github.io/itables/advanced_parameters.html#caption) are only available in `show`.
+:::
+
+::: {.callout-warning}
+## Global Options and Quarto's cache
+
+Quarto uses a cache that may prevent your changes on `itables.options` to become effective
+when you run `quarto render`.
+
+In that case, use `--cache-refresh` or even `--execute-daemon-restart`.
+:::
+
+## About ITables
+
+::: {.callout-note}
+## GitHub <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
+
+ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
+under a MIT license.
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+:::
+
+::: {.callout-tip}
+## Under the hood
+
+ITables renders Pandas or Polars DataFrames as
+interactive HTML tables using the JavaScript
+[datatables-net](https://datatables.net/) library.
+:::
+
+::: {.callout-tip}
+## Documentation
+
+Learn More about ITables in the [documentation](https://mwouts.github.io/itables).
+:::
