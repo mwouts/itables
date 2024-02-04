@@ -1,6 +1,17 @@
 ITables ChangeLog
 =================
 
+1.7.0 (2024-02-??)
+------------------
+
+**Fixed**
+- DataTable is activated just once for each table ([#222](https://github.com/mwouts/itables/issues/222))
+
+**Changed**
+- In the offline mode, the datatables.net library is now loaded when the table is displayed.
+This is expected to improve the VSCode experience ([#216](https://github.com/mwouts/itables/issues/216))
+
+
 1.6.4 (2024-02-03)
 ------------------
 
