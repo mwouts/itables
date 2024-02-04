@@ -181,7 +181,10 @@ def _table_header(
     else:
         footer = ""
 
-    return """<table id="{table_id}" class="{classes}"{style}>{tags}{header}<tbody>{tbody}</tbody>{footer}</table>""".format(
+    return """<table id="{table_id}" class="{classes}" data-quarto-disable-processing="true" {style}>
+{tags}{header}<tbody>{tbody}</tbody>
+{footer}
+</table>""".format(
         table_id=table_id,
         classes=classes,
         style=style,

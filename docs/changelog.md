@@ -7,10 +7,10 @@ ITables ChangeLog
 **Fixed**
 - DataTable is activated just once for each table ([#222](https://github.com/mwouts/itables/issues/222))
 - We now use `df.isetitem(i, ...)` rather than `df.iloc[:,i] = ...` to avoid a Pandas warning ([#223](https://github.com/mwouts/itables/issues/223)
+- ITables now sets a `data-quarto-disable-processing="true"` attribute on the tables that are generated with `use_to_html=False` and thus can't be processed by Quarto ([#179](https://github.com/mwouts/itables/issues/179))
 
 **Changed**
-- In the offline mode, the datatables.net library is now loaded when the table is displayed.
-This is expected to improve the VSCode experience ([#216](https://github.com/mwouts/itables/issues/216))
+- In the offline mode, the datatables.net library is now loaded when the table is displayed. This is expected to improve the VSCode experience ([#216](https://github.com/mwouts/itables/issues/216))
 
 
 1.6.4 (2024-02-03)
