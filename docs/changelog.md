@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Fixed**
 - ITables works when you duplicate a notebook ([#222](https://github.com/mwouts/itables/issues/222))
+- We use `df.isetitem(i, ...)` rather than `df.iloc[:,i] = ...` to avoid a warning with Pandas 2.2.0 ([#223](https://github.com/mwouts/itables/issues/223))
 
 **Changed**
 - We have changed how datatables.net is loaded. This is expected to improve the VSCode experience ([#216](https://github.com/mwouts/itables/issues/216))
