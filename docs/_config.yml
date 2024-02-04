@@ -2,3 +2,6 @@ title: Interactive Tables
 author: Marc Wouts
 execute:
   execute_notebooks: force
+sphinx:
+  config:
+    html_extra_path: ['quarto']
