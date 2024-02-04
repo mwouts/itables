@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Fixed**
 - DataTable is activated just once for each table ([#222](https://github.com/mwouts/itables/issues/222))
+- We now use `df.isetitem(i, ...)` rather than `df.iloc[:,i] = ...` to avoid a Pandas warning ([#223](https://github.com/mwouts/itables/issues/223)
 
 **Changed**
 - In the offline mode, the datatables.net library is now loaded when the table is displayed.

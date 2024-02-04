@@ -78,7 +78,7 @@ def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
                     & ((x < JS_MIN_SAFE_INTEGER) | (x > JS_MAX_SAFE_INTEGER))
                 ).any()
             ):
-                df.iloc[:, i] = x.astype(str)
+                df.isetitem(i, x.astype(str))
                 converted.append(col)
         except AttributeError:
             # Polars

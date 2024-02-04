@@ -129,7 +129,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
         # max_bytes is smaller than the average size of one cell
         try:
             df = df.iloc[:1, :1]
-            df.iloc[0, 0] = "..."
+            df.isetitem(0, ["..."])
         except AttributeError:
             import polars as pl  # noqa
 
