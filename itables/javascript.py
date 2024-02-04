@@ -10,6 +10,8 @@ from base64 import b64encode
 import numpy as np
 import pandas as pd
 
+from .version import __version__ as itables_version
+
 try:
     import pandas.io.formats.style as pd_style
 except ImportError:
@@ -21,7 +23,7 @@ except ImportError:
     # Define pl.Series as pd.Series
     import pandas as pl
 
-from IPython.display import HTML, Javascript, display
+from IPython.display import HTML, display
 
 import itables.options as opt
 
@@ -32,6 +34,9 @@ from .utils import read_package_file
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
+DATATABLES_SRC_FOR_ITABLES = (
+    f"_datatables_src_for_itables_{itables_version.replace('.','_').replace('-','_')}"
+)
 _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "tags",
     "footer",
@@ -112,28 +117,25 @@ def init_notebook_mode(
             del pl.Series._repr_html_
 
     if not connected:
-        display(Javascript(read_package_file("external/jquery.min.js")))
-        # We use datatables' ES module version because the non module version
-        # fails to load as a simple script in the presence of require.js
-        dt64 = b64encode(
-            read_package_file("external/jquery.dataTables.mjs").encode("utf-8")
-        ).decode("ascii")
-        display(
-            HTML(
-                replace_value(
-                    read_package_file("html/initialize_offline_datatable.html"),
-                    "dt_src",
-                    "data:text/javascript;base64,{}".format(dt64),
-                )
-            )
-        )
-        display(
-            HTML(
-                "<style>"
-                + read_package_file("external/jquery.dataTables.min.css")
-                + "</style>"
-            )
-        )
+        display(HTML(generate_init_offline_itables_html()))
+
+
+def generate_init_offline_itables_html():
+    dt_css = read_package_file("external/jquery.dataTables.min.css")
+    jquery_src = read_package_file("external/jquery.min.js")
+    dt64 = b64encode(
+        read_package_file("external/jquery.dataTables.mjs").encode("utf-8")
+    ).decode("ascii")
+
+    html = replace_value(
+        read_package_file("html/initialize_offline_datatable.html"),
+        "_datatables_src_for_itables",
+        DATATABLES_SRC_FOR_ITABLES,
+    )
+    html = replace_value(html, "dt_css", dt_css)
+    html = replace_value(html, "jquery_src", jquery_src)
+    html = replace_value(html, "dt_src", "data:text/javascript;base64,{}".format(dt64))
+    return html
 
 
 def _table_header(
@@ -280,7 +282,7 @@ def to_html_datatable(
     connected=True,
     import_jquery=True,
     use_to_html=False,
-    **kwargs
+    **kwargs,
 ):
     if use_to_html or (pd_style is not None and isinstance(df, pd_style.Styler)):
         return to_html_datatable_using_to_html(
@@ -289,7 +291,7 @@ def to_html_datatable(
             tableId=tableId,
             connected=connected,
             import_jquery=import_jquery,
-            **kwargs
+            **kwargs,
         )
 
     """Return the HTML representation of the given dataframe as an interactive datatable"""
@@ -354,7 +356,7 @@ def to_html_datatable(
             "'header', 'footer' or False, not {}".format(column_filters)
         )
 
-    tableId = tableId or str(uuid.uuid4())
+    tableId = tableId or "itables_" + str(uuid.uuid4()).replace("-", "_")
     if isinstance(classes, list):
         classes = " ".join(classes)
 
@@ -541,6 +543,10 @@ def html_table_from_template(
         "<style></style>",
         "<style>{}</style>".format(css),
     )
+    if not connected:
+        output = replace_value(
+            output, "_datatables_src_for_itables", DATATABLES_SRC_FOR_ITABLES
+        )
 
     if column_filters:
         # If the below was false, we would need to concatenate the JS code

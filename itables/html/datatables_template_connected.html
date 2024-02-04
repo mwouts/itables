@@ -1,5 +1,5 @@
-<style></style>
 <div class="itables">
+<style></style>
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <script type="module">
@@ -8,16 +8,18 @@
     import dt from 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
     dt($);
 
-    // Define the table data
-    const data = [];
-
-    // Define the dt_args
-    let dt_args = {};
-    dt_args["data"] = data;
-
     $(document).ready(function () {
-        // [pre-dt-code]
-        $('#table_id').DataTable(dt_args);
+        document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
+            // Define the table data
+            const data = [];
+
+            // Define the dt_args
+            let dt_args = {};
+            dt_args["data"] = data;
+
+            // [pre-dt-code]
+            new $.fn.dataTable(table, dt_args);
+        });
     });
 </script>
 </div>

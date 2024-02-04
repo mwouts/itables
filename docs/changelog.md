@@ -4,7 +4,11 @@ ITables ChangeLog
 1.7.0-dev (2024-02-??)
 ------------------
 
+**Fixed**
+- ITables works when you duplicate a notebook ([#222](https://github.com/mwouts/itables/issues/222))
+
 **Changed**
+- We have changed how datatables.net is loaded. This is expected to improve the VSCode experience ([#216](https://github.com/mwouts/itables/issues/216))
 - We have removed legacy Python 2 code.
 
 
