@@ -12,6 +12,9 @@ ITables ChangeLog
 **Changed**
 - In the offline mode, the datatables.net library is now loaded when the table is displayed. This is expected to improve the VSCode experience ([#216](https://github.com/mwouts/itables/issues/216))
 
+**Added**
+- We have added a section on Quarto in the documentation ([#179](https://github.com/mwouts/itables/issues/179))
+
 
 1.6.4 (2024-02-03)
 ------------------

@@ -19,3 +19,6 @@
     padding: 3px;
     box-sizing: border-box;
 }
+
+/* We set an explicit size otherwise the font is too big in Quarto */
+.itables { font-size: medium; }

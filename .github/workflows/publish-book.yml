@@ -35,6 +35,13 @@ jobs:
         pip install ipykernel
         python -m ipykernel install --name itables --user
 
+    - name: Install Quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+
+    - name: Render the quarto examples
+      run: |
+        for qmd_file in `ls docs/quarto/*.qmd`; do quarto render ${qmd_file}; done
+
     # Build the book
     - name: Build the book
       run: |
@@ -42,7 +49,7 @@ jobs:
 
     # Push the book's HTML to github-pages
     - name: GitHub Pages action
-      uses: peaceiris/actions-gh-pages@v3.6.1
+      uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_build/html
