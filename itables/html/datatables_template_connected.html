@@ -9,19 +9,16 @@
     dt($);
 
     $(document).ready(function () {
-        document.querySelectorAll("#table_id").forEach(table => {
-            if(!table.className.includes('dataTable'))
-            {
-                // Define the table data
-                const data = [];
+        document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
+            // Define the table data
+            const data = [];
 
-                // Define the dt_args
-                let dt_args = {};
-                dt_args["data"] = data;
+            // Define the dt_args
+            let dt_args = {};
+            dt_args["data"] = data;
 
-                // [pre-dt-code]
-                new $.fn.dataTable(table, dt_args);
-            }
+            // [pre-dt-code]
+            new $.fn.dataTable(table, dt_args);
         });
     });
 </script>
