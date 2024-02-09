@@ -33,7 +33,7 @@ import pandas as pd
 from itables.sample_dfs import get_countries
 
 df_small = pd.DataFrame({"a": [2, 1]})
-df = get_countries()
+df = get_countries(html=False)
 ```
 
 ## Position and width
@@ -127,7 +127,7 @@ You can select which elements are actually displayed using
 DataTables' [`dom` option](https://datatables.net/reference/option/dom) with e.g.:
 
 ```{code-cell}
-show(df_small, dom="tpr")
+show(df_small, dom="ti")
 ```
 
 The available elements are:
@@ -288,18 +288,14 @@ from itables.sample_dfs import get_dict_of_test_dfs
 
 for name, test_df in get_dict_of_test_dfs().items():
     if "sorted" in name:
-        show(
-            test_df,
-            tags=f"<caption>{name}</caption>".replace("_", " ").title(),
-            dom="tpr",
-        )
+        show(test_df, tags=f"<caption>{name}</caption>".replace("_", " ").title())
 ```
 
 You can also set an explicit [`order`](https://datatables.net/reference/option/order) argument:
 
 ```{code-cell}
 sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
-show(sorted_df, order=[[1, "asc"]], dom="tpr")
+show(sorted_df, order=[[1, "asc"]])
 ```
 
 ## Showing the index
