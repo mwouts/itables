@@ -4,7 +4,6 @@ subtitle: Interactive Tables in HTML presentations
 standalone: true
 format:
   revealjs:
-    html-table-processing: none
     code-line-numbers: false
 jupyter:
   jupytext:

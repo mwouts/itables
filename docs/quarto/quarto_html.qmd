@@ -4,7 +4,6 @@ subtitle: Interactive Tables in HTML reports
 standalone: true
 format:
   html:
-    html-table-processing: none
     code-line-numbers: false
 jupyter:
   jupytext:
