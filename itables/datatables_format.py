@@ -78,7 +78,7 @@ def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
                     & ((x < JS_MIN_SAFE_INTEGER) | (x > JS_MAX_SAFE_INTEGER))
                 ).any()
             ):
-                df.isetitem(i, x.astype(str))
+                _isetitem(df, i, x.astype(str))
                 converted.append(col)
         except AttributeError:
             # Polars
@@ -99,6 +99,14 @@ def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
         )
 
     return df
+
+
+def _isetitem(df, i, value):
+    """Older versions of Pandas don't have df.isetitem"""
+    try:
+        df.isetitem(i, value)
+    except AttributeError:
+        df.iloc[:, i] = value
 
 
 def datatables_rows(
