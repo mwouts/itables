@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+1.7.1 (2024-02-??)
+------------------
+
+**Fixed**
+- We have moved the style section of the template prior to the div ([#229](https://github.com/mwouts/itables/issues/229))
+
+
 1.7.0 (2024-02-09)
 ------------------
 
