@@ -32,7 +32,7 @@ import itables.options as opt
 opt.lengthMenu = [5]
 
 # don't show the length control
-opt.dom = "frtip"
+opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
@@ -77,7 +77,7 @@ import itables.options as opt
 opt.lengthMenu = [5]
 
 # don't show the length control
-opt.dom = "frtip"
+opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size

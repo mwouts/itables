@@ -21,7 +21,3 @@
 }
 
 .itables { font-size: medium; }
-
-.itables select, .itables input {
-    color: inherit;
-}

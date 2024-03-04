@@ -5,6 +5,15 @@ https://mwouts.github.io/itables/advanced_parameters.html
 """
 from .utils import read_package_file
 
+"""Table layout, see https://datatables.net/reference/option/layout
+NB: to remove a control, replace it by None"""
+layout = {
+    "topStart": "pageLength",
+    "topEnd": "search",
+    "bottomStart": "info",
+    "bottomEnd": "paging",
+}
+
 """Show the index? Possible values: True, False and 'auto'. In mode 'auto', the index is not shown
 if it has no name and its content is range(N)"""
 showIndex = "auto"
@@ -49,3 +58,6 @@ warn_on_unexpected_types = True
 
 """Should a warning appear when we convert large integers to str?"""
 warn_on_int_to_str_conversion = True
+
+"""Should a warning appear when the deprecated 'dom' is used?"""
+warn_on_dom = True

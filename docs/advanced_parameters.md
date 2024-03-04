@@ -36,60 +36,12 @@ df_small = pd.DataFrame({"a": [2, 1]})
 df = get_countries(html=False)
 ```
 
-## Position and width
-
-The default value for the table CSS is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
-Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
-Using `margin:auto` makes non-wide tables centered in Jupyter.
-
-You can change the CSS used for a single table with e.g.
-
-```{code-cell}
-show(df_small, style="table-layout:auto;width:50%;float:right")
-```
-
-or you can also change it for all tables by changing `itables.options.style`:
-
-```python
-import itables.options as opt
-
-opt.style = "table-layout:auto;width:auto"
-```
-
 ```{code-cell}
 :tags: [remove-cell]
 
 import itables.options as opt
 
 opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
-```
-
-## Theme
-
-Select how your table looks like with the `classes` argument (defaults to `"display nowrap"`) of the `show` function, or by changing `itables.options.classes`.
-
-Add `"compact"` if you want a denser table:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, classes="display nowrap compact")
-```
-
-Remove `"nowrap"` if you want the cell content to be wrapped:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, classes="display")
-```
-
-[More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, classes="display nowrap cell-border")
 ```
 
 ## Caption
@@ -114,36 +66,81 @@ show(
 )
 ```
 
-```{code-cell}
-:tags: [remove-input]
-
-opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
-```
-
-## Removing the search box
+## Layout
 
 By default, datatables that don't fit in one page come with a search box, a pagination control, a table summary, etc.
 You can select which elements are actually displayed using
-DataTables' [`dom` option](https://datatables.net/reference/option/dom) with e.g.:
+DataTables' [`layout` option](https://datatables.net/reference/option/layout) with e.g.:
 
 ```{code-cell}
-show(df_small, dom="ti")
+show(df_small, layout={"topStart": "search", "topEnd": None})
 ```
 
-The available elements are:
-- `l`: length changing input control
-- `f`: filtering input
-- `t`: the table itself
-- `i`: table information summary
-- `p`: pagination control
-- `r`: processing display element
+The available positions are `topStart, topEnd, bottomStart, bottomEnd`. You can also use `top2Start`, etc... (see more
+in the [datatables.net documentation](https://datatables.net/reference/option/layout)).
 
 Like for the other arguments of `show`, you can change the default value of the dom option with e.g.:
 
 ```
 import itables.options as opt
 
-opt.dom = "lfrtip"  # (default value)
+opt.layout =  {
+    "topStart": "pageLength",
+    "topEnd": "search",
+    "bottomStart": "info",
+    "bottomEnd": "paging"
+}  # (default value)
+```
+
+```{tip}
+The `layout` option was introduced with `datatables-net==2.0` and deprecates the
+former [`dom` option](https://datatables.net/reference/option/dom). If you wish
+to continue using the `dom` option, set `opt.warn_on_dom = False`.
+```
+
+## Buttons
+
+Since `itables>=2.0`, the datatables [buttons](https://datatables.net/extensions/buttons/) are supported
+and let you copy the table data, or export it as CSV or Excel files.
+
+To display the buttons, you need to pass a `buttons` argument to the `show` function:
+
+```{code-cell}
+show(df, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
+```
+
+You can also specify a [`layout`](advanced_parameters.md#layout) modifier that will decide
+the location of the buttons (the default is `layout={"topStart": "buttons"}`). And if
+you want to keep the pagination control too, you can add `"pageLength"` to the list of buttons.
+
+As always, it is possible to set default values for these parameters by setting these on `itables.options`.
+
+By default, the exported file name is the name of the HTML page. To change it, set a
+[`title` option](https://datatables.net/extensions/buttons/examples/html5/filename.html) on the buttons, like
+here:
+
+```{code-cell}
+show(
+    df,
+    buttons=[
+        "pageLength",
+        {"extend": "csvHtml5", "title": "Countries"},
+        {"extend": "excelHtml5", "title": "Countries"},
+    ],
+)
+```
+
+```{warning}
+At this stage, the PDF button is not implemented. This is because the required PDF libraries
+have a large footprint on the bundle size, so we need to study how to allow using user-specific bundles.
+```
+
+## Search
+
+The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
+
+```{code-cell}
+show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
 
 ## Pagination
@@ -180,7 +177,7 @@ show(df, scrollY="200px", scrollCollapse=True, paging=False)
 
 In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
 
-## Table footer
+## Footer
 
 Use `footer = True` if you wish to display a table footer.
 
@@ -193,14 +190,14 @@ show(df, footer=True)
 ## Column filters
 
 Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters
-(remove the global search box with [`dom='lrtip'`](https://datatables.net/reference/option/dom) if desired).
+(remove the global search box with a [`layout`](advanced_parameters.md#layout) modifier if desired).
 
 ```{code-cell}
 alpha_numeric_df = pd.DataFrame(
     [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
 )
 
-show(alpha_numeric_df, column_filters="footer", dom="lrtip")
+show(alpha_numeric_df, column_filters="footer", layout={"topEnd": None})
 ```
 
 As always you can set activate column filters by default with e.g.
@@ -221,6 +218,54 @@ get_dict_of_test_dfs()["multiindex"]
 :tags: [remove-cell]
 
 opt.column_filters = False
+```
+
+## Position and width
+
+The default value for the table CSS is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
+Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
+Using `margin:auto` makes non-wide tables centered in Jupyter.
+
+You can change the CSS used for a single table with e.g.
+
+```{code-cell}
+show(df_small, style="table-layout:auto;width:50%;float:right")
+```
+
+or you can also change it for all tables by changing `itables.options.style`:
+
+```python
+import itables.options as opt
+
+opt.style = "table-layout:auto;width:auto"
+```
+
+## Theme
+
+Select how your table looks like with the `classes` argument (defaults to `"display nowrap"`) of the `show` function, or by changing `itables.options.classes`.
+
+Add `"compact"` if you want a denser table:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, classes="display nowrap compact")
+```
+
+Remove `"nowrap"` if you want the cell content to be wrapped:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, classes="display")
+```
+
+[More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, classes="display nowrap cell-border")
 ```
 
 ## Pandas formatting
@@ -441,20 +486,6 @@ pd.Series(
 )
 ```
 
-## The search option
-
-The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
-
-```{code-cell}
-show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
-```
-
 ## Select rows
 
 Not currently implemented. May be made available at a later stage using the [select](https://datatables.net/extensions/select/) extension for datatables.
-
-+++
-
-## Copy, CSV, PDF and Excel buttons
-
-Not currently implemented. May be made available at a later stage thanks to the [buttons](https://datatables.net/extensions/buttons/) extension for datatable.

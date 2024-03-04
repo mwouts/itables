@@ -2,8 +2,7 @@
 <style></style>
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
 <script type="module">
-    const dt = (await import(window._datatables_src_for_itables)).default;
-    dt($);
+    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables);
 
     $(document).ready(function () {
         document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
@@ -15,7 +14,7 @@
             dt_args["data"] = data;
 
             // [pre-dt-code]
-            new $.fn.dataTable(table, dt_args);
+            new DataTable(table, dt_args);
         });
     });
 </script>

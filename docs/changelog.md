@@ -1,6 +1,16 @@
 ITables ChangeLog
 =================
 
+2.0.0 (2024-03-??)
+------------------
+
+**Changed**
+- ITables uses the latest version `2.0.1` of `datatables-net` ([#121](https://github.com/mwouts/itables/issues/121))
+
+**Added**
+- The CSV, Excel and Print buttons are now included ([#50](https://github.com/mwouts/itables/issues/50))
+
+
 1.7.1 (2024-03-05)
 ------------------
 

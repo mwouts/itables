@@ -6,6 +6,7 @@ import re
 import uuid
 import warnings
 from base64 import b64encode
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -44,6 +45,7 @@ _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "maxBytes",
     "maxRows",
     "maxColumns",
+    "warn_on_dom",
     "warn_on_unexpected_types",
     "warn_on_int_to_str_conversion",
 }
@@ -53,6 +55,14 @@ _ORIGINAL_DATAFRAME_STYLE_REPR_HTML = (
 )
 _ORIGINAL_POLARS_DATAFRAME_REPR_HTML = pl.DataFrame._repr_html_
 _CONNECTED = True
+DEFAULT_LAYOUT = {
+    "topStart": "pageLength",
+    "topEnd": "search",
+    "bottomStart": "info",
+    "bottomEnd": "paging",
+}
+DEFAULT_LAYOUT_CONTROLS = set(DEFAULT_LAYOUT.values())
+
 
 try:
     import google.colab
@@ -121,19 +131,15 @@ def init_notebook_mode(
 
 
 def generate_init_offline_itables_html():
-    dt_css = read_package_file("external/jquery.dataTables.min.css")
-    jquery_src = read_package_file("external/jquery.min.js")
-    dt64 = b64encode(
-        read_package_file("external/jquery.dataTables.mjs").encode("utf-8")
-    ).decode("ascii")
+    dt_css = read_package_file("dt_bundle/dt.css")
+    dt_src = read_package_file("dt_bundle/dt.js")
+    dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
+    html = read_package_file("html/initialize_offline_datatable.html")
     html = replace_value(
-        read_package_file("html/initialize_offline_datatable.html"),
-        "_datatables_src_for_itables",
-        DATATABLES_SRC_FOR_ITABLES,
+        html, "_datatables_src_for_itables", DATATABLES_SRC_FOR_ITABLES
     )
     html = replace_value(html, "dt_css", dt_css)
-    html = replace_value(html, "jquery_src", jquery_src)
     html = replace_value(html, "dt_src", "data:text/javascript;base64,{}".format(dt64))
     return html
 
@@ -345,8 +351,31 @@ def to_html_datatable(
             )
         )
 
-    if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
-        kwargs["dom"] = "ti" if downsampling_warning else "t"
+    if "dom" in kwargs:
+        if opt.warn_on_dom:
+            warnings.warn(
+                "The 'dom' argument has been deprecated in datatables-net==2.0.",
+                DeprecationWarning,
+            )
+        if kwargs["layout"] != DEFAULT_LAYOUT:
+            raise ValueError("You can pass both 'dom' and 'layout'")
+        kwargs["layout"] = {}
+
+    if kwargs["layout"] == DEFAULT_LAYOUT and _df_fits_in_one_page(df, kwargs):
+
+        def filter_control(control):
+            if control == "info" and downsampling_warning:
+                return control
+            if control not in DEFAULT_LAYOUT_CONTROLS:
+                return control
+            return None
+
+        kwargs["layout"] = {
+            key: filter_control(control) for key, control in kwargs["layout"].items()
+        }
+
+    if "buttons" in kwargs and "buttons" not in kwargs["layout"].values():
+        kwargs["layout"] = {**kwargs["layout"], "topStart": "buttons"}
 
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
@@ -424,6 +453,11 @@ def set_default_options(kwargs, use_to_html):
                     set(kwargs).intersection(options_not_available)
                 )
             )
+
+    # layout is updated using the arguments passed on to show
+    if "layout" in kwargs:
+        kwargs["layout"] = {**getattr(opt, "layout"), **kwargs["layout"]}
+
     # Default options
     for option in dir(opt):
         if (
@@ -432,7 +466,7 @@ def set_default_options(kwargs, use_to_html):
             and not option.startswith("__")
             and option not in ["read_package_file"]
         ):
-            kwargs[option] = getattr(opt, option)
+            kwargs[option] = deepcopy(getattr(opt, option))
 
     for name, value in kwargs.items():
         if value is None:
@@ -546,7 +580,7 @@ def html_table_from_template(
             connected
         ), "In the offline mode, jQuery is imported through init_notebook_mode"
         output = replace_value(
-            output, "    import 'https://code.jquery.com/jquery-3.6.0.min.js';\n", ""
+            output, "    import 'https://code.jquery.com/jquery-3.7.1.min.js';\n", ""
         )
 
     output = replace_value(

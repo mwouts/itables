@@ -3,30 +3,26 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python
+  - nodejs
+  - python<=3.10
   - jupyter
-  - jupyterlab
-  - jupytext>=1.13.8
-  - markdown-it-py>=2.0
+  - jupyterlab>=4
+  - jupytext
   - nbconvert
   - ipykernel
   - pandas
+  - matplotlib
   - polars
   - pyarrow
   - pytest
   - pytest-xdist
   - pytest-cov
   - pre-commit
-  - pylint
-  - flake8
-  - black
-  - isort
   - pip
   - setuptools
   - twine
   - ghp-import
-  # Interactive applications
   - shiny
   - pip:
     - world_bank_data
-    - jupyter_book>=0.12  # jupyter-book-0.12.2-pyhd8ed1ab_0 requires jupytext >=1.11.2,<1.12
+    - jupyter_book

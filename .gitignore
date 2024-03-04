@@ -23,3 +23,7 @@ itables/external
 .jupyter_cache
 docs/quarto/*.html
 docs/quarto/*_files/
+
+# Datatables bundle
+node_modules
+dt_bundle
