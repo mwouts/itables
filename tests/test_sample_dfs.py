@@ -1,8 +1,8 @@
 import json
-import sys
 
 import pandas as pd
 import pytest
+from packaging import version
 
 from itables import show, to_html_datatable
 from itables.datatables_format import _format_column, generate_encoder
@@ -55,8 +55,8 @@ def test_get_indicators(connected, use_to_html):
 
 
 @pytest.mark.skipif(
-    sys.version_info < (3, 7),
-    reason="AttributeError: 'Styler' object has no attribute 'to_html'",
+    version.parse(pd.__version__) < version.parse("1.0"),
+    reason="TypeError: Cannot interpret '<attribute 'dtype' of 'numpy.generic' objects>' as a data type",
 )
 @pytest.mark.skipif(
     pd_style is None,

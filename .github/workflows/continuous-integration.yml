@@ -17,10 +17,10 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
-      - uses: pre-commit/action@v3.0.0
+        uses: actions/setup-python@v5
+      - uses: pre-commit/action@v3.0.1
 
   codeql:
     runs-on: ubuntu-latest
@@ -28,48 +28,45 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: python, javascript
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
   pytest:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
+        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12"]
         pandas-version: [latest]
         include:
-          - python-version: 3.6
-            pandas-version: 0.22
+          - python-version: 3.7
+            pandas-version: '<1.0'
           - python-version: 3.9
-            pandas-version: 1.5
-          - python-version: "3.11"
+            pandas-version: '<2.0'
+          - python-version: "3.12"
             pandas-version: pre
             polars: true
-          - python-version: "3.11"
+          - python-version: "3.12"
             uninstall_jinja2: true
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-
       - name: Install a development version of 'itables'
-        run: pip install -e .
+        run: pip install -e .[test]
 
       - name: Install pandas latest
         if: matrix.pandas-version == 'latest'
@@ -79,7 +76,7 @@ jobs:
         run: pip install pandas --pre
       - name: Install pandas ${{ matrix.pandas-version }}
         if: matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
-        run: pip install pandas==${{ matrix.pandas-version }}
+        run: pip install 'pandas${{ matrix.pandas-version }}'
 
       - name: Install polars
         if: matrix.polars
@@ -97,3 +94,19 @@ jobs:
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Install hatch
+        run : pip install hatch
+      - name: Build package
+        run: hatch build
