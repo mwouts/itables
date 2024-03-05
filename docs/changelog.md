@@ -1,6 +1,16 @@
 ITables ChangeLog
 =================
 
+1.7.1 (2024-03-05)
+------------------
+
+**Fixed**
+- The select and search box now use a white font in VS Code (dark mode) ([#232](https://github.com/mwouts/itables/issues/232), [#156](https://github.com/mwouts/itables/issues/156), [#103](https://github.com/mwouts/itables/issues/103))
+
+**Added**
+- We have added a check to make sure any `tableId` provided by the user is valid ([#233](https://github.com/mwouts/itables/issues/233))
+
+
 1.7.0 (2024-02-09)
 ------------------
 
