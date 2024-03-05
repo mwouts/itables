@@ -287,6 +287,7 @@ def to_html_datatable(
     use_to_html=False,
     **kwargs,
 ):
+    check_table_id(tableId)
     if use_to_html or (pd_style is not None and isinstance(df, pd_style.Styler)):
         return to_html_datatable_using_to_html(
             df=df,
@@ -397,6 +398,19 @@ def to_html_datatable(
         import_jquery=import_jquery,
         column_filters=column_filters,
     )
+
+
+def check_table_id(table_id):
+    """Make sure that the table_id is a valid HTML id.
+
+    See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
+    """
+    if table_id is not None:
+        if not re.match(r"[A-Za-z][-A-Za-z0-9_.]*", table_id):
+            raise ValueError(
+                "The id name must contain at least one character, "
+                f"cannot start with a number, and must not contain whitespaces ({table_id})"
+            )
 
 
 def set_default_options(kwargs, use_to_html):

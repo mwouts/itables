@@ -3,6 +3,7 @@ import pytest
 from itables.javascript import (
     _df_fits_in_one_page,
     _tfoot_from_thead,
+    check_table_id,
     replace_value,
     to_html_datatable,
 )
@@ -96,3 +97,10 @@ def test_tfoot_from_thead(
 """,
 ):
     assert _tfoot_from_thead(thead) == expected_tfoot
+
+
+def test_check_table_id():
+    with pytest.raises(ValueError, match="cannot start with a number"):
+        check_table_id("0_invalid_id")
+    check_table_id("valid_id")
+    check_table_id("valid_id-2")
