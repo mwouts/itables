@@ -26,6 +26,7 @@ jupyter:
 ```{python}
 #| echo: false
 
+from IPython.display import display, HTML
 import itables.options as opt
 
 # show 5 rows per 'page'
@@ -36,7 +37,7 @@ opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
-opt.css += ".dataTables_wrapper { font-size: small; }"
+display(HTML("<style>.dataTables_wrapper { font-size: small; }</style>"))
 ```
 
 ```{python}
@@ -70,6 +71,7 @@ get_countries(html=False)
 ## This document uses
 
 ```python
+from IPython.display import display, HTML
 import itables.options as opt
 
 
@@ -81,7 +83,7 @@ opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
-opt.css += ".dataTables_wrapper { font-size: x-small; }"
+display(HTML("<style>.dataTables_wrapper { font-size: small; }</style>"))
 ```
 :::
 

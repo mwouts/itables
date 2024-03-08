@@ -3,7 +3,6 @@
 These parameters are documented at
 https://mwouts.github.io/itables/advanced_parameters.html
 """
-from .utils import read_package_file
 
 """Table layout, see https://datatables.net/reference/option/layout
 NB: to remove a control, replace it by None"""
@@ -49,9 +48,6 @@ footer = False
 
 """Column filters"""
 column_filters = False
-
-"""Table CSS"""
-css = read_package_file("html/itables.css")
 
 """Should a warning appear when we have to encode an unexpected type?"""
 warn_on_unexpected_types = True

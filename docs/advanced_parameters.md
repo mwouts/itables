@@ -240,7 +240,7 @@ import itables.options as opt
 opt.style = "table-layout:auto;width:auto"
 ```
 
-## Theme
+## Classes
 
 Select how your table looks like with the `classes` argument (defaults to `"display nowrap"`) of the `show` function, or by changing `itables.options.classes`.
 
@@ -267,6 +267,8 @@ show(df, classes="display")
 
 show(df, classes="display nowrap cell-border")
 ```
+
+Last but not least, you can add custom classes and provide custom CSS for those, see
 
 ## Pandas formatting
 

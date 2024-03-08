@@ -14,28 +14,46 @@ kernelspec:
 
 # Custom CSS
 
-You can change the global CSS used to render the tables
-by either passing a custom CSS to the `show` function, or by
-changing `opt.css`.
+## Targeting all tables
 
-Note that the CSS must be the same for all the tables
-in a given notebook. To change the CSS for just one table,
-use the [`style`](advanced_parameters.html#position-and-width) argument of the `show` function.
+You can use CSS to alter how the interactive datatables are rendered.
+Use the `.dataTable` class attribute to target all the tables in the notebook, like here:
 
 ```{code-cell}
 from itables import init_notebook_mode, show
 from itables.sample_dfs import get_countries
-import itables.options as opt
 
-
-opt.css = """
-.itables table td { font-style: italic; }
-.itables table th { font-style: oblique; }
-"""
 
 init_notebook_mode(all_interactive=True)
 ```
 
 ```{code-cell}
+from IPython.display import display, HTML
+
+
+css = """
+.dataTable th { font-weight: bolder; }
+.dataTable:not(.table_with_monospace_font) tr { font-style: italic; }
+"""
+display(HTML(f"<style>{css}</style>" ""))
+```
+
+```{code-cell}
 get_countries()
+```
+
+## Targeting specific classes
+
+You might also want to target only specific table like in this example
+(note how we add the `table_with_monospace_font` class
+to the table using the [`classes`](advanced_parameters.md#classes)
+argument of the `show` function):
+
+```{code-cell}
+class_specific_css = ".table_with_monospace_font { font-family: courier, monospace }"
+display(HTML(f"<style>{class_specific_css}</style>" ""))
+```
+
+```{code-cell}
+show(get_countries(), classes="display nowrap table_with_monospace_font")
 ```

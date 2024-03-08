@@ -461,7 +461,6 @@ def set_default_options(kwargs, use_to_html):
             (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
-            and option not in ["read_package_file"]
         ):
             kwargs[option] = deepcopy(getattr(opt, option))
 
@@ -562,7 +561,11 @@ def to_html_datatable_using_to_html(
 def html_table_from_template(
     html_table, table_id, data, kwargs, connected, import_jquery, column_filters
 ):
-    css = kwargs.pop("css")
+    if "css" in kwargs:
+        TypeError(
+            "The 'css' argument has been deprecated, see the new "
+            "approach at https://mwouts.github.io/itables/custom_css.html."
+        )
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
 
@@ -586,11 +589,6 @@ def html_table_from_template(
         html_table,
     )
     output = replace_value(output, "#table_id", "#{}".format(table_id))
-    output = replace_value(
-        output,
-        "<style></style>",
-        "<style>{}</style>".format(css),
-    )
     if not connected:
         output = replace_value(
             output, "_datatables_src_for_itables", DATATABLES_SRC_FOR_ITABLES
