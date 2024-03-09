@@ -1,21 +1,28 @@
 {
-  "name": "dt",
+  "name": "dt_for_itables",
   "version": "2.0.0",
   "description": "datatables-net bundle for itables",
   "main": "src.js",
   "scripts": {
-    "build": "esbuild src.js --format=esm --bundle --outfile=../dt_bundle/dt.js --minify"
+    "build": "esbuild src.js --format=esm --bundle --outfile=dt_bundle.js --minify"
   },
   "author": "Marc Wouts",
   "license": "MIT",
   "dependencies": {
     "datatables.net-buttons": "^3.0.0",
     "datatables.net-buttons-dt": "^3.0.0",
-    "datatables.net-dt": "^2.0.1",
+    "datatables.net-colreorder-dt": "^2.0.0",
+    "datatables.net-dt": "^2.0.0",
+    "datatables.net-fixedcolumns-dt": "^5.0.0",
+    "datatables.net-keytable-dt": "^2.12.0",
+    "datatables.net-rowgroup-dt": "^1.5.0",
+    "datatables.net-searchbuilder-dt": "^1.7.0",
+    "datatables.net-searchpanes-dt": "^2.3.0",
+    "datatables.net-select-dt": "^2.0.0",
     "jquery": "^3.7.1",
     "jszip": "^3.10.1"
   },
   "devDependencies": {
-    "esbuild": "^0.20.0"
+    "esbuild": "*"
   }
 }

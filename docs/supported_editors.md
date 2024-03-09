@@ -32,7 +32,7 @@ A short sample notebook is available [here](https://colab.research.google.com/dr
 
 ## VS Code
 
-In VS Code, `itables` works both for Jupyter Notebooks and Python scripts
+In VS Code, `itables` works both for Jupyter Notebooks and Python scripts.
 
 ![](images/code.png)
 
@@ -65,6 +65,7 @@ html = to_html_datatable(df)
 You can use ITables in Web applications generated with [Shiny](https://shiny.rstudio.com/py/) for Python with e.g.
 ```python
 from shiny import ui
+
 from itables.shiny import DT
 
 ui.HTML(DT(df))

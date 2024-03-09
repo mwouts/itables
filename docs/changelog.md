@@ -4,14 +4,15 @@ ITables ChangeLog
 2.0.0 (2024-03-??)
 ------------------
 
+**Added**
+- The CSV, Excel and Print buttons are now included ([#50](https://github.com/mwouts/itables/issues/50), [#155](https://github.com/mwouts/itables/issues/155))
+- We have included a few other extensions, and documented how to add more ([#178](https://github.com/mwouts/itables/issues/178), [#207](https://github.com/mwouts/itables/issues/207), [#208](https://github.com/mwouts/itables/issues/208), [#231](https://github.com/mwouts/itables/issues/231))
+- ITables is now tested with Python 3.12
+
 **Changed**
-- ITables uses the latest version `2.0.1` of `datatables-net` ([#121](https://github.com/mwouts/itables/issues/121))
+- ITables uses the latest version `2.0.2` of `datatables-net` ([#121](https://github.com/mwouts/itables/issues/121))
 - Large Python integers are now mapped to JavaScript `BigInt` ([#172](https://github.com/mwouts/itables/issues/172))
 - ITables is build using `hatch` and `pyproject.toml`
-
-**Added**
-- The CSV, Excel and Print buttons are now included ([#50](https://github.com/mwouts/itables/issues/50))
-- ITables is now tested with Python 3.12
 
 
 1.7.1 (2024-03-05)

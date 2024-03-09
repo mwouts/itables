@@ -1,16 +1,25 @@
 format: jb-book
 root: quick_start
-chapters:
-- file: supported_editors
-- file: advanced_parameters
-- file: pandas_style
-- file: custom_css
-- file: downsampling
-- file: sample_dataframes
-- file: polars_dataframes
-- file: quarto
-- file: references
-- file: contributing
-- file: developing
-- file: troubleshooting
-- file: changelog
+parts:
+  - caption: How to use DataTables
+    chapters:
+    - file: advanced_parameters
+    - file: formatting
+    - file: custom_css
+    - file: extensions
+    - file: custom_extensions
+  - caption: ITables
+    chapters:
+      - file: supported_editors
+      - file: quarto
+      - file: downsampling
+      - file: references
+      - file: contributing
+      - file: developing
+      - file: troubleshooting
+      - file: changelog
+  - caption: Example DataFrames
+    chapters:
+    - file: sample_dataframes
+    - file: polars_dataframes
+    - file: pandas_style

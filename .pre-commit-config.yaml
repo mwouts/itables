@@ -32,8 +32,10 @@ repos:
     rev: v1.14.5
     hooks:
     - id: jupytext
+      exclude: dt_package/
       types: ["markdown"]
-      args: ["--pipe", "black", "--check", "ruff check {} --ignore E402"]
+      args: ["--pipe", "isort {} --treat-comment-as-code '# %%' --profile black", "--pipe", "black", "--check", "ruff check {} --ignore E402"]
       additional_dependencies:
         - black==22.3.0 # Matches hook
         - ruff==0.3.1
+        - isort==5.13.2

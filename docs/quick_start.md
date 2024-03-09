@@ -16,7 +16,6 @@ kernelspec:
 
 ![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
@@ -24,7 +23,7 @@ kernelspec:
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-## Turn your Python DataFrames into Interactive Tables
+## Turn your Python DataFrames into Interactive DataTables
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
 With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
@@ -84,43 +83,17 @@ In some contexts (Jupyter Book, Jupyter Colab, etc...) you might
 prefer to load the libraries dynamically from the internet.
 To do so, add the argument `connected=True` when you
 execute `init_notebook_mode`. This will also make your notebook lighter by
-about [500kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py).
+about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py).
 
-## Formatting specific tables only
+## Using ITables for specific tables only
 
 If you prefer to render only certain series or dataframes using `itables`,
-or you want to use the [advanced parameters](advanced_parameters.md), then
-use `init_notebook_mode(all_interactive=False)` then `show`:
+then call `init_notebook_mode(all_interactive=False)` then `show`:
 
 ```{code-cell}
 from itables import show
 
 show(df, lengthMenu=[2, 5, 10, 25, 50, 100, 250])
-```
-
-## HTML content
-
-HTML content is supported, which means that you can have formatted text,
-links or even images in your tables:
-
-```{code-cell}
-:tags: [full-width]
-
-df["flag"] = [
-    '<a href="https://flagpedia.net/{code}">'
-    '<img src="https://flagpedia.net/data/flags/h80/{code}.webp" '
-    'alt="Flag of {country}"></a>'.format(code=code.lower(), country=country)
-    for code, country in zip(df.index, df["country"])
-]
-df["country"] = [
-    '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(country, country)
-    for country in df["country"]
-]
-df["capital"] = [
-    '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(capital, capital)
-    for capital in df["capital"]
-]
-df
 ```
 
 ## Try ITables on Binder

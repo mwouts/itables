@@ -2,13 +2,12 @@
 
 ![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Turn your Python DataFrames into Interactive Tables
+## Turn your Python DataFrames into Interactive DataTables
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
 With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
@@ -67,6 +66,8 @@ execute `init_notebook_mode`.
 - Google Colab
 - VS Code (for both Jupyter Notebooks and Python scripts)
 - PyCharm (for Jupyter Notebooks)
+- Quarto
+- Shiny for Python
 
 ## Try ITables on Binder
 

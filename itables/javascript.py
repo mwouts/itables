@@ -7,6 +7,7 @@ import uuid
 import warnings
 from base64 import b64encode
 from copy import deepcopy
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -77,7 +78,10 @@ except ImportError:
 
 
 def init_notebook_mode(
-    all_interactive=False, connected=GOOGLE_COLAB, warn_if_call_is_superfluous=True
+    all_interactive=False,
+    connected=GOOGLE_COLAB,
+    warn_if_call_is_superfluous=True,
+    dt_bundle=None,
 ):
     """Load the datatables.net library and the corresponding css (if connected=False),
     and (if all_interactive=True), activate the datatables representation for all the Pandas DataFrames and Series.
@@ -85,6 +89,8 @@ def init_notebook_mode(
     Warning: make sure you keep the output of this cell when 'connected=False',
     otherwise the interactive tables will stop working.
     """
+    if dt_bundle is None:
+        dt_bundle = opt.dt_bundle
     global _CONNECTED
     if GOOGLE_COLAB and not connected:
         warnings.warn(
@@ -126,12 +132,13 @@ def init_notebook_mode(
             del pl.Series._repr_html_
 
     if not connected:
-        display(HTML(generate_init_offline_itables_html()))
+        display(HTML(generate_init_offline_itables_html(dt_bundle)))
 
 
-def generate_init_offline_itables_html():
-    dt_css = read_package_file("dt_bundle/dt.css")
-    dt_src = read_package_file("dt_bundle/dt.js")
+def generate_init_offline_itables_html(dt_bundle: Path):
+    assert dt_bundle.suffix == ".js"
+    dt_src = dt_bundle.read_text()
+    dt_css = dt_bundle.with_suffix(".css").read_text()
     dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
     html = read_package_file("html/initialize_offline_datatable.html")
@@ -288,18 +295,21 @@ def to_html_datatable(
     caption=None,
     tableId=None,
     connected=True,
-    import_jquery=True,
     use_to_html=False,
     **kwargs,
 ):
     check_table_id(tableId)
+    if "import_jquery" in kwargs:
+        raise TypeError(
+            "The argument 'import_jquery' was removed in ITables v2.0. "
+            "Please pass a custom 'dt_url' instead."
+        )
     if use_to_html or (pd_style is not None and isinstance(df, pd_style.Styler)):
         return to_html_datatable_using_to_html(
             df=df,
             caption=caption,
             tableId=tableId,
             connected=connected,
-            import_jquery=import_jquery,
             **kwargs,
         )
 
@@ -349,17 +359,20 @@ def to_html_datatable(
             )
         )
 
+    has_default_layout = kwargs["layout"] == DEFAULT_LAYOUT
+
     if "dom" in kwargs:
         if opt.warn_on_dom:
             warnings.warn(
                 "The 'dom' argument has been deprecated in datatables-net==2.0.",
                 DeprecationWarning,
             )
-        if kwargs["layout"] != DEFAULT_LAYOUT:
+        if not has_default_layout:
             raise ValueError("You can pass both 'dom' and 'layout'")
-        kwargs["layout"] = {}
+        del kwargs["layout"]
+        has_default_layout = False
 
-    if kwargs["layout"] == DEFAULT_LAYOUT and _df_fits_in_one_page(df, kwargs):
+    if has_default_layout and _df_fits_in_one_page(df, kwargs):
 
         def filter_control(control):
             if control == "info" and downsampling_warning:
@@ -372,7 +385,11 @@ def to_html_datatable(
             key: filter_control(control) for key, control in kwargs["layout"].items()
         }
 
-    if "buttons" in kwargs and "buttons" not in kwargs["layout"].values():
+    if (
+        "buttons" in kwargs
+        and "layout" in kwargs
+        and "buttons" not in kwargs["layout"].values()
+    ):
         kwargs["layout"] = {**kwargs["layout"], "topStart": "buttons"}
 
     footer = kwargs.pop("footer")
@@ -421,7 +438,6 @@ def to_html_datatable(
         data=dt_data,
         kwargs=kwargs,
         connected=connected,
-        import_jquery=import_jquery,
         column_filters=column_filters,
     )
 
@@ -452,8 +468,7 @@ def set_default_options(kwargs, use_to_html):
             )
 
     # layout is updated using the arguments passed on to show
-    if "layout" in kwargs:
-        kwargs["layout"] = {**getattr(opt, "layout"), **kwargs["layout"]}
+    kwargs["layout"] = {**getattr(opt, "layout"), **kwargs.get("layout", {})}
 
     # Default options
     for option in dir(opt):
@@ -461,6 +476,7 @@ def set_default_options(kwargs, use_to_html):
             (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
+            and option not in {"dt_bundle", "find_package_file"}
         ):
             kwargs[option] = deepcopy(getattr(opt, option))
 
@@ -474,7 +490,7 @@ def set_default_options(kwargs, use_to_html):
 
 
 def to_html_datatable_using_to_html(
-    df=None, caption=None, tableId=None, connected=True, import_jquery=True, **kwargs
+    df=None, caption=None, tableId=None, connected=True, **kwargs
 ):
     """Return the HTML representation of the given dataframe as an interactive datatable,
     using df.to_html() rather than the underlying dataframe data."""
@@ -553,13 +569,12 @@ def to_html_datatable_using_to_html(
         data=None,
         kwargs=kwargs,
         connected=connected,
-        import_jquery=import_jquery,
         column_filters=None,
     )
 
 
 def html_table_from_template(
-    html_table, table_id, data, kwargs, connected, import_jquery, column_filters
+    html_table, table_id, data, kwargs, connected, column_filters
 ):
     if "css" in kwargs:
         TypeError(
@@ -568,20 +583,23 @@ def html_table_from_template(
         )
     eval_functions = kwargs.pop("eval_functions", None)
     pre_dt_code = kwargs.pop("pre_dt_code")
+    dt_url = kwargs.pop("dt_url")
 
     # Load the HTML template
     if connected:
         output = read_package_file("html/datatables_template_connected.html")
+        assert dt_url.endswith(".js")
+        template_url = (
+            "https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.0.2/datatables.min.js"
+        )
+        output = replace_value(output, template_url, dt_url)
+        output = replace_value(
+            output,
+            template_url[:-3] + ".css",
+            dt_url[:-3] + ".css",
+        )
     else:
         output = read_package_file("html/datatables_template.html")
-
-    if not import_jquery:
-        assert (
-            connected
-        ), "In the offline mode, jQuery is imported through init_notebook_mode"
-        output = replace_value(
-            output, "    import 'https://code.jquery.com/jquery-3.7.1.min.js';\n", ""
-        )
 
     output = replace_value(
         output,
@@ -691,6 +709,6 @@ def safe_reset_index(df):
 
 def show(df=None, caption=None, **kwargs):
     """Show a dataframe"""
-    connected = kwargs.pop("connected", _CONNECTED)
+    connected = kwargs.pop("connected", ("dt_url" in kwargs) or _CONNECTED)
     html = to_html_datatable(df, caption=caption, connected=connected, **kwargs)
     display(HTML(html))

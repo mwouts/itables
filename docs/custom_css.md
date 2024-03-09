@@ -12,42 +12,82 @@ kernelspec:
   name: itables
 ---
 
-# Custom CSS
+# Styling
 
-## Targeting all tables
-
-You can use CSS to alter how the interactive datatables are rendered.
-Use the `.dataTable` class attribute to target all the tables in the notebook, like here:
+As usual, we initialize ITables with `init_notebook_mode`, and we create two sample DataFrames:
 
 ```{code-cell}
+:tags: [hide-input]
+
+import pandas as pd
+
+import itables.options as opt
 from itables import init_notebook_mode, show
 from itables.sample_dfs import get_countries
 
+df = get_countries(html=False)
+df_small = pd.DataFrame({"a": [2, 1]})
 
 init_notebook_mode(all_interactive=True)
 ```
 
-```{code-cell}
-from IPython.display import display, HTML
+## Classes
 
+Select how your table looks like with the `classes` argument (defaults to `"display nowrap"`) of the `show` function, or by changing `itables.options.classes`.
+
+Add `"compact"` if you want a denser table:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, classes="display nowrap compact")
+```
+
+Remove `"nowrap"` if you want the cell content to be wrapped:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, classes="display")
+```
+
+[More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, classes="display nowrap cell-border")
+```
+
+## CSS
+
+You can use CSS to alter how the interactive datatables are rendered:
+
+```{code-cell}
+from IPython.display import HTML, display
 
 css = """
-.dataTable th { font-weight: bolder; }
-.dataTable:not(.table_with_monospace_font) tr { font-style: italic; }
+.dataTable th {
+    font-weight: bolder;
+    font-style: italic;
+}
 """
 display(HTML(f"<style>{css}</style>" ""))
 ```
 
-```{code-cell}
-get_countries()
+```{tip}
+The command above turns _every datatable_ table header
+in the notebook into bold/italic.
+
+NB: We could have used `.dataTable:not(.table_with_monospace_font)`
+to target all `dataTable` except those with the
+custom class `table_with_monospace_font` in the next example.
 ```
 
-## Targeting specific classes
-
-You might also want to target only specific table like in this example
-(note how we add the `table_with_monospace_font` class
-to the table using the [`classes`](advanced_parameters.md#classes)
-argument of the `show` function):
+You might also want to alter the style of specific tables only.
+To do this, you just need to add a new class to the target tables.
+In the example below we add a `table_with_monospace_font` class
+to our table:
 
 ```{code-cell}
 class_specific_css = ".table_with_monospace_font { font-family: courier, monospace }"
@@ -55,5 +95,85 @@ display(HTML(f"<style>{class_specific_css}</style>" ""))
 ```
 
 ```{code-cell}
-show(get_countries(), classes="display nowrap table_with_monospace_font")
+show(df, classes="display nowrap table_with_monospace_font")
+```
+
+(style)=
+## The style argument
+
+The `show` function has a `style` argument that determines the
+style for that particular table.
+
+The default value for `style` is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
+Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
+Using `margin:auto` makes non-wide tables centered in Jupyter.
+
+## Position and width
+
+You can set a specific width or position for a table using with the `style` argument of the show function:
+
+```{code-cell}
+show(df_small, style="table-layout:auto;width:50%;float:right")
+```
+
+or you can also change it for all tables by changing `itables.options.style`:
+
+```python
+import itables.options as opt
+
+opt.style = "table-layout:auto;width:auto"
+```
+
+```{tip}
+For ajusting the height of a table, see the section on [pagination](advanced_parameters.md#pagination).
+```
+
+## Column width
+
+The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.
+
+Note that the default value of `style`, or of `autoWidth` (defaults to `True`), might override custom column widths,
+so you might have to change their values as in the examples below.
+
+You can set a fixed width for all the columns with `"targets": "_all"`:
+
+```{code-cell}
+:tags: [full-width]
+
+show(
+    df,
+    columnDefs=[{"width": "120px", "targets": "_all"}],
+    scrollX=True,
+    style="width:1200px",
+    autoWidth=False,
+)
+```
+
+You can also adjust the width of selected columns only:
+
+```{code-cell}
+:tags: [full-width]
+
+show(
+    df,
+    columnDefs=[{"width": "30%", "targets": [2, 3]}],
+    style="width:100%;margin:auto",
+)
+```
+
+If you wish you can also set a value for `columnDefs` permanently in `itables.options` as demonstrated in the cell alignment example below.
+
+## Cell alignment
+
+You can use the datatables.net [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc. to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
+
+```{code-cell}
+show(df, columnDefs=[{"className": "dt-center", "targets": "_all"}])
+```
+
+or globally by setting `opt.columnDefs`:
+
+```{code-cell}
+opt.columnDefs = [{"className": "dt-center", "targets": "_all"}]
+df
 ```
