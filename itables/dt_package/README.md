@@ -1,4 +1,4 @@
-This package is a ESM bundle of [DataTable](https://datatables.net/)
+This package is a ESM bundle of [DataTables](https://datatables.net/)
 and some of its extensions for [ITables](https://github.com/mwouts/itables/).
 
 # How to compile the bundle

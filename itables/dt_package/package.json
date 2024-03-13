@@ -1,6 +1,6 @@
 {
   "name": "dt_for_itables",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "datatables-net bundle for itables",
   "main": "src.js",
   "scripts": {
@@ -9,9 +9,8 @@
   "author": "Marc Wouts",
   "license": "MIT",
   "dependencies": {
-    "datatables.net-buttons": "^3.0.0",
-    "datatables.net-buttons-dt": "^3.0.0",
-    "datatables.net-colreorder-dt": "^2.0.0",
+    "datatables.net-buttons": "^3.0.1",
+    "datatables.net-buttons-dt": "^3.0.1",
     "datatables.net-dt": "^2.0.0",
     "datatables.net-fixedcolumns-dt": "^5.0.0",
     "datatables.net-keytable-dt": "^2.12.0",
