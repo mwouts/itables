@@ -1,14 +1,30 @@
-This directory contains a bundle of [DataTable](https://datatables.net/)
-and some of its extensions for ITables.
+This package is a ESM bundle of [DataTable](https://datatables.net/)
+and some of its extensions for [ITables](https://github.com/mwouts/itables/).
 
-To compile the bundle, run the following commands:
+# How to compile the bundle
+
+Run the following commands:
 ```bash
 npm install
 npm run build
 ```
 
-To update the dependencies of the bundle, run
+# How to update the dependencies
+
+Run
 ```bash
 npm update
 ```
-(check whether there are any outdated package with `npm outdated`).
+and check whether there are any outdated package with `npm outdated`.
+
+# How to publish a new version
+
+Update the dependencies, bump the version in `package.json`, and then:
+
+```bash
+# Package the extension
+npm pack
+
+# Publish the package on npm with
+npm publish --access=public
+```
