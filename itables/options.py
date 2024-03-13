@@ -58,11 +58,7 @@ warn_on_unexpected_types = True
 warn_on_dom = True
 
 """The DataTable URL for the connected mode, see https://datatables.net/download/"""
-dt_url = (
-    "https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-2.0.2/"
-    "b-3.0.1/b-html5-3.0.1/b-print-3.0.1/cr-2.0.0/fc-5.0.0/kt-2.12.0/"
-    "rg-1.5.0/sb-1.7.0/sp-2.3.0/sl-2.0.0/datatables.min.js"
-)
+dt_url = "https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.js"
 
 """The DataTable bundle for the offline mode"""
-dt_bundle = find_package_file("dt_package/dt_bundle.js")
+dt_bundle = find_package_file("dt_for_itables/dt_bundle.js")

@@ -127,26 +127,6 @@ show(
 )
 ```
 
-## ColReorder
-
-The [ColReorder](https://datatables.net/extensions/colreorder/) lets you re-order the columns:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, colReorder=True)
-```
-
-```{tip}
-You can activate this option for all your tables with
-
-~~~python
-import itables.options as opt
-
-opt.colReorder = True
-~~~
-```
-
 ## KeyTable
 
 With the [KeyTable](https://datatables.net/extensions/keytable/) extension you can navigate in a table using the arrow keys:
@@ -155,6 +135,16 @@ With the [KeyTable](https://datatables.net/extensions/keytable/) extension you c
 :tags: [full-width]
 
 show(df, keys=True)
+```
+
+```{tip}
+You can activate this option for all your tables with
+
+~~~python
+import itables.options as opt
+
+opt.keys = True
+~~~
 ```
 
 ```{warning}

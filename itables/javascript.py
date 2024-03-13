@@ -589,9 +589,7 @@ def html_table_from_template(
     if connected:
         output = read_package_file("html/datatables_template_connected.html")
         assert dt_url.endswith(".js")
-        template_url = (
-            "https://cdn.datatables.net/v/dt/jq-3.7.0/dt-2.0.2/datatables.min.js"
-        )
+        template_url = "https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.js"
         output = replace_value(output, template_url, dt_url)
         output = replace_value(
             output,

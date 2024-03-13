@@ -74,15 +74,15 @@ exclude_lines = [
 enable-by-default = true
 dependencies = ["hatch-jupyter-builder"]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["itables/dt_package/dt_bundle.js", "itables/dt_package/dt_bundle.css"]
+ensured-targets = ["itables/dt_for_itables/dt_bundle.js", "itables/dt_for_itables/dt_bundle.css"]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-path = "itables/dt_package"
+path = "itables/dt_for_itables"
 build_cmd = "build"
 npm = ["npm"]
 
 [tool.hatch.build.targets.sdist]
-artifacts = ["itables/dt_package/dt_bundle.js", "itables/dt_package/dt_bundle.css"]
+artifacts = ["itables/dt_for_itables/dt_bundle.js", "itables/dt_for_itables/dt_bundle.css"]
 
 [tool.hatch.build.targets.wheel]
-artifacts = ["itables/dt_package/dt_bundle.js", "itables/dt_package/dt_bundle.css"]
+artifacts = ["itables/dt_for_itables/dt_bundle.js", "itables/dt_for_itables/dt_bundle.css"]
