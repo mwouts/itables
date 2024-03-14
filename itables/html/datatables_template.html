@@ -1,6 +1,7 @@
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<link href="https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.css" rel="stylesheet">
 <script type="module">
-    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables);
+    import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.js';
 
     $(document).ready(function () {
         document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {

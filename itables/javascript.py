@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from .utils import UNPKG_DT_BUNDLE_CSS, UNPKG_DT_BUNDLE_URL
 from .version import __version__ as itables_version
 
 try:
@@ -141,13 +142,9 @@ def generate_init_offline_itables_html(dt_bundle: Path):
     dt_css = dt_bundle.with_suffix(".css").read_text()
     dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
-    html = read_package_file("html/initialize_offline_datatable.html")
-    html = replace_value(
-        html, "_datatables_src_for_itables", DATATABLES_SRC_FOR_ITABLES
-    )
-    html = replace_value(html, "dt_css", dt_css)
-    html = replace_value(html, "dt_src", "data:text/javascript;base64,{}".format(dt64))
-    return html
+    return f"""<style>{dt_css}</style>
+<script>window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}"</script>
+"""
 
 
 def _table_header(
@@ -476,7 +473,7 @@ def set_default_options(kwargs, use_to_html):
             (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
-            and option not in {"dt_bundle", "find_package_file"}
+            and option not in {"dt_bundle", "find_package_file", "UNPKG_DT_BUNDLE_URL"}
         ):
             kwargs[option] = deepcopy(getattr(opt, option))
 
@@ -586,18 +583,23 @@ def html_table_from_template(
     dt_url = kwargs.pop("dt_url")
 
     # Load the HTML template
+    output = read_package_file("html/datatables_template.html")
     if connected:
-        output = read_package_file("html/datatables_template_connected.html")
         assert dt_url.endswith(".js")
-        template_url = "https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.js"
-        output = replace_value(output, template_url, dt_url)
+        output = replace_value(output, UNPKG_DT_BUNDLE_URL, dt_url)
         output = replace_value(
             output,
-            template_url[:-3] + ".css",
+            UNPKG_DT_BUNDLE_CSS,
             dt_url[:-3] + ".css",
         )
     else:
-        output = read_package_file("html/datatables_template.html")
+        connected_style = f'<link href="{UNPKG_DT_BUNDLE_CSS}" rel="stylesheet">\n'
+        output = replace_value(output, connected_style, "")
+        connected_import = (
+            "import {DataTable, jQuery as $} from '" + UNPKG_DT_BUNDLE_URL + "';"
+        )
+        local_import = "const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables);"
+        output = replace_value(output, connected_import, local_import)
 
     output = replace_value(
         output,

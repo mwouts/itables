@@ -4,7 +4,7 @@ These parameters are documented at
 https://mwouts.github.io/itables/advanced_parameters.html
 """
 
-from .utils import find_package_file
+from .utils import UNPKG_DT_BUNDLE_URL, find_package_file
 
 """Table layout, see https://datatables.net/reference/option/layout
 NB: to remove a control, replace it by None"""
@@ -58,7 +58,7 @@ warn_on_unexpected_types = True
 warn_on_dom = True
 
 """The DataTable URL for the connected mode, see https://datatables.net/download/"""
-dt_url = "https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.js"
+dt_url = UNPKG_DT_BUNDLE_URL
 
 """The DataTable bundle for the offline mode"""
 dt_bundle = find_package_file("dt_for_itables/dt_bundle.js")
