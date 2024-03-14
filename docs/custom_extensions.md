@@ -47,10 +47,10 @@ with open("fr-FR.json") as fp:
 ~~~
 ```
 
-## Offline mode
+## Creating a custom DataTables bundle
 
 To use custom extensions in the offline mode, you will need
-to create a bundle of jQuery, DataTable, and the desired extensions.
+to create a bundle of jQuery, DataTables, and the desired extensions.
 
 To do so, make a copy of
 [`itables/dt_for_itables`](https://github.com/mwouts/itables/tree/main/itables/dt_for_itables):
@@ -97,6 +97,8 @@ npm install pdfmake --save
 npm run build
 ```
 
-Finally, copy `dt_bundle.js`, and `dt_bundle.css` to a location that can be accessed by `itables`, and
-pass the path to `dt_bundle.js` as the `dt_bundle` argument of the `init_notebook_mode` method
-(or change `itables.options.dt_bundle` accordingly).
+Finally, you can either deploy `dt_bundle.js` and `dt_bundle.css` on an
+http server and pass the URL of `dt_bundle.js` as the `dt_url` option to `show`,
+or, in the offline mode, pass the path to `dt_bundle.js`
+as the `dt_bundle` argument of the `init_notebook_mode` method (in either
+case you can set the values permanently on `itables.options`).
