@@ -34,7 +34,7 @@ show(
 )
 ```
 
-```tip
+```{tip}
 You can also use the internationalization in the offline mode. Download the translation file,
 then set `opt.language` accordingly:
 
