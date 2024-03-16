@@ -26,7 +26,7 @@ kernelspec:
 ## Turn your Python DataFrames into Interactive DataTables
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
-With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
+With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 that you can sort, paginate, scroll or filter.
 
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
@@ -60,7 +60,7 @@ init_notebook_mode(all_interactive=True)
 ```
 
 After this, any Pandas or Polars DataFrame, or Series,
-is displayed as an interactive [datatables.net](https://datatables.net/) table,
+is displayed as an interactive [DataTables](https://datatables.net/),
 which lets you explore, filter or sort your data.
 
 ```{code-cell}
@@ -73,7 +73,7 @@ df
 ## Offline mode versus connected mode
 
 ITables use two Javascript libraries:
-[jquery](https://jquery.com/) and [datatables.net](https://datatables.net/).
+[jQuery](https://jquery.com/) and [DataTables](https://datatables.net/).
 
 By default `itables` works offline. No internet connection is required
 as the two libraries are embedded into the notebook itself

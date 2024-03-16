@@ -3,7 +3,7 @@
 ## DataTables
 
 - DataTables is a plug-in for the jQuery Javascript library. It has a great [documentation](https://datatables.net/manual/), and a large set of [examples](https://datatables.net/examples/index).
-- The R package [DT](https://rstudio.github.io/DT/) uses [datatables.net](https://datatables.net/) as the underlying library for both R notebooks and Shiny applications. In addition to the standard functionalities of the library (display, sort, filtering and row selection), RStudio seems to have implemented cell edition.
+- The R package [DT](https://rstudio.github.io/DT/) uses [DataTables](https://datatables.net/) as the underlying library for both R notebooks and Shiny applications. In addition to the standard functionalities of the library (display, sort, filtering and row selection), RStudio seems to have implemented cell edition.
 
 ## Alternatives
 

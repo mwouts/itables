@@ -51,7 +51,7 @@ ITables works well with Quarto - check out our `html` and `revealjs` [examples](
 
 # Exporting a DataFrame to an HTML table
 
-To get the HTML representation of a Pandas DataFrame `df` as an interactive [datatable](https://datatables.net/), you can use `to_html_datatable` as below:
+To get the HTML representation of a Pandas DataFrame `df` as an interactive [DataTable](https://datatables.net/), you can use `to_html_datatable` as below:
 ```python
 from itables import to_html_datatable
 from itables.sample_dfs import get_countries

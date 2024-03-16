@@ -10,7 +10,7 @@
 ## Turn your Python DataFrames into Interactive DataTables
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
-With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
+With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 that you can sort, paginate, scroll or filter.
 
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
@@ -23,7 +23,7 @@ work with Polars DataFrames).
 ## Documentation
 
 Browse the [documentation](https://mwouts.github.io/itables/) to see
-examples of Pandas or Polars DataFrames rendered as interactive datatables.
+examples of Pandas or Polars DataFrames rendered as interactive DataTables.
 
 ## Quick start
 
@@ -49,7 +49,7 @@ and then render any DataFrame as an interactive table that you can sort, search 
 If you prefer to render only selected DataFrames as interactive tables, use `itables.show` to show just one Series or DataFrame as an interactive table:
 ![show](docs/show_df.png)
 
-Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
+Since `itables==1.0.0`, the [jQuery](https://jquery.com/) and [DataTables](https://datatables.net/) libraries and CSS
 are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
 Thanks to this the interactive tables will work even without a connection to the internet.
 
@@ -91,7 +91,7 @@ and decide whether you should upgrade `itables`.
 
 When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
 
-Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
+Note that DataTables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
 
 ```{code-cell}
 from itables.sample_dfs import get_indicators

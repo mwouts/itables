@@ -21,7 +21,7 @@ _build
 docs/quarto/*.html
 docs/quarto/*_files/
 
-# Datatables bundle
+# DataTables bundle
 node_modules
 dt_bundle.js
 dt_bundle.css

@@ -48,7 +48,7 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
 Numbers are formatted using Pandas, then are converted back to float to ensure they come in the right order when sorted.
 Therefore, to achieve a particular formatting you might have to resort to the
 [`columns.render` option](https://datatables.net/examples/advanced_init/column_render.html)
-of datatables.
+of DataTables.
 
 For instance, this [example](https://datatables.net/forums/discussion/61407/how-to-apply-a-numeric-format-to-a-column)
 can be ported like this:
@@ -101,11 +101,11 @@ function (td, cellData, rowData, row, col) {
 
 ITables in version 1.6 and above can render
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html)
-objects as interactive datatables.
+objects as interactive DataTables.
 
 This way, you can easily add background color, and even
 tooltips to your dataframes, and still get them
-displayed using datatables.net - see our [examples](pandas_style.md).
+displayed using DataTables - see our [examples](pandas_style.md).
 
 ```{warning}
 Please note that Pandas Style objects are rendered using

@@ -14,9 +14,9 @@ kernelspec:
 
 # The DataTable Arguments
 
-ITables is a wrapper for the Javascript [datatables.net](https://datatables.net/) library, which has a great [documentation](https://datatables.net/), a huge collection of [examples](https://datatables.net/examples/index), and a useful [forum](https://datatables.net/forums/).
+ITables is a wrapper for the Javascript [DataTables](https://datatables.net/) library, which has a great [documentation](https://datatables.net/), a huge collection of [examples](https://datatables.net/examples/index), and a useful [forum](https://datatables.net/forums/).
 
-Below we give a series of examples of how the datatables.net examples can be ported to Python with `itables`.
+Below we give a series of examples of how the DataTables examples can be ported to Python with `itables`.
 
 As always, we initialize the `itables` library with
 
@@ -82,7 +82,7 @@ show(df_small, layout={"topStart": "search", "topEnd": None})
 ```
 
 The available positions are `topStart, topEnd, bottomStart, bottomEnd`. You can also use `top2Start`, etc... (see more
-in the [datatables.net documentation](https://datatables.net/reference/option/layout)).
+in the [DataTables documentation](https://datatables.net/reference/option/layout)).
 
 Like for the other arguments of `show`, you can change the default value of the dom option with e.g.:
 
@@ -98,7 +98,7 @@ opt.layout =  {
 ```
 
 ```{tip}
-The `layout` option was introduced with `itables==2.0` and `datatables-net==2.0`
+The `layout` option was introduced with `itables==2.0` and `DataTables==2.0`
 and deprecates the former [`dom` option](https://datatables.net/reference/option/dom).
 If you wish to continue using the `dom` option, set `opt.warn_on_dom = False`.
 ```

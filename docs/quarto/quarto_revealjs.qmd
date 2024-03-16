@@ -37,7 +37,7 @@ opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
-display(HTML("<style>.dataTables_wrapper { font-size: small; }</style>"))
+display(HTML("<style>.dt-container { font-size: medium; }</style>"))
 ```
 
 ```{python}
@@ -83,7 +83,7 @@ opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
-display(HTML("<style>.dataTables_wrapper { font-size: small; }</style>"))
+display(HTML("<style>.dt-container { font-size: medium; }</style>"))
 ```
 :::
 
@@ -124,7 +124,7 @@ under a MIT license.
 
 ITables renders Pandas or Polars DataFrames as
 interactive HTML tables using the JavaScript
-[datatables-net](https://datatables.net/) library.
+[DataTables](https://datatables.net/) library.
 :::
 
 ::: {.callout-tip}

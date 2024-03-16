@@ -60,7 +60,7 @@ wide_df = pd.DataFrame(
 
 ## Buttons
 
-The datatables [buttons](https://datatables.net/extensions/buttons/) let you copy the table data, or export it as CSV or Excel files.
+The DataTables [buttons](https://datatables.net/extensions/buttons/) let you copy the table data, or export it as CSV or Excel files.
 
 To display the buttons, you need to pass a `buttons` argument to the `show` function:
 

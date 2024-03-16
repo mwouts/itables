@@ -61,11 +61,30 @@ show(df, classes="display nowrap cell-border")
 
 ## CSS
 
-You can use CSS to alter how the interactive datatables are rendered:
+You can use CSS to alter how the interactive DataTables are rendered.
+
+For instance, we change the
+[font size](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size)
+for all the tables in the document with this code:
 
 ```{code-cell}
 from IPython.display import HTML, display
 
+css = """
+.dt-container {
+  font-size: small;
+}
+"""
+display(HTML(f"<style>{css}</style>" ""))
+```
+
+This is helpful for instance in the context of
+[Quarto presentations](quarto.md).
+
+With this over CSS, we change _every datatable_ table header
+in the notebook to bold/italic.
+
+```{code-cell}
 css = """
 .dataTable th {
     font-weight: bolder;
@@ -75,19 +94,9 @@ css = """
 display(HTML(f"<style>{css}</style>" ""))
 ```
 
-```{tip}
-The command above turns _every datatable_ table header
-in the notebook into bold/italic.
-
-NB: We could have used `.dataTable:not(.table_with_monospace_font)`
-to target all `dataTable` except those with the
-custom class `table_with_monospace_font` in the next example.
-```
-
 You might also want to alter the style of specific tables only.
-To do this, you just need to add a new class to the target tables.
-In the example below we add a `table_with_monospace_font` class
-to our table:
+To do this, add a new class to the target tables, as
+in the example below:
 
 ```{code-cell}
 class_specific_css = ".table_with_monospace_font { font-family: courier, monospace }"

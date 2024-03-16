@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 name = "itables"
 authors = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
 maintainers = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
-description = "Pandas and Polar DataFrames as interactive datatables"
+description = "Pandas and Polar DataFrames as interactive DataTables"
 readme = "README.md"
-keywords = ["Pandas", "Polars", "Interactive", "Javascript", "datatables-net"]
+keywords = ["Pandas", "Polars", "Interactive", "Javascript", "DataTables"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: MIT License",

@@ -19,7 +19,7 @@ layout = {
 if it has no name and its content is range(N)"""
 showIndex = "auto"
 
-"""Default datatables classes. See https://datatables.net/manual/styling/classes"""
+"""Default DataTables classes. See https://datatables.net/manual/styling/classes"""
 classes = "display nowrap"
 
 """Default table style. Use
@@ -57,7 +57,7 @@ warn_on_unexpected_types = True
 """Should a warning appear when the deprecated 'dom' is used?"""
 warn_on_dom = True
 
-"""The DataTable URL for the connected mode, see https://datatables.net/download/"""
+"""The DataTables URL for the connected mode"""
 dt_url = UNPKG_DT_BUNDLE_URL
 
 """The DataTable bundle for the offline mode"""

@@ -84,8 +84,8 @@ def init_notebook_mode(
     warn_if_call_is_superfluous=True,
     dt_bundle=None,
 ):
-    """Load the datatables.net library and the corresponding css (if connected=False),
-    and (if all_interactive=True), activate the datatables representation for all the Pandas DataFrames and Series.
+    """Load the DataTables library and the corresponding css (if connected=False),
+    and (if all_interactive=True), activate the DataTables representation for all the Pandas DataFrames and Series.
 
     Warning: make sure you keep the output of this cell when 'connected=False',
     otherwise the interactive tables will stop working.
@@ -234,7 +234,7 @@ def json_dumps(obj, eval_functions):
             return obj
         if eval_functions is None and obj.lstrip().startswith("function"):
             warnings.warn(
-                "One of the arguments passed to datatables starts with 'function'. "
+                "One of the arguments passed to DataTable starts with 'function'. "
                 "To evaluate this function, change it into a 'JavascriptFunction' object "
                 "or use the option 'eval_functions=True'. "
                 "To silence this warning, use 'eval_functions=False'."
@@ -361,7 +361,7 @@ def to_html_datatable(
     if "dom" in kwargs:
         if opt.warn_on_dom:
             warnings.warn(
-                "The 'dom' argument has been deprecated in datatables-net==2.0.",
+                "The 'dom' argument has been deprecated in DataTables==2.0.",
                 DeprecationWarning,
             )
         if not has_default_layout:
