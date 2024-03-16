@@ -1,12 +1,12 @@
 ITables ChangeLog
 =================
 
-2.0.0 (2024-03-??)
+2.0.0 (2024-03-16)
 ------------------
 
 **Added**
 - The CSV, Excel and Print buttons are now included ([#50](https://github.com/mwouts/itables/issues/50), [#155](https://github.com/mwouts/itables/issues/155))
-- We have included a few other extensions, and documented how to add more ([#178](https://github.com/mwouts/itables/issues/178), [#207](https://github.com/mwouts/itables/issues/207), [#208](https://github.com/mwouts/itables/issues/208), [#231](https://github.com/mwouts/itables/issues/231))
+- We have included a few other extensions like SearchBuilder and SearchPanes and documented how to add more ([#178](https://github.com/mwouts/itables/issues/178), [#207](https://github.com/mwouts/itables/issues/207), [#208](https://github.com/mwouts/itables/issues/208), [#231](https://github.com/mwouts/itables/issues/231))
 - ITables is now tested with Python 3.12
 
 **Changed**
