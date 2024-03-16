@@ -6,7 +6,6 @@ import re
 import uuid
 import warnings
 from base64 import b64encode
-from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
@@ -475,7 +474,7 @@ def set_default_options(kwargs, use_to_html):
             and not option.startswith("__")
             and option not in {"dt_bundle", "find_package_file", "UNPKG_DT_BUNDLE_URL"}
         ):
-            kwargs[option] = deepcopy(getattr(opt, option))
+            kwargs[option] = getattr(opt, option)
 
     for name, value in kwargs.items():
         if value is None:
@@ -598,7 +597,11 @@ def html_table_from_template(
         connected_import = (
             "import {DataTable, jQuery as $} from '" + UNPKG_DT_BUNDLE_URL + "';"
         )
-        local_import = "const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables);"
+        local_import = (
+            "const { DataTable, jQuery: $ } = await import(window."
+            + DATATABLES_SRC_FOR_ITABLES
+            + ");"
+        )
         output = replace_value(output, connected_import, local_import)
 
     output = replace_value(
@@ -607,10 +610,6 @@ def html_table_from_template(
         html_table,
     )
     output = replace_value(output, "#table_id", "#{}".format(table_id))
-    if not connected:
-        output = replace_value(
-            output, "_datatables_src_for_itables", DATATABLES_SRC_FOR_ITABLES
-        )
 
     if column_filters:
         # If the below was false, we would need to concatenate the JS code
