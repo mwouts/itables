@@ -1,4 +1,5 @@
 import json
+import re
 import warnings
 
 import numpy as np
@@ -65,42 +66,6 @@ def generate_encoder(warn_on_unexpected_types=True):
     return TableValuesEncoder
 
 
-def convert_bigints_to_str(df, warn_on_int_to_str_conversion):
-    """In Javascript, integers have to remain between JS_MIN_SAFE_INTEGER and JS_MAX_SAFE_INTEGER."""
-    converted = []
-    for i, col in enumerate(df.columns):
-        try:
-            x = df.iloc[:, i]
-            if (
-                x.dtype.kind == "i"
-                and (
-                    ~x.isnull()
-                    & ((x < JS_MIN_SAFE_INTEGER) | (x > JS_MAX_SAFE_INTEGER))
-                ).any()
-            ):
-                _isetitem(df, i, x.astype(str))
-                converted.append(col)
-        except AttributeError:
-            # Polars
-            x = df[col]
-            if x.dtype in pl.INTEGER_DTYPES and (
-                (x.min() < JS_MIN_SAFE_INTEGER) or (x.max() > JS_MAX_SAFE_INTEGER)
-            ):
-                df = df.with_columns(pl.col(col).cast(pl.Utf8))
-                converted.append(col)
-
-    if converted and warn_on_int_to_str_conversion:
-        warnings.warn(
-            "The columns {} contains integers that are too large for Javascript.\n"
-            "They have been converted to str. See https://github.com/mwouts/itables/issues/172.\n"
-            "To silence this warning, please run:\n"
-            "    import itables.options as opt\n"
-            "    opt.warn_on_int_to_str_conversion = False".format(converted)
-        )
-
-    return df
-
-
 def _isetitem(df, i, value):
     """Older versions of Pandas don't have df.isetitem"""
     try:
@@ -109,12 +74,8 @@ def _isetitem(df, i, value):
         df.iloc[:, i] = value
 
 
-def datatables_rows(
-    df, count=None, warn_on_unexpected_types=False, warn_on_int_to_str_conversion=False
-):
+def datatables_rows(df, count=None, warn_on_unexpected_types=False):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
-    df = convert_bigints_to_str(df, warn_on_int_to_str_conversion)
-
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
     if count is None or len(df.columns) == count:
@@ -128,8 +89,32 @@ def datatables_rows(
     try:
         # Pandas DataFrame
         data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
-        return json.dumps(data, cls=generate_encoder(warn_on_unexpected_types))
+        has_bigints = any(
+            x.dtype.kind == "i"
+            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
+            for _, x in df.items()
+        )
+        js = json.dumps(data, cls=generate_encoder(warn_on_unexpected_types))
     except AttributeError:
         # Polars DataFrame
         data = list(df.iter_rows())
-        return json.dumps(data, cls=generate_encoder(False))
+        import polars as pl
+
+        has_bigints = any(
+            x.dtype in [pl.Int64, pl.UInt64]
+            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
+            for x in (df[col] for col in df.columns)
+        )
+        js = json.dumps(data, cls=generate_encoder(False))
+
+    if has_bigints:
+        js = n_suffix_for_bigints(js)
+
+    return js
+
+
+def n_suffix_for_bigints(js):
+    def n_suffix(matchobj):
+        return 'BigInt("' + matchobj.group(1) + '")' + matchobj.group(2)
+
+    return re.sub(r"(-?\d{16,})(,|])", n_suffix, js)

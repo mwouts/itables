@@ -2,16 +2,15 @@
 
 ![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/mwouts/itables.svg)](https://lgtm.com/projects/g/mwouts/itables/context:python)
 [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Turn your Python DataFrames into Interactive Tables
+## Turn your Python DataFrames into Interactive DataTables
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
-With `itables` you can display your tables as interactive [datatables](https://datatables.net/)
+With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 that you can sort, paginate, scroll or filter.
 
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
@@ -24,7 +23,7 @@ work with Polars DataFrames).
 ## Documentation
 
 Browse the [documentation](https://mwouts.github.io/itables/) to see
-examples of Pandas or Polars DataFrames rendered as interactive datatables.
+examples of Pandas or Polars DataFrames rendered as interactive DataTables.
 
 ## Quick start
 
@@ -50,7 +49,7 @@ and then render any DataFrame as an interactive table that you can sort, search 
 If you prefer to render only selected DataFrames as interactive tables, use `itables.show` to show just one Series or DataFrame as an interactive table:
 ![show](docs/show_df.png)
 
-Since `itables==1.0.0`, the [jquery](https://jquery.com/) and [datatables.net](https://datatables.net/) libraries and CSS
+Since `itables==1.0.0`, the [jQuery](https://jquery.com/) and [DataTables](https://datatables.net/) libraries and CSS
 are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
 Thanks to this the interactive tables will work even without a connection to the internet.
 
@@ -67,6 +66,8 @@ execute `init_notebook_mode`.
 - Google Colab
 - VS Code (for both Jupyter Notebooks and Python scripts)
 - PyCharm (for Jupyter Notebooks)
+- Quarto
+- Shiny for Python
 
 ## Try ITables on Binder
 
@@ -90,7 +91,7 @@ and decide whether you should upgrade `itables`.
 
 When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`. If you wish, you can deactivate the limit with `maxBytes=0`, change the value of `maxBytes`, or similarly set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `pd.get_option('display.max_columns')`).
 
-Note that datatables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
+Note that DataTables support [server-side processing](https://datatables.net/examples/data_sources/server_side). At a later stage we may implement support for larger tables using this feature.
 
 ```{code-cell}
 from itables.sample_dfs import get_indicators

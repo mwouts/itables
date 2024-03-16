@@ -16,10 +16,12 @@ dist
 # Jupyter Book
 _build
 
-# External dependencies
-itables/external
-
 # Quarto
 .jupyter_cache
 docs/quarto/*.html
 docs/quarto/*_files/
+
+# DataTables bundle
+node_modules
+dt_bundle.js
+dt_bundle.css

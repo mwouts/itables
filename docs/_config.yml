@@ -1,5 +1,6 @@
 title: Interactive Tables
 author: Marc Wouts
+copyright: "2019-2024"
 execute:
   execute_notebooks: force
 sphinx:

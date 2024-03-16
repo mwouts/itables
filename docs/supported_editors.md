@@ -32,7 +32,7 @@ A short sample notebook is available [here](https://colab.research.google.com/dr
 
 ## VS Code
 
-In VS Code, `itables` works both for Jupyter Notebooks and Python scripts
+In VS Code, `itables` works both for Jupyter Notebooks and Python scripts.
 
 ![](images/code.png)
 
@@ -51,7 +51,7 @@ ITables works well with Quarto - check out our `html` and `revealjs` [examples](
 
 # Exporting a DataFrame to an HTML table
 
-To get the HTML representation of a Pandas DataFrame `df` as an interactive [datatable](https://datatables.net/), you can use `to_html_datatable` as below:
+To get the HTML representation of a Pandas DataFrame `df` as an interactive [DataTable](https://datatables.net/), you can use `to_html_datatable` as below:
 ```python
 from itables import to_html_datatable
 from itables.sample_dfs import get_countries
@@ -65,6 +65,7 @@ html = to_html_datatable(df)
 You can use ITables in Web applications generated with [Shiny](https://shiny.rstudio.com/py/) for Python with e.g.
 ```python
 from shiny import ui
+
 from itables.shiny import DT
 
 ui.HTML(DT(df))

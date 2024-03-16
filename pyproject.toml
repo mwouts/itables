@@ -1,3 +1,88 @@
 [build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools", "requests", "pathlib"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "itables"
+authors = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
+maintainers = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
+description = "Pandas and Polar DataFrames as interactive DataTables"
+readme = "README.md"
+keywords = ["Pandas", "Polars", "Interactive", "Javascript", "DataTables"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: MIT License",
+  "Framework :: Jupyter",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+requires-python = ">= 3.7"
+dependencies = ["IPython", "pandas", "numpy"]
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "itables/version.py"
+
+[project.optional-dependencies]
+test = [
+  # Pytest
+  "pytest",
+  "pytest-cov",
+  # Sample dfs
+  "pytz",
+  "world_bank_data",
+  # Test the documentation
+  "ipykernel",
+  "nbconvert",
+  "jupytext",
+  # Pandas style
+  "matplotlib",
+  # Shiny test app
+  "shiny"
+]
+polars = ["polars", "pyarrow"]
+
+[project.urls]
+Homepage = "https://mwouts.github.io/itables/"
+Documentation = "https://mwouts.github.io/itables"
+Repository = "https://github.com/mwouts/itables.git"
+Issues = "https://github.com/mwouts/itables/issues"
+Changelog = "https://github.com/mwouts/itables/blob/main/docs/changelog.md"
+
+[pycodestyle]
+max-line-length = 88
+
+[tool.coverage.report]
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise NotImplementedError",
+    "except ImportError",
+  ]
+
+[tool.hatch.build.hooks.jupyter-builder]
+enable-by-default = true
+dependencies = ["hatch-jupyter-builder"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = ["itables/dt_for_itables/dt_bundle.js", "itables/dt_for_itables/dt_bundle.css"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "itables/dt_for_itables"
+build_cmd = "build"
+npm = ["npm"]
+
+[tool.hatch.build.targets.sdist]
+artifacts = ["itables/dt_for_itables/dt_bundle.js", "itables/dt_for_itables/dt_bundle.css"]
+
+[tool.hatch.build.targets.wheel]
+artifacts = ["itables/dt_for_itables/dt_bundle.js", "itables/dt_for_itables/dt_bundle.css"]

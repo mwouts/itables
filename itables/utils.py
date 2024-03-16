@@ -1,11 +1,14 @@
-import os
 from io import open
+from pathlib import Path
+
+UNPKG_DT_BUNDLE_URL = "https://www.unpkg.com/dt_for_itables@2.0.1/dt_bundle.js"
+UNPKG_DT_BUNDLE_CSS = UNPKG_DT_BUNDLE_URL.replace(".js", ".css")
 
 
 def find_package_file(*path):
     """Return the full path to a file from the itables package"""
-    current_path = os.path.dirname(__file__)
-    return os.path.join(current_path, *path)
+    current_path = Path(__file__).parent
+    return Path(current_path, *path)
 
 
 def read_package_file(*path):

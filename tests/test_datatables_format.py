@@ -7,7 +7,13 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from itables.datatables_format import datatables_rows, generate_encoder
+from itables.datatables_format import (
+    JS_MAX_SAFE_INTEGER,
+    JS_MIN_SAFE_INTEGER,
+    datatables_rows,
+    generate_encoder,
+    n_suffix_for_bigints,
+)
 from itables.javascript import _column_count_in_header, _table_header
 from itables.sample_dfs import PANDAS_VERSION_MAJOR
 
@@ -67,14 +73,14 @@ from itables.sample_dfs import PANDAS_VERSION_MAJOR
         (
             pd.DataFrame(
                 {
-                    "long": [
+                    "big_integers": [
                         1234567890123456789,
                         2345678901234567890,
                         3456789012345678901,
                     ]
                 }
             ),
-            '[["1234567890123456789"], ["2345678901234567890"], ["3456789012345678901"]]',
+            '[[BigInt("1234567890123456789")], [BigInt("2345678901234567890")], [BigInt("3456789012345678901")]]',
         ),
     ],
     ids=[
@@ -125,3 +131,24 @@ def test_TableValuesEncoder():
             json.dumps(Exception, cls=generate_encoder(False))
             == "\"<class 'Exception'>\""
         )
+
+
+def test_encode_large_int_to_bigint(large=3456789012345678901):
+    assert (
+        n_suffix_for_bigints(json.dumps([large])) == '[BigInt("3456789012345678901")]'
+    )
+    assert (
+        n_suffix_for_bigints(json.dumps([large * 100, large]))
+        == '[BigInt("345678901234567890100"), BigInt("3456789012345678901")]'
+    )
+
+
+@pytest.mark.parametrize("large", [JS_MIN_SAFE_INTEGER, JS_MAX_SAFE_INTEGER])
+def test_encode_max_int(large):
+    assert n_suffix_for_bigints(json.dumps([large])) == '[BigInt("{}")]'.format(large)
+
+
+@pytest.mark.parametrize("large", [JS_MIN_SAFE_INTEGER, JS_MAX_SAFE_INTEGER])
+def test_encode_not_max_int(large):
+    large //= 10
+    assert n_suffix_for_bigints(json.dumps([large])) == "[{}]".format(large)

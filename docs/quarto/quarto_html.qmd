@@ -26,17 +26,18 @@ jupyter:
 ```{python}
 #| echo: false
 
+from IPython.display import display, HTML
 import itables.options as opt
 
 # show 5 rows per 'page'
 opt.lengthMenu = [5]
 
 # don't show the length control
-opt.dom = "frtip"
+opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
-opt.css += ".dataTables_wrapper { font-size: small; }"
+display(HTML("<style>.dt-container { font-size: small; }</style>"))
 ```
 
 ```{python}
@@ -70,6 +71,7 @@ get_countries(html=False)
 ## This document uses
 
 ```python
+from IPython.display import display, HTML
 import itables.options as opt
 
 
@@ -77,11 +79,11 @@ import itables.options as opt
 opt.lengthMenu = [5]
 
 # don't show the length control
-opt.dom = "frtip"
+opt.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
-opt.css += ".dataTables_wrapper { font-size: x-small; }"
+display(HTML("<style>.dt-container { font-size: small; }</style>"))
 ```
 :::
 
@@ -122,7 +124,7 @@ under a MIT license.
 
 ITables renders Pandas or Polars DataFrames as
 interactive HTML tables using the JavaScript
-[datatables-net](https://datatables.net/) library.
+[DataTables](https://datatables.net/) library.
 :::
 
 ::: {.callout-tip}

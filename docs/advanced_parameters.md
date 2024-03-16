@@ -12,11 +12,11 @@ kernelspec:
   name: itables
 ---
 
-# Advanced parameters
+# The DataTable Arguments
 
-The `itables` package is a wrapper for the Javascript [datatables.net](https://datatables.net/) library, which has a great [documentation](https://datatables.net/), a huge collection of [examples](https://datatables.net/examples/index), and a useful [forum](https://datatables.net/forums/).
+ITables is a wrapper for the Javascript [DataTables](https://datatables.net/) library, which has a great [documentation](https://datatables.net/), a huge collection of [examples](https://datatables.net/examples/index), and a useful [forum](https://datatables.net/forums/).
 
-Below we give a few examples of how the datatables.net examples can be ported to Python with `itables`.
+Below we give a series of examples of how the DataTables examples can be ported to Python with `itables`.
 
 As always, we initialize the `itables` library with
 
@@ -30,30 +30,11 @@ Then we create two sample dataframes:
 
 ```{code-cell}
 import pandas as pd
+
 from itables.sample_dfs import get_countries
 
 df_small = pd.DataFrame({"a": [2, 1]})
 df = get_countries(html=False)
-```
-
-## Position and width
-
-The default value for the table CSS is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
-Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
-Using `margin:auto` makes non-wide tables centered in Jupyter.
-
-You can change the CSS used for a single table with e.g.
-
-```{code-cell}
-show(df_small, style="table-layout:auto;width:50%;float:right")
-```
-
-or you can also change it for all tables by changing `itables.options.style`:
-
-```python
-import itables.options as opt
-
-opt.style = "table-layout:auto;width:auto"
 ```
 
 ```{code-cell}
@@ -62,34 +43,6 @@ opt.style = "table-layout:auto;width:auto"
 import itables.options as opt
 
 opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
-```
-
-## Theme
-
-Select how your table looks like with the `classes` argument (defaults to `"display nowrap"`) of the `show` function, or by changing `itables.options.classes`.
-
-Add `"compact"` if you want a denser table:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, classes="display nowrap compact")
-```
-
-Remove `"nowrap"` if you want the cell content to be wrapped:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, classes="display")
-```
-
-[More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
-
-```{code-cell}
-:tags: [full-width]
-
-show(df, classes="display nowrap cell-border")
 ```
 
 ## Caption
@@ -102,48 +55,60 @@ You can set additional `tags` on the table like e.g. a [caption](https://datatab
 show(df, "Countries from the World Bank Database")
 ```
 
-The caption appears at the bottom of the table by default. This is governed by `caption-side:bottom`
-in the `style` option which you can change. You can also override the location of the caption in the caption tag itself:
+The caption appears at the bottom of the table by default (except
+in Jupyter Book). This is governed by `caption-side:bottom`
+in the [`style` option](style).
+
+You can also override the location of the caption in the caption tag itself:
 
 ```{code-cell}
 :tags: [full-width]
 
 show(
     df,
-    tags='<caption style="caption-side: top">Countries from the World Bank Database</caption>',
+    tags='<caption style="caption-side: bottom">Countries from the World Bank Database</caption>',
 )
 ```
 
-```{code-cell}
-:tags: [remove-input]
-
-opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
-```
-
-## Removing the search box
+(layout)=
+## Table layout
 
 By default, datatables that don't fit in one page come with a search box, a pagination control, a table summary, etc.
 You can select which elements are actually displayed using
-DataTables' [`dom` option](https://datatables.net/reference/option/dom) with e.g.:
+DataTables' [`layout` option](https://datatables.net/reference/option/layout) with e.g.:
 
 ```{code-cell}
-show(df_small, dom="ti")
+show(df_small, layout={"topStart": "search", "topEnd": None})
 ```
 
-The available elements are:
-- `l`: length changing input control
-- `f`: filtering input
-- `t`: the table itself
-- `i`: table information summary
-- `p`: pagination control
-- `r`: processing display element
+The available positions are `topStart, topEnd, bottomStart, bottomEnd`. You can also use `top2Start`, etc... (see more
+in the [DataTables documentation](https://datatables.net/reference/option/layout)).
 
 Like for the other arguments of `show`, you can change the default value of the dom option with e.g.:
 
 ```
 import itables.options as opt
 
-opt.dom = "lfrtip"  # (default value)
+opt.layout =  {
+    "topStart": "pageLength",
+    "topEnd": "search",
+    "bottomStart": "info",
+    "bottomEnd": "paging"
+}  # (default value)
+```
+
+```{tip}
+The `layout` option was introduced with `itables==2.0` and `DataTables==2.0`
+and deprecates the former [`dom` option](https://datatables.net/reference/option/dom).
+If you wish to continue using the `dom` option, set `opt.warn_on_dom = False`.
+```
+
+## Search
+
+The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
+
+```{code-cell}
+show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
 
 ## Pagination
@@ -180,7 +145,7 @@ show(df, scrollY="200px", scrollCollapse=True, paging=False)
 
 In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
 
-## Table footer
+## Footer
 
 Use `footer = True` if you wish to display a table footer.
 
@@ -193,14 +158,14 @@ show(df, footer=True)
 ## Column filters
 
 Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters
-(remove the global search box with [`dom='lrtip'`](https://datatables.net/reference/option/dom) if desired).
+(remove the global search box with a [`layout`](layout) modifier if desired).
 
 ```{code-cell}
 alpha_numeric_df = pd.DataFrame(
     [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
 )
 
-show(alpha_numeric_df, column_filters="footer", dom="lrtip")
+show(alpha_numeric_df, column_filters="footer", layout={"topEnd": None})
 ```
 
 As always you can set activate column filters by default with e.g.
@@ -221,62 +186,6 @@ get_dict_of_test_dfs()["multiindex"]
 :tags: [remove-cell]
 
 opt.column_filters = False
-```
-
-## Pandas formatting
-
-`itables` builds the HTML representation of your Pandas dataframes using Pandas itself, so
-you can use [Pandas' formatting options](https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html).
-For instance, you can change the precision used to display floating numbers:
-
-```{code-cell}
-import math
-import pandas as pd
-
-with pd.option_context("display.float_format", "{:,.2f}".format):
-    show(pd.Series([i * math.pi for i in range(1, 6)]))
-```
-
-Or you can use a custom formatter:
-
-```{code-cell}
-with pd.option_context("display.float_format", "${:,.2f}".format):
-    show(pd.Series([i * math.pi for i in range(1, 6)]))
-```
-
-```{tip}
-ITables in version 1.6.0+ can also render
-[Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html)
-objects as interactive datatables.
-
-This way, you can easily add background color, and even
-tooltips to your dataframes, and still get them
-displayed using datatables.net - see our [example](pandas_style.md).
-```
-
-## Javascript formatting
-
-Numbers are formatted using Pandas, then are converted back to float to ensure they come in the right order when sorted.
-Therefore, to achieve a particular formatting you might have to resort to the
-[`columns.render` option](https://datatables.net/examples/advanced_init/column_render.html)
-of datatables.
-
-For instance, this [example](https://datatables.net/forums/discussion/61407/how-to-apply-a-numeric-format-to-a-column)
-can be ported like this:
-
-```{code-cell}
-from itables import JavascriptCode
-
-
-show(
-    pd.Series([i * math.pi * 1e4 for i in range(1, 6)]),
-    columnDefs=[
-        {
-            "targets": "_all",
-            "render": JavascriptCode("$.fn.dataTable.render.number(',', '.', 3, '$')"),
-        }
-    ],
-)
 ```
 
 ## Row order
@@ -317,144 +226,3 @@ or locally by passing an argument `showIndex` to the `show` function:
 df_with_range_index = pd.DataFrame({"letter": list("abcd")})
 show(df_with_range_index, showIndex=True)
 ```
-
-## Advanced cell formatting with JS callbacks
-
-You can use Javascript callbacks to set the cell or row style depending on the cell content.
-
-The example below, in which we color in red the cells with negative numbers, is directly inspired by the corresponding datatables.net [example](https://datatables.net/reference/option/columns.createdCell).
-
-Note how the Javascript callback is declared as `JavascriptFunction` object below.
-
-```{code-cell}
-from itables import JavascriptFunction
-
-show(
-    pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
-    columnDefs=[
-        {
-            "targets": "_all",
-            "createdCell": JavascriptFunction(
-                """
-function (td, cellData, rowData, row, col) {
-    if (cellData < 0) {
-        $(td).css('color', 'red')
-    }
-}
-"""
-            ),
-        }
-    ],
-)
-```
-
-```{tip}
-Since `itables==1.6.0`, you can also render
-[Pandas style](pandas_style.md) objects as interactive datatables -
-that might be a simpler alternative to the JavaScript callbacks
- documented here.
-```
-
-## Column width
-
-The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.
-
-Note that the default value of `style`, or of `autoWidth` (defaults to `True`), might override custom column widths,
-so you might have to change their values as in the examples below.
-
-You can set a fixed width for all the columns with `"targets": "_all"`:
-
-```{code-cell}
-:tags: [full-width]
-
-show(
-    df,
-    columnDefs=[{"width": "120px", "targets": "_all"}],
-    scrollX=True,
-    style="width:1200px",
-    autoWidth=False,
-)
-```
-
-You can also adjust the width of selected columns only:
-
-```{code-cell}
-:tags: [full-width]
-
-show(
-    df,
-    columnDefs=[{"width": "30%", "targets": [2, 3]}],
-    style="width:100%;margin:auto",
-)
-```
-
-If you wish you can also set a value for `columnDefs` permanently in `itables.options` as demonstrated in the cell alignment example below.
-
-## Cell alignment
-
-You can use the datatables.net [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc. to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
-
-```{code-cell}
-show(df, columnDefs=[{"className": "dt-center", "targets": "_all"}])
-```
-
-or globally by setting `opt.columnDefs`:
-
-```{code-cell}
-opt.columnDefs = [{"className": "dt-center", "targets": "_all"}]
-df
-```
-
-```{code-cell}
-del opt.columnDefs
-```
-
-## HTML in cells
-
-```{code-cell}
-pd.Series(
-    [
-        "<b>bold</b>",
-        "<i>italic</i>",
-        '<a href="https://github.com/mwouts/itables">link</a>',
-    ],
-    name="HTML",
-)
-```
-
-## Images in cells
-
-Since HTML is supported you can display images in your tables.
-You can use either
-- `<img src="https://...">` with an url
-- `<img src="data:image/png;base64, ...">` with a [base64 encoded image](https://stackoverflow.com/a/8499716/9817073).
-
-```{code-cell}
-pd.Series(
-    {
-        "url": '<img src="https://storage.googleapis.com/tfds-data/visualization/fig/mnist-3.0.1.png" height="50" alt="MNIST">',
-        "base64": '<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA'
-        "AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO"
-        '9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot">',
-    },
-    name="Images",
-)
-```
-
-## The search option
-
-The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
-
-```{code-cell}
-show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
-```
-
-## Select rows
-
-Not currently implemented. May be made available at a later stage using the [select](https://datatables.net/extensions/select/) extension for datatables.
-
-+++
-
-## Copy, CSV, PDF and Excel buttons
-
-Not currently implemented. May be made available at a later stage thanks to the [buttons](https://datatables.net/extensions/buttons/) extension for datatable.

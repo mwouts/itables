@@ -12,14 +12,15 @@ kernelspec:
   name: itables
 ---
 
-# Pandas Style
+# Pandas Style examples
 
 Starting with `itables>=1.6.0`, ITables provides support for
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html).
 
 ```{code-cell}
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 from itables import init_notebook_mode
 
 init_notebook_mode(all_interactive=True)
