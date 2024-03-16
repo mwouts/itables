@@ -28,7 +28,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install jupyter-book
-        pip install -r requirements.txt
         pip install matplotlib  # Pandas style
         pip install .[polars]
 
