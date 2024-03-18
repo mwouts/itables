@@ -6,3 +6,14 @@ execute:
 sphinx:
   config:
     html_extra_path: ['quarto']
+repository:
+  url: https://github.com/mwouts/itables
+  path_to_book: docs
+  branch: main
+html:
+  use_edit_page_button: true
+  use_repository_button: true
+  use_issues_button: true
+launch_buttons:
+  notebook_interface: "jupyterlab"
+  binderhub_url: "https://mybinder.org"

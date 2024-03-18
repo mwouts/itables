@@ -58,6 +58,10 @@ wide_df = pd.DataFrame(
 )
 ```
 
+```{tip}
+The rocket icon at the top of the page will let you run this notebook in Binder!
+```
+
 ## Buttons
 
 The DataTables [buttons](https://datatables.net/extensions/buttons/) let you copy the table data, or export it as CSV or Excel files.
@@ -99,7 +103,7 @@ show(
 ```
 
 ```{warning}
-The PDF button is not included in ITables's DataTable bundle. This is because the required PDF libraries
+The PDF button is not included in ITables' DataTable bundle. This is because the required PDF libraries
 have a large footprint on the bundle size. Still, you can add it to your custom bundle, see the next chapter.
 ```
 

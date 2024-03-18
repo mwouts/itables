@@ -8,5 +8,9 @@ pip install .
 mkdir -p ${HOME}/.jupyter/labconfig
 cp binder/labconfig/* ${HOME}/.jupyter/labconfig
 
-# Update the kernel on the documentation notebooks
-jupytext docs/*.md --set-kernel -
+# Install a kernel called itables
+python -m ipykernel install --name itables --user
+
+# Use that kernel for the documentation notebooks
+jupytext docs/*.md --set-kernel itables
+jupytext README.md --set-kernel itables
