@@ -45,6 +45,10 @@ import itables.options as opt
 opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 ```
 
+```{tip}
+The rocket icon at the top of the page will let you run this notebook in Binder!
+```
+
 ## Caption
 
 You can set additional `tags` on the table like e.g. a [caption](https://datatables.net/blog/2014-11-07):

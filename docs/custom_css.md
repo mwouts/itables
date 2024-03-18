@@ -174,7 +174,7 @@ If you wish you can also set a value for `columnDefs` permanently in `itables.op
 
 ## Cell alignment
 
-You can use the datatables.net [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc. to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
+You can use the DataTables [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc. to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
 
 ```{code-cell}
 show(df, columnDefs=[{"className": "dt-center", "targets": "_all"}])
