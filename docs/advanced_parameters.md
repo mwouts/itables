@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# The DataTable Arguments
+# The DataTables Arguments
 
 ITables is a wrapper for the Javascript [DataTables](https://datatables.net/) library, which has a great [documentation](https://datatables.net/), a huge collection of [examples](https://datatables.net/examples/index), and a useful [forum](https://datatables.net/forums/).
 

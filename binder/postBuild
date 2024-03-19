@@ -2,7 +2,7 @@
 set -e
 
 # Install from sources
-pip install .
+pip install .[all]
 
 # Open .md notebooks with the Notebook editor
 mkdir -p ${HOME}/.jupyter/labconfig

@@ -71,7 +71,7 @@ show(
 
 You can use Javascript callbacks to set the cell or row style depending on the cell content.
 
-The example below, in which we color in red the cells with negative numbers, is directly inspired by the corresponding datatables.net [example](https://datatables.net/reference/option/columns.createdCell).
+The example below, in which we color in red the cells with negative numbers, is directly inspired by the corresponding DataTables [example](https://datatables.net/reference/option/columns.createdCell).
 
 Note how the Javascript callback is declared as `JavascriptFunction` object below.
 
