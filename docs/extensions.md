@@ -121,7 +121,7 @@ argument is required (otherwise the search panes are too wide).
 show(
     df,
     layout={"top1": "searchPanes"},
-    searchPanes={"layout": "columns-3", "cascadePanes": True},
+    searchPanes={"layout": "columns-3", "cascadePanes": True, 'columns': [1, 6, 7]},
 )
 ```
 
