@@ -86,7 +86,7 @@ s.set_tooltips(ttips).set_caption("With tooltips")
 
 ```{note}
 Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using their
-`to_html` method, rather than passing the underlying table data to the datatables.net
+`to_html` method, rather than passing the underlying table data to the DataTables
 library.
 
 Because of this, the rendering of the table might differ slightly from the rendering of the
