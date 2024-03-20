@@ -68,6 +68,7 @@ execute `init_notebook_mode`.
 - PyCharm (for Jupyter Notebooks)
 - Quarto
 - Shiny for Python
+- Kaggle
 
 ## Try ITables on Binder
 
