@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-![ITables Logo](../itables/logo/text.svg)
+![ITables Logo](../src/itables/logo/text.svg)
 
 ![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
