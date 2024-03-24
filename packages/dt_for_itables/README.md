@@ -8,7 +8,7 @@ and some of its extensions for [ITables](https://github.com/mwouts/itables/).
 Run the following commands:
 ```bash
 npm install
-npm run build
+npm run build:js
 ```
 
 # How to update the dependencies

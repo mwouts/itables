@@ -114,7 +114,7 @@ def test_unpkg_links(url):
 
 
 def test_unpkg_urls_are_up_to_date():
-    with open(Path(__file__).parent / "../itables/dt_for_itables/package.json") as fp:
+    with open(Path(__file__).parent / "../packages/dt_for_itables/package.json") as fp:
         dt_for_itables = json.load(fp)
     bundle_version = dt_for_itables["version"]
     assert (

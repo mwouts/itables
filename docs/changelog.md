@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.0-dev (2024-05-??)
+------------------
+
+**Changed**
+- ITables now uses the `src` layout ([#246](https://github.com/mwouts/itables/issues/246)) - many thanks to [Mahendra Paipuri](https://github.com/mahendrapaipuri) for his help on this topic!
+
+
 2.0.1 (2024-04-30)
 ------------------
 
