@@ -4,7 +4,9 @@
   "description": "DataTables bundle for itables",
   "main": "src.js",
   "scripts": {
-    "build": "esbuild src.js --format=esm --bundle --outfile=dt_bundle.js --minify"
+    "build:js": "esbuild src/index.js --format=esm --bundle --outfile=dt_bundle.js --minify",
+    "install:js": "cp dt_bundle.js dt_bundle.css  ../../src/itables/html",
+    "build": "npm run build:js && npm run install:js"
   },
   "author": "Marc Wouts",
   "license": "MIT",

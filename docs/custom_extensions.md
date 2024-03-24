@@ -53,18 +53,26 @@ To use custom extensions in the offline mode, you will need
 to create a bundle of jQuery, DataTables, and the desired extensions.
 
 To do so, make a copy of
-[`itables/dt_for_itables`](https://github.com/mwouts/itables/tree/main/itables/dt_for_itables):
+[`packages/dt_for_itables`](https://github.com/mwouts/itables/tree/main/packages/dt_for_itables):
 ```bash
-$ ls itables/dt_for_itables/
-package.json  package-lock.json  README.md  src.js
+$ tree
+```
+```
+.
+├── LICENSE
+├── package.json
+├── package-lock.json
+├── README.md
+└── src
+    └── index.js
 ```
 
-Add or remove the desired extensions in `package.json` and `src.js`. To do this,
+Add or remove the desired extensions in `package.json` and `src/index.js`. To do this,
 you can use the [DataTables download](https://datatables.net/download/) page and
 follow the instructions for the _NPM_ download method.
 
 For instance, say you want to bundle the PDF export button. Change
-`src.js` to this code:
+`src/index.js` to this code:
 ```javascript
 import JSZip from 'jszip';
 import jQuery from 'jquery';
@@ -97,7 +105,7 @@ npm install pdfmake --save
 npm run build
 ```
 
-Finally, you can either deploy `dt_bundle.js` and `dt_bundle.css` on an
+Finally, you can either deploy `dt_bundle.js` and `dt_bundle.css` on a
 http server and pass the URL of `dt_bundle.js` as the `dt_url` option to `show`,
 or, in the offline mode, pass the path to `dt_bundle.js`
 as the `dt_bundle` argument of the `init_notebook_mode` method (in either

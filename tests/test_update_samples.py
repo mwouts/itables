@@ -2,7 +2,7 @@ from pathlib import Path
 
 import world_bank_data as wb
 
-SAMPLE_DIR = Path(__file__).parent / ".." / "itables" / "samples"
+SAMPLE_DIR = Path(__file__).parent / ".." / "src" / "itables" / "samples"
 
 
 def create_csv_file_if_missing(df, csv_file):

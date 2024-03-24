@@ -61,4 +61,4 @@ warn_on_dom = True
 dt_url = UNPKG_DT_BUNDLE_URL
 
 """The DataTable bundle for the offline mode"""
-dt_bundle = find_package_file("dt_for_itables/dt_bundle.js")
+dt_bundle = find_package_file("html/dt_bundle.js")
