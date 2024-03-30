@@ -128,8 +128,8 @@ def get_animated_logo(display_logo_when_loading):
 
 def generate_init_offline_itables_html(dt_bundle: Path):
     assert dt_bundle.suffix == ".js"
-    dt_src = dt_bundle.read_text()
-    dt_css = dt_bundle.with_suffix(".css").read_text()
+    dt_src = dt_bundle.read_text(encoding="utf-8")
+    dt_css = dt_bundle.with_suffix(".css").read_text(encoding="utf-8")
     dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
     id = "itables_init_notebook_mode_" + str(uuid.uuid4()).replace("-", "_")
