@@ -5,6 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
+- We have added an explicit `encoding` argument in the calls to `read_text` to address an issue seen on Windows ([#252](https://github.com/mwouts/itables/issues/252)).
 - We have adjusted the codecov settings ([#280](https://github.com/mwouts/itables/pull/280))
 
 
