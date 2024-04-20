@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Quick Start
+![ITables Logo](../itables/logo/text.svg)
 
 ![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)
 [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
@@ -22,8 +22,6 @@ kernelspec:
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-## Turn your Python DataFrames into Interactive DataTables
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
 With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
@@ -35,6 +33,8 @@ with no other impact on your data workflow.
 The `itables` package depends only on `numpy`, `pandas` and `IPython`
 which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
 work with Polars DataFrames).
+
+# Quick Start
 
 ## Installation
 
