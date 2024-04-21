@@ -14,28 +14,48 @@ width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
    <rect x="100" y="7" width="400" height="43">
     <animate
       attributeName="width"
-      values="0;400"
+      values="0;400;0"
+      dur="5s"
+      repeatCount="indefinite" />
+      <animate
+      attributeName="x"
+      values="100;100;500"
       dur="5s"
       repeatCount="indefinite" />
   </rect>
         <rect x="0" y="107" width="400" height="43">
     <animate
       attributeName="width"
-      values="0;400"
+      values="0;400;0"
+      dur="3.5s"
+      repeatCount="indefinite" />
+    <animate
+      attributeName="x"
+      values="0;0;400"
       dur="3.5s"
       repeatCount="indefinite" />
   </rect>
         <rect x="100" y="207" width="300" height="43">
     <animate
       attributeName="width"
-      values="0;300"
+      values="0;300;0"
+      dur="3s"
+      repeatCount="indefinite" />
+    <animate
+      attributeName="x"
+      values="100;100;400"
       dur="3s"
       repeatCount="indefinite" />
   </rect>
         <rect x="100" y="307" width="400" height="43">
     <animate
       attributeName="width"
-      values="0;400"
+      values="0;400;0"
+      dur="4s"
+      repeatCount="indefinite" />
+      <animate
+      attributeName="x"
+      values="100;100;500"
       dur="4s"
       repeatCount="indefinite" />
   </rect>
