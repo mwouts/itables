@@ -147,7 +147,7 @@ def generate_init_offline_itables_html(dt_bundle: Path):
 
 
 def _table_header(
-    df, table_id, show_index, classes, style, tags, footer, column_filters
+    df, table_id, show_index, classes, style, tags, footer, column_filters, connected
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
@@ -163,8 +163,17 @@ def _table_header(
     if not show_index and len(df.columns):
         thead = thead.replace("<th></th>", "", 1)
 
-    loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
-    tbody = "<tr>{}</tr>".format(loading)
+    itables_source = (
+        "the internet" if connected else "the <code>init_notebook_mode</code> cell"
+    )
+    tbody = f"""<tr>
+<td style="vertical-align:middle; text-align:left">
+<div style="float:left; margin-right: 10px;">
+{read_package_file("logo/loading.svg")}</div><div>
+Loading ITables v{itables_version} from {itables_source}...
+(need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
+</div>
+</tr>"""
 
     if style:
         style = 'style="{}"'.format(style)
@@ -412,7 +421,7 @@ def to_html_datatable(
             pass
 
     table_header = _table_header(
-        df, tableId, showIndex, classes, style, tags, footer, column_filters
+        df, tableId, showIndex, classes, style, tags, footer, column_filters, connected
     )
 
     # Export the table data to JSON and include this in the HTML

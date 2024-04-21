@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.0.1-dev (2024-04-??)
+------------------
+
+**Added**
+- We have added a logo for ITables ([#257](https://github.com/mwouts/itables/issues/257))
+- The _loading_ message gives more information, including the version of ITables and where DataTables is loaded from ([#258](https://github.com/mwouts/itables/issues/258))
+
+
 2.0.0 (2024-03-16)
 ------------------
 
