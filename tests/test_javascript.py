@@ -1,6 +1,12 @@
+import json
+from pathlib import Path
+
 import pytest
+import requests
 
 from itables.javascript import (
+    UNPKG_DT_BUNDLE_CSS,
+    UNPKG_DT_BUNDLE_URL,
     _df_fits_in_one_page,
     _tfoot_from_thead,
     check_table_id,
@@ -99,3 +105,23 @@ def test_check_table_id():
         check_table_id("0_invalid_id")
     check_table_id("valid_id")
     check_table_id("valid_id-2")
+
+
+@pytest.mark.parametrize("url", [UNPKG_DT_BUNDLE_URL, UNPKG_DT_BUNDLE_CSS])
+def test_unpkg_links(url):
+    response = requests.get(url)
+    assert response.ok, url
+
+
+def test_unpkg_urls_are_up_to_date():
+    with open(Path(__file__).parent / "../itables/dt_for_itables/package.json") as fp:
+        dt_for_itables = json.load(fp)
+    bundle_version = dt_for_itables["version"]
+    assert (
+        UNPKG_DT_BUNDLE_URL
+        == f"https://www.unpkg.com/dt_for_itables@{bundle_version}/dt_bundle.js"
+    )
+    assert (
+        UNPKG_DT_BUNDLE_CSS
+        == f"https://www.unpkg.com/dt_for_itables@{bundle_version}/dt_bundle.css"
+    )

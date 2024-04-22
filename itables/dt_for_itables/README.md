@@ -1,3 +1,5 @@
+![ITables logo](https://raw.githubusercontent.com/mwouts/itables/3f8e8bd75af7ad38a500518fcb4fbbc370ea6c4c/itables/logo/wide.svg)
+
 This package is a ESM bundle of [DataTables](https://datatables.net/)
 and some of its extensions for [ITables](https://github.com/mwouts/itables/).
 

@@ -8,6 +8,9 @@ ITables ChangeLog
 - We have added a logo for ITables ([#257](https://github.com/mwouts/itables/issues/257))
 - The _loading_ message gives more information, including the version of ITables and where DataTables is loaded from ([#258](https://github.com/mwouts/itables/issues/258))
 
+**Changed**
+- We have updated `DataTables` to `2.0.5` and its extensions to their latest version ([#260](https://github.com/mwouts/itables/issues/260))
+
 **Fixed**
 - We have improve the compatibility with dark themes ([#255](https://github.com/mwouts/itables/issues/255))
 - We now enforce non-sparse index when displaying Pandas Style objects with a multiindex ([#254](https://github.com/mwouts/itables/issues/254))
