@@ -152,7 +152,8 @@ Loading <code>dt_for_itables</code> from ITables v{itables_version}...<br>
 </div>
 </div>
 <script>
-window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}"
+window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}";
+document.querySelectorAll("#{id}").forEach(e => e.remove());
 </script>
 """
 
