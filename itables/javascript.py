@@ -141,8 +141,19 @@ def generate_init_offline_itables_html(dt_bundle: Path):
     dt_css = dt_bundle.with_suffix(".css").read_text()
     dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
+    id = "itables_init_notebook_mode_" + str(uuid.uuid4()).replace("-", "_")
+
     return f"""<style>{dt_css}</style>
-<script>window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}"</script>
+<div id="{id}" style="vertical-align:middle; text-align:left">
+<div style="float:left; margin-right: 10px;">
+{read_package_file("logo/loading.svg")}</div><div>
+Loading <code>dt_for_itables</code> from ITables v{itables_version}...<br>
+(you should not see this message - is your notebook <it>trusted</it>?)
+</div>
+</div>
+<script>
+window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}"
+</script>
 """
 
 
