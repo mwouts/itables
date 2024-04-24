@@ -8,6 +8,9 @@ ITables ChangeLog
 - We have added a logo for ITables ([#257](https://github.com/mwouts/itables/issues/257))
 - The _loading_ message gives more information, including the version of ITables and where DataTables is loaded from ([#258](https://github.com/mwouts/itables/issues/258))
 
+**Fixed**
+- We have improve the compatibility with dark themes ([#255](https://github.com/mwouts/itables/issues/255))
+
 
 2.0.0 (2024-03-16)
 ------------------
