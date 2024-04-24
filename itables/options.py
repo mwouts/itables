@@ -62,3 +62,6 @@ dt_url = UNPKG_DT_BUNDLE_URL
 
 """The DataTable bundle for the offline mode"""
 dt_bundle = find_package_file("dt_for_itables/dt_bundle.js")
+
+"""Display the ITables animated logo when loading"""
+display_logo_when_loading = True

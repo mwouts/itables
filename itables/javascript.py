@@ -25,9 +25,8 @@ except ImportError:
     # Define pl.Series as pd.Series
     import pandas as pl
 
-from IPython.display import HTML, display
-
 import itables.options as opt
+from IPython.display import HTML, display
 
 from .datatables_format import datatables_rows
 from .downsample import downsample
@@ -135,6 +134,15 @@ def init_notebook_mode(
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
 
 
+def get_animated_logo():
+    if not opt.display_logo_when_loading:
+        return ""
+    return f"""<div style="float:left; margin-right: 10px;">
+<a href=https://mwouts.github.io/itables/>{read_package_file("logo/loading.svg")}</a>
+</div>
+"""
+
+
 def generate_init_offline_itables_html(dt_bundle: Path):
     assert dt_bundle.suffix == ".js"
     dt_src = dt_bundle.read_text()
@@ -145,9 +153,8 @@ def generate_init_offline_itables_html(dt_bundle: Path):
 
     return f"""<style>{dt_css}</style>
 <div id="{id}" style="vertical-align:middle; text-align:left">
-<div style="float:left; margin-right: 10px;">
-{read_package_file("logo/loading.svg")}</div><div>
-Loading <code>dt_for_itables</code> from ITables v{itables_version}...<br>
+{get_animated_logo()}<div>
+This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}<br>
 (you should not see this message - is your notebook <it>trusted</it>?)
 </div>
 </div>
@@ -180,8 +187,7 @@ def _table_header(
     )
     tbody = f"""<tr>
 <td style="vertical-align:middle; text-align:left">
-<div style="float:left; margin-right: 10px;">
-{read_package_file("logo/loading.svg")}</div><div>
+{get_animated_logo()}<div>
 Loading ITables v{itables_version} from {itables_source}...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </div>
@@ -493,7 +499,13 @@ def set_default_options(kwargs, use_to_html):
             (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
-            and option not in {"dt_bundle", "find_package_file", "UNPKG_DT_BUNDLE_URL"}
+            and option
+            not in {
+                "dt_bundle",
+                "find_package_file",
+                "display_logo_when_loading",
+                "UNPKG_DT_BUNDLE_URL",
+            }
         ):
             kwargs[option] = getattr(opt, option)
 

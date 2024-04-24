@@ -47,7 +47,6 @@ code cannot run (and the interactive tables won't display)
 until you tell Jupyter that you trust the notebook content
 (run "Trust Notebook" in View / Activate Command Palette).
 
-~~~{tip}
 If the above does not help, please check out the [ChangeLog](changelog.md)
 and decide whether you should upgrade `itables`. You can tell the version
 of ITables that you are using by looking at the loading message (from ITables v2.0.1 on)
@@ -57,4 +56,3 @@ import itables as it
 
 it.__version__
 ```
-~~~
