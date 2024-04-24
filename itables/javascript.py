@@ -25,8 +25,9 @@ except ImportError:
     # Define pl.Series as pd.Series
     import pandas as pl
 
-import itables.options as opt
 from IPython.display import HTML, display
+
+import itables.options as opt
 
 from .datatables_format import datatables_rows
 from .downsample import downsample
