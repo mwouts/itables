@@ -135,19 +135,39 @@ def init_notebook_mode(
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
 
 
+def get_animated_logo():
+    if not opt.display_logo_when_loading:
+        return ""
+    return f"""<div style="float:left; margin-right: 10px;">
+<a href=https://mwouts.github.io/itables/>{read_package_file("logo/loading.svg")}</a>
+</div>
+"""
+
+
 def generate_init_offline_itables_html(dt_bundle: Path):
     assert dt_bundle.suffix == ".js"
     dt_src = dt_bundle.read_text()
     dt_css = dt_bundle.with_suffix(".css").read_text()
     dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
+    id = "itables_init_notebook_mode_" + str(uuid.uuid4()).replace("-", "_")
+
     return f"""<style>{dt_css}</style>
-<script>window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}"</script>
+<div id="{id}" style="vertical-align:middle; text-align:left">
+{get_animated_logo()}<div>
+This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}<br>
+(you should not see this message - is your notebook <it>trusted</it>?)
+</div>
+</div>
+<script>
+window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}";
+document.querySelectorAll("#{id}").forEach(e => e.remove());
+</script>
 """
 
 
 def _table_header(
-    df, table_id, show_index, classes, style, tags, footer, column_filters
+    df, table_id, show_index, classes, style, tags, footer, column_filters, connected
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
@@ -163,8 +183,16 @@ def _table_header(
     if not show_index and len(df.columns):
         thead = thead.replace("<th></th>", "", 1)
 
-    loading = "<td>Loading... (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>"
-    tbody = "<tr>{}</tr>".format(loading)
+    itables_source = (
+        "the internet" if connected else "the <code>init_notebook_mode</code> cell"
+    )
+    tbody = f"""<tr>
+<td style="vertical-align:middle; text-align:left">
+{get_animated_logo()}<div>
+Loading ITables v{itables_version} from {itables_source}...
+(need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
+</div>
+</tr>"""
 
     if style:
         style = 'style="{}"'.format(style)
@@ -412,7 +440,7 @@ def to_html_datatable(
             pass
 
     table_header = _table_header(
-        df, tableId, showIndex, classes, style, tags, footer, column_filters
+        df, tableId, showIndex, classes, style, tags, footer, column_filters, connected
     )
 
     # Export the table data to JSON and include this in the HTML
@@ -472,7 +500,13 @@ def set_default_options(kwargs, use_to_html):
             (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
-            and option not in {"dt_bundle", "find_package_file", "UNPKG_DT_BUNDLE_URL"}
+            and option
+            not in {
+                "dt_bundle",
+                "find_package_file",
+                "display_logo_when_loading",
+                "UNPKG_DT_BUNDLE_URL",
+            }
         ):
             kwargs[option] = getattr(opt, option)
 

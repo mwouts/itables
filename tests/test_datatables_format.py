@@ -111,6 +111,7 @@ def test_datatables_rows(df, expected):
         tags="",
         footer=False,
         column_filters=False,
+        connected=False,
     )
     column_count = _column_count_in_header(table_header)
     actual = datatables_rows(df, count=column_count)
