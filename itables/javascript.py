@@ -80,7 +80,6 @@ except ImportError:
 def init_notebook_mode(
     all_interactive=False,
     connected=GOOGLE_COLAB,
-    warn_if_call_is_superfluous=True,
     dt_bundle=None,
 ):
     """Load the DataTables library and the corresponding css (if connected=False),
@@ -97,20 +96,6 @@ def init_notebook_mode(
             "The offline mode for itables is not supposed to work in Google Colab. "
             "This is because HTML outputs in Google Colab are encapsulated in iframes."
         )
-
-    if (
-        all_interactive is False
-        and pd.DataFrame._repr_html_ == _ORIGINAL_DATAFRAME_REPR_HTML
-        and connected is True
-        and _CONNECTED == connected
-    ):
-        if warn_if_call_is_superfluous:
-            warnings.warn(
-                "Did you know? "
-                "init_notebook_mode(all_interactive=False, connected=True) does nothing. "
-                "Feel free to remove this line, or pass warn_if_call_is_superfluous=False."
-            )
-        return
 
     _CONNECTED = connected
 
@@ -385,38 +370,7 @@ def to_html_datatable(
             )
         )
 
-    has_default_layout = kwargs["layout"] == DEFAULT_LAYOUT
-
-    if "dom" in kwargs:
-        if opt.warn_on_dom:
-            warnings.warn(
-                "The 'dom' argument has been deprecated in DataTables==2.0.",
-                DeprecationWarning,
-            )
-        if not has_default_layout:
-            raise ValueError("You can pass both 'dom' and 'layout'")
-        del kwargs["layout"]
-        has_default_layout = False
-
-    if has_default_layout and _df_fits_in_one_page(df, kwargs):
-
-        def filter_control(control):
-            if control == "info" and downsampling_warning:
-                return control
-            if control not in DEFAULT_LAYOUT_CONTROLS:
-                return control
-            return None
-
-        kwargs["layout"] = {
-            key: filter_control(control) for key, control in kwargs["layout"].items()
-        }
-
-    if (
-        "buttons" in kwargs
-        and "layout" in kwargs
-        and "buttons" not in kwargs["layout"].values()
-    ):
-        kwargs["layout"] = {**kwargs["layout"], "topStart": "buttons"}
+    _adjust_layout(df, kwargs, downsampling_warning)
 
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
@@ -549,8 +503,7 @@ def to_html_datatable_using_to_html(
             # Polars DataFrame
             showIndex = False
 
-    if "dom" not in kwargs and _df_fits_in_one_page(df, kwargs):
-        kwargs["dom"] = "t"
+    _adjust_layout(df, kwargs, downsampling_warning="")
 
     tableId = (
         tableId
@@ -713,6 +666,34 @@ def _min_rows(kwargs):
     return min_rows[0]
 
 
+def _adjust_layout(df, kwargs, downsampling_warning):
+    has_default_layout = kwargs["layout"] == DEFAULT_LAYOUT
+
+    if "dom" in kwargs:
+        if opt.warn_on_dom:
+            warnings.warn(
+                "The 'dom' argument has been deprecated in DataTables==2.0.",
+                DeprecationWarning,
+            )
+        if not has_default_layout:
+            raise ValueError("You cannot pass both 'dom' and 'layout'")
+        del kwargs["layout"]
+        has_default_layout = False
+
+    if has_default_layout and _df_fits_in_one_page(df, kwargs):
+        kwargs["layout"] = {
+            key: _filter_control(control, downsampling_warning)
+            for key, control in kwargs["layout"].items()
+        }
+
+    if (
+        "buttons" in kwargs
+        and "layout" in kwargs
+        and "buttons" not in kwargs["layout"].values()
+    ):
+        kwargs["layout"] = {**kwargs["layout"], "topStart": "buttons"}
+
+
 def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
     try:
@@ -721,6 +702,14 @@ def _df_fits_in_one_page(df, kwargs):
     except AttributeError:
         # Polars
         return len(df) <= _min_rows(kwargs)
+
+
+def _filter_control(control, downsampling_warning):
+    if control == "info" and downsampling_warning:
+        return control
+    if control not in DEFAULT_LAYOUT_CONTROLS:
+        return control
+    return None
 
 
 def safe_reset_index(df):
