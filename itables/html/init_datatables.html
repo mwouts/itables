@@ -1,0 +1,11 @@
+<script>
+    if (document.body.dataset.jpThemeLight == "false" || // Jupyter Lab
+        document.body.dataset.vscodeThemeKind == "vscode-dark" || // VS Code
+        document.documentElement.dataset.theme == "dark" || // Jupyter Book
+        window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+    }
+    else {
+        document.documentElement.classList.remove('dark');
+    }
+</script>
