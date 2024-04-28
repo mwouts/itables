@@ -576,6 +576,7 @@ def to_html_datatable_using_to_html(
                     classes=classes, style=style
                 ),
                 caption=caption,
+                sparse_index=False,
             )
             html_table = df.to_html(**to_html_args)
         except TypeError:
