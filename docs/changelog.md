@@ -14,6 +14,7 @@ ITables ChangeLog
 **Fixed**
 - We have improve the compatibility with dark themes ([#255](https://github.com/mwouts/itables/issues/255))
 - We now enforce non-sparse index when displaying Pandas Style objects with a multiindex ([#254](https://github.com/mwouts/itables/issues/254))
+- Export buttons are shown when using `show(df, buttons=...)` on a Pandas Style object ([#259](https://github.com/mwouts/itables/issues/259))
 
 
 2.0.0 (2024-03-16)
