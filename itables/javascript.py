@@ -576,6 +576,7 @@ def to_html_datatable_using_to_html(
                     classes=classes, style=style
                 ),
                 caption=caption,
+                sparse_index=False,
             )
             html_table = df.to_html(**to_html_args)
         except TypeError:
@@ -584,6 +585,7 @@ def to_html_datatable_using_to_html(
                     "caption is not supported by Styler.to_html in your version of Pandas"
                 )
             del to_html_args["caption"]
+            del to_html_args["sparse_index"]
             html_table = df.to_html(**to_html_args)
         tableId = "T_" + tableId
     else:
