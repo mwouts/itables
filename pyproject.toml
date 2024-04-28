@@ -44,7 +44,9 @@ test = [
   "nbconvert",
   "jupytext",
   # Shiny test app
-  "shiny"
+  "shiny",
+  # Test urls
+  "requests",
 ]
 
 [tool.hatch.version]

@@ -1,6 +1,6 @@
 {
   "name": "dt_for_itables",
-  "version": "2.0.1",
+  "version": "2.0.5",
   "description": "DataTables bundle for itables",
   "main": "src.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "datatables.net-buttons": "^3.0.1",
     "datatables.net-buttons-dt": "^3.0.1",
-    "datatables.net-dt": "^2.0.0",
+    "datatables.net-dt": "^2.0.5",
     "datatables.net-fixedcolumns-dt": "^5.0.0",
     "datatables.net-keytable-dt": "^2.12.0",
     "datatables.net-rowgroup-dt": "^1.5.0",
