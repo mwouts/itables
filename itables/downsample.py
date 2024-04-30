@@ -18,16 +18,16 @@ def as_nbytes(mem):
         return int(mem)
     assert isinstance(mem, str), mem
     if mem.endswith("KB"):
-        return int(float(mem.removesuffix("KB")) * 2**10)
+        return int(float(mem[:-2]) * 2**10)
     if mem.endswith("MB"):
-        return int(float(mem.removesuffix("MB")) * 2**20)
+        return int(float(mem[:-2]) * 2**20)
     if mem.endswith("GB"):
         raise ValueError(
             f"You probably don't want to display "
             f"a table that large within an HTML page: {mem}"
         )
     if mem.endswith("B"):
-        return int(float(mem.removesuffix("B")))
+        return int(float(mem[:-1]))
     return int(float(mem))
 
 
