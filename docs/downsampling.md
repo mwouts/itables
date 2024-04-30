@@ -23,7 +23,7 @@ If you wish, you can increase the value of `maxBytes` or even deactivate the lim
 ```{code-cell}
 import itables.options as opt
 from itables import init_notebook_mode, show
-from itables.downsample import nbytes
+from itables.downsample import as_nbytes, nbytes
 from itables.sample_dfs import get_indicators
 
 init_notebook_mode(all_interactive=True)
@@ -31,10 +31,10 @@ init_notebook_mode(all_interactive=True)
 
 ```{code-cell}
 opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
-opt.maxBytes = 10000
+opt.maxBytes = "8KB"
 
 df = get_indicators()
-nbytes(df)
+as_nbytes(opt.maxBytes), nbytes(df)
 ```
 
 ```{code-cell}
@@ -56,6 +56,6 @@ or globally:
 ```{code-cell}
 :tags: [full-width]
 
-opt.maxBytes = 2**20
+opt.maxBytes = "1MB"
 df
 ```

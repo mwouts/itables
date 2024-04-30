@@ -33,7 +33,7 @@ style = "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
 tags = ""
 
 """Maximum bytes before downsampling a table"""
-maxBytes = 2**16
+maxBytes = "64KB"
 
 """Maximum number of rows or columns before downsampling a table"""
 maxRows = 0
