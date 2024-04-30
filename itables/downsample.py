@@ -13,11 +13,30 @@ def nbytes(df):
         return df.estimated_size()
 
 
+def as_nbytes(mem):
+    if isinstance(mem, (int, float)):
+        return int(mem)
+    assert isinstance(mem, str), mem
+    if mem.endswith("KB"):
+        return int(float(mem[:-2]) * 2**10)
+    if mem.endswith("MB"):
+        return int(float(mem[:-2]) * 2**20)
+    if mem.endswith("GB"):
+        raise ValueError(
+            f"You probably don't want to display "
+            f"a table that large within an HTML page: {mem}"
+        )
+    if mem.endswith("B"):
+        return int(float(mem[:-1]))
+    return int(float(mem))
+
+
 def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
     """Return a subset of the dataframe that fits the limits"""
     org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
+    max_bytes_numeric = as_nbytes(max_bytes)
     df = _downsample(
-        df, max_rows=max_rows, max_columns=max_columns, max_bytes=max_bytes
+        df, max_rows=max_rows, max_columns=max_columns, max_bytes=max_bytes_numeric
     )
 
     if len(df) < org_rows or len(df.columns) < org_columns:
@@ -27,7 +46,7 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
             reasons.append("maxRows={}".format(max_rows))
         if org_columns > max_columns > 0:
             reasons.append("maxColumns={}".format(max_columns))
-        if org_bytes > max_bytes > 0:
+        if org_bytes > max_bytes_numeric > 0:
             reasons.append("maxBytes={}".format(max_bytes))
 
         warning = "{} from {:,d}x{:,d} to {:,d}x{:,d} as {}".format(

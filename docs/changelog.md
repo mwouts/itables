@@ -10,6 +10,7 @@ ITables ChangeLog
 
 **Changed**
 - We have updated `DataTables` to `2.0.5` and its extensions to their latest version ([#260](https://github.com/mwouts/itables/issues/260))
+- `maxBytes` can now be a string. Its default value remains unchanged at `64KB` ([#239](https://github.com/mwouts/itables/issues/239))
 
 **Fixed**
 - We have improve the compatibility with dark themes ([#255](https://github.com/mwouts/itables/issues/255))

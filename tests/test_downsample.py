@@ -3,12 +3,25 @@
 import pandas as pd
 import pytest
 
-from itables.downsample import downsample, nbytes, shrink_towards_target_aspect_ratio
+from itables.downsample import (
+    as_nbytes,
+    downsample,
+    nbytes,
+    shrink_towards_target_aspect_ratio,
+)
 
 try:
     import polars as pl
 except ImportError:
     pl = None
+
+
+def test_as_nbytes():
+    assert as_nbytes(0) == 0
+    assert as_nbytes(2**16) == 2**16
+    assert as_nbytes("256B") == 256
+    assert as_nbytes("64KB") == 2**16
+    assert as_nbytes("1MB") == 2**20
 
 
 def large_tables(N=1000, M=1000):
