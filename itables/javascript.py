@@ -1,7 +1,6 @@
 """HTML/js representation of Pandas dataframes"""
 
 import json
-import logging
 import re
 import uuid
 import warnings
@@ -32,9 +31,6 @@ import itables.options as opt
 from .datatables_format import datatables_rows
 from .downsample import downsample
 from .utils import read_package_file
-
-logging.basicConfig()
-logger = logging.getLogger(__name__)
 
 DATATABLES_SRC_FOR_ITABLES = (
     f"_datatables_src_for_itables_{itables_version.replace('.','_').replace('-','_')}"

@@ -1,12 +1,8 @@
-import logging
 import math
 
 import pandas as pd
 
 from .datatables_format import _isetitem
-
-logging.basicConfig()
-logger = logging.getLogger(__name__)
 
 
 def nbytes(df):
