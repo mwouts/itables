@@ -86,11 +86,11 @@ def get_df_complex_index():
     df.columns = pd.MultiIndex.from_arrays(
         [
             [
-                "code"
-                if col == "code"
-                else "localisation"
-                if col in ["longitude", "latitude"]
-                else "data"
+                (
+                    "code"
+                    if col == "code"
+                    else "localisation" if col in ["longitude", "latitude"] else "data"
+                )
                 for col in df.columns
             ],
             df.columns,
