@@ -4,7 +4,7 @@
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
     - id: check-json
     - id: check-yaml
@@ -18,24 +18,24 @@ repos:
       args: ["--profile", "black", "--filter-files"]
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 24.4.2
     hooks:
     - id: black
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.1
+    rev: v0.4.5
     hooks:
       - id: ruff
         args: ["--fix", "--show-fixes"]
 
   - repo: https://github.com/mwouts/jupytext
-    rev: v1.14.5
+    rev: v1.16.2
     hooks:
     - id: jupytext
       exclude: dt_for_itables/
       types: ["markdown"]
       args: ["--pipe", "isort {} --treat-comment-as-code '# %%' --profile black", "--pipe", "black", "--check", "ruff check {} --ignore E402"]
       additional_dependencies:
-        - black==22.3.0 # Matches hook
-        - ruff==0.3.1
+        - black==24.4.2 # Matches hook
+        - ruff==0.4.3
         - isort==5.13.2
