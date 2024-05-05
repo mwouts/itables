@@ -76,7 +76,7 @@ def test_show_test_dfs(df, connected, use_to_html, lengthMenu, monkeypatch):
         df,
         connected=connected,
         use_to_html=use_to_html,
-        **kwargs_remove_none(lengthMenu=lengthMenu)
+        **kwargs_remove_none(lengthMenu=lengthMenu),
     )
 
 
@@ -85,7 +85,7 @@ def test_to_html_datatable(df, connected, use_to_html, lengthMenu, monkeypatch):
         df,
         connected=connected,
         use_to_html=use_to_html,
-        **kwargs_remove_none(lengthMenu=lengthMenu)
+        **kwargs_remove_none(lengthMenu=lengthMenu),
     )
     if use_to_html:
         assert "quarto" not in html

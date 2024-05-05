@@ -1,4 +1,5 @@
 """Activate the representation of Pandas dataframes as interactive tables"""
+
 import warnings
 
 from .javascript import init_notebook_mode
