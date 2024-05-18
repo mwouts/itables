@@ -29,3 +29,5 @@ import 'datatables.net-select-dt';
 import 'datatables.net-select-dt/css/select.dataTables.min.css';
 
 export { DataTable, jQuery };
+
+export default DataTable;

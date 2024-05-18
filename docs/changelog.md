@@ -6,6 +6,8 @@ ITables ChangeLog
 
 **Changed**
 - ITables now uses the `src` layout ([#246](https://github.com/mwouts/itables/issues/246)) - many thanks to [Mahendra Paipuri](https://github.com/mahendrapaipuri) for his help on this topic!
+- We have updated `dt_for_itables`'s dependencies to `datatables.net-dt==2.0.7` and `datatables.net-select-dt==2.0.2` ([#273](https://github.com/mwouts/itables/pull/273))
+- We have updated the pre-commit hooks used in the project ([#268](https://github.com/mwouts/itables/pull/268))
 
 
 2.0.1 (2024-04-30)
