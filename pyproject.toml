@@ -88,7 +88,7 @@ build_cmd = "build"
 npm = ["npm"]
 
 [tool.hatch.build.targets.sdist]
-artifacts = ["src/itables/html/dt_bundle.js", "src/itables/html/dt_bundle.css"]
+artifacts = ["src/itables/html/dt_bundle.js", "src/itables/html/dt_bundle.css", "src/itables/itables_for_streamlit/*"]
 
 [tool.hatch.build.targets.wheel]
-artifacts = ["src/itables/html/dt_bundle.js", "src/itables/html/dt_bundle.css"]
+artifacts = ["src/itables/html/dt_bundle.js", "src/itables/html/dt_bundle.css", "src/itables/itables_for_streamlit/*"]
