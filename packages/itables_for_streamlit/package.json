@@ -1,0 +1,39 @@
+{
+  "name": "itables_for_streamlit",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "^29.5.1",
+    "@types/node": "^20.12.11",
+    "dt_for_itables": "file:../dt_for_itables",
+    "react-scripts": "^5.0.1",
+    "streamlit-component-lib": "^2.0.0",
+    "typescript": "^4.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build_only": "react-scripts build",
+    "build": "react-scripts build && rm -rf ../../src/itables/itables_for_streamlit && mv build ../../src/itables/itables_for_streamlit",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
+  "homepage": ".",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

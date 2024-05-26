@@ -4,6 +4,7 @@ from pathlib import Path
 import jupytext
 import pytest
 
+import itables.options as opt
 from itables import init_notebook_mode
 from itables.javascript import pd_style
 
@@ -31,9 +32,15 @@ def test_run_documentation_notebooks(notebook):
     if "pandas_style" in notebook.stem and pd_style is None:
         pytest.skip("Pandas Style is not available")
 
+    org_options = dir(opt)
+
     nb = jupytext.read(notebook)
     py_notebook = jupytext.writes(nb, "py:percent")
     exec(py_notebook, {})
+
+    new_options = set(dir(opt)).difference(org_options)
+    for name in new_options:
+        delattr(opt, name)
 
     # Revert back to the non initialized mode
     init_notebook_mode(all_interactive=False, connected=True)

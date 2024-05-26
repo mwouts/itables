@@ -76,10 +76,14 @@ exclude_lines = [
 enable-by-default = true
 dependencies = ["hatch-jupyter-builder"]
 build-function = "hatch_jupyter_builder.npm_builder"
-ensured-targets = ["src/itables/html/dt_bundle.js", "src/itables/html/dt_bundle.css"]
+ensured-targets = [
+    "src/itables/html/dt_bundle.js",
+    "src/itables/html/dt_bundle.css",
+    "src/itables/itables_for_streamlit/asset-manifest.json"
+    ]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
-path = "packages/dt_for_itables"
+path = "packages"
 build_cmd = "build"
 npm = ["npm"]
 

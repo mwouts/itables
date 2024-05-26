@@ -42,7 +42,6 @@ _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "maxBytes",
     "maxRows",
     "maxColumns",
-    "warn_on_dom",
     "warn_on_unexpected_types",
 }
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
@@ -305,12 +304,19 @@ def to_html_datatable(
     use_to_html=False,
     **kwargs,
 ):
+    """
+    Return the HTML representation of the given
+    dataframe as an interactive datatable
+    """
+
     check_table_id(tableId)
+
     if "import_jquery" in kwargs:
         raise TypeError(
             "The argument 'import_jquery' was removed in ITables v2.0. "
             "Please pass a custom 'dt_url' instead."
         )
+
     if use_to_html or (pd_style is not None and isinstance(df, pd_style.Styler)):
         return to_html_datatable_using_to_html(
             df=df,
@@ -320,7 +326,6 @@ def to_html_datatable(
             **kwargs,
         )
 
-    """Return the HTML representation of the given dataframe as an interactive datatable"""
     set_default_options(kwargs, use_to_html=False)
 
     # These options are used here, not in DataTable
@@ -366,7 +371,12 @@ def to_html_datatable(
             )
         )
 
-    _adjust_layout(df, kwargs, downsampling_warning)
+    _adjust_layout(
+        df,
+        kwargs,
+        downsampling_warning=downsampling_warning,
+        warn_on_dom=kwargs.pop("warn_on_dom"),
+    )
 
     footer = kwargs.pop("footer")
     column_filters = kwargs.pop("column_filters")
@@ -418,6 +428,129 @@ def to_html_datatable(
     )
 
 
+def _raise_if_javascript_code(values, context=""):
+    if isinstance(values, (JavascriptCode, JavascriptFunction)):
+        raise TypeError(f"Javascript code can't be passed to the extension: {context}")
+
+    if isinstance(values, dict):
+        for key, value in values.items():
+            _raise_if_javascript_code(value, f"{context}/{key}")
+        return
+
+    if isinstance(values, list):
+        for i, value in enumerate(values):
+            _raise_if_javascript_code(value, f"{context}/{i}")
+        return
+
+
+def get_itables_extension_arguments(df, caption=None, **kwargs):
+    """
+    This function returns two dictionaries that are JSON
+    serializable and can be passed to the itables extensions.
+    The first dict contains the arguments to be passed to the
+    DataTable constructor, while the second one contains other
+    parameters to be used outside of the constructor.
+    """
+    # Pandas style objects are not supported
+    if pd_style is not None and isinstance(df, pd_style.Styler):
+        raise NotImplementedError(
+            "Pandas style objects can't be used with the extension"
+        )
+
+    set_default_options(
+        kwargs,
+        use_to_html=False,
+        context="the streamlit extension",
+        not_available=[
+            "tags",
+            "dt_url",
+            "pre_dt_code",
+            "use_to_html",
+            "footer",
+            "column_filters",
+        ],
+    )
+
+    # Javascript code is not supported in the extension
+    _raise_if_javascript_code(kwargs)
+
+    # These options are used here, not in DataTable
+    classes = kwargs.pop("classes")
+    style = kwargs.pop("style")
+    showIndex = kwargs.pop("showIndex")
+
+    if isinstance(df, (np.ndarray, np.generic)):
+        df = pd.DataFrame(df)
+
+    if isinstance(df, (pd.Series, pl.Series)):
+        df = df.to_frame()
+
+    if showIndex == "auto":
+        try:
+            showIndex = df.index.name is not None or not isinstance(
+                df.index, pd.RangeIndex
+            )
+        except AttributeError:
+            # Polars DataFrame
+            showIndex = False
+
+    maxBytes = kwargs.pop("maxBytes", 0)
+    maxRows = kwargs.pop("maxRows", 0)
+    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
+    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
+
+    df, downsampling_warning = downsample(
+        df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
+    )
+
+    _adjust_layout(
+        df,
+        kwargs,
+        downsampling_warning=downsampling_warning,
+        warn_on_dom=kwargs.pop("warn_on_dom"),
+    )
+
+    if isinstance(classes, list):
+        classes = " ".join(classes)
+
+    if not showIndex:
+        try:
+            df = df.set_index(pd.RangeIndex(len(df.index)))
+        except AttributeError:
+            # Polars DataFrames
+            pass
+
+    if showIndex:
+        df = safe_reset_index(df)
+
+    if isinstance(df.columns, pd.MultiIndex):
+        columns = [
+            {"title": "<br>".join(str(level) or "&nbsp" for level in col)}
+            for col in df.columns
+        ]
+    else:
+        columns = [{"title": str(col)} for col in df.columns]
+
+    try:
+        data_json = ""
+        data_json = datatables_rows(df, None, warn_on_unexpected_types, pure_json=True)
+        data = json.loads(data_json)
+    except (ValueError, json.JSONDecodeError) as e:
+        raise NotImplementedError(
+            f"This dataframe can't be serialized to JSON:\n{e}\n{data_json}"
+        )
+
+    return {
+        "dt_args": {"columns": columns, "data": data, **kwargs},
+        "other_args": {
+            "classes": classes,
+            "style": style,
+            "caption": caption,
+            "downsampling_warning": downsampling_warning,
+        },
+    }
+
+
 def check_table_id(table_id):
     """Make sure that the table_id is a valid HTML id.
 
@@ -431,7 +564,13 @@ def check_table_id(table_id):
             )
 
 
-def set_default_options(kwargs, use_to_html):
+def set_default_options(kwargs, use_to_html, context=None, not_available=()):
+    args_not_available = set(kwargs).intersection(not_available)
+    if args_not_available:
+        raise TypeError(
+            f"In the context of {context}, "
+            f"these options are not available: {args_not_available}"
+        )
     if use_to_html:
         options_not_available = set(kwargs).intersection(
             _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML
@@ -449,7 +588,8 @@ def set_default_options(kwargs, use_to_html):
     # Default options
     for option in dir(opt):
         if (
-            (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
+            option not in not_available
+            and (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
             and not option.startswith("__")
             and option
@@ -499,7 +639,9 @@ def to_html_datatable_using_to_html(
             # Polars DataFrame
             showIndex = False
 
-    _adjust_layout(df, kwargs, downsampling_warning="")
+    _adjust_layout(
+        df, kwargs, downsampling_warning="", warn_on_dom=kwargs.pop("warn_on_dom")
+    )
 
     tableId = (
         tableId
@@ -662,11 +804,11 @@ def _min_rows(kwargs):
     return min_rows[0]
 
 
-def _adjust_layout(df, kwargs, downsampling_warning):
+def _adjust_layout(df, kwargs, *, downsampling_warning, warn_on_dom):
     has_default_layout = kwargs["layout"] == DEFAULT_LAYOUT
 
     if "dom" in kwargs:
-        if opt.warn_on_dom:
+        if warn_on_dom:
             warnings.warn(
                 "The 'dom' argument has been deprecated in DataTables==2.0.",
                 DeprecationWarning,

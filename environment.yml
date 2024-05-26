@@ -4,7 +4,7 @@ channels:
   - conda-forge
 dependencies:
   - nodejs
-  - python<=3.10
+  - python
   - jupyter
   - jupyterlab>=4
   - jupytext
@@ -23,6 +23,7 @@ dependencies:
   - twine
   - ghp-import
   - shiny
+  - streamlit
   - pip:
     - world_bank_data
     - jupyter_book

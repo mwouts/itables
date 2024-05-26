@@ -1,0 +1,10 @@
+{
+  "name": "build_all_itables_dependencies",
+  "description": "A script to build and install the npm packages used by ITables",
+  "scripts": {
+    "build:dt_for_itables": "cd dt_for_itables && npm install && npm run build",
+    "build:itables_for_streamlit": "cd itables_for_streamlit && npm install && npm run build",
+    "build": "npm run build:dt_for_itables && npm run build:itables_for_streamlit"
+  },
+  "author": "Marc Wouts"
+}

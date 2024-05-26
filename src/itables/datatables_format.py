@@ -16,7 +16,7 @@ JS_MAX_SAFE_INTEGER = 2**53 - 1
 JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
 
-def _format_column(x):
+def _format_column(x, pure_json=False):
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i", "s"]:
         return x
@@ -28,9 +28,14 @@ def _format_column(x):
         x = fmt.format_array(x._values, None, justify="all")
     if dtype_kind == "f":
         try:
-            return np.array(x).astype(float)
+            x = np.array(x).astype(float)
         except ValueError:
             pass
+        if pure_json:
+            # While JavaScript accept these values,
+            # JSON (in the streamlit component)
+            # cannot encode non-finite float values
+            x = [f if np.isfinite(f) else str(f) for f in x]
 
     return x
 
@@ -74,7 +79,7 @@ def _isetitem(df, i, value):
         df.iloc[:, i] = value
 
 
-def datatables_rows(df, count=None, warn_on_unexpected_types=False):
+def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=False):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
@@ -88,13 +93,21 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False):
 
     try:
         # Pandas DataFrame
-        data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
+        data = list(
+            zip(
+                *(empty_columns + [_format_column(x, pure_json) for _, x in df.items()])
+            )
+        )
         has_bigints = any(
             x.dtype.kind == "i"
             and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
             for _, x in df.items()
         )
-        js = json.dumps(data, cls=generate_encoder(warn_on_unexpected_types))
+        js = json.dumps(
+            data,
+            cls=generate_encoder(warn_on_unexpected_types),
+            allow_nan=not pure_json,
+        )
     except AttributeError:
         # Polars DataFrame
         data = list(df.iter_rows())
@@ -105,16 +118,18 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False):
             and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
             for x in (df[col] for col in df.columns)
         )
-        js = json.dumps(data, cls=generate_encoder(False))
+        js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
 
     if has_bigints:
-        js = n_suffix_for_bigints(js)
+        js = n_suffix_for_bigints(js, pure_json=pure_json)
 
     return js
 
 
-def n_suffix_for_bigints(js):
+def n_suffix_for_bigints(js, pure_json=False):
     def n_suffix(matchobj):
+        if pure_json:
+            return '"' + matchobj.group(1) + '"' + matchobj.group(2)
         return 'BigInt("' + matchobj.group(1) + '")' + matchobj.group(2)
 
     return re.sub(r"(-?\d{16,})(,|])", n_suffix, js)
