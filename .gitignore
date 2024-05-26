@@ -21,7 +21,12 @@ _build
 docs/quarto/*.html
 docs/quarto/*_files/
 
-# DataTables bundle
+# Node packages
 node_modules
+
+# DataTables bundle
 dt_bundle.js
 dt_bundle.css
+
+# Streamlit package
+src/itables/itables_for_streamlit
