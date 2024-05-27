@@ -1,17 +1,3 @@
----
-jupytext:
-  formats: md:myst
-  notebook_metadata_filter: -jupytext.text_representation.jupytext_version
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-kernelspec:
-  display_name: itables
-  language: python
-  name: itables
----
-
 # Quarto
 
 ITables works well with the `revealjs` and `html` outputs formats of [Quarto](https://quarto.org).

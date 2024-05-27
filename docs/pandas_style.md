@@ -12,10 +12,25 @@ kernelspec:
   name: itables
 ---
 
-# Pandas Style examples
+# Using Pandas Style
 
 Starting with `itables>=1.6.0`, ITables provides support for
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html).
+
+```{note}
+Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using their
+`to_html` method, rather than passing the underlying table data to the DataTables
+library.
+
+Because of this, the rendering of the table might differ slightly from the rendering of the
+corresponding DataFrame. In particular,
+- The downsampling is not available - please pay attention to the size of the table being rendered
+- Sorting of numbers will not work if the column contains NaNs.
+```
+
+```{warning}
+Pandas Style objects can't be used with the [Streamlit extension](streamlit.md) for ITables.
+```
 
 ```{code-cell}
 import numpy as np
@@ -82,15 +97,4 @@ ttips = pd.DataFrame(
     index=df.index,
 )
 s.set_tooltips(ttips).set_caption("With tooltips")
-```
-
-```{note}
-Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using their
-`to_html` method, rather than passing the underlying table data to the DataTables
-library.
-
-Because of this, the rendering of the table might differ slightly from the rendering of the
-corresponding DataFrame. In particular,
-- The downsampling is not available - please pay attention to the size of the table being rendered
-- Sorting of numbers will not work if the column contains NaNs.
 ```

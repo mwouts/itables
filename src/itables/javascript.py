@@ -117,8 +117,8 @@ def init_notebook_mode(
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
 
 
-def get_animated_logo():
-    if not opt.display_logo_when_loading:
+def get_animated_logo(display_logo_when_loading):
+    if not display_logo_when_loading:
         return ""
     return f"""<div style="float:left; margin-right: 10px;">
 <a href=https://mwouts.github.io/itables/>{read_package_file("logo/loading.svg")}</a>
@@ -136,7 +136,7 @@ def generate_init_offline_itables_html(dt_bundle: Path):
 
     return f"""<style>{dt_css}</style>
 <div id="{id}" style="vertical-align:middle; text-align:left">
-{get_animated_logo()}<div>
+{get_animated_logo(opt.display_logo_when_loading)}<div>
 This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}<br>
 (you should not see this message - is your notebook <it>trusted</it>?)
 </div>
@@ -149,7 +149,16 @@ document.querySelectorAll("#{id}").forEach(e => e.remove());
 
 
 def _table_header(
-    df, table_id, show_index, classes, style, tags, footer, column_filters, connected
+    df,
+    table_id,
+    show_index,
+    classes,
+    style,
+    tags,
+    footer,
+    column_filters,
+    connected,
+    display_logo_when_loading,
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
@@ -170,7 +179,7 @@ def _table_header(
     )
     tbody = f"""<tr>
 <td style="vertical-align:middle; text-align:left">
-{get_animated_logo()}<div>
+{get_animated_logo(display_logo_when_loading)}<div>
 Loading ITables v{itables_version} from {itables_source}...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </div>
@@ -402,7 +411,16 @@ def to_html_datatable(
             pass
 
     table_header = _table_header(
-        df, tableId, showIndex, classes, style, tags, footer, column_filters, connected
+        df,
+        tableId,
+        showIndex,
+        classes,
+        style,
+        tags,
+        footer,
+        column_filters,
+        connected=connected,
+        display_logo_when_loading=kwargs.pop("display_logo_when_loading"),
     )
 
     # Export the table data to JSON and include this in the HTML
@@ -443,7 +461,7 @@ def _raise_if_javascript_code(values, context=""):
         return
 
 
-def get_itables_extension_arguments(df, caption=None, **kwargs):
+def get_itables_extension_arguments(df, caption=None, scrollX=True, **kwargs):
     """
     This function returns two dictionaries that are JSON
     serializable and can be passed to the itables extensions.
@@ -457,6 +475,8 @@ def get_itables_extension_arguments(df, caption=None, **kwargs):
             "Pandas style objects can't be used with the extension"
         )
 
+    kwargs["scrollX"] = scrollX
+
     set_default_options(
         kwargs,
         use_to_html=False,
@@ -468,6 +488,7 @@ def get_itables_extension_arguments(df, caption=None, **kwargs):
             "use_to_html",
             "footer",
             "column_filters",
+            "display_logo_when_loading",
         ],
     )
 
@@ -596,11 +617,14 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
             not in {
                 "dt_bundle",
                 "find_package_file",
-                "display_logo_when_loading",
                 "UNPKG_DT_BUNDLE_URL",
             }
         ):
             kwargs[option] = getattr(opt, option)
+
+    if kwargs.get("scrollX", False):
+        # column headers are misaligned if we let margin:auto
+        kwargs["style"] = kwargs["style"].replace(";margin:auto;", ";margin:0;")
 
     for name, value in kwargs.items():
         if value is None:

@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Styling
+# Table Style and CSS
 
 As usual, we initialize ITables with `init_notebook_mode`, and we create two sample DataFrames:
 
@@ -113,7 +113,7 @@ show(df, classes="display nowrap table_with_monospace_font")
 The `show` function has a `style` argument that determines the
 style for that particular table.
 
-The default value for `style` is `table-layout:auto;width:auto;margin:auto;caption-side:bottom`.
+The default value for `style` is `"table-layout:auto;width:auto;margin:auto;caption-side:bottom"`. When `scrollX` is `True`, `margin:auto` gets replaced with `margin:0` to avoid misaligned headers.
 Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
 Using `margin:auto` makes non-wide tables centered in Jupyter.
 

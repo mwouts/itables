@@ -26,7 +26,10 @@ classes = "display nowrap"
 - 'table-layout:auto' to compute the layout automatically
 - 'width:auto' to fit the table width to its content
 - 'margin:auto' to center the table.
-Combine multiple options using ';'."""
+Combine multiple options using ';'.
+
+NB: When scrollX=true, the default is changed to "margin:0;caption-side:bottom"
+"""
 style = "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
 
 """Additional tags like e.g. caption"""

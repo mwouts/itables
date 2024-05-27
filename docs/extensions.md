@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# DataTables Extensions
+# Download Buttons and Other Extensions
 
 DataTables comes with a series of [extensions](https://datatables.net/extensions/), which are supported by ITables since v2.0.
 A selection of these extensions are included in ITables.
@@ -100,6 +100,11 @@ show(
         {"extend": "excelHtml5", "title": "Countries"},
     ],
 )
+```
+
+```{warning}
+At the moment, the CSV and Excel buttons don't work well with large tables in some browsers.
+Please subscribe to [#251](https://github.com/mwouts/itables/issues/251) if you wish to receive updates on this.
 ```
 
 ```{warning}

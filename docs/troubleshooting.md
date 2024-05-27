@@ -14,6 +14,8 @@ kernelspec:
 
 # Troubleshooting
 
+## Loading takes forever?
+
 ```{code-cell}
 :tags: [hide-input]
 
@@ -40,12 +42,16 @@ the `init_notebook_mode` cell, you need to re-execute all the cells
 that display interactive tables.
 ```
 
+## Trust your notebook
+
 It could also be that your notebook is not _trusted_. This happens when you
 have not run the notebook in full yourself (e.g. the notebook was sent to you with outputs,
 or the notebook was created by a tool like `papermill`). In that case, JavaScript
 code cannot run (and the interactive tables won't display)
 until you tell Jupyter that you trust the notebook content
 (run "Trust Notebook" in View / Activate Command Palette).
+
+## Check ITables' version
 
 If the above does not help, please check out the [ChangeLog](changelog.md)
 and decide whether you should upgrade `itables`. You can tell the version
