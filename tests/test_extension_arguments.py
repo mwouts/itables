@@ -11,9 +11,13 @@ def test_get_itables_extension_arguments(df):
     except NotImplementedError as e:
         pytest.skip(str(e))
 
-    assert set(ext_args["dt_args"]) <= {"data", "columns", "layout", "order"}, set(
-        ext_args["dt_args"]
-    )
+    assert set(ext_args["dt_args"]) <= {
+        "data",
+        "columns",
+        "layout",
+        "order",
+        "scrollX",
+    }, set(ext_args["dt_args"])
     assert isinstance(ext_args["dt_args"]["data"], list)
     assert isinstance(ext_args["dt_args"]["columns"], list)
 

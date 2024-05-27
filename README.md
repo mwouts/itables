@@ -56,13 +56,12 @@ execute `init_notebook_mode`.
 
 ## Supported environments
 
-`itables` has been tested in the following editors:
-- Jupyter Notebook
-- Jupyter Lab
-- Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook)
-- Jupyter Book
-- Google Colab
-- VS Code (for both Jupyter Notebooks and Python scripts)
-- PyCharm (for Jupyter Notebooks)
-- Quarto
-- Shiny for Python
+ITables works in all the usual Jupyter Notebook environments, including Jupyter Notebook, Jupyter Lab, Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook), Jupyter Book, Google Colab and Kaggle.
+
+You can also use ITables in [Quarto](https://mwouts.github.io/itables/quarto.html) HTML documents, and in RISE presentations.
+
+ITables works well in VS Code, both in Jupyter Notebooks and in interactive Python sessions.
+
+Last but not least, ITables is also available in
+[Streamlit](https://mwouts.github.io/itables/streamlit.html) or
+[Shiny](https://mwouts.github.io/itables/shiny.html) applications.

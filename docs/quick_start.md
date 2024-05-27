@@ -20,8 +20,8 @@ kernelspec:
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-<a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
-<script async defer src="https://buttons.github.io/buttons.js"></script>
+<a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true"></a>
+<script src="https://buttons.github.io/buttons.js"></script>
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
 With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
@@ -49,9 +49,9 @@ or
 conda install itables -c conda-forge
 ```
 
-## Activate ITables
+## Activate ITables in a Notebook
 
-Activate the interactive mode for all series and dataframes with
+Activate the interactive mode in notebook-like environment with `init_notebook_mode`:
 
 ```{code-cell}
 from itables import init_notebook_mode
@@ -70,6 +70,16 @@ df = get_countries(html=False)
 df
 ```
 
+If you prefer to render only certain tables using `itables`, or want
+to pass [advanced parameters](advanced_parameters.md) along with the
+DataFrame, use `show`:
+
+```{code-cell}
+from itables import show
+
+show(df, lengthMenu=[2, 5, 10, 25, 50, 100, 250])
+```
+
 ## Offline mode versus connected mode
 
 ITables use two Javascript libraries:
@@ -85,17 +95,6 @@ To do so, add the argument `connected=True` when you
 execute `init_notebook_mode`. This will also make your notebook lighter by
 about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py).
 
-## Using ITables for specific tables only
-
-If you prefer to render only certain series or dataframes using `itables`,
-then call `init_notebook_mode(all_interactive=False)` then `show`:
-
-```{code-cell}
-from itables import show
-
-show(df, lengthMenu=[2, 5, 10, 25, 50, 100, 250])
-```
-
 ## Try ITables on Binder
 
-You can run our examples notebooks directly on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs/quick_start.md), without having to install anything on your side.
+You can run the examples above (or any other documentation page) directly on ![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg), without having to install anything on your end - just click on the rocket icon at the top of the page.

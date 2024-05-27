@@ -1,19 +1,27 @@
 format: jb-book
 root: quick_start
 parts:
-  - caption: How to use DataTables
+  - caption: ITables in Notebooks
     chapters:
     - file: advanced_parameters
-    - file: formatting
     - file: custom_css
+    - file: formatting
+    - file: pandas_style
     - file: extensions
     - file: custom_extensions
-  - caption: ITables
+    - file: quarto
+    - file: downsampling
+    - file: references
+    - file: supported_editors
+  - caption: ITables in Applications
     chapters:
-      - file: supported_editors
-      - file: quarto
-      - file: downsampling
-      - file: references
+      - file: html_export
+      - file: dash
+      - file: shiny
+      - file: streamlit
+      - file: ipywidgets
+  - caption: Contributing to ITables
+    chapters:
       - file: contributing
       - file: developing
       - file: troubleshooting
@@ -22,4 +30,3 @@ parts:
     chapters:
     - file: sample_dataframes
     - file: polars_dataframes
-    - file: pandas_style

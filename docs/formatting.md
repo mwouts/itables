@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Formatting
+# Cell Formatting
 
 ## Formatting with Pandas
 
