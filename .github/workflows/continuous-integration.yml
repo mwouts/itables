@@ -94,6 +94,9 @@ jobs:
 
       - name: Upload coverage
         uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          verbose: true
 
   build:
     runs-on: ubuntu-latest

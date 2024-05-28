@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.1-dev (2024-06-??)
+------------------
+
+**Fixed**
+- We have adjusted the codecov settings ([#280](https://github.com/mwouts/itables/pull/280))
+
+
 2.1.0 (2024-05-27)
 ------------------
 

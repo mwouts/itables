@@ -1,0 +1,21 @@
+codecov:
+  token: cc72f10a-bed8-4475-a793-62b028610aa3
+  notify:
+    wait_for_ci: true
+
+coverage:
+  status:
+    project:
+      default: false
+      tests:
+        paths:
+          - "tests/"
+        target: 99%
+      source:
+        paths:
+          - "src/"
+        target: 93%
+        threshold: 0.002
+    patch:
+      default:
+        target: 80%
