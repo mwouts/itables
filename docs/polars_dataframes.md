@@ -148,7 +148,7 @@ show(dict_of_test_dfs["int_float_str"])
 ```{code-cell}
 :tags: [full-width]
 
-show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100, scrollX=True)
+show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
 ```
 
 ## long_column_names
@@ -156,7 +156,7 @@ show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100, scrollX=True)
 ```{code-cell}
 :tags: [full-width]
 
-show(dict_of_test_dfs["long_column_names"], scrollX=True)
+show(dict_of_test_dfs["long_column_names"])
 ```
 
 ## named_column_index

@@ -2,7 +2,7 @@
 
 ITables in version `2.1.0` or above can be used in Streamlit.
 
-To render a DataFrame with ITables in a Streamlit app, use `interactive_table`:
+To render a DataFrame with ITables in a Streamlit app, use `itables.streamlit.interactive_table`:
 ```
 from itables.streamlit import interactive_table
 ```
@@ -10,9 +10,6 @@ from itables.streamlit import interactive_table
 The function `interactive_table` accepts the same arguments as `show` and `to_html_datatable`, e.g. the
 first argument is the dataframe that will be displayed, and then you
 can set a `caption`, custom `classes` or `style`, and even activate the `buttons` extension, etc...
-
-Unlike `show`, `interactive_table` has `scrollX=True` by default. This makes the
-rendering of wide tables more similar to that of `show` in Notebooks.
 
 ## A sample application
 

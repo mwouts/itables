@@ -113,9 +113,9 @@ show(df, classes="display nowrap table_with_monospace_font")
 The `show` function has a `style` argument that determines the
 style for that particular table.
 
-The default value for `style` is `"table-layout:auto;width:auto;margin:auto;caption-side:bottom"`. When `scrollX` is `True`, `margin:auto` gets replaced with `margin:0` to avoid misaligned headers.
-Without `width:auto`, tables with few columns still take the full notebook width in Jupyter.
-Using `margin:auto` makes non-wide tables centered in Jupyter.
+The default value for `style` is `"table-layout:auto;width:auto;margin:auto;caption-side:bottom"`.
+Without `width:auto`, tables with few columns are stretched to fit the container width.
+Using `margin:auto` makes non-wide tables centered.
 
 ## Position and width
 
@@ -152,7 +152,6 @@ You can set a fixed width for all the columns with `"targets": "_all"`:
 show(
     df,
     columnDefs=[{"width": "120px", "targets": "_all"}],
-    scrollX=True,
     style="width:1200px",
     autoWidth=False,
 )

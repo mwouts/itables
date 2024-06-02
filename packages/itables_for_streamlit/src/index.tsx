@@ -11,10 +11,6 @@ let dt = new DataTable(table)
 function onRender(event: Event): void {
   // dt_args is the whole map of arguments passed on the Python side
   var other_args = (event as CustomEvent<RenderData>).detail.args.other_args
-
-  table.setAttribute('class', other_args.classes)
-  table.setAttribute('style', other_args.style)
-
   var dt_args = (event as CustomEvent<RenderData>).detail.args.dt_args
 
   if(other_args.downsampling_warning) {
@@ -26,6 +22,12 @@ function onRender(event: Event): void {
   // DataTable constructor, we call
   // destroy and then re-create the table
   dt.destroy()
+
+  // Set the class and style here otherwise the width
+  // might become a fixed width
+  table.setAttribute('class', other_args.classes)
+  table.setAttribute('style', other_args.style)
+
   dt = new DataTable(table, dt_args)
   if(other_args.caption) {
     dt.caption(other_args.caption)

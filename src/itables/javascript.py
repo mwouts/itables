@@ -461,7 +461,7 @@ def _raise_if_javascript_code(values, context=""):
         return
 
 
-def get_itables_extension_arguments(df, caption=None, scrollX=True, **kwargs):
+def get_itables_extension_arguments(df, caption=None, **kwargs):
     """
     This function returns two dictionaries that are JSON
     serializable and can be passed to the itables extensions.
@@ -474,8 +474,6 @@ def get_itables_extension_arguments(df, caption=None, scrollX=True, **kwargs):
         raise NotImplementedError(
             "Pandas style objects can't be used with the extension"
         )
-
-    kwargs["scrollX"] = scrollX
 
     set_default_options(
         kwargs,
@@ -623,8 +621,8 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
             kwargs[option] = getattr(opt, option)
 
     if kwargs.get("scrollX", False):
-        # column headers are misaligned if we let margin:auto
-        kwargs["style"] = kwargs["style"].replace(";margin:auto;", ";margin:0;")
+        # column headers are misaligned if we have margin:auto
+        kwargs["style"] = kwargs["style"].replace("margin:auto", "margin:0")
 
     for name, value in kwargs.items():
         if value is None:

@@ -135,7 +135,7 @@ You can replace the pagination with a [vertical scroll](https://datatables.net/e
 show(df, scrollY="200px", scrollCollapse=True, paging=False)
 ```
 
-In the context of the notebook, a horizontal scroll bar should appear when the table is too wide. In other contexts like here in Jupyter Book, you might want to use `scrollX = True`.
+Since ITables 2.1.2, the `.dt-layout-table` div has a default overflow equal to `auto`, so in most cases you won't need to use the `scrollX` option of datatables.
 
 ## Footer
 

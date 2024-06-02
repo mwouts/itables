@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.1.2 (2024-06-19)
+------------------
+
+**Changed**
+- The default CSS contains now has `overflow:auto` on `div.dt-layout-table>div`. Thanks to this we now get
+an automatic horizontal scrolling in Jupyter, Jupyter Book and also Streamlit if the table is too wide ([#282](https://github.com/mwouts/itables/pull/282)).
+
+
 2.1.1 (2024-06-08)
 ------------------
 
