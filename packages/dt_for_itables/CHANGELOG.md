@@ -1,3 +1,9 @@
+# 2.0.11 (2024-06-??)
+
+**Added**
+- The default CSS contains has `overflow:auto` on `.dt-layout-table>div`. This improves the horizontal scrolling in Jupyter, and discards the need for `scrollX` in Streamlit ([#282](https://github.com/mwouts/itables/pull/282))
+
+
 # 2.0.10 (2024-06-08)
 
 **Added**

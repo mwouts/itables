@@ -28,7 +28,8 @@ classes = "display nowrap"
 - 'margin:auto' to center the table.
 Combine multiple options using ';'.
 
-NB: When scrollX=true, the default is changed to "margin:0;caption-side:bottom"
+NB: When scrollX=true, "margin:auto" is replaced with "margin:0"
+to avoid an issue with misaligned headers
 """
 style = "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
 
