@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .utils import UNPKG_DT_BUNDLE_CSS, UNPKG_DT_BUNDLE_URL
+from .utils import UNPKG_DT_BUNDLE_CSS_NO_VERSION, UNPKG_DT_BUNDLE_URL_NO_VERSION
 from .version import __version__ as itables_version
 
 try:
@@ -738,17 +738,21 @@ def html_table_from_template(
     output = read_package_file("html/datatables_template.html")
     if connected:
         assert dt_url.endswith(".js")
-        output = replace_value(output, UNPKG_DT_BUNDLE_URL, dt_url)
+        output = replace_value(output, UNPKG_DT_BUNDLE_URL_NO_VERSION, dt_url)
         output = replace_value(
             output,
-            UNPKG_DT_BUNDLE_CSS,
+            UNPKG_DT_BUNDLE_CSS_NO_VERSION,
             dt_url[:-3] + ".css",
         )
     else:
-        connected_style = f'<link href="{UNPKG_DT_BUNDLE_CSS}" rel="stylesheet">\n'
+        connected_style = (
+            f'<link href="{UNPKG_DT_BUNDLE_CSS_NO_VERSION}" rel="stylesheet">\n'
+        )
         output = replace_value(output, connected_style, "")
         connected_import = (
-            "import {DataTable, jQuery as $} from '" + UNPKG_DT_BUNDLE_URL + "';"
+            "import {DataTable, jQuery as $} from '"
+            + UNPKG_DT_BUNDLE_URL_NO_VERSION
+            + "';"
         )
         local_import = (
             "const { DataTable, jQuery: $ } = await import(window."

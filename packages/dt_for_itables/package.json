@@ -1,9 +1,20 @@
 {
   "name": "dt_for_itables",
-  "version": "2.0.7",
+  "version": "2.0.10",
   "description": "DataTables bundle for itables",
   "main": "src/index.js",
   "typings": "src/index.d.js",
+  "files": [
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "dt_bundle.js",
+    "dt_bundle.css",
+    "package.json",
+    "src/index.js",
+    "src/index.css",
+    "src/index.d.ts"
+  ],
   "scripts": {
     "build:js": "esbuild src/index.js --format=esm --bundle --outfile=dt_bundle.js --minify",
     "install:js": "cp dt_bundle.js dt_bundle.css  ../../src/itables/html",

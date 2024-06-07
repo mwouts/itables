@@ -5,14 +5,13 @@ import pytest
 import requests
 
 from itables.javascript import (
-    UNPKG_DT_BUNDLE_CSS,
-    UNPKG_DT_BUNDLE_URL,
     _df_fits_in_one_page,
     _tfoot_from_thead,
     check_table_id,
     replace_value,
     to_html_datatable,
 )
+from itables.utils import UNPKG_DT_BUNDLE_CSS, UNPKG_DT_BUNDLE_URL
 
 
 def test_replace_value(
