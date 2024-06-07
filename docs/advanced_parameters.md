@@ -59,20 +59,8 @@ You can set additional `tags` on the table like e.g. a [caption](https://datatab
 show(df, "Countries from the World Bank Database")
 ```
 
-The caption appears at the bottom of the table by default (except
-in Jupyter Book). This is governed by `caption-side:bottom`
-in the [`style` option](style).
-
-You can also override the location of the caption in the caption tag itself:
-
-```{code-cell}
-:tags: [full-width]
-
-show(
-    df,
-    tags='<caption style="caption-side: bottom">Countries from the World Bank Database</caption>',
-)
-```
+The caption appears at the bottom of the table by default: this is governed by `caption-side:bottom`
+in the [`style` option](style) (but for some reason this is not effective in Jupyter Book 😕).
 
 (layout)=
 ## Table layout

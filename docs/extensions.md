@@ -102,6 +102,12 @@ show(
 )
 ```
 
+```{tip}
+Only the filtered or selected rows are exported to CSV/Excel. To filter the rows you
+can use the simple search box, the [SearchPanes](#searchpanes) and [SearchBuilder](#searchbuilder)
+options, or the [select](#row-selection) extension.
+```
+
 ```{warning}
 At the moment, the CSV and Excel buttons don't work well with large tables in some browsers.
 Please subscribe to [#251](https://github.com/mwouts/itables/issues/251) if you wish to receive updates on this.
@@ -110,6 +116,64 @@ Please subscribe to [#251](https://github.com/mwouts/itables/issues/251) if you 
 ```{warning}
 The PDF button is not included in ITables' DataTable bundle. This is because the required PDF libraries
 have a large footprint on the bundle size. Still, you can add it to your custom bundle, see the next chapter.
+```
+
+## Column Visibility
+
+The [column visibility](https://datatables.net/extensions/buttons/examples/column_visibility/index.html)
+buttons of DataTables let you select which columns are visible.
+
+```{code-cell}
+:tags: [full-width]
+
+show(
+    # column visibility works best with a flat header
+    df.reset_index(),
+    buttons=["columnsToggle"],
+)
+```
+
+```{tip}
+The column visibility button is available under many forms.
+
+Check-out `buttons=["colvis"]`
+for a [single](https://datatables.net/extensions/buttons/examples/column_visibility/simple.html) button.
+Extend the `colvis` button with the
+[collection layout](https://datatables.net/extensions/buttons/examples/column_visibility/layout.html).
+
+As always, when porting examples from DataTables to ITables, you will
+have to convert the JavaScript notation (left) to Python (right) as in the below:
+::::{grid}
+
+:::{grid-item}
+:outline:
+:columns: 6
+~~~javascript
+buttons: [
+    {
+        extend: 'colvis',
+        collectionLayout: 'fixed columns',
+        popoverTitle: 'Column visibility control'
+    }
+]
+~~~
+:::
+:::{grid-item}
+:outline:
+:columns: 6
+~~~python
+buttons = [
+    {
+        "extend": "colvis",
+        "collectionLayout": "fixed columns",
+        "popoverTitle": "Column visibility control"
+    }
+]
+~~~
+:::
+
+::::
+
 ```
 
 ## SearchPanes
@@ -195,6 +259,32 @@ opt.keys = True
 
 ```{warning}
 The KeyTable extension works in Jupyter Book (try it here in the documentation) but not in JupyterLab.
+```
+
+## Row selection
+
+The [select](https://datatables.net/extensions/select) extension let you select rows (or cells). When you do so,
+only the selected rows are exported
+
+```{code-cell}
+:tags: [full-width]
+
+show(df, select=True, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
+```
+
+```{tip}
+The `select` option accept multiple values, as documented [here](https://datatables.net/extensions/select):
+- `select=True` or `select="os"` let you select using single click, shift-click and ctrl-click
+- `select="single"` let you select a single row
+- `select="multi"` for single click selection of multiple rows, `select="multi+shift"`, ...
+
+With `select={"style": "os", "items": "cell"}` you can let the user select specific cells,
+however cell selection is not taken into account when exporting the data.
+```
+
+```{tip}
+At the moment it is not possible to get the selected rows back in Python. Please subscribe to
+[#250](https://github.com/mwouts/itables/issues/250) to get updates on this topic.
 ```
 
 ## RowGroup

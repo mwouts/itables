@@ -8,6 +8,10 @@ ITables ChangeLog
 - We have added an explicit `encoding` argument in the calls to `read_text` to address an issue seen on Windows ([#252](https://github.com/mwouts/itables/issues/252)).
 - We have adjusted the codecov settings ([#280](https://github.com/mwouts/itables/pull/280))
 
+**Changed**
+- We have added a default css on `dt-container` equal to `{max-width:100%}`.
+- We have updated `datatables.net-dt` to `2.0.8`, and included the [column visibility button](https://datatables.net/extensions/buttons/examples/column_visibility/simple.html) in the `dt_for_itables` package ([#284](https://github.com/mwouts/itables/issues/284))
+
 
 2.1.0 (2024-05-27)
 ------------------
