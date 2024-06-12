@@ -7,6 +7,7 @@ dependencies:
   - python
   - jupyter
   - jupyterlab>=4
+  - jupyter-book
   - jupytext
   - nbconvert
   - ipykernel
@@ -26,4 +27,3 @@ dependencies:
   - streamlit
   - pip:
     - world_bank_data
-    - jupyter_book
