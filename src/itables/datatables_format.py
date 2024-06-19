@@ -121,12 +121,17 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
             or (x.dtype == pl.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
             for x in (df[col] for col in df.columns)
         )
+        data = replace_dicts_with_strings(data)
         js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
 
     if has_bigints:
         js = n_suffix_for_bigints(js, pure_json=pure_json)
 
     return js
+
+
+def replace_dicts_with_strings(data):
+    return [[str(x) if isinstance(x, dict) else x for x in row] for row in data]
 
 
 def n_suffix_for_bigints(js, pure_json=False):
