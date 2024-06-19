@@ -42,11 +42,13 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12"]
         pandas-version: [latest]
+        numpy-version: [latest]
         include:
           - python-version: 3.7
             pandas-version: '<1.0'
           - python-version: 3.9
             pandas-version: '<2.0'
+            numpy-version: '<2.0'
           - python-version: "3.12"
             pandas-version: pre
             polars: true
@@ -77,6 +79,9 @@ jobs:
       - name: Install pandas ${{ matrix.pandas-version }}
         if: matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
         run: pip install 'pandas${{ matrix.pandas-version }}'
+      - name: Install numpy ${{ matrix.numpy-version }}
+        if: matrix.numpy-version != 'latest'
+        run: pip install 'numpy${{ matrix.numpy-version }}'
 
       - name: Install polars
         if: matrix.polars
