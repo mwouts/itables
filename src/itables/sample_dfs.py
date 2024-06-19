@@ -136,7 +136,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             {
                 "int": [0.0, 1],
                 "inf": [np.inf, -np.inf],
-                "nan": [np.NaN, -np.NaN],
+                "nan": [np.nan, -np.nan],
                 "math": [math.pi, math.e],
             }
         ),
