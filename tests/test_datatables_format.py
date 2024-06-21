@@ -154,3 +154,19 @@ def test_encode_max_int(large):
 def test_encode_not_max_int(large):
     large //= 10
     assert n_suffix_for_bigints(json.dumps([large])) == "[{}]".format(large)
+
+
+def test_encode_mixed_contents():
+    # Make sure that the bigint escape works for mixed content # 291
+    df = pd.DataFrame(
+        {
+            "bigint": [1666767918216000000],
+            "int": [1699300000000],
+            "float": [0.9510565400123596],
+            "neg": [-0.30901700258255005],
+        }
+    )
+    assert (
+        datatables_rows(df)
+        == '[[BigInt("1666767918216000000"), 1699300000000, 0.951057, -0.309017]]'
+    )
