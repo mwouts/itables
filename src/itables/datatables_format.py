@@ -129,7 +129,15 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
 def n_suffix_for_bigints(js, pure_json=False):
     def n_suffix(matchobj):
         if pure_json:
-            return '"' + matchobj.group(1) + '"' + matchobj.group(2)
-        return 'BigInt("' + matchobj.group(1) + '")' + matchobj.group(2)
+            return matchobj.group(1) + '"' + matchobj.group(2) + '"' + matchobj.group(3)
+        return (
+            matchobj.group(1)
+            + 'BigInt("'
+            + matchobj.group(2)
+            + '")'
+            + matchobj.group(3)
+        )
 
-    return re.sub(r"(-?\d{16,})(,|])", n_suffix, js)
+    big_int_re = re.compile(r"^([\[\s]+)(-?\d{16,})(\]*)$")
+    parts = js.split(",")
+    return ",".join(re.sub(big_int_re, n_suffix, part) for part in parts)

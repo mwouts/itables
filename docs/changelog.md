@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.3 (2024-06-22)
+------------------
+
+**Fixed**
+- We have improved the detection of large integers in the context of Polars DataFrames ([#291](https://github.com/mwouts/itables/issues/291))
+
+
 2.1.2 (2024-06-19)
 ------------------
 
@@ -9,7 +16,7 @@ ITables ChangeLog
 an automatic horizontal scrolling in Jupyter, Jupyter Book and also Streamlit if the table is too wide ([#282](https://github.com/mwouts/itables/pull/282)).
 
 **Fixed**
-- The dependencies of the streamlit components have been updated to fix a vulnerability in `ws` ([Alert #1](https://github.com/mwouts/itables/security/dependabot/1))
+- The dependencies of the streamlit components have been updated to fix a vulnerability in `ws` ([Alert 1](https://github.com/mwouts/itables/security/dependabot/1))
 
 
 2.1.1 (2024-06-08)
