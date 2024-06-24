@@ -1,10 +1,12 @@
 ITables ChangeLog
 =================
 
-2.1.5-dev (2024-09-??)
+2.1.5 (2024-09-08)
 ------------------
 
 **Fixed**
+- DataTables was updated to its latest version (2.1.6)
+- We have added the DateTime extension, required by SearchTime when showing dates ([#288](https://github.com/mwouts/itables/issues/288))
 - We have improved the function that determines whether a dark theme is being used ([#294](https://github.com/mwouts/itables/issues/294))
 - We have adjusted the generation of the Polars sample dataframes to fix the CI ([Polars-18130](https://github.com/pola-rs/polars/issues/18130))
 - The test on the Shiny app fallbacks to `ui.nav_panel` when `ui.nav` is not available

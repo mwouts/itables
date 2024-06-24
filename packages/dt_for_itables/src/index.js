@@ -20,6 +20,9 @@ import 'datatables.net-keytable-dt/css/keyTable.dataTables.min.css';
 import 'datatables.net-rowgroup-dt';
 import 'datatables.net-rowgroup-dt/css/rowGroup.dataTables.min.css';
 
+import DateTime from 'datatables.net-datetime';
+import 'datatables.net-datetime/dist/dataTables.dateTime.min.css';
+
 import 'datatables.net-searchbuilder-dt';
 import 'datatables.net-searchbuilder-dt/css/searchBuilder.dataTables.min.css';
 
@@ -31,6 +34,6 @@ import 'datatables.net-select-dt/css/select.dataTables.min.css';
 
 import './index.css';
 
-export { DataTable, jQuery };
+export { DataTable, DateTime, jQuery };
 
 export default DataTable;

@@ -15,7 +15,7 @@ npm run build:js
 
 Run
 ```bash
-npm update
+npm update --save
 ```
 and check whether there are any outdated package with `npm outdated`.
 
