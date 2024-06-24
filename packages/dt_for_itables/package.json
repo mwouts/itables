@@ -1,6 +1,6 @@
 {
   "name": "dt_for_itables",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "DataTables bundle for itables",
   "main": "src/index.js",
   "typings": "src/index.d.js",
@@ -25,11 +25,13 @@
   "dependencies": {
     "datatables.net-buttons": "^3.0.1",
     "datatables.net-buttons-dt": "^3.0.1",
-    "datatables.net-dt": "^2.0.7",
+    "datatables.net-datetime": "^1.5.2",
+    "datatables.net-dt": "^2.0.8",
     "datatables.net-fixedcolumns-dt": "^5.0.0",
     "datatables.net-keytable-dt": "^2.12.0",
+    "datatables.net-plugins": "^2.0.8",
     "datatables.net-rowgroup-dt": "^1.5.0",
-    "datatables.net-searchbuilder-dt": "^1.7.0",
+    "datatables.net-searchbuilder-dt": "^1.7.1",
     "datatables.net-searchpanes-dt": "^2.3.0",
     "datatables.net-select-dt": "^2.0.2",
     "jquery": "^3.7.1",

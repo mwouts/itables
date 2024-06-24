@@ -1,4 +1,9 @@
-# 2.0.11 (2024-06-??)
+# 2.0.12 (2024-06-19)
+
+- We have added the datetime extension for DataTables ([#288](https://github.com/mwouts/itables/issues/288))
+
+
+# 2.0.11 (2024-06-19)
 
 **Added**
 - The default CSS contains has `overflow:auto` on `.dt-layout-table>div`. This improves the horizontal scrolling in Jupyter, and discards the need for `scrollX` in Streamlit ([#282](https://github.com/mwouts/itables/pull/282))

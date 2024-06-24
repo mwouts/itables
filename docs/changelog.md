@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.4 (2024-06-24)
+------------------
+
+**Fixed**
+- The DateTime extension, required by SearchTime when showing dates, is now included in the `dt_for_itables` bundle ([#288](https://github.com/mwouts/itables/issues/288))
+
+
 2.1.3 (2024-06-22)
 ------------------
 
