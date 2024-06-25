@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.4 (2024-07-03)
+------------------
+
+**Fixed**
+- We have fixed an OverflowError (_can't convert negative int to unsigned_) when displaying Polars DataFrames that contain unsigned integers ([#299](https://github.com/mwouts/itables/issues/299))
+
+
 2.1.3 (2024-06-22)
 ------------------
 

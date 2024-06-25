@@ -301,9 +301,9 @@ def get_dict_of_test_series(polars=False):
 
         # Add a Polar table with unsigned integers
         # https://github.com/mwouts/itables/issues/192
-        polars_series["u32"] = (
-            pl.DataFrame({"foo": [1, 1, 3, 1]}).groupby("foo").count()
-        )
+        # https://github.com/mwouts/itables/issues/299
+        polars_series["u32"] = pl.Series([1, 2, 5]).cast(pl.UInt32)
+        polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
 
         return polars_series
 

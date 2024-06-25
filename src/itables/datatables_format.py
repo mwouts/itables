@@ -114,8 +114,11 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
         import polars as pl
 
         has_bigints = any(
-            x.dtype in [pl.Int64, pl.UInt64]
-            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
+            (
+                x.dtype == pl.Int64
+                and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
+            )
+            or (x.dtype == pl.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
             for x in (df[col] for col in df.columns)
         )
         js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
