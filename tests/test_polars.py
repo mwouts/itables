@@ -38,3 +38,16 @@ def test_encode_mixed_contents():
         datatables_rows(df)
         == '[[BigInt("1666767918216000000"), 1699300000000, 0.9510565400123596, -0.30901700258255005]]'
     )
+
+
+def test_value_counts_shown_as_string():
+    """
+    We don't want to pass dicts to datatable
+    as these appear as 'Object', cf. #290
+    """
+    count = polars.DataFrame(["id_1"], schema={"col_1"}).select(
+        polars.col("col_1").value_counts()
+    )
+    assert datatables_rows(count) == [
+        ["{'col_1': 'id_1', 'count': 1}"]
+    ]  # e.g. a str, not a dict
