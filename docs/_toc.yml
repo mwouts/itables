@@ -9,6 +9,7 @@ parts:
     - file: pandas_style
     - file: extensions
     - file: custom_extensions
+    - file: dark_mode
     - file: quarto
     - file: downsampling
     - file: references
