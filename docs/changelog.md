@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.5-dev (2024-07-??)
+------------------
+
+**Added**
+- We have improved the function that determines whether a dark theme is being used ([#294](https://github.com/mwouts/itables/issues/294))
+
+
 2.1.4 (2024-07-03)
 ------------------
 

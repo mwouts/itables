@@ -27,7 +27,7 @@ def test_connected_notebook_is_small(tmp_path, display_logo_when_loading):
     )
     jupytext([str(nb_py), "--to", "ipynb", "--set-kernel", "itables", "--execute"])
     assert nb_ipynb.exists()
-    assert nb_ipynb.stat().st_size < (8500 if display_logo_when_loading else 5000)
+    assert nb_ipynb.stat().st_size < (9000 if display_logo_when_loading else 5000)
 
 
 def test_offline_notebook_is_not_too_large(tmp_path):
