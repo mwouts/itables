@@ -1,4 +1,29 @@
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
+<style>
+    .change-into-page-button{
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 1.5em;
+        padding: .5em 1em;
+        margin-left: 2px;
+        text-align: center;
+        text-decoration: none!important;
+        cursor: pointer;
+        border-radius: 2px;
+        color: inherit!important;
+        border: 1px solid rgba(0,0,0,.3);
+        background: linear-gradient(to bottom,#e6e6e60d,#0000000d);
+    }
+
+
+</style>
+<div style="float: right; color: #BBB; font-size: 13.333px;">
+    <div style="margin-top: 10px;">
+        跳转到第 <input type="number" id="jumpPageInputtable_id" min="1" style="width: 35px;"> 页
+        <button id="jumpPageBtntable_id" class="change-into-page-button">跳转</button>
+    </div>
+</div>
+
 <link href="https://www.unpkg.com/dt_for_itables/dt_bundle.css" rel="stylesheet">
 <script type="module">
     import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables/dt_bundle.js';
@@ -12,6 +37,33 @@
         dt_args["data"] = data;
 
         // [pre-dt-code]
-        new DataTable(table, dt_args);
+        var dataTable = new DataTable(table, dt_args);
+
+        // ---------------------------hack for pagination jump start---------------------------------
+
+        $('#jumpPageBtntable_id').click(() => {
+                const pageNum = parseInt($('#jumpPageInputtable_id').val()) - 1;
+                const totalPages = dataTable.page.info().pages;
+
+                if (pageNum >= 0 && pageNum < totalPages) {
+                    dataTable.page(pageNum).draw('page');
+                } else {
+                    alert(`请输入有效的页码！(1-${totalPages})`);
+                }
+            });
+
+        setTimeout(() => {
+            document.querySelectorAll('.dt-paging').forEach(dtEndElement => {
+                if (dtEndElement.closest(`#${table.id}_wrapper`)) {
+                    dtEndElement.addEventListener('click', event => {
+                        const buttonText = event.target.textContent || event.target.innerText;
+                        document.getElementById('jumpPageInputtable_id').value = parseFloat(buttonText.replace(/,/g, ""));
+                    });
+                }
+            });
+        }, 500);
+        // ---------------------------hack for pagination jump end---------------------------------
+
+
     });
 </script>
