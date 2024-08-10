@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -423,6 +423,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev-2024-08">2.1.5-dev (2024-08-??)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.1.4 (2024-07-03)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.1.3 (2024-06-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.1.2 (2024-06-19)</a></li>
@@ -488,6 +489,14 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="itables-changelog">
 <h1>ITables ChangeLog<a class="headerlink" href="#itables-changelog" title="Link to this heading">#</a></h1>
+<section id="dev-2024-08">
+<h2>2.1.5-dev (2024-08-??)<a class="headerlink" href="#dev-2024-08" title="Link to this heading">#</a></h2>
+<p><strong>Fixed</strong></p>
+<ul class="simple">
+<li><p>We have adjusted the generation of the Polars sample dataframes to fix the CI (<a class="reference external" href="https://github.com/pola-rs/polars/issues/18130">Polars-18130</a>)</p></li>
+<li><p>The test on the Shiny app fallbacks to <code class="docutils literal notranslate"><span class="pre">ui.nav_panel</span></code> when <code class="docutils literal notranslate"><span class="pre">ui.nav</span></code> is not available</p></li>
+</ul>
+</section>
 <section id="id1">
 <h2>2.1.4 (2024-07-03)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p><strong>Fixed</strong></p>
@@ -1090,6 +1099,7 @@ and <a class="reference external" href="https://github.com/fwouts">François Wou
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev-2024-08">2.1.5-dev (2024-08-??)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.1.4 (2024-07-03)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.1.3 (2024-06-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.1.2 (2024-06-19)</a></li>
