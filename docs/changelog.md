@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.1.5-dev (2024-08-??)
+------------------
+
+**Fixed**
+- We have adjusted the generation of the Polars sample dataframes to fix the CI ([Polars-18130](https://github.com/pola-rs/polars/issues/18130))
+
+
 2.1.4 (2024-07-03)
 ------------------
 
