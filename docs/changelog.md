@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have adjusted the generation of the Polars sample dataframes to fix the CI ([Polars-18130](https://github.com/pola-rs/polars/issues/18130))
+- The test on the Shiny app fallbacks to `ui.nav_panel` when `ui.nav` is not available
 
 
 2.1.4 (2024-07-03)
