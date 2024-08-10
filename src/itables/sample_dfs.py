@@ -267,9 +267,15 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
         import pyarrow as pa
 
         polars_dfs = {}
-        for key in test_dfs:
+        for key, df in test_dfs.items():
+            if key == "multiindex":
+                # Since Polars 1.2, pl.from_pandas fails with this error:
+                # ValueError: Pandas dataframe contains non-unique indices and/or column names.
+                # Polars dataframes require unique string names for columns.
+                # See https://github.com/pola-rs/polars/issues/18130
+                df.index = df.index.tolist()
             try:
-                polars_dfs[key] = pl.from_pandas(test_dfs[key])
+                polars_dfs[key] = pl.from_pandas(df)
             except (pa.ArrowInvalid, ValueError):
                 pass
         return polars_dfs
