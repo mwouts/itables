@@ -423,8 +423,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-sample-application">A sample application</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations-of-itables-in-streamlit">Limitations of ITables in Streamlit</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workaround">Workaround</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-developments">Future developments</a></li>
 </ul>
             </nav>
@@ -439,23 +439,18 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="streamlit">
 <h1>Streamlit<a class="headerlink" href="#streamlit" title="Link to this heading">#</a></h1>
-<p>ITables in version <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code> or above can be used in Streamlit.</p>
-<p>To render a DataFrame with ITables in a Streamlit app, use <code class="docutils literal notranslate"><span class="pre">itables.streamlit.interactive_table</span></code>:</p>
+<p>To display Python DataFrames as interactive DataTables in Streamlit applications, use</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itables.streamlit</span> <span class="kn">import</span> <span class="n">interactive_table</span>
 </pre></div>
 </div>
-<p>The function <code class="docutils literal notranslate"><span class="pre">interactive_table</span></code> accepts the same arguments as <code class="docutils literal notranslate"><span class="pre">show</span></code> and <code class="docutils literal notranslate"><span class="pre">to_html_datatable</span></code>, e.g. the
-first argument is the dataframe that will be displayed, and then you
-can set a <code class="docutils literal notranslate"><span class="pre">caption</span></code>, custom <code class="docutils literal notranslate"><span class="pre">classes</span></code> or <code class="docutils literal notranslate"><span class="pre">style</span></code>, and even activate the <code class="docutils literal notranslate"><span class="pre">buttons</span></code> extension, etc…</p>
-<section id="a-sample-application">
-<h2>A sample application<a class="headerlink" href="#a-sample-application" title="Link to this heading">#</a></h2>
-<p>A sample Streamlit application is available at <a class="reference external" href="https://itables.streamlit.app">itables.streamlit.app</a> (source code <a class="reference external" href="https://github.com/mwouts/demo_itables_in_streamlit/blob/main/itables_app.py">here</a>)</p>
+<p>We have a sample application available at <a class="reference external" href="https://itables.streamlit.app">https://itables.streamlit.app</a> (source code <a class="reference external" href="https://github.com/mwouts/demo_itables_in_streamlit/blob/main/itables_app.py">here</a>)</p>
+<div class="full-width docutils">
 <iframe src="https://itables.streamlit.app?embed=true"
 style="height: 600px; width: 100%;"></iframe>
-</section>
-<section id="limitations-of-itables-in-streamlit">
-<h2>Limitations of ITables in Streamlit<a class="headerlink" href="#limitations-of-itables-in-streamlit" title="Link to this heading">#</a></h2>
-<p>From a user perspective, you will be able to use <code class="docutils literal notranslate"><span class="pre">interactive_table</span></code> in a
+</div>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
+<p>In most cases, you will be able to use <code class="docutils literal notranslate"><span class="pre">interactive_table</span></code> in a
 Streamlit application in the same way that you use <code class="docutils literal notranslate"><span class="pre">show</span></code> in notebooks.</p>
 <p>Due to implementation constraints, the Streamlit component has some limitations
 that <code class="docutils literal notranslate"><span class="pre">show</span></code> does not have:</p>
@@ -467,6 +462,21 @@ the Streamlit component needs to pass the table data to the frontend in JSON for
 <li><p>JavaScript callbacks like custom formatting functions are not supported</p></li>
 <li><p>The interactive table is rendered within an iframe that has a fixed weight. This does not work well with the <code class="docutils literal notranslate"><span class="pre">lengthMenu</span></code> control, nor with the advanced filtering extensions (if that is an issue for you, please subscribe or contribute to <a class="reference external" href="https://github.com/mwouts/itables/issues/275">#275</a>).</p></li>
 </ul>
+</section>
+<section id="workaround">
+<h2>Workaround<a class="headerlink" href="#workaround" title="Link to this heading">#</a></h2>
+<p>If you hit one of the limitations above, you can fallback to using <code class="docutils literal notranslate"><span class="pre">to_html_datatable</span></code> in combination with Streamlit’s <code class="docutils literal notranslate"><span class="pre">html</span></code> function.</p>
+<p>Please note that:</p>
+<ul class="simple">
+<li><p>you will have to specify the table height manually,</p></li>
+<li><p>an internet connection is required when using <code class="docutils literal notranslate"><span class="pre">to_html_datatable</span></code>,</p></li>
+<li><p>the app/table might take longer to display.</p></li>
+</ul>
+<p>A sample application is available at <a class="reference external" href="https://to-html-datatable.streamlit.app">https://to-html-datatable.streamlit.app</a> (source code <a class="reference external" href="https://github.com/mwouts/to_html_datatable_in_streamlit/blob/main/itables_app.py">here</a>)</p>
+<div class="full-width docutils">
+<iframe src="https://to-html-datatable.streamlit.app?embed=true"
+style="height: 600px; width: 100%;"></iframe>
+</div>
 </section>
 <section id="future-developments">
 <h2>Future developments<a class="headerlink" href="#future-developments" title="Link to this heading">#</a></h2>
@@ -542,8 +552,8 @@ the Streamlit component needs to pass the table data to the frontend in JSON for
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-sample-application">A sample application</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations-of-itables-in-streamlit">Limitations of ITables in Streamlit</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workaround">Workaround</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-developments">Future developments</a></li>
 </ul>
   </nav></div>
