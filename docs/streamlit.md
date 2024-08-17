@@ -1,26 +1,21 @@
 # Streamlit
 
-ITables in version `2.1.0` or above can be used in Streamlit.
+To display Python DataFrames as interactive DataTables in Streamlit applications, use
 
-To render a DataFrame with ITables in a Streamlit app, use `itables.streamlit.interactive_table`:
 ```
 from itables.streamlit import interactive_table
 ```
 
-The function `interactive_table` accepts the same arguments as `show` and `to_html_datatable`, e.g. the
-first argument is the dataframe that will be displayed, and then you
-can set a `caption`, custom `classes` or `style`, and even activate the `buttons` extension, etc...
+We have a sample application available at https://itables.streamlit.app (source code [here](https://github.com/mwouts/demo_itables_in_streamlit/blob/main/itables_app.py))
 
-## A sample application
-
-A sample Streamlit application is available at [itables.streamlit.app](https://itables.streamlit.app) (source code [here](https://github.com/mwouts/demo_itables_in_streamlit/blob/main/itables_app.py))
-
+```{div} full-width
 <iframe src="https://itables.streamlit.app?embed=true"
 style="height: 600px; width: 100%;"></iframe>
+```
 
-## Limitations of ITables in Streamlit
+## Limitations
 
-From a user perspective, you will be able to use `interactive_table` in a
+In most cases, you will be able to use `interactive_table` in a
 Streamlit application in the same way that you use `show` in notebooks.
 
 Due to implementation constraints, the Streamlit component has some limitations
@@ -31,6 +26,22 @@ the Streamlit component needs to pass the table data to the frontend in JSON for
 - Complex column headers might look different than in notebooks, and HTML in columns is not supported
 - JavaScript callbacks like custom formatting functions are not supported
 - The interactive table is rendered within an iframe that has a fixed weight. This does not work well with the `lengthMenu` control, nor with the advanced filtering extensions (if that is an issue for you, please subscribe or contribute to [#275](https://github.com/mwouts/itables/issues/275)).
+
+## Workaround
+
+If you hit one of the limitations above, you can fallback to using `to_html_datatable` in combination with Streamlit's `html` function.
+
+Please note that:
+- you will have to specify the table height manually,
+- an internet connection is required when using `to_html_datatable`,
+- the app/table might take longer to display.
+
+A sample application is available at https://to-html-datatable.streamlit.app (source code [here](https://github.com/mwouts/to_html_datatable_in_streamlit/blob/main/itables_app.py))
+
+```{div} full-width
+<iframe src="https://to-html-datatable.streamlit.app?embed=true"
+style="height: 600px; width: 100%;"></iframe>
+```
 
 ## Future developments
 
