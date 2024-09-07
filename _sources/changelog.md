@@ -1,12 +1,14 @@
 ITables ChangeLog
 =================
 
-2.1.5-dev (2024-08-??)
+2.1.5-dev (2024-09-??)
 ------------------
 
 **Fixed**
+- We have improved the function that determines whether a dark theme is being used ([#294](https://github.com/mwouts/itables/issues/294))
 - We have adjusted the generation of the Polars sample dataframes to fix the CI ([Polars-18130](https://github.com/pola-rs/polars/issues/18130))
 - The test on the Shiny app fallbacks to `ui.nav_panel` when `ui.nav` is not available
+- The dependencies of the streamlit component have been updated ([#313](https://github.com/mwouts/itables/issues/313), [#315](https://github.com/mwouts/itables/issues/315))
 
 
 2.1.4 (2024-07-03)

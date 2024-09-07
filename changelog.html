@@ -187,6 +187,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pandas_style.html">Using Pandas Style</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extensions.html">Download Buttons and Other Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_extensions.html">Custom Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dark_mode.html">Dark Themes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quarto.html">Quarto</a></li>
 <li class="toctree-l1"><a class="reference internal" href="downsampling.html">Downsampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
@@ -423,7 +424,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev-2024-08">2.1.5-dev (2024-08-??)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev-2024-09">2.1.5-dev (2024-09-??)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.1.4 (2024-07-03)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.1.3 (2024-06-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.1.2 (2024-06-19)</a></li>
@@ -489,12 +490,14 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="itables-changelog">
 <h1>ITables ChangeLog<a class="headerlink" href="#itables-changelog" title="Link to this heading">#</a></h1>
-<section id="dev-2024-08">
-<h2>2.1.5-dev (2024-08-??)<a class="headerlink" href="#dev-2024-08" title="Link to this heading">#</a></h2>
+<section id="dev-2024-09">
+<h2>2.1.5-dev (2024-09-??)<a class="headerlink" href="#dev-2024-09" title="Link to this heading">#</a></h2>
 <p><strong>Fixed</strong></p>
 <ul class="simple">
+<li><p>We have improved the function that determines whether a dark theme is being used (<a class="reference external" href="https://github.com/mwouts/itables/issues/294">#294</a>)</p></li>
 <li><p>We have adjusted the generation of the Polars sample dataframes to fix the CI (<a class="reference external" href="https://github.com/pola-rs/polars/issues/18130">Polars-18130</a>)</p></li>
 <li><p>The test on the Shiny app fallbacks to <code class="docutils literal notranslate"><span class="pre">ui.nav_panel</span></code> when <code class="docutils literal notranslate"><span class="pre">ui.nav</span></code> is not available</p></li>
+<li><p>The dependencies of the streamlit component have been updated (<a class="reference external" href="https://github.com/mwouts/itables/issues/313">#313</a>, <a class="reference external" href="https://github.com/mwouts/itables/issues/315">#315</a>)</p></li>
 </ul>
 </section>
 <section id="id1">
@@ -1099,7 +1102,7 @@ and <a class="reference external" href="https://github.com/fwouts">François Wou
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev-2024-08">2.1.5-dev (2024-08-??)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev-2024-09">2.1.5-dev (2024-09-??)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.1.4 (2024-07-03)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.1.3 (2024-06-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.1.2 (2024-06-19)</a></li>
