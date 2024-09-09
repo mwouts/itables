@@ -132,19 +132,17 @@ def generate_init_offline_itables_html(dt_bundle: Path):
     dt_css = dt_bundle.with_suffix(".css").read_text(encoding="utf-8")
     dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
 
-    id = "itables_init_notebook_mode_" + str(uuid.uuid4()).replace("-", "_")
-
     return f"""<style>{dt_css}</style>
-<div id="{id}" style="vertical-align:middle; text-align:left">
-{get_animated_logo(opt.display_logo_when_loading)}<div>
-This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}<br>
-(you should not see this message - is your notebook <it>trusted</it>?)
-</div>
-</div>
+<div style="vertical-align:middle; text-align:left">
 <script>
 window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}";
-document.querySelectorAll("#{id}").forEach(e => e.remove());
 </script>
+<noscript>
+{get_animated_logo(opt.display_logo_when_loading)}
+This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}<br>
+(you should not see this message - is your notebook <it>trusted</it>?)
+</noscript>
+</div>
 """
 
 
