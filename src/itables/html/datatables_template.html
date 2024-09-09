@@ -4,6 +4,9 @@
     import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables/dt_bundle.js';
 
     document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
+        if (!(table instanceof HTMLTableElement))
+            return;
+
         // Define the table data
         const data = [];
 

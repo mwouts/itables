@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.2.2-dev (2024-09-??)
+------------------
+
+**Fixed**
+- We have fixed a HTML pop up warning when displaying Pandas Style objects in Quarto ([#317](https://github.com/mwouts/itables/issues/317))
+- The dependencies of the Streamlit component have been updated ([#323](https://github.com/mwouts/itables/pull/323))
+
+
 2.2.1 (2024-09-22)
 ------------------
 
