@@ -1,0 +1,23 @@
+.itables_anywidget button {
+	background: linear-gradient(
+		300deg,
+		#9933ff 33.26%,
+		#ff6666 46.51%,
+		#faca30 59.77%,
+		#00cd99 73.03%,
+		#00ccff 86.29%
+	);
+	border-radius: 10px;
+	border: 0;
+	color: white;
+	cursor: pointer;
+	font-family: "Roboto", sans-serif;
+	font-size: 2em;
+	margin: 10px;
+	padding: 10px 20px;
+	transition: transform 0.25s ease-in-out;
+}
+
+.itables_anywidget button:hover {
+	transform: scale(1.05);
+}

@@ -1,0 +1,10 @@
+node_modules
+.venv
+dist
+.DS_Store
+
+# Python
+__pycache__
+.ipynb_checkpoints
+
+src/itables_anywidget/static
