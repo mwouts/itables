@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.2.0-dev (2024-09-??)
+------------------
+
+**Added**
+- ITables now has a Jupyter Widget ([#267](https://github.com/mwouts/itables/issues/267)) - this would have taken months without AnyWidget!
+
+
 2.1.5 (2024-09-08)
 ------------------
 

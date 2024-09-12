@@ -30,3 +30,6 @@ dt_bundle.css
 
 # Streamlit package
 src/itables/itables_for_streamlit
+
+# Jupyter Widget
+src/itables/widget/static
