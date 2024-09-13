@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=../src/itables/widget/static",
+		"build": "esbuild js/widget.ts --minify --format=esm --bundle --outdir=../../src/itables/widget/static",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
