@@ -39,28 +39,38 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 			caption.textContent = caption_text;
 		} else { table.deleteCaption() };
 	}
+
+	// Set initial values
 	update_classes();
 	update_style();
 	update_caption();
-
-	let dt = new DataTable(table, dt_args);
-
-	// Set the initial selected rows (not a callback on model otherwise
-	// we run into infinite loops, not sure how to avoid that?)
-	model.get('selected_rows').forEach(idx => {
-		dt.row(idx).select()
-	});
 
 	// Update the table when one of these change
 	model.on("change:classes", update_classes);
 	model.on("change:style", update_style);
 	model.on("change:caption", update_caption);
 
+	// Create the table
+	let dt = new DataTable(table, dt_args);
+
+	let setting_selected_rows_from_model = false;
+	function set_selected_rows_from_model() {
+		// We use this variable to avoid triggering model updates!
+		setting_selected_rows_from_model = true;
+		dt.rows().deselect();
+		dt.rows(model.get('selected_rows')).select();
+		setting_selected_rows_from_model = false;
+	};
+	set_selected_rows_from_model();
+	model.on("change:selected_rows", set_selected_rows_from_model);
+
 	function export_selected_rows() {
+		if (setting_selected_rows_from_model)
+			return;
+
 		let selected_rows = Array.from(dt.rows({ selected: true }).indexes());
 		model.set('selected_rows', selected_rows);
 		model.save_changes();
-
 	};
 
 	dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
