@@ -20,7 +20,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	el.appendChild(table);
 
 	function update_classes() {
-		table.setAttribute('classes', model.get("classes"));
+		table.setAttribute('class', model.get("classes"));
 	}
 	function update_style() {
 		table.setAttribute('style', model.get("style"));
