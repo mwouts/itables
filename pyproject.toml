@@ -33,7 +33,7 @@ dynamic = ["version"]
 polars = ["polars", "pyarrow"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
-widget = ["anywidget,traitlets"]
+widget = ["anywidget", "traitlets"]
 all = ["itables[polars,style,samples,widget]"]
 test = [
   "itables[all]",
