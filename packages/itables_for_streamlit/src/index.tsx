@@ -33,6 +33,19 @@ function onRender(event: Event): void {
     dt.caption(other_args.caption)
   }
 
+  function export_selected_rows() {
+		let selected_rows = Array.from(dt.rows({ selected: true }).indexes());
+    Streamlit.setComponentValue(selected_rows);
+	};
+
+	dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
+		export_selected_rows();
+	});
+
+	dt.on('deselect', function (e: any, dt: any, type: any, indexes: any) {
+		export_selected_rows();
+	});
+
   // we recalculate the height
   Streamlit.setFrameHeight()
 }
