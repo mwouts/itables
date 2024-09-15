@@ -574,7 +574,7 @@ def get_selected_rows_after_downsampling(
     selected_rows, full_row_count, downsampled_row_count
 ):
     if selected_rows is None:
-        return []
+        return None
     if full_row_count == downsampled_row_count:
         return selected_rows
     half = downsampled_row_count // 2

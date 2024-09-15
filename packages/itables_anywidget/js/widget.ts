@@ -48,14 +48,6 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	// from within 'create_table'
 	let dt = null;
 
-	function update_data() {
-		dt.clear().draw();
-		model.get('data').forEach(row => {
-			dt.row.add(row).draw(false);
-		});
-		set_selected_rows_from_model();
-	}
-
 	let setting_selected_rows_from_model = false;
 	function set_selected_rows_from_model() {
 		// We use this variable to avoid triggering model updates!
@@ -80,15 +72,19 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 				return sPre;
 		}
 		dt = new DataTable(table, dt_args);
-		update_data();
+
+		//dt.clear().draw();
+		model.get('data').forEach(row => {
+			dt.row.add(row).draw(false);
+		});
 	}
 	create_table();
+	set_selected_rows_from_model();
 
-	model.on('change:dt_args', () => {
+	model.on('change:destroy_and_recreate', () => {
 		create_table(true);
 	});
 
-	model.on("change:data", update_data);
 	model.on("change:selected_rows", set_selected_rows_from_model);
 
 	function export_selected_rows() {

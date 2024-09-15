@@ -24,6 +24,7 @@ class ITable(anywidget.AnyWidget):
 
     data = traitlets.List(traitlets.List()).tag(sync=True)
     selected_rows = traitlets.List(traitlets.Int).tag(sync=True)
+    destroy_and_recreate = traitlets.Int(0).tag(sync=True)
 
     caption = traitlets.Unicode().tag(sync=True)
     classes = traitlets.Unicode().tag(sync=True)
@@ -47,29 +48,37 @@ class ITable(anywidget.AnyWidget):
         self.style = other_args.pop("style")
         self.caption = other_args.pop("caption") or ""
         self.downsampling_warning = other_args.pop("downsampling_warning") or ""
-        self.selected_rows = other_args.pop("selected_rows")
+        self.selected_rows = other_args.pop("selected_rows") or []
         assert not other_args, other_args
 
     def update(self, df=None, caption=None, selected_rows=None, **kwargs):
         dt_args, other_args = get_itables_extension_arguments(
             df, caption, selected_rows, **kwargs
         )
+
         if df is not None:
             data = dt_args.pop("data")
             self.downsampling_warning = other_args.pop("downsampling_warning") or ""
+            if self.dt_args != dt_args:
+                self.dt_args = dt_args
             if self.data != data:
                 self.data = data
-
-        if self.dt_args != dt_args:
-            self.dt_args = dt_args
+        else:
+            data = dt_args.pop("data")
+            if "columns" not in dt_args:
+                dt_args["columns"] = self.dt_args["columns"]
+            if self.dt_args != dt_args:
+                self.dt_args = dt_args
 
         self.classes = other_args.pop("classes")
         self.style = other_args.pop("style")
         self.caption = other_args.pop("caption") or ""
 
         selected_rows = other_args.pop("selected_rows")
-        if self.selected_rows != selected_rows:
+        if selected_rows is not None and self.selected_rows != selected_rows:
             self.selected_rows = selected_rows
+
+        self.destroy_and_recreate += 1
 
     def get_selected_rows(self) -> list[int]:
         return get_selected_rows_before_downsampling(
