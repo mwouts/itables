@@ -7,28 +7,29 @@ from itables.javascript import get_itables_extension_arguments, pd_style
 
 def test_get_itables_extension_arguments(df):
     try:
-        ext_args = get_itables_extension_arguments(df)
+        dt_args, other_args = get_itables_extension_arguments(df)
     except NotImplementedError as e:
         pytest.skip(str(e))
 
-    assert set(ext_args["dt_args"]) <= {
+    assert set(dt_args) <= {
         "data",
         "columns",
         "layout",
         "order",
-    }, set(ext_args["dt_args"])
-    assert isinstance(ext_args["dt_args"]["data"], list)
-    assert isinstance(ext_args["dt_args"]["columns"], list)
+    }, set(dt_args)
+    assert isinstance(dt_args["data"], list)
+    assert isinstance(dt_args["columns"], list)
 
-    assert set(ext_args["other_args"]) <= {
+    assert set(other_args) <= {
         "classes",
         "style",
         "caption",
         "downsampling_warning",
-    }, set(ext_args["dt_args"])
-    assert isinstance(ext_args["other_args"]["classes"], str)
-    assert isinstance(ext_args["other_args"]["style"], str)
-    assert ext_args["other_args"]["caption"] is None
+        "selected_rows",
+    }, set(dt_args)
+    assert isinstance(other_args["classes"], str)
+    assert isinstance(other_args["style"], str)
+    assert other_args["caption"] is None
 
 
 def test_no_use_to_html():
