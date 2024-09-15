@@ -461,7 +461,7 @@ def _raise_if_javascript_code(values, context=""):
         return
 
 
-def get_itables_extension_arguments(df, caption=None, **kwargs):
+def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwargs):
     """
     This function returns two dictionaries that are JSON
     serializable and can be passed to the itables extensions.
@@ -559,15 +559,41 @@ def get_itables_extension_arguments(df, caption=None, **kwargs):
             f"This dataframe can't be serialized to JSON:\n{e}\n{data_json}"
         )
 
-    return {
-        "dt_args": {"columns": columns, "data": data, **kwargs},
-        "other_args": {
-            "classes": classes,
-            "style": style,
-            "caption": caption,
-            "downsampling_warning": downsampling_warning,
-        },
+    return {"columns": columns, "data": data, **kwargs}, {
+        "classes": classes,
+        "style": style,
+        "caption": caption,
+        "downsampling_warning": downsampling_warning,
+        "selected_rows": get_selected_rows_after_downsampling(
+            selected_rows, len(df), len(data)
+        ),
     }
+
+
+def get_selected_rows_after_downsampling(
+    selected_rows, full_row_count, downsampled_row_count
+):
+    if selected_rows is None:
+        return []
+    if full_row_count == downsampled_row_count:
+        return selected_rows
+    half = downsampled_row_count // 2
+    assert downsampled_row_count == 2 * half, downsampled_row_count
+
+    filtered_rows = full_row_count - downsampled_row_count
+    return [i if i < half else i - filtered_rows for i in selected_rows]
+
+
+def get_selected_rows_before_downsampling(
+    selected_rows, full_row_count, downsampled_row_count
+):
+    if full_row_count == downsampled_row_count:
+        return selected_rows
+    half = downsampled_row_count // 2
+    assert downsampled_row_count == 2 * half, downsampled_row_count
+
+    filtered_rows = full_row_count - downsampled_row_count
+    return [i if i < half else i + filtered_rows for i in selected_rows]
 
 
 def check_table_id(table_id):
