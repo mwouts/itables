@@ -518,6 +518,7 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
 
+    full_row_count = len(df)
     df, downsampling_warning = downsample(
         df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
     )
@@ -559,18 +560,21 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
             f"This dataframe can't be serialized to JSON:\n{e}\n{data_json}"
         )
 
+    assert len(data) <= full_row_count
+
     return {"columns": columns, "data": data, **kwargs}, {
         "classes": classes,
         "style": style,
         "caption": caption,
         "downsampling_warning": downsampling_warning,
-        "selected_rows": get_selected_rows_after_downsampling(
-            selected_rows, len(df), len(data)
+        "full_row_count": full_row_count,
+        "selected_rows": warn_if_selected_rows_are_not_visible(
+            selected_rows, full_row_count, len(data)
         ),
     }
 
 
-def get_selected_rows_after_downsampling(
+def warn_if_selected_rows_are_not_visible(
     selected_rows, full_row_count, downsampled_row_count
 ):
     if selected_rows is None:
@@ -579,21 +583,18 @@ def get_selected_rows_after_downsampling(
         return selected_rows
     half = downsampled_row_count // 2
     assert downsampled_row_count == 2 * half, downsampled_row_count
+    bottom_limit = half
+    top_limit = full_row_count - half
 
-    filtered_rows = full_row_count - downsampled_row_count
-    return [i if i < half else i - filtered_rows for i in selected_rows]
+    if any(bottom_limit <= i < top_limit for i in selected_rows):
+        warnings.warn(
+            f"This table has been downsampled. "
+            f"Only {downsampled_row_count} of the original {full_row_count} rows "
+            "are rendered, see https://mwouts.github.io/itables/downsampling.html. "
+            f"In particular the rows [{bottom_limit}:{top_limit}] cannot be selected."
+        )
 
-
-def get_selected_rows_before_downsampling(
-    selected_rows, full_row_count, downsampled_row_count
-):
-    if full_row_count == downsampled_row_count:
-        return selected_rows
-    half = downsampled_row_count // 2
-    assert downsampled_row_count == 2 * half, downsampled_row_count
-
-    filtered_rows = full_row_count - downsampled_row_count
-    return [i if i < half else i + filtered_rows for i in selected_rows]
+    return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
 def check_table_id(table_id):

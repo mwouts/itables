@@ -26,6 +26,7 @@ def test_get_itables_extension_arguments(df):
         "caption",
         "downsampling_warning",
         "selected_rows",
+        "full_row_count",
     }, set(dt_args)
     assert isinstance(other_args["classes"], str)
     assert isinstance(other_args["style"], str)

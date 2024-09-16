@@ -34,8 +34,20 @@ function onRender(event: Event): void {
   }
 
   function export_selected_rows() {
-		let selected_rows = Array.from(dt.rows({ selected: true }).indexes());
-    Streamlit.setComponentValue(selected_rows);
+		let selected_rows:Array<number> = Array.from(dt.rows({ selected: true }).indexes());
+
+    let full_row_count:number = other_args.full_row_count;
+		let data_row_count:number = dt_args.data.length;
+
+    // Here the selected rows are for the datatable.
+		// We convert them back to the full table
+		if (data_row_count < full_row_count) {
+			let bottom_half = data_row_count / 2;
+			selected_rows = selected_rows.map(
+				(x:number, i:number) => (x < bottom_half ? x : x + full_row_count - data_row_count));
+		}
+
+    Streamlit.setComponentValue({selected_rows});
 	};
 
 	dt.on('select', function (e: any, dt: any, type: any, indexes: any) {

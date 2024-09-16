@@ -5,7 +5,8 @@ ITables ChangeLog
 ------------------
 
 **Added**
-- ITables now has a Jupyter Widget ([#267](https://github.com/mwouts/itables/issues/267)) - this would have taken months without AnyWidget!
+- ITables has a Jupyter Widget ([#267](https://github.com/mwouts/itables/issues/267)). Our widget was developed and packaged using [AnyWidget](https://anywidget.dev/) which I highly recommend!
+- The selected rows are now available! Use either the `selected_rows` attribute of the `ITable` widget, or the returned value of the Streamlit `interactive_table` component ([#250](https://github.com/mwouts/itables/issues/250))
 
 
 2.1.5 (2024-09-08)

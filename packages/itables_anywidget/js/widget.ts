@@ -52,8 +52,22 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	function set_selected_rows_from_model() {
 		// We use this variable to avoid triggering model updates!
 		setting_selected_rows_from_model = true;
+
+		// The model selected rows are for the full table, so
+		// we map them to the actual data
+		let selected_rows = model.get('selected_rows');
+		let full_row_count = model.get('full_row_count');
+		let data_row_count = model.get('data').length;
+		if (data_row_count < full_row_count) {
+			let bottom_half = data_row_count / 2;
+			let top_half = full_row_count - bottom_half;
+			selected_rows = selected_rows.filter(i => i >= 0 && i < full_row_count && (i < bottom_half || i >= top_half)).map(
+				i => (i < bottom_half) ? i : i - full_row_count + data_row_count);
+		}
+
 		dt.rows().deselect();
-		dt.rows(model.get('selected_rows')).select();
+		dt.rows(selected_rows).select();
+
 		setting_selected_rows_from_model = false;
 	};
 
@@ -88,6 +102,17 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 			return;
 
 		let selected_rows = Array.from(dt.rows({ selected: true }).indexes());
+
+		// Here the selected rows are for the datatable.
+		// We convert them back to the full table
+		let full_row_count = model.get('full_row_count');
+		let data_row_count = model.get('data').length;
+		if (data_row_count < full_row_count) {
+			let bottom_half = data_row_count / 2;
+			selected_rows = selected_rows.map(
+				i => (i < bottom_half ? i : i + full_row_count - data_row_count));
+		}
+
 		model.set('selected_rows', selected_rows);
 		model.save_changes();
 	};

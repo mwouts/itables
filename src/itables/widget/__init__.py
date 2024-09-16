@@ -1,16 +1,11 @@
 import importlib.metadata
 import pathlib
-from typing import Sequence
 
 import anywidget
 import pandas as pd
 import traitlets
 
-from itables.javascript import (
-    get_itables_extension_arguments,
-    get_selected_rows_after_downsampling,
-    get_selected_rows_before_downsampling,
-)
+from itables.javascript import get_itables_extension_arguments
 
 try:
     __version__ = importlib.metadata.version("itables_anywidget")
@@ -22,6 +17,7 @@ class ITable(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
 
+    full_row_count = traitlets.Int().tag(sync=True)
     data = traitlets.List(traitlets.List()).tag(sync=True)
     selected_rows = traitlets.List(traitlets.Int).tag(sync=True)
     destroy_and_recreate = traitlets.Int(0).tag(sync=True)
@@ -37,11 +33,11 @@ class ITable(anywidget.AnyWidget):
 
         if df is None:
             df = pd.DataFrame()
-        self.df = df
 
         dt_args, other_args = get_itables_extension_arguments(
             df, caption, selected_rows, **kwargs
         )
+        self.full_row_count = other_args.pop("full_row_count")
         self.data = dt_args.pop("data")
         self.dt_args = dt_args
         self.classes = other_args.pop("classes")
@@ -79,15 +75,3 @@ class ITable(anywidget.AnyWidget):
             self.selected_rows = selected_rows
 
         self.destroy_and_recreate += 1
-
-    def get_selected_rows(self) -> list[int]:
-        return get_selected_rows_before_downsampling(
-            self.selected_rows, len(self.df), len(self.data)
-        )
-
-    def set_selected_rows(self, selected_rows: Sequence[int]):
-        selected_rows = get_selected_rows_after_downsampling(
-            selected_rows, len(self.df), len(self.data)
-        )
-        if self.selected_rows != selected_rows:
-            self.selected_rows = selected_rows
