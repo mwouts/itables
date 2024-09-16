@@ -71,12 +71,8 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 			else
 				return sPre;
 		}
+		dt_args['data'] = model.get('data');
 		dt = new DataTable(table, dt_args);
-
-		//dt.clear().draw();
-		model.get('data').forEach(row => {
-			dt.row.add(row).draw(false);
-		});
 	}
 	create_table();
 	set_selected_rows_from_model();
