@@ -89,14 +89,20 @@ ensured-targets = [
     "src/itables/widget/static/widget.js",
     ]
 
-
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 path = "packages"
 build_cmd = "build"
 npm = ["npm"]
 
-[tool.hatch.build]
-only-packages = true
+[tool.hatch.build.targets.sdist]
+artifacts = [
+    "src/itables/html/dt_bundle.js",
+    "src/itables/html/dt_bundle.css",
+    "src/itables/itables_for_streamlit/*",
+    "src/itables/widget/static/*"
+    ]
+
+[tool.hatch.build.targets.wheel]
 artifacts = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
