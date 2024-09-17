@@ -13,6 +13,13 @@ We have a sample application available at https://itables.streamlit.app (source 
 style="height: 600px; width: 100%;"></iframe>
 ```
 
+## Selected rows
+
+This feature was added in ITables v2.2.0.
+
+Use the `selected_rows: list[int]` argument from `interactive_table` to
+select rows when the table is first displayed. Add `select=True` to let the user modify the selection. Then, the `interactive_table` component returns a dict, with a key `"selected_rows"` that points to the updated selection.
+
 ## Limitations
 
 In most cases, you will be able to use `interactive_table` in a
