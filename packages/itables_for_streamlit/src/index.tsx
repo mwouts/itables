@@ -35,11 +35,10 @@ function onRender(event: Event): void {
     dt.caption(other_args.caption)
   }
 
-  dt.filtered_row_count = other_args.filtered_row_count;
-  DataTable.set_selected_rows(dt, other_args.selected_rows);
+  DataTable.set_selected_rows(dt, other_args.filtered_row_count, other_args.selected_rows);
 
   function export_selected_rows() {
-    Streamlit.setComponentValue({ selected_rows: DataTable.get_selected_rows(dt) });
+    Streamlit.setComponentValue({ selected_rows: DataTable.get_selected_rows(dt, other_args.filtered_row_count) });
   };
 
   dt.on('select', function (e: any, dt: any, type: any, indexes: any) {

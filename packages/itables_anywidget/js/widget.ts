@@ -52,7 +52,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	function set_selected_rows_from_model() {
 		// We use this variable to avoid triggering model updates!
 		setting_selected_rows_from_model = true;
-		DataTable.set_selected_rows(dt, model.get('selected_rows'));
+		DataTable.set_selected_rows(dt, model.get('filtered_row_count'), model.get('selected_rows'));
 		setting_selected_rows_from_model = false;
 	};
 
@@ -72,7 +72,6 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		}
 		dt_args['data'] = model.get('data');
 		dt = new DataTable(table, dt_args);
-		dt.filtered_row_count = model.get('filtered_row_count');
 	}
 	create_table();
 	set_selected_rows_from_model();
@@ -87,7 +86,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		if (setting_selected_rows_from_model)
 			return;
 
-		model.set('selected_rows', DataTable.get_selected_rows(dt));
+		model.set('selected_rows', DataTable.get_selected_rows(dt, model.get('filtered_row_count')));
 		model.save_changes();
 	};
 

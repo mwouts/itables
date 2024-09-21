@@ -34,22 +34,22 @@ import 'datatables.net-select-dt/css/select.dataTables.min.css';
 
 import './index.css';
 
-DataTable.get_selected_rows = function (dt) {
+DataTable.get_selected_rows = function (dt, filtered_row_count) {
     // Here the selected rows are for the datatable.
     // We convert them back to the full table
     let data_row_count = dt.rows().count();
     let bottom_half = data_row_count / 2;
     return Array.from(dt.rows({ selected: true }).indexes().map(
-        i => (i < bottom_half ? i : i + dt.filtered_row_count)));
+        i => (i < bottom_half ? i : i + filtered_row_count)));
 }
 
-DataTable.set_selected_rows = function (dt, selected_rows) {
+DataTable.set_selected_rows = function (dt, filtered_row_count, selected_rows) {
     let data_row_count = dt.rows().count();
     let bottom_half = data_row_count / 2;
-    let top_half = bottom_half + dt.filtered_row_count;
-    let full_row_count = data_row_count + dt.filtered_row_count;
+    let top_half = bottom_half + filtered_row_count;
+    let full_row_count = data_row_count + filtered_row_count;
     selected_rows = Array.from(selected_rows.filter(i => i >= 0 && i < full_row_count && (i < bottom_half || i >= top_half)).map(
-        i => (i < bottom_half) ? i : i - dt.filtered_row_count));
+        i => (i < bottom_half) ? i : i - filtered_row_count));
     dt.rows().deselect();
     dt.rows(selected_rows).select();
 }
