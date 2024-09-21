@@ -369,16 +369,27 @@ def to_html_datatable(
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
 
+    full_row_count = len(df)
     df, downsampling_warning = downsample(
         df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
     )
 
-    if downsampling_warning and "fnInfoCallback" not in kwargs:
-        kwargs["fnInfoCallback"] = JavascriptFunction(
-            "function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {{ return sPre + ' ({warning})'; }}".format(
-                warning=downsampling_warning
-            )
+    if "selected_rows" in kwargs:
+        kwargs["selected_rows"] = warn_if_selected_rows_are_not_visible(
+            kwargs["selected_rows"],
+            full_row_count,
+            len(df),
+            kwargs.pop("warn_on_selected_rows_not_rendered"),
         )
+
+    if len(df) < full_row_count:
+        kwargs["filtered_row_count"] = full_row_count - len(df)
+        if "fnInfoCallback" not in kwargs:
+            kwargs["fnInfoCallback"] = JavascriptFunction(
+                "function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {{ return sPre + ' ({warning})'; }}".format(
+                    warning=downsampling_warning
+                )
+            )
 
     _adjust_layout(
         df,
@@ -562,36 +573,59 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
 
     assert len(data) <= full_row_count
 
+    selected_rows = warn_if_selected_rows_are_not_visible(
+        selected_rows,
+        full_row_count,
+        len(data),
+        kwargs.pop("warn_on_selected_rows_not_rendered"),
+    )
+
     return {"columns": columns, "data": data, **kwargs}, {
         "classes": classes,
         "style": style,
         "caption": caption,
         "downsampling_warning": downsampling_warning,
-        "full_row_count": full_row_count,
-        "selected_rows": warn_if_selected_rows_are_not_visible(
-            selected_rows, full_row_count, len(data)
-        ),
+        "filtered_row_count": full_row_count - len(data),
+        "selected_rows": selected_rows,
     }
 
 
 def warn_if_selected_rows_are_not_visible(
-    selected_rows, full_row_count, downsampled_row_count
+    selected_rows, full_row_count, data_row_count, warn_on_selected_rows_not_rendered
 ):
     if selected_rows is None:
         return None
-    if full_row_count == downsampled_row_count:
+
+    if not all(isinstance(i, int) for i in selected_rows):
+        raise TypeError("Selected rows must be integers")
+
+    if selected_rows and (
+        min(selected_rows) < 0 or max(selected_rows) >= full_row_count
+    ):
+        raise IndexError("Selected rows out of range")
+
+    if full_row_count == data_row_count:
         return selected_rows
-    half = downsampled_row_count // 2
-    assert downsampled_row_count == 2 * half, downsampled_row_count
+
+    half = data_row_count // 2
+    assert data_row_count == 2 * half, data_row_count
+
     bottom_limit = half
     top_limit = full_row_count - half
 
-    if any(bottom_limit <= i < top_limit for i in selected_rows):
+    if warn_on_selected_rows_not_rendered and any(
+        bottom_limit <= i < top_limit for i in selected_rows
+    ):
+        not_shown = [i for i in selected_rows if bottom_limit <= i < top_limit]
+        not_shown = ", ".join(
+            [str(i) for i in not_shown[:6]] + (["..."] if len(not_shown) > 6 else [])
+        )
         warnings.warn(
-            f"This table has been downsampled. "
-            f"Only {downsampled_row_count} of the original {full_row_count} rows "
-            "are rendered, see https://mwouts.github.io/itables/downsampling.html. "
-            f"In particular the rows [{bottom_limit}:{top_limit}] cannot be selected."
+            f"This table has been downsampled, see https://mwouts.github.io/itables/downsampling.html. "
+            f"Only {data_row_count} of the original {full_row_count} rows are rendered. "
+            f"In particular these rows: [{not_shown}] cannot be selected "
+            f"(more generally, no row with index between {bottom_limit} and {top_limit-1} "
+            "can be selected). Hint: increase maxBytes if appropriate - see link above."
         )
 
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
@@ -792,6 +826,15 @@ def html_table_from_template(
         html_table,
     )
     output = replace_value(output, "#table_id", "#{}".format(table_id))
+
+    if "selected_rows" in kwargs:
+        output = replace_value(
+            output,
+            "new DataTable(table, dt_args);",
+            f"""let dt = new DataTable(table, dt_args);
+        dt.filtered_row_count = {kwargs.pop("filtered_row_count", 0)};
+        DataTable.set_selected_rows(dt, {kwargs.pop("selected_rows")});""",
+        )
 
     if column_filters:
         # If the below was false, we would need to concatenate the JS code

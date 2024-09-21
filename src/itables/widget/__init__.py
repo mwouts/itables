@@ -17,8 +17,8 @@ class ITable(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
     _css = pathlib.Path(__file__).parent / "static" / "widget.css"
 
-    full_row_count = traitlets.Int().tag(sync=True)
     data = traitlets.List(traitlets.List()).tag(sync=True)
+    filtered_row_count = traitlets.Int().tag(sync=True)
     selected_rows = traitlets.List(traitlets.Int).tag(sync=True)
     destroy_and_recreate = traitlets.Int(0).tag(sync=True)
 
@@ -37,7 +37,6 @@ class ITable(anywidget.AnyWidget):
         dt_args, other_args = get_itables_extension_arguments(
             df, caption, selected_rows, **kwargs
         )
-        self.full_row_count = other_args.pop("full_row_count")
         self.data = dt_args.pop("data")
         self.dt_args = dt_args
         self.classes = other_args.pop("classes")
@@ -45,6 +44,7 @@ class ITable(anywidget.AnyWidget):
         self.caption = other_args.pop("caption") or ""
         self.downsampling_warning = other_args.pop("downsampling_warning") or ""
         self.selected_rows = other_args.pop("selected_rows") or []
+        self.filtered_row_count = other_args.pop("filtered_row_count", 0)
         assert not other_args, other_args
 
     def update(self, df=None, caption=None, selected_rows=None, **kwargs):
@@ -55,6 +55,7 @@ class ITable(anywidget.AnyWidget):
         if df is not None:
             data = dt_args.pop("data")
             self.downsampling_warning = other_args.pop("downsampling_warning") or ""
+            self.filtered_row_count = other_args.pop("filtered_row_count", 0)
             if self.dt_args != dt_args:
                 self.dt_args = dt_args
             if self.data != data:

@@ -35,29 +35,11 @@ function onRender(event: Event): void {
     dt.caption(other_args.caption)
   }
 
-  let full_row_count: number = other_args.full_row_count;
-  let data_row_count: number = dt_args.data.length;
-
-  let bottom_half = data_row_count / 2;
-  let top_half = full_row_count - bottom_half;
-
-  // The model selected rows are for the full table, so
-  // we map them to the actual data
-  let org_selected_rows = Array.from(
-    other_args.selected_rows
-      .filter((i: number) => i >= 0 && i < full_row_count && (i < bottom_half || i >= top_half))
-      .map((i: number) => (i < bottom_half) ? i : i - full_row_count + data_row_count));
-  dt.rows(org_selected_rows).select();
+  dt.filtered_row_count = other_args.filtered_row_count;
+  DataTable.set_selected_rows(dt, other_args.selected_rows);
 
   function export_selected_rows() {
-    let selected_rows: Array<number> = Array.from(dt.rows({ selected: true }).indexes());
-
-    // Here the selected rows are for the datatable.
-    // We convert them back to the full table
-    selected_rows = Array.from(selected_rows.map(
-      (i: number) => (i < bottom_half ? i : i + full_row_count - data_row_count)));
-
-    Streamlit.setComponentValue({ selected_rows });
+    Streamlit.setComponentValue({ selected_rows: DataTable.get_selected_rows(dt) });
   };
 
   dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
