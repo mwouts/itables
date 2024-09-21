@@ -6,7 +6,11 @@ ITables ChangeLog
 
 **Added**
 - ITables has a Jupyter Widget ([#267](https://github.com/mwouts/itables/issues/267)). Our widget was developed and packaged using [AnyWidget](https://anywidget.dev/) which I highly recommend!
-- The selected rows are now available! Use either the `selected_rows` attribute of the `ITable` widget, or the returned value of the Streamlit `interactive_table` component ([#250](https://github.com/mwouts/itables/issues/250))
+- The selected rows are now available! Use either the `selected_rows` attribute of the `ITable` widget, or the returned value of the Streamlit `interactive_table` component, or the `{table_id}_selected_rows` input in Shiny ([#208](https://github.com/mwouts/itables/issues/208), [#250](https://github.com/mwouts/itables/issues/250))
+- ITables works offline in Shiny applications too!
+
+**Changed**
+- `tableId` has been renamed to `table_id`
 
 
 2.1.5 (2024-09-08)
