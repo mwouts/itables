@@ -308,7 +308,7 @@ def _datatables_repr_(df):
 def to_html_datatable(
     df=None,
     caption=None,
-    tableId=None,
+    table_id=None,
     connected=True,
     use_to_html=False,
     **kwargs,
@@ -318,7 +318,7 @@ def to_html_datatable(
     dataframe as an interactive datatable
     """
 
-    check_table_id(tableId)
+    table_id = check_table_id(table_id, kwargs)
 
     if "import_jquery" in kwargs:
         raise TypeError(
@@ -330,7 +330,7 @@ def to_html_datatable(
         return to_html_datatable_using_to_html(
             df=df,
             caption=caption,
-            tableId=tableId,
+            table_id=table_id,
             connected=connected,
             **kwargs,
         )
@@ -410,7 +410,7 @@ def to_html_datatable(
             "'header', 'footer' or False, not {}".format(column_filters)
         )
 
-    tableId = tableId or "itables_" + str(uuid.uuid4()).replace("-", "_")
+    table_id = table_id or "itables_" + str(uuid.uuid4()).replace("-", "_")
     if isinstance(classes, list):
         classes = " ".join(classes)
 
@@ -423,7 +423,7 @@ def to_html_datatable(
 
     table_header = _table_header(
         df,
-        tableId,
+        table_id,
         showIndex,
         classes,
         style,
@@ -449,7 +449,7 @@ def to_html_datatable(
 
     return html_table_from_template(
         table_header,
-        table_id=tableId,
+        table_id=table_id,
         data=dt_data,
         kwargs=kwargs,
         connected=connected,
@@ -631,17 +631,27 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id):
+def check_table_id(table_id, kwargs):
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
     """
+    if "tableId" in kwargs:
+        warnings.warn(
+            "tableId has been deprecated, please use table_id instead",
+            DeprecationWarning,
+        )
+        assert table_id is None
+        table_id = kwargs.pop("tableId")
+
     if table_id is not None:
         if not re.match(r"[A-Za-z][-A-Za-z0-9_.]*", table_id):
             raise ValueError(
                 "The id name must contain at least one character, "
                 f"cannot start with a number, and must not contain whitespaces ({table_id})"
             )
+
+    return table_id
 
 
 def set_default_options(kwargs, use_to_html, context=None, not_available=()):
@@ -695,10 +705,12 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
 
 
 def to_html_datatable_using_to_html(
-    df=None, caption=None, tableId=None, connected=True, **kwargs
+    df=None, caption=None, table_id=None, connected=True, **kwargs
 ):
     """Return the HTML representation of the given dataframe as an interactive datatable,
     using df.to_html() rather than the underlying dataframe data."""
+    table_id = check_table_id(table_id, kwargs)
+
     set_default_options(kwargs, use_to_html=True)
 
     # These options are used here, not in DataTable
@@ -726,8 +738,8 @@ def to_html_datatable_using_to_html(
         df, kwargs, downsampling_warning="", warn_on_dom=kwargs.pop("warn_on_dom")
     )
 
-    tableId = (
-        tableId
+    table_id = (
+        table_id
         # default UUID in Pandas styler objects has uuid_len=5
         or str(uuid.uuid4())[:5]
     )
@@ -745,7 +757,7 @@ def to_html_datatable_using_to_html(
 
         try:
             to_html_args = dict(
-                table_uuid=tableId,
+                table_uuid=table_id,
                 table_attributes="""class="{classes}"{style}""".format(
                     classes=classes, style=style
                 ),
@@ -761,7 +773,7 @@ def to_html_datatable_using_to_html(
             del to_html_args["caption"]
             del to_html_args["sparse_index"]
             html_table = df.to_html(**to_html_args)
-        tableId = "T_" + tableId
+        table_id = "T_" + table_id
     else:
         if caption is not None:
             raise NotImplementedError(
@@ -769,11 +781,11 @@ def to_html_datatable_using_to_html(
                 "Use either Pandas Style, or set use_to_html=False."
             )
         # NB: style is not available neither
-        html_table = df.to_html(table_id=tableId, classes=classes)
+        html_table = df.to_html(table_id=table_id, classes=classes)
 
     return html_table_from_template(
         html_table,
-        table_id=tableId,
+        table_id=table_id,
         data=None,
         kwargs=kwargs,
         connected=connected,
@@ -832,8 +844,8 @@ def html_table_from_template(
             output,
             "new DataTable(table, dt_args);",
             f"""let dt = new DataTable(table, dt_args);
-        dt.filtered_row_count = {kwargs.pop("filtered_row_count", 0)};
-        DataTable.set_selected_rows(dt, {kwargs.pop("selected_rows")});""",
+        let filtered_row_count = {kwargs.pop("filtered_row_count", 0)};
+        DataTable.set_selected_rows(dt, filtered_row_count, {kwargs.pop("selected_rows")});""",
         )
 
     if column_filters:
