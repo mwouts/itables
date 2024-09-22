@@ -87,6 +87,10 @@ jobs:
         if: matrix.polars
         run: pip install -e .[polars]
 
+      - name: Install shiny
+        if: matrix.python-version != '3.7'
+        run: pip install "shiny>=1.0"
+
       - name: Uninstall jinja2
         if: matrix.uninstall_jinja2
         run: pip uninstall jinja2 -y
