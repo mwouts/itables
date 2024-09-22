@@ -13,7 +13,7 @@ ITables ChangeLog
 - The `tableId` argument of `to_html_datatable` has been renamed to `table_id`
 
 **Fixed**
-- The dependencies of the streamlit component have been updated ([#320](https://github.com/mwouts/itables/issues/320))
+- The dependencies of the Streamlit component have been updated ([#320](https://github.com/mwouts/itables/issues/320))
 
 
 2.1.5 (2024-09-08)
@@ -25,7 +25,7 @@ ITables ChangeLog
 - We have improved the function that determines whether a dark theme is being used ([#294](https://github.com/mwouts/itables/issues/294))
 - We have adjusted the generation of the Polars sample dataframes to fix the CI ([Polars-18130](https://github.com/pola-rs/polars/issues/18130))
 - The test on the Shiny app fallbacks to `ui.nav_panel` when `ui.nav` is not available
-- The dependencies of the streamlit component have been updated ([#313](https://github.com/mwouts/itables/issues/313), [#315](https://github.com/mwouts/itables/issues/315))
+- The dependencies of the Streamlit component have been updated ([#313](https://github.com/mwouts/itables/issues/313), [#315](https://github.com/mwouts/itables/issues/315))
 
 
 2.1.4 (2024-07-03)
@@ -50,7 +50,7 @@ ITables ChangeLog
 an automatic horizontal scrolling in Jupyter, Jupyter Book and also Streamlit if the table is too wide ([#282](https://github.com/mwouts/itables/pull/282)).
 
 **Fixed**
-- The dependencies of the streamlit components have been updated to fix a vulnerability in `ws` ([Alert 1](https://github.com/mwouts/itables/security/dependabot/1))
+- The dependencies of the Streamlit components have been updated to fix a vulnerability in `ws` ([Alert 1](https://github.com/mwouts/itables/security/dependabot/1))
 
 
 2.1.1 (2024-06-08)

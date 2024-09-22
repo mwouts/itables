@@ -89,7 +89,7 @@ table.update(df.head(20), selected_rows=[7, 8])
 
 ## Limitations
 
-Compared to `show`, the `ITable` widget has the same limitations as the [streamlit component](streamlit.md#limitations),
+Compared to `show`, the `ITable` widget has the same limitations as the [Streamlit component](streamlit.md#limitations),
 e.g. structured headers are not available, you can't pass JavaScript callback, etc.
 
 The good news is that if you only want to _display_ the table, you do not need
