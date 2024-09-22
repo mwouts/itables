@@ -4,11 +4,12 @@ parts:
   - caption: ITables in Notebooks
     chapters:
     - file: advanced_parameters
+    - file: select
+    - file: extensions
+    - file: custom_extensions
     - file: custom_css
     - file: formatting
     - file: pandas_style
-    - file: extensions
-    - file: custom_extensions
     - file: dark_mode
     - file: quarto
     - file: downsampling
@@ -16,11 +17,11 @@ parts:
     - file: supported_editors
   - caption: ITables in Applications
     chapters:
-      - file: html_export
-      - file: dash
-      - file: shiny
-      - file: streamlit
       - file: ipywidgets
+      - file: streamlit
+      - file: shiny
+      - file: dash
+      - file: html_export
   - caption: Contributing to ITables
     chapters:
       - file: contributing

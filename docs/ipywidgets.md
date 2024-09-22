@@ -40,7 +40,7 @@ table
 ## The `selected_rows` traits
 
 The `selected_rows` attribute of the `ITable` object provides a view on the
-rows that have been selected in the table (remember to pass `select=True`
+rows that have been selected in the table (remember to pass [`select=True`](select.md)
 to activate the row selection). You can use it to either retrieve
 or change the current row selection:
 

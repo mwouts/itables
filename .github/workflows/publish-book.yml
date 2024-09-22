@@ -30,6 +30,7 @@ jobs:
         pip install jupyter-book
         pip install matplotlib  # Pandas style
         pip install .[polars]
+        pip install .[widget]
 
     - name: Create a kernel
       run: |
