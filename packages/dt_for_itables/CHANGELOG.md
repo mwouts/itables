@@ -1,3 +1,7 @@
+# 2.0.13 (2024-09-22)
+
+- We have added two functions `set_selected_rows` and `get_selected_rows` to set and retrieve selected rows
+
 # 2.0.12 (2024-09-08)
 
 - We have added the datetime extension for DataTables ([#288](https://github.com/mwouts/itables/issues/288))

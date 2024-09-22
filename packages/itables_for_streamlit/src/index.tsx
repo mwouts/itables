@@ -13,9 +13,11 @@ function onRender(event: Event): void {
   var other_args = (event as CustomEvent<RenderData>).detail.args.other_args
   var dt_args = (event as CustomEvent<RenderData>).detail.args.dt_args
 
-  if(other_args.downsampling_warning) {
-    dt_args["fnInfoCallback"] = function (oSettings:any, iStart:number, iEnd:number, iMax:number, iTotal:number, sPre:string) { return sPre + ' (' +
-    other_args.downsampling_warning + ')' }
+  if (other_args.downsampling_warning) {
+    dt_args["fnInfoCallback"] = function (oSettings: any, iStart: number, iEnd: number, iMax: number, iTotal: number, sPre: string) {
+      return sPre + ' (' +
+        other_args.downsampling_warning + ')'
+    }
   }
 
   // As we can't pass the dt_args other than in the
@@ -29,9 +31,23 @@ function onRender(event: Event): void {
   table.setAttribute('style', other_args.style)
 
   dt = new DataTable(table, dt_args)
-  if(other_args.caption) {
+  if (other_args.caption) {
     dt.caption(other_args.caption)
   }
+
+  DataTable.set_selected_rows(dt, other_args.filtered_row_count, other_args.selected_rows);
+
+  function export_selected_rows() {
+    Streamlit.setComponentValue({ selected_rows: DataTable.get_selected_rows(dt, other_args.filtered_row_count) });
+  };
+
+  dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
+    export_selected_rows();
+  });
+
+  dt.on('deselect', function (e: any, dt: any, type: any, indexes: any) {
+    export_selected_rows();
+  });
 
   // we recalculate the height
   Streamlit.setFrameHeight()

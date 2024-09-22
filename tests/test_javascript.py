@@ -101,9 +101,9 @@ def test_tfoot_from_thead(
 
 def test_check_table_id():
     with pytest.raises(ValueError, match="cannot start with a number"):
-        check_table_id("0_invalid_id")
-    check_table_id("valid_id")
-    check_table_id("valid_id-2")
+        check_table_id("0_invalid_id", {})
+    check_table_id("valid_id", {})
+    check_table_id("valid_id-2", {})
 
 
 @pytest.mark.parametrize("url", [UNPKG_DT_BUNDLE_URL, UNPKG_DT_BUNDLE_CSS])

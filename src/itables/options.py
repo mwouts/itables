@@ -61,6 +61,10 @@ warn_on_unexpected_types = True
 """Should a warning appear when the deprecated 'dom' is used?"""
 warn_on_dom = True
 
+"""Should a warning appear when the selection targets rows that have been
+filtered by the downsampling?"""
+warn_on_selected_rows_not_rendered = True
+
 """The DataTables URL for the connected mode"""
 dt_url = UNPKG_DT_BUNDLE_URL
 

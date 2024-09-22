@@ -25,5 +25,6 @@ dependencies:
   - ghp-import
   - shiny
   - streamlit
+  - anywidget
   - pip:
     - world_bank_data

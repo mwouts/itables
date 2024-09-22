@@ -32,7 +32,7 @@ repos:
     rev: v1.16.2
     hooks:
     - id: jupytext
-      exclude: dt_for_itables/
+      exclude: packages/
       types: ["markdown"]
       args: ["--pipe", "isort {} --treat-comment-as-code '# %%' --profile black", "--pipe", "black", "--check", "ruff check {} --ignore E402"]
       additional_dependencies:

@@ -9,5 +9,5 @@ _streamlit_component_func = components.declare_component(
 
 
 def interactive_table(df, caption=None, **kwargs):
-    ext_args = get_itables_extension_arguments(df, caption, **kwargs)
-    return _streamlit_component_func(**ext_args)
+    dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
+    return _streamlit_component_func(dt_args=dt_args, other_args=other_args)
