@@ -16,42 +16,7 @@ kernelspec:
 
 ITables is available as a [Jupyter Widget](https://ipywidgets.readthedocs.io) since v2.2.
 
-## Using `show`
-
-If you only want to _display_ the table, you **do not need**
-our Jupyter widget. The `show` function is enough!
-
-```{code-cell}
-import ipywidgets as widgets
-
-from itables import show
-from itables.sample_dfs import get_dict_of_test_dfs
-
-sample_dfs = get_dict_of_test_dfs()
-
-
-def use_show_in_interactive_output(table_name: str):
-    show(
-        sample_dfs[table_name],
-        caption=table_name,
-        style="table-layout:auto;width:auto;float:left;caption-side:bottom",
-    )
-
-
-table_selector = widgets.Dropdown(options=sample_dfs.keys(), value="int_float_str")
-out = widgets.interactive_output(
-    use_show_in_interactive_output, {"table_name": table_selector}
-)
-
-widgets.VBox([table_selector, out])
-```
-
-```{tip}
-Jupyter widgets only work in a live notebook.
-Click on the rocket icon at the top of the page to run this demo in Binder.
-```
-
-## Using the ITable widget
+## The `ITable` widget
 
 The `ITable` widget has a few dependencies that you can install with
 ```bash
@@ -62,57 +27,91 @@ The `ITable` class accepts the same arguments as the `show` method, but
 the `df` argument is optional.
 
 ```{code-cell}
+from itables.sample_dfs import get_dict_of_test_dfs
 from itables.widget import ITable
 
-table = ITable(selected_rows=[0, 2, 5, 99])
+df = get_dict_of_test_dfs()["int_float_str"]
 
-
-def update_selected_table(change):
-    table_name = table_selector.value
-    table.update(
-        sample_dfs[table_name],
-        caption=table_name,
-        select=True,
-        style="table-layout:auto;width:auto;float:left",
-    )
-
-
-# Update the table when the selector changes
-table_selector.observe(update_selected_table, "value")
-
-# Set the table to the initial table selected
-update_selected_table(None)
-
-widgets.VBox([table_selector, table])
+table = ITable(df, selected_rows=[0, 2, 5], select=True)
+table
 ```
 
-## Get the selected rows
+## The `selected_rows` traits
 
-The `ITable` widget let you access the state of the table
-and in particular, it has an `.selected_rows` attribute
-that you can use to determine the rows that have been
-selected by the user (allow selection by passing `select=True`
-to the `ITable` widget).
+The `selected_rows` attribute of the `ITable` object provides a view on the
+rows that have been selected in the table (remember to pass `select=True`
+to activate the row selection). You can use it to either retrieve
+or change the current row selection:
 
 ```{code-cell}
-out = widgets.Output()
+table.selected_rows
+```
 
+```{code-cell}
+table.selected_rows = [3, 4]
+```
 
-def show_selected_rows(change):
-    with out:
-        out.clear_output()
-        print("selected_rows: ", table.selected_rows)
+## The `df` property
 
+Use it to retrieve the table data:
 
-table.observe(show_selected_rows, "selected_rows")
+```{code-cell}
+table.df.iloc[table.selected_rows]
+```
 
-# Display the initial selection
-show_selected_rows(None)
+or to update it
 
-out
+```{code-cell}
+table.df = df.head(6)
+```
+
+```{tip}
+`ITable` will raise an `IndexError` if the `selected_rows` are not consistent with the
+updated data. If you need to update the two simultaneously, use `table.update(df, selected_rows=...)`, see below.
+```
+
+## The `caption`, `style` and `classes` traits
+
+You can update these traits from Python, e.g.
+
+```{code-cell}
+table.caption = "numbers and strings"
+```
+
+## The `update` method
+
+Last but not least, you can update the `ITable` arguments simultaneously using the `update` method:
+
+```{code-cell}
+table.update(df.head(20), selected_rows=[7, 8])
 ```
 
 ## Limitations
 
 Compared to `show`, the `ITable` widget has the same limitations as the [streamlit component](streamlit.md#limitations),
 e.g. structured headers are not available, you can't pass JavaScript callback, etc.
+
+The good news is that if you only want to _display_ the table, you **do not need**
+the `ITables` widget. Below is an example in which we use `show` to display a different
+table depending on the value of a drop-down component:
+
+```python
+import ipywidgets as widgets
+from itables import show
+from itables.sample_dfs import get_dict_of_test_dfs
+
+def use_show_in_interactive_output(table_name: str):
+    show(
+        sample_dfs[table_name],
+        caption=table_name,
+    )
+
+sample_dfs = get_dict_of_test_dfs()
+table_selector = widgets.Dropdown(options=sample_dfs.keys(), value="int_float_str")
+
+out = widgets.interactive_output(
+    use_show_in_interactive_output, {"table_name": table_selector}
+)
+
+widgets.VBox([table_selector, out])
+```

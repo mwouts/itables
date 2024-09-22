@@ -49,9 +49,3 @@ A sample application is available at https://to-html-datatable.streamlit.app (so
 <iframe src="https://to-html-datatable.streamlit.app?embed=true"
 style="height: 600px; width: 100%;"></iframe>
 ```
-
-## Future developments
-
-ITables' Streamlit component might see the following developments in the future
-- Return the selected cells
-- Make the table editable (will require a DataTable [editor license](https://editor.datatables.net/purchase/))

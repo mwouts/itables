@@ -52,31 +52,32 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	function set_selected_rows_from_model() {
 		// We use this variable to avoid triggering model updates!
 		setting_selected_rows_from_model = true;
-		DataTable.set_selected_rows(dt, model.get('filtered_row_count'), model.get('selected_rows'));
+		DataTable.set_selected_rows(dt, model.get('_filtered_row_count'), model.get('selected_rows'));
 		setting_selected_rows_from_model = false;
 	};
 
 	function create_table(destroy = false) {
-		let dt_args = model.get('dt_args');
 		if (destroy) {
 			dt.destroy();
 			jQuery(table).empty();
 		}
 
+		let dt_args = model.get('_dt_args');
+		dt_args['data'] = model.get('_data');
+		dt_args['columns'] = model.get('_columns');
 		dt_args["fnInfoCallback"] = function (oSettings: any, iStart: number, iEnd: number, iMax: number, iTotal: number, sPre: string) {
-			let msg = model.get("downsampling_warning");
+			let msg = model.get("_downsampling_warning");
 			if (msg)
-				return sPre + ' (' + model.get("downsampling_warning") + ')';
+				return sPre + ' (' + msg + ')';
 			else
 				return sPre;
 		}
-		dt_args['data'] = model.get('data');
 		dt = new DataTable(table, dt_args);
+		set_selected_rows_from_model();
 	}
 	create_table();
-	set_selected_rows_from_model();
 
-	model.on('change:destroy_and_recreate', () => {
+	model.on('change:_destroy_and_recreate', () => {
 		create_table(true);
 	});
 
@@ -86,7 +87,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		if (setting_selected_rows_from_model)
 			return;
 
-		model.set('selected_rows', DataTable.get_selected_rows(dt, model.get('filtered_row_count')));
+		model.set('selected_rows', DataTable.get_selected_rows(dt, model.get('_filtered_row_count')));
 		model.save_changes();
 	};
 

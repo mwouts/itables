@@ -486,11 +486,15 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
             "Pandas style objects can't be used with the extension"
         )
 
+    if df is None:
+        df = pd.DataFrame()
+
     set_default_options(
         kwargs,
         use_to_html=False,
-        context="the streamlit extension",
+        context="the itable widget or streamlit extension",
         not_available=[
+            "columns",
             "tags",
             "dt_url",
             "pre_dt_code",
