@@ -60,8 +60,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'html_export';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dash" href="dash.html" />
-    <link rel="prev" title="Supported Editors" href="supported_editors.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Dash" href="dash.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -182,11 +182,12 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">ITables in Notebooks</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="advanced_parameters.html">Advanced Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="select.html">Row selection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html">Download Buttons and Other Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_extensions.html">Custom Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_css.html">Table Style and CSS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="formatting.html">Cell Formatting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pandas_style.html">Using Pandas Style</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extensions.html">Download Buttons and Other Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_extensions.html">Custom Extensions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dark_mode.html">Dark Themes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quarto.html">Quarto</a></li>
 <li class="toctree-l1"><a class="reference internal" href="downsampling.html">Downsampling</a></li>
@@ -195,11 +196,11 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ITables in Applications</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">HTML export</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
-<li class="toctree-l1"><a class="reference internal" href="shiny.html">Shiny</a></li>
-<li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ipywidgets.html">Jupyter Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shiny.html">Shiny</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">HTML export</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing to ITables</span></p>
 <ul class="nav bd-sidenav">
@@ -498,7 +499,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;table id=&quot;itables_fcd8efa0_9ab7_42ad_b89e_a1b30f59b67b&quot; class=&quot;display nowrap&quot; data-quarto-disable-processing=&quot;true&quot; style=&quot;table-layout:auto;width:auto;margin:auto;caption-side:bottom&quot;&gt;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;table id=&quot;itables_0000828c_3fb6_4707_90dc_8ca2ce486b93&quot; class=&quot;display nowrap&quot; data-quarto-disable-processing=&quot;true&quot; style=&quot;table-layout:auto;width:auto;margin:auto;caption-side:bottom&quot;&gt;
 &lt;thead&gt;
     &lt;tr style=&quot;text-align: right;&quot;&gt;
       &lt;th&gt;&lt;/th&gt;
@@ -529,7 +530,7 @@ Loading ITables v2.2.0 from the internet...
 &lt;script type=&quot;module&quot;&gt;
     import {DataTable, jQuery as $} from &#39;https://www.unpkg.com/dt_for_itables@2.0.13/dt_bundle.js&#39;;
 
-    document.querySelectorAll(&quot;#itables_fcd8efa0_9ab7_42ad_b89e_a1b30f59b67b:not(.dataTable)&quot;).forEach(table =&gt; {
+    document.querySelectorAll(&quot;#itables_0000828c_3fb6_4707_90dc_8ca2ce486b93:not(.dataTable)&quot;).forEach(table =&gt; {
         // Define the table data
         const data = [[&quot;AW&quot;, &quot;Latin America &amp; Caribbean &quot;, &quot;Aruba&quot;, &quot;Oranjestad&quot;, -70.0167, 12.5167], [&quot;AF&quot;, &quot;South Asia&quot;, &quot;Afghanistan&quot;, &quot;Kabul&quot;, 69.1761, 34.5228], [&quot;AO&quot;, &quot;Sub-Saharan Africa &quot;, &quot;Angola&quot;, &quot;Luanda&quot;, 13.242, -8.81155]];
 
@@ -553,7 +554,7 @@ Loading ITables v2.2.0 from the internet...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_fcd8efa0_9ab7_42ad_b89e_a1b30f59b67b" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_0000828c_3fb6_4707_90dc_8ca2ce486b93" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -584,7 +585,7 @@ Loading ITables v2.2.0 from the internet...
 <script type="module">
     import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables@2.0.13/dt_bundle.js';
 
-    document.querySelectorAll("#itables_fcd8efa0_9ab7_42ad_b89e_a1b30f59b67b:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_0000828c_3fb6_4707_90dc_8ca2ce486b93:not(.dataTable)").forEach(table => {
         // Define the table data
         const data = [["AW", "Latin America & Caribbean ", "Aruba", "Oranjestad", -70.0167, 12.5167], ["AF", "South Asia", "Afghanistan", "Kabul", 69.1761, 34.5228], ["AO", "Sub-Saharan Africa ", "Angola", "Luanda", 13.242, -8.81155]];
 
@@ -631,20 +632,20 @@ Loading ITables v2.2.0 from the internet...
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="supported_editors.html"
+       href="dash.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Supported Editors</p>
+        <p class="prev-next-title">Dash</p>
       </div>
     </a>
     <a class="right-next"
-       href="dash.html"
+       href="contributing.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Dash</p>
+        <p class="prev-next-title">Contributing</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
