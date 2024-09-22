@@ -199,7 +199,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shiny.html">Shiny</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ipywidgets.html">IPyWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipywidgets.html">Jupyter Widget</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing to ITables</span></p>
 <ul class="current nav bd-sidenav">
@@ -513,7 +513,7 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_2a8e31e3_24ae_4399_9060_6d728e30edfa" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_66873b43_0197_4f81_9356_e4c6243e562a" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <caption style="caption-side: bottom">A table that does not load, due to <code>init_notebook_mode</code><br>not being called in this document</caption><thead>
     <tr style="text-align: right;">
       <th></th>
@@ -613,21 +613,21 @@ width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
 </a>
 </div>
 <div>
-Loading ITables v2.1.5 from the <code>init_notebook_mode</code> cell...
+Loading ITables v2.2.0 from the <code>init_notebook_mode</code> cell...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </div>
 </tr></tbody>
 
 </table>
 <script type="module">
-    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_1_5);
+    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_0);
 
-    document.querySelectorAll("#itables_2a8e31e3_24ae_4399_9060_6d728e30edfa:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_66873b43_0197_4f81_9356_e4c6243e562a:not(.dataTable)").forEach(table => {
         // Define the table data
         const data = [];
 
         // Define the dt_args
-        let dt_args = {"layout": {"topStart": null, "topEnd": null, "bottomStart": null, "bottomEnd": null}, "order": []};
+        let dt_args = {"layout": {"topStart": null, "topEnd": null, "bottomStart": null, "bottomEnd": null}, "order": [], "warn_on_selected_rows_not_rendered": true};
         dt_args["data"] = data;
 
         

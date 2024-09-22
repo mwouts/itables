@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>IPyWidgets &#8212; Interactive Tables</title>
+    <title>Jupyter Widget &#8212; Interactive Tables</title>
   
   
   
@@ -199,7 +199,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shiny.html">Shiny</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">IPyWidgets</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Jupyter Widget</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing to ITables</span></p>
 <ul class="nav bd-sidenav">
@@ -253,6 +253,37 @@
         <div class="header-article-item">
 
 <div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs/ipywidgets.md" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch on Binder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img alt="Binder logo" src="_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
 
 
 
@@ -330,6 +361,23 @@
       
       
       
+      <li><a href="_sources/ipywidgets.ipynb" target="_blank"
+   class="btn btn-sm btn-download-notebook-button dropdown-item"
+   title="Download notebook file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
       <li><a href="_sources/ipywidgets.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
@@ -401,7 +449,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -412,11 +462,24 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>IPyWidgets</h1>
+    <h1>Jupyter Widget</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-itable-widget">The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-selected-rows-traits">The <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> traits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-df-property">The <code class="docutils literal notranslate"><span class="pre">df</span></code> property</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-caption-style-and-classes-traits">The <code class="docutils literal notranslate"><span class="pre">caption</span></code>, <code class="docutils literal notranslate"><span class="pre">style</span></code> and <code class="docutils literal notranslate"><span class="pre">classes</span></code> traits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-update-method">The <code class="docutils literal notranslate"><span class="pre">update</span></code> method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -426,10 +489,147 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="ipywidgets">
-<h1>IPyWidgets<a class="headerlink" href="#ipywidgets" title="Link to this heading">#</a></h1>
-<p>ITables does not come as a <a class="reference external" href="https://ipywidgets.readthedocs.io">Jupyter Widget</a> at the moment.
-You are welcome to subscribe or contribute to <a class="reference external" href="https://github.com/mwouts/itables/issues/267">#267</a>.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="jupyter-widget">
+<h1>Jupyter Widget<a class="headerlink" href="#jupyter-widget" title="Link to this heading">#</a></h1>
+<p>ITables is available as a <a class="reference external" href="https://ipywidgets.readthedocs.io">Jupyter Widget</a> since v2.2.</p>
+<section id="the-itable-widget">
+<h2>The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget<a class="headerlink" href="#the-itable-widget" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget has a few dependencies (essentially <a class="reference external" href="https://anywidget.dev">AnyWidget</a>,
+a great widget development framework!) that you can install with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>itables<span class="o">[</span>widget<span class="o">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> class accepts the same arguments as the <code class="docutils literal notranslate"><span class="pre">show</span></code> method, but
+the <code class="docutils literal notranslate"><span class="pre">df</span></code> argument is optional.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itables.sample_dfs</span> <span class="kn">import</span> <span class="n">get_dict_of_test_dfs</span>
+<span class="kn">from</span> <span class="nn">itables.widget</span> <span class="kn">import</span> <span class="n">ITable</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_dict_of_test_dfs</span><span class="p">()[</span><span class="s2">&quot;int_float_str&quot;</span><span class="p">]</span>
+
+<span class="n">table</span> <span class="o">=</span> <span class="n">ITable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">selected_rows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">table</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">itables.sample_dfs</span> <span class="kn">import</span> <span class="n">get_dict_of_test_dfs</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">itables.widget</span> <span class="kn">import</span> <span class="n">ITable</span>
+<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="n">df</span> <span class="o">=</span> <span class="n">get_dict_of_test_dfs</span><span class="p">()[</span><span class="s2">&quot;int_float_str&quot;</span><span class="p">]</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">table</span> <span class="o">=</span> <span class="n">ITable</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">selected_rows</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.11.10</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.11</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">itables</span><span class="o">/</span><span class="n">widget</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">4</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">importlib.metadata</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="ne">----&gt; </span><span class="mi">4</span> <span class="kn">import</span> <span class="nn">anywidget</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="kn">import</span> <span class="nn">traitlets</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="kn">from</span> <span class="nn">itables.javascript</span> <span class="kn">import</span> <span class="n">get_itables_extension_arguments</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;anywidget&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-selected-rows-traits">
+<h2>The <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> traits<a class="headerlink" href="#the-selected-rows-traits" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> object provides a view on the
+rows that have been selected in the table (remember to pass <code class="docutils literal notranslate"><span class="pre">select=True</span></code>
+to activate the row selection). You can use it to either retrieve
+or change the current row selection:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">selected_rows</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">selected_rows</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-df-property">
+<h2>The <code class="docutils literal notranslate"><span class="pre">df</span></code> property<a class="headerlink" href="#the-df-property" title="Link to this heading">#</a></h2>
+<p>Use it to retrieve the table data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">selected_rows</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>or to update it</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><code class="docutils literal notranslate"><span class="pre">ITable</span></code> will raise an <code class="docutils literal notranslate"><span class="pre">IndexError</span></code> if the <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> are not consistent with the
+updated data. If you need to update the two simultaneously, use <code class="docutils literal notranslate"><span class="pre">table.update(df,</span> <span class="pre">selected_rows=...)</span></code>, see below.</p>
+</div>
+</section>
+<section id="the-caption-style-and-classes-traits">
+<h2>The <code class="docutils literal notranslate"><span class="pre">caption</span></code>, <code class="docutils literal notranslate"><span class="pre">style</span></code> and <code class="docutils literal notranslate"><span class="pre">classes</span></code> traits<a class="headerlink" href="#the-caption-style-and-classes-traits" title="Link to this heading">#</a></h2>
+<p>You can update these traits from Python, e.g.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;numbers and strings&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-update-method">
+<h2>The <code class="docutils literal notranslate"><span class="pre">update</span></code> method<a class="headerlink" href="#the-update-method" title="Link to this heading">#</a></h2>
+<p>Last but not least, you can update the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> arguments simultaneously using the <code class="docutils literal notranslate"><span class="pre">update</span></code> method:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">selected_rows</span><span class="o">=</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
+<p>Compared to <code class="docutils literal notranslate"><span class="pre">show</span></code>, the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget has the same limitations as the <a class="reference internal" href="streamlit.html#limitations"><span class="std std-ref">Streamlit component</span></a>,
+e.g. structured headers are not available, you can’t pass JavaScript callback, etc.</p>
+<p>The good news is that if you only want to <em>display</em> the table, you do not need
+the <code class="docutils literal notranslate"><span class="pre">ITables</span></code> widget. Below is an example in which we use <code class="docutils literal notranslate"><span class="pre">show</span></code> to display a different
+table depending on the value of a drop-down component:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+<span class="kn">from</span> <span class="nn">itables</span> <span class="kn">import</span> <span class="n">show</span>
+<span class="kn">from</span> <span class="nn">itables.sample_dfs</span> <span class="kn">import</span> <span class="n">get_dict_of_test_dfs</span>
+
+<span class="k">def</span> <span class="nf">use_show_in_interactive_output</span><span class="p">(</span><span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">show</span><span class="p">(</span>
+        <span class="n">sample_dfs</span><span class="p">[</span><span class="n">table_name</span><span class="p">],</span>
+        <span class="n">caption</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">sample_dfs</span> <span class="o">=</span> <span class="n">get_dict_of_test_dfs</span><span class="p">()</span>
+<span class="n">table_selector</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="n">sample_dfs</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;int_float_str&quot;</span><span class="p">)</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">interactive_output</span><span class="p">(</span>
+    <span class="n">use_show_in_interactive_output</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="n">table_selector</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="n">table_selector</span><span class="p">,</span> <span class="n">out</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -441,16 +641,16 @@ You are welcome to subscribe or contribute to <a class="reference external" href
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "python"
+            mode: "itables"
         },
         kernelOptions: {
-            name: "python3",
+            name: "itables",
             path: "./."
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'python3'</script>
+    <script>kernelName = 'itables'</script>
 
                 </article>
               
@@ -486,6 +686,26 @@ You are welcome to subscribe or contribute to <a class="reference external" href
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-itable-widget">The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-selected-rows-traits">The <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> traits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-df-property">The <code class="docutils literal notranslate"><span class="pre">df</span></code> property</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-caption-style-and-classes-traits">The <code class="docutils literal notranslate"><span class="pre">caption</span></code>, <code class="docutils literal notranslate"><span class="pre">style</span></code> and <code class="docutils literal notranslate"><span class="pre">classes</span></code> traits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-update-method">The <code class="docutils literal notranslate"><span class="pre">update</span></code> method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

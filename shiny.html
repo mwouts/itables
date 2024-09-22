@@ -199,7 +199,7 @@
 <li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Shiny</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ipywidgets.html">IPyWidgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipywidgets.html">Jupyter Widget</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing to ITables</span></p>
 <ul class="nav bd-sidenav">
@@ -432,12 +432,19 @@ document.write(`
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shiny</span> <span class="kn">import</span> <span class="n">ui</span>
 
 <span class="kn">from</span> <span class="nn">itables.sample_dfs</span> <span class="kn">import</span> <span class="n">get_countries</span>
-<span class="kn">from</span> <span class="nn">itables.shiny</span> <span class="kn">import</span> <span class="n">DT</span>
+<span class="kn">from</span> <span class="nn">itables.shiny</span> <span class="kn">import</span> <span class="n">DT</span><span class="p">,</span> <span class="n">init_itables</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">DT</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="c1"># Load the datatables library and css from the ITables package</span>
+<span class="c1"># (use connected=True if you prefer to load it from the internet)</span>
+<span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">init_itables</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="c1"># Render the table with DT</span>
+<span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">DT</span><span class="p">(</span><span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)))</span>
 </pre></div>
 </div>
+<p>If you enable row selection and set an id on your table, e.g. <code class="docutils literal notranslate"><span class="pre">DT(df,</span> <span class="pre">table_id=&quot;my_table&quot;,</span> <span class="pre">select=True)</span></code> then
+ITables will provide the list of selected rows at <code class="docutils literal notranslate"><span class="pre">input.my_table_selected_rows()</span></code> (replace <code class="docutils literal notranslate"><span class="pre">my_table</span></code> with your
+own table id).</p>
 <p>See also our <a class="reference external" href="https://github.com/mwouts/itables/tree/main/tests/sample_python_apps">tested examples</a>.</p>
 </section>
 

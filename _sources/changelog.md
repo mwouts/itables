@@ -1,6 +1,21 @@
 ITables ChangeLog
 =================
 
+2.2.0 (2024-09-22)
+------------------
+
+**Added**
+- ITables has a Jupyter Widget ([#267](https://github.com/mwouts/itables/issues/267)). Our widget was developed and packaged using [AnyWidget](https://anywidget.dev/) which I highly recommend!
+- The selected rows are now available in the apps. Use either the `selected_rows` attribute of the `ITable` widget, the returned value of the Streamlit `interactive_table` component, or the `{table_id}_selected_rows` input in Shiny ([#208](https://github.com/mwouts/itables/issues/208), [#250](https://github.com/mwouts/itables/issues/250))
+- ITables works offline in Shiny applications too - just add `ui.HTML(init_itables())` to your application
+
+**Changed**
+- The `tableId` argument of `to_html_datatable` has been renamed to `table_id`
+
+**Fixed**
+- The dependencies of the Streamlit component have been updated ([#320](https://github.com/mwouts/itables/issues/320))
+
+
 2.1.5 (2024-09-08)
 ------------------
 
@@ -10,7 +25,7 @@ ITables ChangeLog
 - We have improved the function that determines whether a dark theme is being used ([#294](https://github.com/mwouts/itables/issues/294))
 - We have adjusted the generation of the Polars sample dataframes to fix the CI ([Polars-18130](https://github.com/pola-rs/polars/issues/18130))
 - The test on the Shiny app fallbacks to `ui.nav_panel` when `ui.nav` is not available
-- The dependencies of the streamlit component have been updated ([#313](https://github.com/mwouts/itables/issues/313), [#315](https://github.com/mwouts/itables/issues/315))
+- The dependencies of the Streamlit component have been updated ([#313](https://github.com/mwouts/itables/issues/313), [#315](https://github.com/mwouts/itables/issues/315))
 
 
 2.1.4 (2024-07-03)
@@ -35,7 +50,7 @@ ITables ChangeLog
 an automatic horizontal scrolling in Jupyter, Jupyter Book and also Streamlit if the table is too wide ([#282](https://github.com/mwouts/itables/pull/282)).
 
 **Fixed**
-- The dependencies of the streamlit components have been updated to fix a vulnerability in `ws` ([Alert 1](https://github.com/mwouts/itables/security/dependabot/1))
+- The dependencies of the Streamlit components have been updated to fix a vulnerability in `ws` ([Alert 1](https://github.com/mwouts/itables/security/dependabot/1))
 
 
 2.1.1 (2024-06-08)
