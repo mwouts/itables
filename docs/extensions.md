@@ -105,7 +105,7 @@ show(
 ```{tip}
 Only the filtered or selected rows are exported to CSV/Excel. To filter the rows you
 can use the simple search box, the [SearchPanes](#searchpanes) and [SearchBuilder](#searchbuilder)
-options, or the [select](#row-selection) extension.
+options, or the [select](select.md) extension.
 ```
 
 ```{warning}
@@ -259,40 +259,6 @@ opt.keys = True
 
 ```{warning}
 The KeyTable extension works in Jupyter Book (try it here in the documentation) but not in JupyterLab.
-```
-
-## Row selection
-
-The [select](https://datatables.net/extensions/select) extension let you select rows (or cells). When you do so,
-only the selected rows are exported
-
-```{code-cell}
-:tags: [full-width]
-
-show(
-    df,
-    select=True,
-    selected_rows=[2, 4, 5],
-    buttons=["copyHtml5", "csvHtml5", "excelHtml5"],
-)
-```
-
-```{tip}
-The `select` option accept multiple values, as documented [here](https://datatables.net/extensions/select):
-- `select=True` or `select="os"` let you select using single click, shift-click and ctrl-click
-- `select="single"` let you select a single row
-- `select="multi"` for single click selection of multiple rows, `select="multi+shift"`, ...
-
-With `select={"style": "os", "items": "cell"}` you can let the user select specific cells,
-however cell selection is not taken into account when exporting the data.
-```
-
-```{tip}
-It is possible to get the updated `selected_rows` back in Python but for this you will have to use,
-instead of `show`, either
-- the `ITable` [Jupyter Widget](ipywidgets.md)
-- the `interactive_table` [Streamlit component](streamlit.md)
-- or `DT` in a [Shiny app](shiny.md).
 ```
 
 ## RowGroup
