@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.2.1 (2024-09-22)
+------------------
+
+**Fixed**
+- We fixed an issue with the Streamlit component when `selected_rows` was not set.
+
+
 2.2.0 (2024-09-22)
 ------------------
 
