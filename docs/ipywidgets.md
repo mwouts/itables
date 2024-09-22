@@ -18,7 +18,8 @@ ITables is available as a [Jupyter Widget](https://ipywidgets.readthedocs.io) si
 
 ## The `ITable` widget
 
-The `ITable` widget has a few dependencies that you can install with
+The `ITable` widget has a few dependencies (essentially [AnyWidget](https://anywidget.dev),
+a great widget development framework!) that you can install with
 ```bash
 pip install itables[widget]
 ```
@@ -91,7 +92,7 @@ table.update(df.head(20), selected_rows=[7, 8])
 Compared to `show`, the `ITable` widget has the same limitations as the [streamlit component](streamlit.md#limitations),
 e.g. structured headers are not available, you can't pass JavaScript callback, etc.
 
-The good news is that if you only want to _display_ the table, you **do not need**
+The good news is that if you only want to _display_ the table, you do not need
 the `ITables` widget. Below is an example in which we use `show` to display a different
 table depending on the value of a drop-down component:
 

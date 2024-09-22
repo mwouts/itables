@@ -36,7 +36,7 @@ def test_get_itables_extension_arguments(df):
 def test_no_use_to_html():
     with pytest.raises(
         TypeError,
-        match="In the context of the streamlit extension, these options are not available",
+        match="In the context of the itable widget or streamlit extension, these options are not available",
     ):
         get_itables_extension_arguments(pd.DataFrame({"a": [0]}), use_to_html=True)
 
