@@ -24,4 +24,7 @@ def test_get_app_file_list():
     sys.version_info < (3, 7), reason="Shiny does not seem to support Python 3.6"
 )
 def test_app_file(app_file):
+    from shiny import __version__ as shiny_version
+
+    print(f"This is shiny=={shiny_version}")
     runpy.run_path(str(app_file))
