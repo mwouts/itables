@@ -23,12 +23,19 @@ app_ui = ui.page_fluid(
 def server(input: Inputs, output: Outputs, session: Session):
     @render.ui
     def table():
-        return ui.HTML(DT(get_countries(), table_id="countries", select=True))
+        return ui.HTML(
+            DT(
+                get_countries(html=False),
+                table_id="countries",
+                select=True,
+                selected_rows=[0, 1, 2, 207],
+            )
+        )
 
     @render.ui
     def selected_rows():
         selected_rows = list(input.countries_selected_rows())
-        return f"You have selected {len(selected_rows)}: {selected_rows}"
+        return f"You have selected {len(selected_rows)} rows: {selected_rows}"
 
 
 app = App(app_ui, server, debug=True)

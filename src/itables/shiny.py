@@ -41,6 +41,10 @@ def DT(df, caption=None, table_id=None, selected_rows=None, **kwargs):
         **kwargs,
     )
 
+    html = html.replace(
+        "<code>init_notebook_mode</code>", "<code>init_shiny_mode</code>"
+    )
+
     if table_id is None:
         return html
 
@@ -50,12 +54,12 @@ def DT(df, caption=None, table_id=None, selected_rows=None, **kwargs):
     assert "let filtered_row_count =" in html
 
     selected_rows_code = f"""
-        dt.on('select', function (e, dt, type, indexes) {{
+        function set_selected_rows_in_shiny(...args) {{
             Shiny.setInputValue('{table_id}_selected_rows', DataTable.get_selected_rows(dt, filtered_row_count));
-        }});
+        }};
 
-        dt.on('deselect', function (e, dt, type, indexes) {{
-            Shiny.setInputValue('{table_id}_selected_rows', DataTable.get_selected_rows(dt, filtered_row_count));
-        }});
-        """
+        set_selected_rows_in_shiny();
+        dt.on('select', set_selected_rows_in_shiny);
+        dt.on('deselect', set_selected_rows_in_shiny);"""
+
     return html.removesuffix(script_end) + selected_rows_code + script_end
