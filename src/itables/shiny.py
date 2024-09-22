@@ -3,10 +3,10 @@ import itables.options as opt
 from .javascript import generate_init_offline_itables_html, to_html_datatable
 from .utils import read_package_file
 
-_CONNECTED = False
+_CONNECTED = True
 
 
-def init_shiny_mode(
+def init_itables(
     connected=False,
     dt_bundle=None,
 ):
@@ -41,9 +41,7 @@ def DT(df, caption=None, table_id=None, selected_rows=None, **kwargs):
         **kwargs,
     )
 
-    html = html.replace(
-        "<code>init_notebook_mode</code>", "<code>init_shiny_mode</code>"
-    )
+    html = html.replace("<code>init_notebook_mode</code>", "<code>init_itables</code>")
 
     if table_id is None:
         return html

@@ -2,10 +2,10 @@
 from shiny import App, Inputs, Outputs, Session, render, ui
 
 from itables.sample_dfs import get_countries
-from itables.shiny import DT, init_shiny_mode
+from itables.shiny import DT, init_itables
 
 app_ui = ui.page_fluid(
-    ui.HTML(init_shiny_mode()),
+    ui.HTML(init_itables()),
     ui.layout_columns(
         ui.value_box(
             "Selected rows",
