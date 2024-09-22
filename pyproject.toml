@@ -45,7 +45,7 @@ test = [
   "nbconvert",
   "jupytext",
   # Shiny test app
-  "shiny",
+  "shiny>=1.0",
   # Test urls
   "requests",
 ]
