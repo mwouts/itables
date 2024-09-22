@@ -598,7 +598,7 @@ def warn_if_selected_rows_are_not_visible(
     selected_rows, full_row_count, data_row_count, warn_on_selected_rows_not_rendered
 ):
     if selected_rows is None:
-        return None
+        return []
 
     if not all(isinstance(i, int) for i in selected_rows):
         raise TypeError("Selected rows must be integers")

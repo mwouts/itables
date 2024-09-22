@@ -29,7 +29,7 @@ def init_itables(
     return html
 
 
-def DT(df, caption=None, table_id=None, selected_rows=None, **kwargs):
+def DT(df, caption=None, table_id=None, **kwargs):
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
 
     html = to_html_datatable(
@@ -37,7 +37,6 @@ def DT(df, caption=None, table_id=None, selected_rows=None, **kwargs):
         caption=caption,
         table_id=table_id,
         connected=_CONNECTED,
-        selected_rows=selected_rows or [],
         **kwargs,
     )
 

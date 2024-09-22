@@ -41,7 +41,7 @@ class ITable(anywidget.AnyWidget):
         self.caption = other_args.pop("caption") or ""
         self.classes = other_args.pop("classes")
         self.style = other_args.pop("style")
-        self.selected_rows = other_args.pop("selected_rows") or []
+        self.selected_rows = other_args.pop("selected_rows")
 
         self._data = dt_args.pop("data")
         self._columns = dt_args.pop("columns")
