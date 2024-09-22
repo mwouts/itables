@@ -7,7 +7,10 @@ from itables.shiny import DT
 app_ui = ui.page_fluid(
     # Display the different tables in different tabs
     ui.navset_tab(
-        *[ui.nav(name, ui.HTML(DT(df))) for name, df in get_dict_of_test_dfs().items()]
+        *[
+            ui.nav_panel(name, ui.HTML(DT(df)))
+            for name, df in get_dict_of_test_dfs().items()
+        ]
     )
 )
 

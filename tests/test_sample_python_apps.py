@@ -1,8 +1,13 @@
 import runpy
-import sys
 from pathlib import Path
 
 import pytest
+from packaging.version import Version
+
+try:
+    from shiny import __version__ as shiny_version
+except ImportError:
+    shiny_version = "NA"
 
 
 def get_app_file_list():
@@ -21,10 +26,9 @@ def test_get_app_file_list():
 
 @pytest.mark.parametrize("app_file", get_app_file_list(), ids=lambda path: path.stem)
 @pytest.mark.skipif(
-    sys.version_info < (3, 7), reason="Shiny does not seem to support Python 3.6"
+    shiny_version == "NA" or Version(shiny_version) < Version("1.0"),
+    reason=f"This test requires shiny>=1.0, got {shiny_version}",
 )
 def test_app_file(app_file):
-    from shiny import __version__ as shiny_version
-
     print(f"This is shiny=={shiny_version}")
     runpy.run_path(str(app_file))
