@@ -514,7 +514,7 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_e39eaf07_9421_4475_a04d_76ff718c0610" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_b2e866e6_9919_4f1a_8e16_f15acbc36acd" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <caption style="caption-side: bottom">A table that does not load, due to <code>init_notebook_mode</code><br>not being called in this document</caption><thead>
     <tr style="text-align: right;">
       <th></th>
@@ -614,16 +614,19 @@ width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
 </a>
 </div>
 <div>
-Loading ITables v2.2.1 from the <code>init_notebook_mode</code> cell...
+Loading ITables v2.2.2-dev from the <code>init_notebook_mode</code> cell...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </div>
 </tr></tbody>
 
 </table>
 <script type="module">
-    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_1);
+    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2_dev);
 
-    document.querySelectorAll("#itables_e39eaf07_9421_4475_a04d_76ff718c0610:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_b2e866e6_9919_4f1a_8e16_f15acbc36acd:not(.dataTable)").forEach(table => {
+        if (!(table instanceof HTMLTableElement))
+            return;
+
         // Define the table data
         const data = [];
 
