@@ -1,12 +1,16 @@
 ITables ChangeLog
 =================
 
-2.2.2-dev (2024-09-??)
+2.2.2 (2024-09-29)
 ------------------
 
 **Fixed**
 - We have fixed a HTML pop up warning when displaying Pandas Style objects in Quarto ([#317](https://github.com/mwouts/itables/issues/317))
 - The dependencies of the Streamlit component have been updated ([#323](https://github.com/mwouts/itables/pull/323))
+
+**Added**
+- We have documented how to use the `ITable` widget in a Shiny application
+- We have deployed a sample Shiny app ([#276](https://github.com/mwouts/itables/issues/276))
 
 
 2.2.1 (2024-09-22)

@@ -196,7 +196,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">ITables in Applications</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="ipywidgets.html">Jupyter Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widget.html">Jupyter Widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Shiny</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
@@ -402,7 +402,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -418,6 +420,18 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-itable-in-shiny">Using <code class="docutils literal notranslate"><span class="pre">ITable</span></code> in Shiny</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-the-widget">Updating the widget</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-selected-rows-attribute">Accessing the <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> attribute</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-example-application">An example application</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -429,7 +443,101 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="shiny">
 <h1>Shiny<a class="headerlink" href="#shiny" title="Link to this heading">#</a></h1>
-<p>You can use ITables in Web applications generated with <a class="reference external" href="https://shiny.rstudio.com/py/">Shiny</a> for Python with e.g.</p>
+<section id="using-itable-in-shiny">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">ITable</span></code> in Shiny<a class="headerlink" href="#using-itable-in-shiny" title="Link to this heading">#</a></h2>
+<p>The recommended way to use <code class="docutils literal notranslate"><span class="pre">ITables</span></code> in a <a class="reference external" href="https://shiny.rstudio.com/py/">Shiny for Python</a> application is with the <a class="reference internal" href="widget.html"><span class="std std-doc">ITable Widget</span></a>.</p>
+<p>In the Shiny Express syntax this is as simple as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shinywidgets</span> <span class="kn">import</span> <span class="n">render_widget</span>
+
+<span class="kn">from</span> <span class="nn">itables.widget</span> <span class="kn">import</span> <span class="n">ITable</span>
+
+
+<span class="nd">@render_widget</span>
+<span class="k">def</span> <span class="nf">my_table</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function creates the &quot;my_table&quot; widget.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Note: df is an optional argument</span>
+    <span class="k">return</span> <span class="n">ITable</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s2">&quot;A table rendered with ITable&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In the Shiny Core syntax you will need, in addition to the above,
+to insert the table in the UI with <code class="docutils literal notranslate"><span class="pre">output_widget</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shiny</span> <span class="kn">import</span> <span class="n">ui</span>
+<span class="kn">from</span> <span class="nn">shinywidgets</span> <span class="kn">import</span> <span class="n">output_widget</span>
+
+<span class="n">app_ui</span> <span class="o">=</span> <span class="n">ui</span><span class="o">.</span><span class="n">page_fluid</span><span class="p">(</span>
+    <span class="c1"># ...</span>
+    <span class="n">output_widget</span><span class="p">(</span><span class="s2">&quot;my_table&quot;</span><span class="p">),</span>
+    <span class="c1"># ...</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="updating-the-widget">
+<h2>Updating the widget<a class="headerlink" href="#updating-the-widget" title="Link to this heading">#</a></h2>
+<p>Rather than re-creating the widget each time the data changes, you can
+call the <code class="docutils literal notranslate"><span class="pre">.update</span></code> method of the widget object, using the <code class="docutils literal notranslate"><span class="pre">&#64;reactive.effect</span></code>
+decorator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shiny</span> <span class="kn">import</span> <span class="n">reactive</span>
+<span class="kn">from</span> <span class="nn">shiny.express</span> <span class="kn">import</span> <span class="nb">input</span>
+
+<span class="kn">from</span> <span class="nn">itables.sample_dfs</span> <span class="kn">import</span> <span class="n">get_dict_of_test_dfs</span>
+
+<span class="n">dfs</span> <span class="o">=</span> <span class="n">get_dict_of_test_dfs</span><span class="p">()</span>
+
+
+<span class="nd">@reactive</span><span class="o">.</span><span class="n">effect</span>
+<span class="k">def</span> <span class="nf">_</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This &quot;reactive.effect&quot; calls the &quot;update&quot; method of the ITable widget</span>
+<span class="sd">    to update the widget with the new inputs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get the new inputs</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">[</span><span class="nb">input</span><span class="o">.</span><span class="n">table_selector</span><span class="p">()]</span>
+    <span class="n">selected_rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1"># Update the widget</span>
+    <span class="n">my_table</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">selected_rows</span><span class="o">=</span><span class="n">selected_rows</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="accessing-the-selected-rows-attribute">
+<h2>Accessing the <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> attribute<a class="headerlink" href="#accessing-the-selected-rows-attribute" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">reactive_read</span></code> function lets you access the <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> attribute
+of the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> object. The code below displays the selected rows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shiny.express</span> <span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">shinywidgets</span> <span class="kn">import</span> <span class="n">reactive_read</span>
+
+
+<span class="nd">@render</span><span class="o">.</span><span class="n">code</span>
+<span class="k">def</span> <span class="nf">selected_rows</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Here we read the &quot;selected_rows&quot; attribute of the ITable widget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">reactive_read</span><span class="p">(</span><span class="n">my_table</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span> <span class="s2">&quot;selected_rows&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="an-example-application">
+<h2>An example application<a class="headerlink" href="#an-example-application" title="Link to this heading">#</a></h2>
+<p>This <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/">repository</a> contains a simple
+example of a Shiny application that uses the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget.</p>
+<p>The source code of the application
+is at <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itable_widget/app.py"><code class="docutils literal notranslate"><span class="pre">app.py</span></code></a>
+(Shiny Express) or <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itable_widget/app-core.py"><code class="docutils literal notranslate"><span class="pre">app-core.py</span></code></a>
+(Shiny Core).</p>
+<div class="docutils">
+<iframe src="https://itables.shinyapps.io/itable_widget?embed=true"
+style="height: 800px; width: 100%;"></iframe>
+</div>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">#</a></h2>
+<p>Compared to <code class="docutils literal notranslate"><span class="pre">show</span></code>, the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget has the same limitations as the <a class="reference internal" href="streamlit.html#limitations"><span class="std std-ref">Streamlit component</span></a>,
+e.g. structured headers are not available, you can’t pass JavaScript callback, etc.</p>
+<p>The good news is that if you only want to <em>display</em> the table, you do not need
+the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget. You can render the table using <code class="docutils literal notranslate"><span class="pre">HTML(DT(...))</span></code> as here:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shiny</span> <span class="kn">import</span> <span class="n">ui</span>
 
 <span class="kn">from</span> <span class="nn">itables.sample_dfs</span> <span class="kn">import</span> <span class="n">get_countries</span>
@@ -437,16 +545,20 @@ document.write(`
 
 <span class="c1"># Load the datatables library and css from the ITables package</span>
 <span class="c1"># (use connected=True if you prefer to load it from the internet)</span>
-<span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">init_itables</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">init_itables</span><span class="p">())</span>
 
 <span class="c1"># Render the table with DT</span>
 <span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">DT</span><span class="p">(</span><span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p>If you enable row selection and set an id on your table, e.g. <code class="docutils literal notranslate"><span class="pre">DT(df,</span> <span class="pre">table_id=&quot;my_table&quot;,</span> <span class="pre">select=True)</span></code> then
-ITables will provide the list of selected rows at <code class="docutils literal notranslate"><span class="pre">input.my_table_selected_rows()</span></code> (replace <code class="docutils literal notranslate"><span class="pre">my_table</span></code> with your
-own table id).</p>
-<p>See also our <a class="reference external" href="https://github.com/mwouts/itables/tree/main/tests/sample_python_apps">tested examples</a>.</p>
+<p>An example for an application that uses <code class="docutils literal notranslate"><span class="pre">DT</span></code> is available at <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itables_DT/app.py"><code class="docutils literal notranslate"><span class="pre">app.py</span></code></a>
+(Shiny Express) or <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itables_DT/app-core.py"><code class="docutils literal notranslate"><span class="pre">app-core.py</span></code></a>
+(Shiny Core).</p>
+<div class="docutils">
+<iframe src="https://itables.shinyapps.io/itables_DT?embed=true"
+style="height: 800px; width: 100%;"></iframe>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -503,6 +615,25 @@ own table id).</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-itable-in-shiny">Using <code class="docutils literal notranslate"><span class="pre">ITable</span></code> in Shiny</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-the-widget">Updating the widget</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-selected-rows-attribute">Accessing the <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code> attribute</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#an-example-application">An example application</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations">Limitations</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
