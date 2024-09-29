@@ -31,6 +31,8 @@ def test_run_documentation_notebooks(notebook):
         pytest.skip("Polars is not available")
     if "pandas_style" in notebook.stem and pd_style is None:
         pytest.skip("Pandas Style is not available")
+    if "shiny" in notebook.stem:
+        pytest.skip("shinywidgets makes the widget.md notebook fail")
 
     org_options = dir(opt)
 
