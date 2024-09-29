@@ -1,7 +1,7 @@
 ITables ChangeLog
 =================
 
-2.2.2-dev (2024-09-??)
+2.2.2 (2024-09-29)
 ------------------
 
 **Fixed**
@@ -9,7 +9,8 @@ ITables ChangeLog
 - The dependencies of the Streamlit component have been updated ([#323](https://github.com/mwouts/itables/pull/323))
 
 **Added**
-- We have documented how to use the `ITable` widget in a Shiny application and deployed a sample app ([#276](https://github.com/mwouts/itables/issues/276))
+- We have documented how to use the `ITable` widget in a Shiny application
+- We have deployed a sample Shiny app ([#276](https://github.com/mwouts/itables/issues/276))
 
 
 2.2.1 (2024-09-22)
