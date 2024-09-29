@@ -37,6 +37,12 @@ table = ITable(df, selected_rows=[0, 2, 5], select=True)
 table
 ```
 
+```{tip}
+The table shown above does not reflect the initial row selection.
+This is because the `ITable` widget was updated with
+more row selection commands, see below.
+```
+
 ## The `selected_rows` traits
 
 The `selected_rows` attribute of the `ITable` object provides a view on the
@@ -93,7 +99,7 @@ Compared to `show`, the `ITable` widget has the same limitations as the [Streaml
 e.g. structured headers are not available, you can't pass JavaScript callback, etc.
 
 The good news is that if you only want to _display_ the table, you do not need
-the `ITables` widget. Below is an example in which we use `show` to display a different
+the `ITable` widget. Below is an example in which we use `show` to display a different
 table depending on the value of a drop-down component:
 
 ```python

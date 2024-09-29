@@ -6,7 +6,7 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://mwouts.github.io/itables/ipywidgets.html)
+[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://mwouts.github.io/itables/widget.html)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
@@ -65,6 +65,6 @@ You can also use ITables in [Quarto](https://mwouts.github.io/itables/quarto.htm
 ITables works well in VS Code, both in Jupyter Notebooks and in interactive Python sessions.
 
 Last but not least, ITables is also available as
-- a [Jupyter Widget](https://mwouts.github.io/itables/ipywidgets.html)
+- a [Jupyter Widget](https://mwouts.github.io/itables/widget.html)
 - a [Streamlit](https://mwouts.github.io/itables/streamlit.html) component,
 - and it also works in [Shiny](https://mwouts.github.io/itables/shiny.html) applications.
