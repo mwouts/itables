@@ -44,8 +44,8 @@ test = [
   "ipykernel",
   "nbconvert",
   "jupytext",
-  # Shiny test app
   "shiny",
+  # "shinywidgets",
   # Test urls
   "requests",
 ]
