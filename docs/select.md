@@ -68,7 +68,7 @@ show(
 ```{tip}
 It is possible to get the updated `selected_rows` back in Python but for this you will have to use,
 instead of `show`, either
-- the `ITable` [Jupyter Widget](ipywidgets.md)
+- the `ITable` [Jupyter Widget](widget.md)
 - the `interactive_table` [Streamlit component](streamlit.md)
 - or `DT` in a [Shiny app](shiny.md).
 ```

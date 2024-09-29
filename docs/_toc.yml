@@ -17,7 +17,7 @@ parts:
     - file: supported_editors
   - caption: ITables in Applications
     chapters:
-      - file: ipywidgets
+      - file: widget
       - file: streamlit
       - file: shiny
       - file: dash
