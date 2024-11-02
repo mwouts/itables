@@ -60,12 +60,7 @@ DEFAULT_LAYOUT_CONTROLS = set(DEFAULT_LAYOUT.values())
 
 
 try:
-    import google.colab
-
-    # I can't find out how to suppress the LGTM alert about unused-import
-    # (Tried with # lgtm[py/unused-import]  # noqa: F401)
-    # So we use the import:
-    assert google.colab.output
+    import google.colab  # noqa: F401
 
     GOOGLE_COLAB = True
 except ImportError:
@@ -200,8 +195,7 @@ Loading ITables v{itables_version} from {itables_source}...
         footer = ""
 
     return """<table id="{table_id}" class="{classes}" data-quarto-disable-processing="true" {style}>
-{tags}{header}<tbody>{tbody}</tbody>
-{footer}
+{tags}{header}{footer}<tbody>{tbody}</tbody>
 </table>""".format(
         table_id=table_id,
         classes=classes,
