@@ -1,6 +1,16 @@
 ITables ChangeLog
 =================
 
+2.2.3 (2024-11-01)
+------------------
+
+**Fixed**
+- The dependencies of the Streamlit component have been updated ([#327](https://github.com/mwouts/itables/pull/327), [#330](https://github.com/mwouts/itables/pull/330))
+
+**Added**
+- ITables is now tested with Python 3.13
+
+
 2.2.2 (2024-09-29)
 ------------------
 
