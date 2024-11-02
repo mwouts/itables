@@ -5,6 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
+- Table footers continue to work when the notebook is exported to HTML ([#331](https://github.com/mwouts/itables/issues/331))
 - The dependencies of the Streamlit component have been updated ([#327](https://github.com/mwouts/itables/pull/327), [#330](https://github.com/mwouts/itables/pull/330))
 
 **Added**
