@@ -1,6 +1,5 @@
 name: itables
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - nodejs
