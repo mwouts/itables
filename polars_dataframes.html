@@ -16,17 +16,19 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -36,10 +38,11 @@
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -63,6 +66,7 @@
     <link rel="prev" title="Sample dataframes" href="sample_dataframes.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -78,19 +82,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -98,7 +91,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -106,8 +98,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -123,7 +115,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -153,21 +146,17 @@
     
     
     <img src="_static/logo.svg" class="logo__image only-light" alt="Interactive Tables - Home"/>
-    <script>document.write(`<img src="_static/logo.svg" class="logo__image only-dark" alt="Interactive Tables - Home"/>`);</script>
+    <img src="_static/logo.svg" class="logo__image only-dark pst-js-only" alt="Interactive Tables - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -431,24 +420,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -661,7 +642,7 @@ This is the <code>init_notebook_mode</code> cell from ITables v2.2.2<br>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_9238a7f5_0599_40ec_8cda_aec75594cbab" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_6da6089c_c788_40c1_ade7_c08ff45bd4e9" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -770,7 +751,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_9238a7f5_0599_40ec_8cda_aec75594cbab:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_6da6089c_c788_40c1_ade7_c08ff45bd4e9:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -797,7 +778,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_85ddfc91_3dba_43cd_a938_232b4641485b" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_ecfae9bc_4eae_41fc_8928_66eb335eaf90" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -907,7 +888,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_85ddfc91_3dba_43cd_a938_232b4641485b:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_ecfae9bc_4eae_41fc_8928_66eb335eaf90:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -934,7 +915,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_40a9c9b7_268b_4cf6_9308_6a473b571886" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_eb91e50b_aa4c_4838_84e7_99b2a5270ca9" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -1044,7 +1025,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_40a9c9b7_268b_4cf6_9308_6a473b571886:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_eb91e50b_aa4c_4838_84e7_99b2a5270ca9:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1071,7 +1052,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_0050bb5b_e8f4_430d_ad0c_ed5dc348bccd" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_66a55906_5c9d_4b12_bbed_0af9d3c27284" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1180,7 +1161,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_0050bb5b_e8f4_430d_ad0c_ed5dc348bccd:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_66a55906_5c9d_4b12_bbed_0af9d3c27284:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1207,7 +1188,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_5547643d_67f4_4745_bf32_e82fb798691c" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_14ebdade_e41e_4dbe_8323_d7f4c37b9d94" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -1316,7 +1297,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_5547643d_67f4_4745_bf32_e82fb798691c:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_14ebdade_e41e_4dbe_8323_d7f4c37b9d94:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1343,7 +1324,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_b2c0bce5_13be_47bf_85d3_6b6e3939996b" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_29fe244e_d3b8_48fe_8528_7abb6889141f" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -1456,7 +1437,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_b2c0bce5_13be_47bf_85d3_6b6e3939996b:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_29fe244e_d3b8_48fe_8528_7abb6889141f:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1483,7 +1464,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_2bfa9ec4_502e_4786_86cf_380999f3853c" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_c37cd303_ec7e_4ee4_9644_204c7e29d02f" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -1596,7 +1577,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_2bfa9ec4_502e_4786_86cf_380999f3853c:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_c37cd303_ec7e_4ee4_9644_204c7e29d02f:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1623,7 +1604,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_93e62c23_726c_447b_bbff_8375843b304d" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_9373c7e9_397b_45c5_8652_ed437202a7ae" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -1737,7 +1718,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_93e62c23_726c_447b_bbff_8375843b304d:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_9373c7e9_397b_45c5_8652_ed437202a7ae:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1764,7 +1745,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_543383c5_bbf4_4de0_bbcc_314ef762c50a" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_928d2db7_f316_4a3a_91bc_180ea55b33d1" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -1876,7 +1857,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_543383c5_bbf4_4de0_bbcc_314ef762c50a:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_928d2db7_f316_4a3a_91bc_180ea55b33d1:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -1903,7 +1884,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_7d02d7d8_22b7_4527_9b62_934f7b472be8" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_ef5ea75f_2029_4bd7_8dc9_a264ce7d5b54" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2016,7 +1997,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_7d02d7d8_22b7_4527_9b62_934f7b472be8:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_ef5ea75f_2029_4bd7_8dc9_a264ce7d5b54:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2043,7 +2024,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_01c4d902_5229_4d56_91ad_aa4779750d84" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_a8dfba13_33e9_4f37_ba70_2d4f6405807d" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2154,7 +2135,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_01c4d902_5229_4d56_91ad_aa4779750d84:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_a8dfba13_33e9_4f37_ba70_2d4f6405807d:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2181,7 +2162,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_85f9755e_792d_4ac7_8c3e_807b853ecec3" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_a071e2b4_eb0e_4201_8d1e_d9225e5bfdd3" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2293,7 +2274,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_85f9755e_792d_4ac7_8c3e_807b853ecec3:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_a071e2b4_eb0e_4201_8d1e_d9225e5bfdd3:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2320,7 +2301,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_43c424b5_7beb_4723_bbd1_15eb4505c032" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_05f2da94_a034_4727_ad16_b18e1925294f" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2430,7 +2411,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_43c424b5_7beb_4723_bbd1_15eb4505c032:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_05f2da94_a034_4727_ad16_b18e1925294f:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2457,7 +2438,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_2860d4f7_b7d5_41e1_a81c_7e4fdd2d1828" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_5092ec9a_01e5_4268_9701_4f87dade8189" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2567,7 +2548,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_2860d4f7_b7d5_41e1_a81c_7e4fdd2d1828:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_5092ec9a_01e5_4268_9701_4f87dade8189:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2594,7 +2575,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_d1786373_ded0_4265_88b7_abbb6556e89d" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_99b9c87c_bf9f_42e8_b5ef_5fc5a7cf85c3" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2707,7 +2688,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_d1786373_ded0_4265_88b7_abbb6556e89d:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_99b9c87c_bf9f_42e8_b5ef_5fc5a7cf85c3:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2734,7 +2715,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_a3185343_0f93_4ec9_9602_207c489ef551" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_2f985b59_60c6_425f_af0d_04263e4f377b" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2849,7 +2830,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_a3185343_0f93_4ec9_9602_207c489ef551:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_2f985b59_60c6_425f_af0d_04263e4f377b:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -2876,7 +2857,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_7573cd2f_1fdb_45d1_9720_0301d85fb05a" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_55d4bb49_abf1_4034_bf33_a238d37fefe0" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -2986,7 +2967,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_7573cd2f_1fdb_45d1_9720_0301d85fb05a:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_55d4bb49_abf1_4034_bf33_a238d37fefe0:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3013,7 +2994,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_2ec4a020_3f08_4f35_88b9_6839f5ed6964" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_ba2645b7_2e7b_4040_808f_c7cef605bab3" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -3127,7 +3108,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_2ec4a020_3f08_4f35_88b9_6839f5ed6964:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_ba2645b7_2e7b_4040_808f_c7cef605bab3:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3154,7 +3135,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_95cd7f57_d9c2_4fec_b623_b5fcde6483ad" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_c3a032d9_513d_4e75_a680_22b7daa5d6a5" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -3266,7 +3247,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_95cd7f57_d9c2_4fec_b623_b5fcde6483ad:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_c3a032d9_513d_4e75_a680_22b7daa5d6a5:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3293,7 +3274,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_95de77b8_df88_4456_91e2_172d00031a56" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_2db98253_6ad4_49bc_a52c_cd5189806685" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -3502,7 +3483,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_95de77b8_df88_4456_91e2_172d00031a56:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_2db98253_6ad4_49bc_a52c_cd5189806685:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3529,7 +3510,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_a869da7e_9227_4679_bffe_d566ff71d323" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_237f5734_1940_4a8d_856b_cc18309d4cc4" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -3644,7 +3625,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_a869da7e_9227_4679_bffe_d566ff71d323:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_237f5734_1940_4a8d_856b_cc18309d4cc4:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3671,7 +3652,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_fee0022d_f99a_4551_8ad6_59622bba55c2" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_5625727b_e492_4df0_82c2_d17642db71fd" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -3781,7 +3762,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_fee0022d_f99a_4551_8ad6_59622bba55c2:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_5625727b_e492_4df0_82c2_d17642db71fd:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3808,7 +3789,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_d5a96ef4_f673_474d_8602_2152b28a2ef6" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_9f71fdff_12c0_4e0f_9848_ec26167d56ca" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       
@@ -3919,7 +3900,7 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_2);
 
-    document.querySelectorAll("#itables_d5a96ef4_f673_474d_8602_2152b28a2ef6:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_9f71fdff_12c0_4e0f_9848_ec26167d56ca:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -3985,7 +3966,8 @@ Loading ITables v2.2.2 from the <code>init_notebook_mode</code> cell...
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -4065,8 +4047,8 @@ By Marc Wouts
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>
