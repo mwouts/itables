@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/jest": "^29.5.1",
-    "@types/node": "^20.12.11",
     "dt_for_itables": "file:../dt_for_itables",
-    "react-scripts": "^5.0.1",
-    "streamlit-component-lib": "^2.0.0",
-    "typescript": "^4.2.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "streamlit-component-lib": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -21,6 +19,11 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "react-scripts": "^5.0.1",
+    "typescript": "^4.2.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "homepage": ".",

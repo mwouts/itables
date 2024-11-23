@@ -8,6 +8,16 @@ _streamlit_component_func = components.declare_component(
 )
 
 
+def _style_as_dict(style: str):
+    """The style property in React is a mapping key->value"""
+    style_dict = {}
+    for key_value in style.split(";"):
+        key, value = key_value.split(":")
+        style_dict[key] = value
+    return style_dict
+
+
 def interactive_table(df, caption=None, **kwargs):
     dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
+    other_args["style"] = _style_as_dict(other_args["style"])
     return _streamlit_component_func(dt_args=dt_args, other_args=other_args)
