@@ -2,9 +2,11 @@ import json
 import re
 import warnings
 
+import narwhals.stable.v1 as nw
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
+from narwhals.stable.v1.dependencies import is_pandas_dataframe
 
 try:
     import polars as pl
@@ -83,15 +85,16 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    if count is None or len(df.columns) == count:
-        empty_columns = []
-    else:
-        # When the header requires more columns (#141), we append empty columns on the left
-        missing_columns = count - len(df.columns)
-        assert missing_columns > 0
-        empty_columns = [[None] * len(df)] * missing_columns
+    if is_pandas_dataframe(df):
 
-    try:
+        if count is None or len(df.columns) == count:
+            empty_columns = []
+        else:
+            # When the header requires more columns (#141), we append empty columns on the left
+            missing_columns = count - len(df.columns)
+            assert missing_columns > 0
+            empty_columns = [[None] * len(df)] * missing_columns
+
         # Pandas DataFrame
         data = list(
             zip(
@@ -108,17 +111,17 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
             cls=generate_encoder(warn_on_unexpected_types),
             allow_nan=not pure_json,
         )
-    except AttributeError:
+    else:
         # Polars DataFrame
+        df = nw.from_native(df)
         data = list(df.iter_rows())
-        import polars as pl
 
         has_bigints = any(
             (
-                x.dtype == pl.Int64
+                x.dtype == nw.Int64
                 and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
             )
-            or (x.dtype == pl.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
+            or (x.dtype == nw.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
             for x in (df[col] for col in df.columns)
         )
         js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
