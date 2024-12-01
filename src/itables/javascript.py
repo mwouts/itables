@@ -96,6 +96,8 @@ def init_notebook_mode(
             pd_style.Styler._repr_html_ = _datatables_repr_
         pl.DataFrame._repr_html_ = _datatables_repr_
         pl.Series._repr_html_ = _datatables_repr_
+        # TODO: add support for Modin but without importing modin
+        # to avoid memory consumption issues
     else:
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
         if pd_style is not None:
@@ -156,10 +158,9 @@ def _table_header(
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    try:
+    if isinstance(df, pd.DataFrame):
         html_header = df.head(0).to_html(escape=False)
-    except AttributeError:
-        # Polars DataFrames
+    else:
         html_header = pd.DataFrame(data=[], columns=df.columns, dtype=float).to_html()
     match = pattern.match(html_header)
     thead = match.groups()[0]
@@ -344,16 +345,18 @@ def to_html_datatable(
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
 
-    if isinstance(df, (pd.Series, pl.Series)):
+    # Converted Series (Pandas, Polars, Modin, etc...) to DataFrames
+    try:
         df = df.to_frame()
+    except AttributeError:
+        pass
 
     if showIndex == "auto":
-        try:
+        if isinstance(df, pd.DataFrame):
             showIndex = df.index.name is not None or not isinstance(
                 df.index, pd.RangeIndex
             )
-        except AttributeError:
-            # Polars DataFrame
+        else:
             showIndex = False
 
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -407,11 +410,8 @@ def to_html_datatable(
         classes = " ".join(classes)
 
     if not showIndex:
-        try:
+        if isinstance(df, pd.DataFrame):
             df = df.set_index(pd.RangeIndex(len(df.index)))
-        except AttributeError:
-            # Polars DataFrames
-            pass
 
     table_header = _table_header(
         df,
@@ -512,12 +512,11 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
         df = df.to_frame()
 
     if showIndex == "auto":
-        try:
+        if isinstance(df, pd.DataFrame):
             showIndex = df.index.name is not None or not isinstance(
                 df.index, pd.RangeIndex
             )
-        except AttributeError:
-            # Polars DataFrame
+        else:
             showIndex = False
 
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -540,12 +539,8 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
     if isinstance(classes, list):
         classes = " ".join(classes)
 
-    if not showIndex:
-        try:
-            df = df.set_index(pd.RangeIndex(len(df.index)))
-        except AttributeError:
-            # Polars DataFrames
-            pass
+    if not showIndex and isinstance(df, pd.DataFrame):
+        df = df.set_index(pd.RangeIndex(len(df.index)))
 
     if showIndex:
         df = safe_reset_index(df)
@@ -722,12 +717,11 @@ def to_html_datatable_using_to_html(
         df = df.to_frame()
 
     if showIndex == "auto":
-        try:
+        if isinstance(df, pd.DataFrame):
             showIndex = df.index.name is not None or not isinstance(
                 df.index, pd.RangeIndex
             )
-        except AttributeError:
-            # Polars DataFrame
+        else:
             showIndex = False
 
     _adjust_layout(
@@ -938,12 +932,9 @@ def _adjust_layout(df, kwargs, *, downsampling_warning, warn_on_dom):
 
 def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
-    try:
-        # Pandas DF or Style
+    if isinstance(df, (pd.DataFrame, pd.io.formats.style.Styler)):
         return len(df.index) <= _min_rows(kwargs)
-    except AttributeError:
-        # Polars
-        return len(df) <= _min_rows(kwargs)
+    return len(df) <= _min_rows(kwargs)
 
 
 def _filter_control(control, downsampling_warning):

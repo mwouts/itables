@@ -8,12 +8,6 @@ import pandas as pd
 import pandas.io.formats.format as fmt
 from narwhals.stable.v1.dependencies import is_pandas_dataframe
 
-try:
-    import polars as pl
-except ImportError:
-    pl = None
-
-
 JS_MAX_SAFE_INTEGER = 2**53 - 1
 JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
@@ -85,6 +79,8 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
+
+    # TODO: why not if isinstance(df, pd.DataFrame)
     if is_pandas_dataframe(df):
 
         if count is None or len(df.columns) == count:
@@ -112,7 +108,7 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
             allow_nan=not pure_json,
         )
     else:
-        # Polars DataFrame
+        # Polars, Modin, or other
         df = nw.from_native(df)
         data = list(df.iter_rows())
 
