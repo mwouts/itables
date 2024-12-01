@@ -19,9 +19,9 @@ dataframes are displayed nicely with the default `itables` settings.
 
 ```{code-cell}
 from itables import init_notebook_mode, show
-from itables.sample_dfs import get_dict_of_test_dfs
+from itables.sample_dfs import get_dict_of_test_polars_dfs
 
-dict_of_test_dfs = get_dict_of_test_dfs(polars=True)
+dict_of_test_dfs = get_dict_of_test_polars_dfs()
 init_notebook_mode(all_interactive=True)
 ```
 
