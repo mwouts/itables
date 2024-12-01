@@ -284,6 +284,19 @@ def get_dict_of_test_polars_dfs(**kwargs):
     return polars_dfs
 
 
+def get_dict_of_test_modin_dfs(**kwargs):
+
+    import modin.pandas as pd
+
+    modin_dfs = {}
+    for key, df in get_dict_of_test_dfs(**kwargs).items():
+        # TODO: see what we can do about those
+        if key in {"multiindex", "duplicated_columns", "complex_index"}:
+            continue
+        modin_dfs[key] = pd.DataFrame(df)
+    return modin_dfs
+
+
 def get_dict_of_test_series():
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
@@ -293,7 +306,11 @@ def get_dict_of_test_series():
             # Case of duplicate columns
             if not isinstance(df[col], pd.Series):
                 continue
-            series["{}.{}".format(df_name, col)] = df[col]
+            if isinstance(col, tuple):
+                col_name = "/".join(str(x) for x in col)
+            else:
+                col_name = str(col)
+            series[f"{df_name}.{col_name}"] = df[col]
 
     return series
 
@@ -317,6 +334,14 @@ def get_dict_of_test_polars_series():
     polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
 
     return polars_series
+
+
+def get_dict_of_test_modin_series():
+    import modin.pandas as mpd
+
+    return {
+        name: mpd.Series(value) for name, value in get_dict_of_test_series().items()
+    }
 
 
 @lru_cache()

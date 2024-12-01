@@ -32,3 +32,4 @@ parts:
     chapters:
     - file: sample_dataframes
     - file: polars_dataframes
+    - file: modin_dataframes
