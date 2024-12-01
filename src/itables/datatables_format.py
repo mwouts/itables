@@ -110,7 +110,7 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
         )
     except AttributeError:
         # Polars DataFrame
-        data = list(df.rows())
+        data = df.rows()
         import polars as pl
 
         has_bigints = any(
