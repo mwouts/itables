@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -63,10 +63,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="quarto_html_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="quarto_html_files/libs/quarto-html/anchor.min.js"></script>
 <link href="quarto_html_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="quarto_html_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="quarto_html_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="quarto_html_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="quarto_html_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="quarto_html_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="quarto_html_files/libs/bootstrap/bootstrap-dd3956385ee907e48a7f9381ebb636bf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -112,12 +112,12 @@ Activate ITables (same as in Jupyter, VS Code, PyCharm, Google Colab…)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<div id="235dae82" class="cell" data-execution_count="1">
+<div id="442d9e2d" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <style>.dt-container { font-size: small; }</style>
 </div>
 </div>
-<div id="f56c23e4" class="cell" data-execution_count="2">
+<div id="d6689633" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itables <span class="im">import</span> init_notebook_mode</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>init_notebook_mode(all_interactive<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -224,7 +224,7 @@ This is the <code>init_notebook_mode</code> cell from ITables v2.2.3<br>
 </div>
 </div>
 </div>
-<div id="0431f391" class="cell" data-execution_count="3">
+<div id="af3650e9" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>… and all DataFrames become interactive!</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itables.sample_dfs <span class="im">import</span> get_countries</span>
@@ -232,7 +232,7 @@ This is the <code>init_notebook_mode</code> cell from ITables v2.2.3<br>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>get_countries(html<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="3">
-<table id="itables_c2ae73e1_fdab_4933_89ed_38b0b7e4d6a0" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<table id="itables_70ff8a3b_1b4b_49e6_b91b_3084c3650ad5" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -320,7 +320,7 @@ Loading ITables v2.2.3 from the <code>init_notebook_mode</code> cell...
 <script type="module">
     const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_2_3);
 
-    document.querySelectorAll("#itables_c2ae73e1_fdab_4933_89ed_38b0b7e4d6a0:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_70ff8a3b_1b4b_49e6_b91b_3084c3650ad5:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -545,8 +545,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -657,7 +655,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
