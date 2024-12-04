@@ -113,8 +113,8 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
         )
     else:
         # Polars DataFrame
-        df = nw.from_native(df)
-        data = list(df.iter_rows())
+        df = nw.from_native(df, eager_only=True)
+        data = df.rows()
 
         has_bigints = any(
             (
