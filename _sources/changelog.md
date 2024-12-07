@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.2.4 (2024-12-07)
+------------------
+
+**Fixed**
+- We have fixed an issue with the HTML export of multiple tables in the same cell ([#338](https://github.com/mwouts/itables/issues/338))
+- The dependencies of the Streamlit component have been updated ([#343](https://github.com/mwouts/itables/pull/343), [#345](https://github.com/mwouts/itables/pull/345))
+
+
 2.2.3 (2024-11-01)
 ------------------
 
