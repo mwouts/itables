@@ -115,10 +115,7 @@ def init_notebook_mode(
 def get_animated_logo(display_logo_when_loading):
     if not display_logo_when_loading:
         return ""
-    return f"""<div style="float:left; margin-right: 10px;">
-<a href=https://mwouts.github.io/itables/>{read_package_file("logo/loading.svg")}</a>
-</div>
-"""
+    return f"<a href=https://mwouts.github.io/itables/>{read_package_file('logo/loading.svg')}</a>"
 
 
 def generate_init_offline_itables_html(dt_bundle: Path):
@@ -172,10 +169,9 @@ def _table_header(
     )
     tbody = f"""<tr>
 <td style="vertical-align:middle; text-align:left">
-{get_animated_logo(display_logo_when_loading)}<div>
+{get_animated_logo(display_logo_when_loading)}
 Loading ITables v{itables_version} from {itables_source}...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
-</div>
 </tr>"""
 
     if style:
