@@ -464,7 +464,9 @@ def _raise_if_javascript_code(values, context=""):
         return
 
 
-def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwargs):
+def get_itables_extension_arguments(
+    df, caption=None, selected_rows=None, use_react: bool = False, **kwargs
+):
     """
     This function returns two dictionaries that are JSON
     serializable and can be passed to the itables extensions.
@@ -575,6 +577,9 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
         len(data),
         kwargs.pop("warn_on_selected_rows_not_rendered"),
     )
+
+    if use_react:
+        style = {key: value for key, value in [x.split(":") for x in style.split(";")]}
 
     return {"columns": columns, "data": data, **kwargs}, {
         "classes": classes,
