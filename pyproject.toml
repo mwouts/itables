@@ -30,13 +30,15 @@ dependencies = ["IPython", "pandas", "numpy", "narwhals>=1.18.3"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
-polars = ["polars", "pyarrow"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]
-all = ["itables[polars,style,samples,widget]"]
+all = ["itables[style,samples,widget]"]
 test = [
   "itables[all]",
+  # Polars
+  "polars",
+  "pyarrow",
   # Pytest
   "pytest",
   "pytest-cov",
