@@ -58,7 +58,9 @@ jobs:
           - python-version: "3.13"
             pandas-version: pre
             polars: true
-          - python-version: "3.13"
+          - python-version: "3.12"
+            modin: false
+          - python-version: "3.12"
             modin: true
           - python-version: "3.13"
             uninstall_narwhals: true
