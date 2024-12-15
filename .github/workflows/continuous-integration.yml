@@ -41,16 +41,14 @@ jobs:
       ${{ matrix.python-version }}
       ${{ matrix.pandas-version && format('(pandas {0})', matrix.pandas-version)}}
       ${{ matrix.numpy-version && format('(numpy {0})', matrix.numpy-version)}}
-      ${{ matrix.polars && '(polars)' }}
-      ${{ matrix.modin && '(modin)' }}
-      ${{ matrix.uninstall_narwhals && '(without narwhals)' }}
-      ${{ matrix.uninstall_jinja2 && '(without jinja2)' }}
+      ${{ matrix.modifiers}}
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
         pandas-version: ['']
         numpy-version: ['']
+        modifiers: ['']
         include:
           - python-version: 3.9
           - python-version: 3.9
@@ -58,16 +56,14 @@ jobs:
             numpy-version: '<2.0'
           - python-version: "3.13"
             pandas-version: pre
-          - python-version: "3.13"
-            polars: true
           - python-version: "3.12"
-            modin: false
-          - python-version: "3.12"
-            modin: true
+            modifiers: "modin"
           - python-version: "3.13"
-            uninstall_narwhals: true
+            modifiers: "polars"
           - python-version: "3.13"
-            uninstall_jinja2: true
+            modifiers: "uninstall_narwhals"
+          - python-version: "3.13"
+            modifiers: "uninstall_jinja2"
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -98,23 +94,23 @@ jobs:
         run: pip install 'numpy${{ matrix.numpy-version }}'
 
       - name: Install polars
-        if: matrix.polars
+        if: matrix.modifiers == 'polars'
         run: pip install polars
 
       - name: Install modin
-        if: matrix.modin
+        if: matrix.modifiers == 'modin'
         run: pip install modin[all]
 
       - name: Uninstall narwhals
-        if: matrix.uninstall_narwhals
+        if: matrix.modifiers == 'uninstall_narwhals'
         run: pip uninstall narwhals -y
+
+      - name: Uninstall jinja2
+        if: matrix.modifiers == 'uninstall_jinja2'
+        run: pip uninstall jinja2 -y
 
       - name: Install shiny
         run: pip install "shiny>=1.0"
-
-      - name: Uninstall jinja2
-        if: matrix.uninstall_jinja2
-        run: pip uninstall jinja2 -y
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user
