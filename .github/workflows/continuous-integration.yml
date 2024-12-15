@@ -37,6 +37,14 @@ jobs:
         uses: github/codeql-action/analyze@v3
 
   pytest:
+    name: >
+      Python ${{ matrix.python-version }}
+      ${{ format('(pandas {0})', matrix.pandas-version) }}
+      ${{ format('(numpy {0})', matrix.numpy-version) }}
+      ${{ matrix.polars && '(polars)' }}
+      ${{ matrix.modin && '(modin)' }}
+      ${{ matrix.uninstall_narwhals && '(Uninstall narwhals)' }}
+      ${{ matrix.uninstall_jinja2 && '(Uninstall jinja2)' }}
     strategy:
       fail-fast: false
       matrix:
