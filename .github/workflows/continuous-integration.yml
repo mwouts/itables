@@ -38,25 +38,27 @@ jobs:
 
   pytest:
     name: >
-      Python ${{ matrix.python-version }}
-      ${{ format('(pandas {0})', matrix.pandas-version) }}
-      ${{ format('(numpy {0})', matrix.numpy-version) }}
+      ${{ matrix.python-version }}
+      ${{ matrix.pandas-version && format('(pandas {0})', matrix.pandas-version)}}
+      ${{ matrix.numpy-version && format('(numpy {0})', matrix.numpy-version)}}
       ${{ matrix.polars && '(polars)' }}
       ${{ matrix.modin && '(modin)' }}
-      ${{ matrix.uninstall_narwhals && '(Uninstall narwhals)' }}
-      ${{ matrix.uninstall_jinja2 && '(Uninstall jinja2)' }}
+      ${{ matrix.uninstall_narwhals && '(without narwhals)' }}
+      ${{ matrix.uninstall_jinja2 && '(without jinja2)' }}
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
-        pandas-version: [latest]
-        numpy-version: [latest]
+        pandas-version: ['']
+        numpy-version: ['']
         include:
+          - python-version: 3.9
           - python-version: 3.9
             pandas-version: '<2.0'
             numpy-version: '<2.0'
           - python-version: "3.13"
             pandas-version: pre
+          - python-version: "3.13"
             polars: true
           - python-version: "3.12"
             modin: false
@@ -82,17 +84,17 @@ jobs:
       - name: Install a development version of 'itables'
         run: pip install -e .[test]
 
-      - name: Install pandas latest
-        if: matrix.pandas-version == 'latest'
+      - name: Install latest pandas
+        if: ${{!matrix.pandas-version}}
         run: pip install pandas
       - name: Install pandas pre-release
         if: matrix.pandas-version == 'pre'
         run: pip install pandas --pre
       - name: Install pandas ${{ matrix.pandas-version }}
-        if: matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
+        if: matrix.pandas-version && matrix.pandas-version != 'pre'
         run: pip install 'pandas${{ matrix.pandas-version }}'
       - name: Install numpy ${{ matrix.numpy-version }}
-        if: matrix.numpy-version != 'latest'
+        if: matrix.numpy-version
         run: pip install 'numpy${{ matrix.numpy-version }}'
 
       - name: Install polars
