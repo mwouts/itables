@@ -2,15 +2,13 @@ import math
 
 import pandas as pd
 
-from .datatables_format import _isetitem
-
 
 def nbytes(df):
-    try:
+    if isinstance(df, pd.DataFrame):
         return sum(x.values.nbytes for _, x in df.items())
-    except AttributeError:
-        # Polars DataFrame
-        return df.estimated_size()
+
+    # Narwhals
+    return df.estimated_size()
 
 
 def as_nbytes(mem):
@@ -97,31 +95,36 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
         second_half = max_rows // 2
         first_half = max_rows - second_half
         if second_half:
-            try:
+            if isinstance(df, pd.DataFrame):
                 df = pd.concat((df.iloc[:first_half], df.iloc[-second_half:]))
-            except AttributeError:
-                df = df.head(first_half).vstack(df.tail(second_half))
+            else:
+                from narwhals import concat
+
+                df = concat([df.head(first_half), df.tail(second_half)], how="vertical")
         else:
-            try:
+            if isinstance(df, pd.DataFrame):
                 df = df.iloc[:first_half]
-            except AttributeError:
+            else:
                 df = df.head(first_half)
 
     if len(df.columns) > max_columns > 0:
         second_half = max_columns // 2
         first_half = max_columns - second_half
         if second_half:
-            try:
+            if isinstance(df, pd.DataFrame):
                 df = pd.concat(
                     (df.iloc[:, :first_half], df.iloc[:, -second_half:]), axis=1
                 )
-            except AttributeError:
-                df = df[df.columns[:first_half]].hstack(df[df.columns[-second_half:]])
+            else:
+                first_and_last_columns = (
+                    df.columns[:first_half] + df.columns[-second_half:]
+                )
+                df = df.select(first_and_last_columns)
         else:
-            try:
+            if isinstance(df, pd.DataFrame):
                 df = df.iloc[:, :first_half]
-            except AttributeError:
-                df = df[df.columns[:first_half]]
+            else:
+                df = df.select(df.columns[:first_half])
 
     df_nbytes = nbytes(df)
     if df_nbytes > max_bytes > 0:
@@ -144,13 +147,6 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             )
 
         # max_bytes is smaller than the average size of one cell
-        try:
-            df = df.iloc[:1, :1]
-            _isetitem(df, 0, ["..."])
-        except AttributeError:
-            import polars as pl  # noqa
-
-            df = pl.DataFrame({df.columns[0]: ["..."]})
-        return df
+        return pd.DataFrame({df.columns[0]: ["..."]})
 
     return df

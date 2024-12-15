@@ -6,12 +6,6 @@ import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
 
-try:
-    import polars as pl
-except ImportError:
-    pl = None
-
-
 JS_MAX_SAFE_INTEGER = 2**53 - 1
 JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
@@ -91,8 +85,7 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
         assert missing_columns > 0
         empty_columns = [[None] * len(df)] * missing_columns
 
-    try:
-        # Pandas DataFrame
+    if isinstance(df, pd.DataFrame):
         data = list(
             zip(
                 *(empty_columns + [_format_column(x, pure_json) for _, x in df.items()])
@@ -108,17 +101,19 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
             cls=generate_encoder(warn_on_unexpected_types),
             allow_nan=not pure_json,
         )
-    except AttributeError:
-        # Polars DataFrame
+    else:
+        # Polars, Modin, or other
+        import narwhals as nw
+
+        df = nw.from_native(df)
         data = df.rows()
-        import polars as pl
 
         has_bigints = any(
             (
-                x.dtype == pl.Int64
+                x.dtype == nw.Int64
                 and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
             )
-            or (x.dtype == pl.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
+            or (x.dtype == nw.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
             for x in (df[col] for col in df.columns)
         )
         js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)

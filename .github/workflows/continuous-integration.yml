@@ -40,18 +40,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
         pandas-version: [latest]
         numpy-version: [latest]
         include:
-          - python-version: 3.7
-            pandas-version: '<1.0'
           - python-version: 3.9
             pandas-version: '<2.0'
             numpy-version: '<2.0'
           - python-version: "3.13"
             pandas-version: pre
             polars: true
+          - python-version: "3.13"
+            modin: true
+          - python-version: "3.13"
+            uninstall_narwhals: true
           - python-version: "3.13"
             uninstall_jinja2: true
     runs-on: ubuntu-20.04
@@ -85,10 +87,17 @@ jobs:
 
       - name: Install polars
         if: matrix.polars
-        run: pip install -e .[polars]
+        run: pip install polars
+
+      - name: Install modin
+        if: matrix.modin
+        run: pip install modin[all]
+
+      - name: Uninstall narwhals
+        if: matrix.uninstall_narwhals
+        run: pip uninstall narwhals -y
 
       - name: Install shiny
-        if: matrix.python-version != '3.7'
         run: pip install "shiny>=1.0"
 
       - name: Uninstall jinja2

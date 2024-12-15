@@ -2,31 +2,39 @@ import pytest
 
 from itables import to_html_datatable
 from itables.javascript import datatables_rows
-from itables.sample_dfs import get_dict_of_test_dfs, get_dict_of_test_series
-
-try:
-    import polars  # noqa
-except ImportError as e:
-    pytest.skip(str(e), allow_module_level=True)
-
-
-@pytest.mark.parametrize(
-    "name,x", [(name, x) for name, x in get_dict_of_test_series(polars=True).items()]
+from itables.sample_dfs import (
+    get_dict_of_test_polars_dfs,
+    get_dict_of_test_polars_series,
 )
-def test_show_polars_series(name, x, use_to_html):
+
+pl = pytest.importorskip("polars")
+
+
+@pytest.fixture(
+    params=get_dict_of_test_polars_dfs().items(), ids=lambda param: param[0]
+)
+def df(request):
+    return request.param[1]
+
+
+@pytest.fixture(
+    params=get_dict_of_test_polars_series().items(), ids=lambda param: param[0]
+)
+def x(request):
+    return request.param[1]
+
+
+def test_show_polars_series(x, use_to_html):
     to_html_datatable(x, use_to_html)
 
 
-@pytest.mark.parametrize(
-    "name,df", [(name, df) for name, df in get_dict_of_test_dfs(polars=True).items()]
-)
-def test_show_polars_df(name, df, use_to_html):
+def test_show_polars_df(df, use_to_html):
     to_html_datatable(df, use_to_html)
 
 
 def test_encode_mixed_contents():
     # Make sure that the bigint escape works for mixed content # 291
-    df = polars.DataFrame(
+    df = pl.DataFrame(
         {
             "bigint": [1666767918216000000],
             "int": [1699300000000],

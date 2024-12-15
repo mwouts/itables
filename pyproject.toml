@@ -18,7 +18,6 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -26,8 +25,8 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">= 3.7"
-dependencies = ["IPython", "pandas", "numpy"]
+requires-python = ">= 3.8"
+dependencies = ["IPython", "pandas", "numpy", "narwhals>=1.18.3"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
