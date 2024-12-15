@@ -18,12 +18,6 @@ try:
 except ImportError:
     pd_style = None
 
-try:
-    import polars as pl
-except ImportError:
-    # Define pl.Series as pd.Series
-    import pandas as pl
-
 from IPython.display import HTML, display
 
 import itables.options as opt
@@ -48,7 +42,7 @@ _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_
 _ORIGINAL_DATAFRAME_STYLE_REPR_HTML = (
     None if pd_style is None else pd_style.Styler._repr_html_
 )
-_ORIGINAL_POLARS_DATAFRAME_REPR_HTML = pl.DataFrame._repr_html_
+_ORIGINAL_DATAFRAME_REPR_HTML_OTHER_LIBS = {}
 _CONNECTED = True
 DEFAULT_LAYOUT = {
     "topStart": "pageLength",
@@ -94,17 +88,48 @@ def init_notebook_mode(
         pd.Series._repr_html_ = _datatables_repr_
         if pd_style is not None:
             pd_style.Styler._repr_html_ = _datatables_repr_
-        pl.DataFrame._repr_html_ = _datatables_repr_
-        pl.Series._repr_html_ = _datatables_repr_
     else:
         pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML
         if pd_style is not None:
             pd_style.Styler._repr_html_ = _ORIGINAL_DATAFRAME_STYLE_REPR_HTML
-        pl.DataFrame._repr_html_ = _ORIGINAL_POLARS_DATAFRAME_REPR_HTML
+
         if hasattr(pd.Series, "_repr_html_"):
             del pd.Series._repr_html_
-        if hasattr(pl.Series, "_repr_html_"):
-            del pl.Series._repr_html_
+
+    try:
+        import narwhals as nw
+    except ImportError:
+        pass
+    else:
+        for name, lib in [
+            ("polars", nw.dependencies.get_polars()),
+            ("modin", nw.dependencies.get_modin()),
+        ]:
+            if lib is None:
+                continue
+
+            if all_interactive:
+                if name not in _ORIGINAL_DATAFRAME_REPR_HTML_OTHER_LIBS:
+                    try:
+                        _ORIGINAL_DATAFRAME_REPR_HTML_OTHER_LIBS[name] = (
+                            lib.DataFrame._repr_html_
+                        )
+                    except AttributeError:
+                        pass
+
+                lib.DataFrame._repr_html_ = _datatables_repr_
+                lib.Series._repr_html_ = _datatables_repr_
+
+            else:
+                if name in _ORIGINAL_DATAFRAME_REPR_HTML_OTHER_LIBS:
+                    lib.DataFrame._repr_html_ = (
+                        _ORIGINAL_DATAFRAME_REPR_HTML_OTHER_LIBS[name]
+                    )
+                elif hasattr(lib.DataFrame, "_repr_html_"):
+                    del lib.DataFrame._repr_html_
+
+                if hasattr(lib.Series, "_repr_html_"):
+                    del lib.Series._repr_html_
 
     display(HTML(read_package_file("html/init_datatables.html")))
 
@@ -153,10 +178,9 @@ def _table_header(
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    try:
+    if isinstance(df, pd.DataFrame):
         html_header = df.head(0).to_html(escape=False)
-    except AttributeError:
-        # Polars DataFrames
+    else:
         html_header = pd.DataFrame(data=[], columns=df.columns, dtype=float).to_html()
     match = pattern.match(html_header)
     thead = match.groups()[0]
@@ -340,16 +364,24 @@ def to_html_datatable(
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
 
-    if isinstance(df, (pd.Series, pl.Series)):
+    # Convert Series (Pandas, Polars, Modin, etc...) to DataFrames
+    try:
         df = df.to_frame()
+    except AttributeError:
+        pass
+
+    if not isinstance(df, pd.DataFrame):
+        # We use narwhals to get the data and downsample if necessary
+        import narwhals as nw
+
+        df = nw.from_native(df)
 
     if showIndex == "auto":
-        try:
+        if isinstance(df, pd.DataFrame):
             showIndex = df.index.name is not None or not isinstance(
                 df.index, pd.RangeIndex
             )
-        except AttributeError:
-            # Polars DataFrame
+        else:
             showIndex = False
 
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -403,11 +435,8 @@ def to_html_datatable(
         classes = " ".join(classes)
 
     if not showIndex:
-        try:
+        if isinstance(df, pd.DataFrame):
             df = df.set_index(pd.RangeIndex(len(df.index)))
-        except AttributeError:
-            # Polars DataFrames
-            pass
 
     table_header = _table_header(
         df,
@@ -504,16 +533,16 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
 
-    if isinstance(df, (pd.Series, pl.Series)):
+    # Convert series to a (single column) dataframe
+    if hasattr(df, "to_frame"):
         df = df.to_frame()
 
     if showIndex == "auto":
-        try:
+        if isinstance(df, pd.DataFrame):
             showIndex = df.index.name is not None or not isinstance(
                 df.index, pd.RangeIndex
             )
-        except AttributeError:
-            # Polars DataFrame
+        else:
             showIndex = False
 
     maxBytes = kwargs.pop("maxBytes", 0)
@@ -536,12 +565,8 @@ def get_itables_extension_arguments(df, caption=None, selected_rows=None, **kwar
     if isinstance(classes, list):
         classes = " ".join(classes)
 
-    if not showIndex:
-        try:
-            df = df.set_index(pd.RangeIndex(len(df.index)))
-        except AttributeError:
-            # Polars DataFrames
-            pass
+    if not showIndex and isinstance(df, pd.DataFrame):
+        df = df.set_index(pd.RangeIndex(len(df.index)))
 
     if showIndex:
         df = safe_reset_index(df)
@@ -714,16 +739,15 @@ def to_html_datatable_using_to_html(
     if isinstance(df, (np.ndarray, np.generic)):
         df = pd.DataFrame(df)
 
-    if isinstance(df, (pd.Series, pl.Series)):
+    if hasattr(df, "to_frame"):
         df = df.to_frame()
 
     if showIndex == "auto":
-        try:
+        if isinstance(df, pd.DataFrame):
             showIndex = df.index.name is not None or not isinstance(
                 df.index, pd.RangeIndex
             )
-        except AttributeError:
-            # Polars DataFrame
+        else:
             showIndex = False
 
     _adjust_layout(

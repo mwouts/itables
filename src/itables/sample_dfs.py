@@ -100,7 +100,7 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100, polars=False):
+def get_dict_of_test_dfs(N=100, M=100):
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     test_dfs = {
@@ -261,29 +261,43 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             }
         ),
     }
-
-    if polars:
-        import polars as pl
-        import pyarrow as pa
-
-        polars_dfs = {}
-        for key, df in test_dfs.items():
-            if key == "multiindex":
-                # Since Polars 1.2, pl.from_pandas fails with this error:
-                # ValueError: Pandas dataframe contains non-unique indices and/or column names.
-                # Polars dataframes require unique string names for columns.
-                # See https://github.com/pola-rs/polars/issues/18130
-                df.index = df.index.tolist()
-            try:
-                polars_dfs[key] = pl.from_pandas(df)
-            except (pa.ArrowInvalid, ValueError):
-                pass
-        return polars_dfs
-
     return test_dfs
 
 
-def get_dict_of_test_series(polars=False):
+def get_dict_of_test_polars_dfs(**kwargs):
+
+    import polars as pl
+    import pyarrow as pa
+
+    polars_dfs = {}
+    for key, df in get_dict_of_test_dfs(**kwargs).items():
+        if key == "multiindex":
+            # Since Polars 1.2, pl.from_pandas fails with this error:
+            # ValueError: Pandas dataframe contains non-unique indices and/or column names.
+            # Polars dataframes require unique string names for columns.
+            # See https://github.com/pola-rs/polars/issues/18130
+            df.index = df.index.tolist()
+        try:
+            polars_dfs[key] = pl.from_pandas(df)
+        except (pa.ArrowInvalid, ValueError):
+            pass
+    return polars_dfs
+
+
+def get_dict_of_test_modin_dfs(**kwargs):
+
+    import modin.pandas as mpd
+
+    modin_dfs = {}
+    for key, df in get_dict_of_test_dfs(**kwargs).items():
+        # Modin does not implement MultiIndex as of Dec 2024
+        if key in {"multiindex", "duplicated_columns", "complex_index"}:
+            continue
+        modin_dfs[key] = mpd.DataFrame(df)
+    return modin_dfs
+
+
+def get_dict_of_test_series():
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -292,28 +306,43 @@ def get_dict_of_test_series(polars=False):
             # Case of duplicate columns
             if not isinstance(df[col], pd.Series):
                 continue
-            series["{}.{}".format(df_name, col)] = df[col]
-
-    if polars:
-        import polars as pl
-        import pyarrow as pa
-
-        polars_series = {}
-        for key in series:
-            try:
-                polars_series[key] = pl.from_pandas(series[key])
-            except (pa.ArrowInvalid, ValueError):
-                pass
-
-        # Add a Polar table with unsigned integers
-        # https://github.com/mwouts/itables/issues/192
-        # https://github.com/mwouts/itables/issues/299
-        polars_series["u32"] = pl.Series([1, 2, 5]).cast(pl.UInt32)
-        polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
-
-        return polars_series
+            if isinstance(col, tuple):
+                col_name = "/".join(str(x) for x in col)
+            else:
+                col_name = str(col)
+            series[f"{df_name}.{col_name}"] = df[col]
 
     return series
+
+
+def get_dict_of_test_polars_series():
+    import polars as pl
+    import pyarrow as pa
+
+    series = get_dict_of_test_series()
+    polars_series = {}
+    for key in series:
+        try:
+            polars_series[key] = pl.from_pandas(series[key])
+        except (pa.ArrowInvalid, ValueError):
+            pass
+
+    # Add a Polar table with unsigned integers
+    # https://github.com/mwouts/itables/issues/192
+    # https://github.com/mwouts/itables/issues/299
+    polars_series["u32"] = pl.Series([1, 2, 5]).cast(pl.UInt32)
+    polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
+
+    return polars_series
+
+
+def get_dict_of_test_modin_series():
+    import modin.pandas as mpd
+
+    return {
+        name: mpd.Series(value.rename(name))
+        for name, value in get_dict_of_test_series().items()
+    }
 
 
 @lru_cache()

@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-## Row selection
+# Row selection
 
 The [select](https://datatables.net/extensions/select) extension let you select rows (or cells). When you do so,
 only the selected rows are exported
