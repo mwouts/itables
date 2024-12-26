@@ -32,6 +32,9 @@ dependencies:
   - polars
   - pyarrow
 
+  # Ibis
+  - ibis-duckdb
+
   # Modin
   - modin-ray
 

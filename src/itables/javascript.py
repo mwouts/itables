@@ -104,6 +104,7 @@ def init_notebook_mode(
         for name, lib in [
             ("polars", nw.dependencies.get_polars()),
             ("modin", nw.dependencies.get_modin()),
+            ("ibis", nw.dependencies.get_ibis()),
         ]:
             if lib is None:
                 continue

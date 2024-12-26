@@ -56,10 +56,12 @@ jobs:
             numpy-version: '<2.0'
           - python-version: "3.13"
             pandas-version: pre
-          - python-version: "3.12"
-            modifiers: "modin"
           - python-version: "3.13"
             modifiers: "polars"
+          - python-version: "3.13"
+            modifiers: "ibis"
+          - python-version: "3.12"
+            modifiers: "modin"
           - python-version: "3.13"
             modifiers: "uninstall_narwhals"
           - python-version: "3.13"
@@ -96,6 +98,10 @@ jobs:
       - name: Install polars
         if: matrix.modifiers == 'polars'
         run: pip install polars
+
+      - name: Install ibis
+        if: matrix.modifiers == 'ibis'
+        run: pip install 'ibis-framework[duckdb]'
 
       - name: Install modin
         if: matrix.modifiers == 'modin'

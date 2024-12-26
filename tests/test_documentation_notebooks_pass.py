@@ -24,6 +24,8 @@ def list_doc_notebooks():
 def test_run_documentation_notebooks(notebook):
     if "polars" in notebook.stem:
         pytest.importorskip("polars")
+    if "ibis" in notebook.stem:
+        pytest.importorskip("ibis")
     if "modin" in notebook.stem:
         pytest.importorskip("modin")
     if "pandas_style" in notebook.stem and pd_style is None:

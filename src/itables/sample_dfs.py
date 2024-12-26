@@ -284,6 +284,26 @@ def get_dict_of_test_polars_dfs(**kwargs):
     return polars_dfs
 
 
+def get_dict_of_test_ibis_dfs(**kwargs):
+
+    import ibis
+
+    ibis_dfs = {}
+
+    t = ibis.table(dict(one="string", two="float", three="int32"), name="my_data")
+    ibis_dfs["table"] = t
+
+    ibis_dfs["table_select"] = t.select("two", "one")
+
+    for key, df in get_dict_of_test_dfs(**kwargs).items():
+        try:
+            ibis_dfs[key] = ibis.memtable(df)
+        except (TypeError, ibis.common.exceptions.IbisInputError):
+            pass
+
+    return ibis_dfs
+
+
 def get_dict_of_test_modin_dfs(**kwargs):
 
     import modin.pandas as mpd
@@ -334,6 +354,10 @@ def get_dict_of_test_polars_series():
     polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
 
     return polars_series
+
+
+def get_dict_of_test_ibis_series():
+    return {name: value for name, value in get_dict_of_test_ibis_dfs().items()}
 
 
 def get_dict_of_test_modin_series():
