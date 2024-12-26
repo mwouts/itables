@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.3.0-dev
+---------
+
+**Added**
+- In addition to Pandas and Polars, ITables now support Modin DataFrames ([#325](https://github.com/mwouts/itables/issues/325)). Under the hoods we use [Narwhals](https://github.com/narwhals-dev/narwhals) to handle the different types of DataFrames. Thanks to [Dea María Léon](https://github.com/DeaMariaLeon) and to [Marco Gorelli](https://github.com/MarcoGorelli) for making this work, and for developing Narwhals too!
+
+
 2.2.4 (2024-12-07)
 ------------------
 

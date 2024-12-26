@@ -11,6 +11,7 @@ from itables.downsample import (
 )
 
 try:
+    import narwhals as nw
     import polars as pl
 except ImportError:
     pl = None
@@ -31,7 +32,7 @@ def large_tables(N=1000, M=1000):
         pd.DataFrame("abcdefg", columns=range(M), index=range(N)),
     ]
     if pl is not None:
-        dfs.extend([pl.from_pandas(df) for df in dfs])
+        dfs.extend([nw.from_native(pl.from_pandas(df)) for df in dfs])
     return dfs
 
 
