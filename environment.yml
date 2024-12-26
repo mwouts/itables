@@ -2,29 +2,45 @@ name: itables
 channels:
   - conda-forge
 dependencies:
-  - nodejs
-  - python
-  - jupyter
-  - jupyterlab>=4
-  - jupyter-book
-  - jupytext
-  - nbconvert
+  # Jupyter
+  - jupyterlab
+  - jupyterlab_execute_time
+  - jupyter-resource-usage
+
+  # Documentation and tests
   - ipykernel
-  - pandas
-  - matplotlib
-  - polars
-  - pyarrow
+  - jupytext
+  - jupyter-book
+  - nbconvert
+
+  # Packages
+  - nodejs
+
+  # Pre-commit hooks
+  - pre-commit
+
+  # Tests
   - pytest
   - pytest-xdist
   - pytest-cov
-  - pre-commit
-  - pip
-  - setuptools
-  - twine
-  - ghp-import
+
+  # Pandas and Pandas Style
+  - pandas
+  - matplotlib
+
+  # Polars
+  - polars
+  - pyarrow
+
+  # Modin
+  - modin-ray
+
+  # Widget
+  - anywidget
+
+  # Streamlit
+  - streamlit
+
+  # Shiny
   - shiny
   - shinywidgets
-  - streamlit
-  - anywidget
-  - pip:
-    - world_bank_data
