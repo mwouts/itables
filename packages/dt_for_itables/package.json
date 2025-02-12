@@ -38,7 +38,7 @@
     "jszip": "^3.10.1"
   },
   "devDependencies": {
-    "esbuild": "^0.23.1"
+    "esbuild": "^0.25.0"
   },
   "homepage": "https://mwouts.github.io/itables",
   "repository": {
