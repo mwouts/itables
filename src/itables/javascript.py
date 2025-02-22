@@ -599,11 +599,12 @@ def warn_if_selected_rows_are_not_visible(
     if full_row_count == data_row_count:
         return selected_rows
 
-    half = data_row_count // 2
-    assert data_row_count == 2 * half, data_row_count
+    second_half = data_row_count // 2
+    first_half = data_row_count - second_half
+    assert first_half >= second_half
 
-    bottom_limit = half
-    top_limit = full_row_count - half
+    bottom_limit = first_half
+    top_limit = full_row_count - second_half
 
     if warn_on_selected_rows_not_rendered and any(
         bottom_limit <= i < top_limit for i in selected_rows

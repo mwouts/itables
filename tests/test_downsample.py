@@ -117,3 +117,10 @@ def test_df_with_many_columns_is_downsampled_preferentially_on_columns(df, max_b
     else:
         # aspect ratio is close to 1
         assert 0.5 < len(dn) / len(dn.columns) < 2
+
+
+def test_downsample_to_odd_number_of_rows():
+    df = pd.DataFrame({"x": range(17)})
+    dn, _ = downsample(df, max_rows=3)
+    assert len(dn) == 3
+    assert dn["x"].to_list() == [0, 1, 16]
