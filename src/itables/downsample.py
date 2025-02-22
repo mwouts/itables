@@ -96,6 +96,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
     if len(df) > max_rows > 0:
         second_half = max_rows // 2
         first_half = max_rows - second_half
+        assert first_half >= second_half
         if second_half:
             try:
                 df = pd.concat((df.iloc[:first_half], df.iloc[-second_half:]))
@@ -110,6 +111,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
     if len(df.columns) > max_columns > 0:
         second_half = max_columns // 2
         first_half = max_columns - second_half
+        assert first_half >= second_half
         if second_half:
             try:
                 df = pd.concat(
