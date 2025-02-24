@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.2.5 (2025-02-22)
+------------------
+
+**Fixed**
+- We have removed an erroneous assertion and added tests on the warnings issued when selected rows are not displayed ([[#351](https://github.com/mwouts/itables/issues/351)])
+
+
 2.2.4 (2024-12-07)
 ------------------
 
