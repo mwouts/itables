@@ -163,6 +163,12 @@ def _table_header(
     # Don't remove the index header for empty dfs
     if not show_index and len(df.columns):
         thead = thead.replace("<th></th>", "", 1)
+    # disable sorting for complex headers, and only show the icon for
+    # the simple headers
+    thead = thead.replace("<th", '<th data-dt-order="disable"')
+    thead = thead.replace(
+        '<th data-dt-order="disable">', '<th data-dt-order="icon-only">'
+    )
 
     itables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"

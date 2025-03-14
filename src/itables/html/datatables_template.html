@@ -15,6 +15,8 @@
         dt_args["data"] = data;
 
         // [pre-dt-code]
-        new DataTable(table, dt_args);
+        let dt = new DataTable(table, dt_args);
+        dt.columns().eq(0).each(function(index) {
+        dt.order.listener(`th[data-dt-column="${index}"] > span.dt-column-order`, index);});
     });
 </script>
