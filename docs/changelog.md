@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.3.0-dev
+---------
+
+**Changed**
+- We have upgraded `datatables.net-dt==2.2.2` and `datatables.net-select-dt==3.0.0`, and the dependency of both the Jupyter widget and the Streamlit component.
+
+
 2.2.5 (2025-02-22)
 ------------------
 
