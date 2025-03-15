@@ -1,4 +1,4 @@
-from dash import no_update
+from dash import Output, no_update
 
 from itables.javascript import get_itables_extension_arguments
 
@@ -15,7 +15,7 @@ ITABLE_PROPERTIES = (
 )
 
 
-def get_itable_properties(df=None, caption=None, selected_rows=None, **kwargs):
+def get_itable_component_kwargs(df=None, caption=None, selected_rows=None, **kwargs):
     dt_args, other_args = get_itables_extension_arguments(
         df=df, caption=caption, selected_rows=selected_rows, **kwargs
     )
@@ -34,21 +34,34 @@ def get_itable_properties(df=None, caption=None, selected_rows=None, **kwargs):
     }
 
 
-def get_itable_properties_as_list(
+def ITableOutputs(id):
+    return [Output(id, key) for key in ITABLE_PROPERTIES]
+
+
+def updated_itable_outputs(
     df=None, caption=None, selected_rows=None, current_dt_args=None, **kwargs
 ):
     if df is not None:
         kwargs["selected_rows"] = selected_rows
-    as_dict = get_itable_properties(df, caption=caption, **kwargs)
+
+    updated_properties = get_itable_component_kwargs(df, caption=caption, **kwargs)
+
     if df is None:
-        as_dict["data"] = no_update
-        as_dict["columns"] = no_update
-        as_dict["filtered_row_count"] = no_update
-        as_dict["downsampling_warning"] = no_update
-        as_dict["selected_rows"] = selected_rows or []
+        updated_properties["data"] = no_update
+        updated_properties["columns"] = no_update
+        updated_properties["filtered_row_count"] = no_update
+        updated_properties["downsampling_warning"] = no_update
+        updated_properties["selected_rows"] = selected_rows or []
+
     if current_dt_args is not None:
-        if current_dt_args == as_dict["dt_args"]:
-            as_dict["dt_args"] = no_update
-    as_list = [as_dict.pop(k) for k in ITABLE_PROPERTIES]
-    assert not as_dict
-    return as_list
+        if current_dt_args == updated_properties["dt_args"]:
+            updated_properties["dt_args"] = no_update
+
+    ordered_list_of_updated_properties = [
+        updated_properties.pop(k) for k in ITABLE_PROPERTIES
+    ]
+
+    if updated_properties:
+        raise ValueError(f"Unexpected properties: {updated_properties}")
+
+    return ordered_list_of_updated_properties

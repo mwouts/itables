@@ -1,8 +1,9 @@
-from .ITable import ITable
+from .ITable import ITable as ITableComponent
 from .properties import (
     ITABLE_PROPERTIES,
-    get_itable_properties,
-    get_itable_properties_as_list,
+    ITableOutputs,
+    get_itable_component_kwargs,
+    updated_itable_outputs,
 )
 
 _js_dist = [
@@ -18,13 +19,21 @@ _js_dist = [
 _css_dist = []
 
 
-ITable._js_dist = _js_dist
-ITable._css_dis = _css_dist
+ITableComponent._js_dist = _js_dist
+ITableComponent._css_dis = _css_dist
+
+
+def ITable(*, id, **kwargs):
+    """Return an ITable component with the given id"""
+    return ITableComponent(id=id, **get_itable_component_kwargs(**kwargs))
+
 
 __all__ = [
     "ITable",
+    "ITableComponent",
     "ITABLE_PROPERTIES",
-    "get_itable_properties",
-    "get_itable_properties_as_list",
+    "get_itable_component_kwargs",
+    "ITableOutputs",
+    "updated_itable_outputs",
     "__version__",
 ]

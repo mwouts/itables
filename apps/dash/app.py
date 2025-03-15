@@ -2,12 +2,7 @@ import logging
 
 from dash import Dash, Input, Output, State, callback, callback_context, dcc, html
 
-from itables.dash import (
-    ITABLE_PROPERTIES,
-    ITable,
-    get_itable_properties,
-    get_itable_properties_as_list,
-)
+from itables.dash import ITable, ITableOutputs, updated_itable_outputs
 from itables.sample_dfs import get_countries
 
 logging.basicConfig(level=logging.INFO)
@@ -28,14 +23,14 @@ app.layout = html.Div(
             id="checklist",
         ),
         dcc.Input(id="caption", value="table caption"),
-        ITable(id="table", **get_itable_properties(df)),
+        ITable(id="table", df=df),
         html.Div(id="output"),
     ]
 )
 
 
 @callback(
-    [Output("table", key) for key in ITABLE_PROPERTIES],
+    ITableOutputs("table"),
     [
         Input("checklist", "value"),
         Input("caption", "value"),
@@ -57,7 +52,7 @@ def update_table(checklist, caption, selected_rows, dt_args):
     if "Buttons" in checklist:
         kwargs["buttons"] = ["copyHtml5", "csvHtml5", "excelHtml5"]
 
-    return get_itable_properties_as_list(
+    return updated_itable_outputs(
         caption=caption, selected_rows=selected_rows, current_dt_args=dt_args, **kwargs
     )
 
