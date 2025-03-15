@@ -1,3 +1,7 @@
+# 2.2.0 (2025-03-15)
+
+- We have upgraded `datatables.net-dt==2.2.2` and `datatables.net-select-dt==3.0.0`
+
 # 2.0.13 (2024-09-22)
 
 - We have added two functions `set_selected_rows` and `get_selected_rows` to set and retrieve selected rows
