@@ -81,11 +81,14 @@ exclude_lines = [
 
 [tool.hatch.build.hooks.jupyter-builder]
 enable-by-default = true
-dependencies = ["hatch-jupyter-builder>=0.5.0"]
+dependencies = ["hatch-jupyter-builder>=0.5.0", "dash", "pyyaml"]
 build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
+    "src/itables/dash/ITable.py",
+    "src/itables/dash/async-ITable.js",
+    "src/itables/dash/async-ITable.js.LICENSE.txt",
     "src/itables/itables_for_streamlit/asset-manifest.json",
     "src/itables/widget/static/widget.js",
     ]
@@ -99,6 +102,7 @@ npm = ["npm"]
 artifacts = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
+    "src/itables/dash/*",
     "src/itables/itables_for_streamlit/*",
     "src/itables/widget/static/*"
     ]
@@ -107,6 +111,7 @@ artifacts = [
 artifacts = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
+    "src/itables/dash/*",
     "src/itables/itables_for_streamlit/*",
     "src/itables/widget/static/*"
     ]
