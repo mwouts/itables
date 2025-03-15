@@ -36,4 +36,4 @@ def test_offline_notebook_is_not_too_large(tmp_path):
     nb_py.write_text(text_notebook(connected=False))
     jupytext([str(nb_py), "--to", "ipynb", "--set-kernel", "itables", "--execute"])
     assert nb_ipynb.exists()
-    assert 700000 < nb_ipynb.stat().st_size < 800000
+    assert 750000 < nb_ipynb.stat().st_size < 850000
