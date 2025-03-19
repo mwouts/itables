@@ -97,7 +97,7 @@ module.exports = (env, argv) => {
                         chunks: 'all',
                         minSize: 0,
                         minChunks: 2,
-                        name: 'itables_for_dash-shared'
+                        name: 'itables-shared'
                     }
                 }
             }

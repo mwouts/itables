@@ -7,12 +7,12 @@ from .properties import (
 )
 
 _js_dist = [
-    {"namespace": "itables_for_dash", "relative_package_path": name, **kwargs}
+    {"namespace": "itables", "relative_package_path": "dash/" + name, **kwargs}
     for name, kwargs in {
         "async-ITable.js": {"async": True},
         "async-ITable.js.map": {"dynamic": True},
-        "itables_for_dash.min.js": {},
-        "itables_for_dash.min.js.map": {"dynamic": True},
+        "itables.min.js": {},
+        "itables.min.js.map": {"dynamic": True},
     }.items()
 ]
 
@@ -20,7 +20,7 @@ _css_dist = []
 
 
 ITableComponent._js_dist = _js_dist
-ITableComponent._css_dis = _css_dist
+ITableComponent._css_dist = _css_dist
 
 
 def ITable(*, id, **kwargs):

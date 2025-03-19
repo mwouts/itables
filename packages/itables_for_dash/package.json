@@ -1,12 +1,12 @@
 {
-  "name": "itables_for_dash",
+  "name": "itables",
   "version": "0.1.0",
   "description": "ITables for Dash",
   "main": "build/index.js",
   "scripts": {
     "build:js": "webpack --mode production",
-    "build:backends": "dash-generate-components src/lib/components itables_for_dash -p package-info.json",
-    "move": "mv itables_for_dash/* ../../src/itables/dash && rmdir itables_for_dash",
+    "build:backends": "mkdir -p itables && dash-generate-components src/lib/components itables -p package-info.json",
+    "move": "mv itables/* ../../src/itables/dash && rmdir itables",
     "build": "npm run build:js && npm run build:backends && npm run move"
   },
   "author": "Marc Wouts <marc.wouts@gmail.com>",
