@@ -3,7 +3,6 @@
 
 exclude: ^src/itables_for_dash/ITable.py$  # auto-generated
 repos:
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -40,3 +39,8 @@ repos:
         - black==24.4.2 # Matches hook
         - ruff==0.4.3
         - isort==5.13.2
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.397
+    hooks:
+    - id: pyright

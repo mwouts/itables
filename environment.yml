@@ -28,5 +28,6 @@ dependencies:
   - anywidget
   - hatch
   - dash
+  - pyright
   - pip:
     - world_bank_data
