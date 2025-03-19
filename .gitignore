@@ -28,7 +28,11 @@ node_modules
 dt_bundle.js
 dt_bundle.css
 
-# Streamlit package
+# Dash component
+src/itables/dash/*.js*
+src/itables/dash/*_.py
+
+# Streamlit component
 src/itables/itables_for_streamlit
 
 # Jupyter Widget
