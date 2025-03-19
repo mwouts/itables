@@ -26,5 +26,6 @@ dependencies:
   - shinywidgets
   - streamlit
   - anywidget
+  - pyright
   - pip:
     - world_bank_data
