@@ -5,6 +5,7 @@ from itables_for_dash import (
     ITableOutputs,
     __version__,
     get_itable_component_kwargs,
+    itables_for_dash_is_available,
     updated_itable_outputs,
 )
 
@@ -15,5 +16,6 @@ __all__ = [
     "get_itable_component_kwargs",
     "ITableOutputs",
     "updated_itable_outputs",
+    "itables_for_dash_is_available",
     "__version__",
 ]

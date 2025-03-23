@@ -53,7 +53,7 @@ jobs:
             pandas-version: pre
             polars: true
           - python-version: "3.13"
-            uninstall_jinja2: true
+            uninstall_jinja2_and_dash: true
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -91,9 +91,9 @@ jobs:
         if: matrix.python-version != '3.7'
         run: pip install "shiny>=1.0"
 
-      - name: Uninstall jinja2
-        if: matrix.uninstall_jinja2
-        run: pip uninstall jinja2 -y
+      - name: Uninstall jinja2 and dash
+        if: matrix.uninstall_jinja2_and_dash
+        run: pip uninstall jinja2 dash -y
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user

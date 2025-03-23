@@ -1,7 +1,12 @@
 import os
 import sys
 
-from itables.dash import ITable, ITableComponent
+import pytest
+
+from itables.dash import ITable, ITableComponent, itables_for_dash_is_available
+
+if not itables_for_dash_is_available:
+    pytestmark = pytest.mark.skip(reason="itables_for_dash is not available")
 
 
 def check_ressource(relative_package_path, namespace, **kwargs):

@@ -1,6 +1,18 @@
 from itables import __version__
 
-from .ITable import ITable as ITableComponent
+try:
+    from .ITable import ITable as ITableComponent
+except (ImportError, ModuleNotFoundError) as e:
+    import_error = e
+
+    class ITableComponent:
+        def __init__(self, *args, **kwargs):
+            raise import_error
+
+    itables_for_dash_is_available = False
+else:
+    itables_for_dash_is_available = True
+
 from .properties import (
     ITABLE_PROPERTIES,
     ITableOutputs,

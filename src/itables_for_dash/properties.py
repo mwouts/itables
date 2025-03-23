@@ -1,4 +1,14 @@
-from dash import Output, no_update
+try:
+    from dash import Output, no_update
+except ImportError as e:
+    import_error = e
+
+    def Output(*args, **kwargs):
+        raise import_error
+
+    def no_update(*args, **kwargs):
+        raise import_error
+
 
 from itables.javascript import get_itables_extension_arguments
 
