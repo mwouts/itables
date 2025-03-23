@@ -1,3 +1,9 @@
+"""
+This is an example Dash application that uses the ITable component.
+
+Launch the app by running `python app.py`.
+"""
+
 import logging
 
 from dash import Dash, Input, Output, State, callback, callback_context, dcc, html
@@ -23,19 +29,19 @@ app.layout = html.Div(
             id="checklist",
         ),
         dcc.Input(id="caption", value="table caption"),
-        ITable(id="table", df=df),
+        ITable(id="my_dataframe", df=df),
         html.Div(id="output"),
     ]
 )
 
 
 @callback(
-    ITableOutputs("table"),
+    ITableOutputs("my_dataframe"),
     [
         Input("checklist", "value"),
         Input("caption", "value"),
-        State("table", "selected_rows"),
-        State("table", "dt_args"),
+        State("my_dataframe", "selected_rows"),
+        State("my_dataframe", "dt_args"),
     ],
 )
 def update_table(checklist, caption, selected_rows, dt_args):
@@ -59,7 +65,7 @@ def update_table(checklist, caption, selected_rows, dt_args):
 
 @callback(
     Output("output", "children"),
-    Input("table", "selected_rows"),
+    Input("my_dataframe", "selected_rows"),
 )
 def show_selection(selected_rows):
     return f"Selected rows: {selected_rows}"
