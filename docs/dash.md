@@ -14,7 +14,7 @@ kernelspec:
 
 # Dash
 
-ITables includes an `ITableComponent` for Dash since v2.3.0.
+ITables includes a Dash component since v2.3.0.
 
 ## Displaying a DataFrame
 
@@ -24,7 +24,7 @@ If you wish to display a DataFrame which content is fixed (not reacting to the o
 :code: python
 ```
 
-## Listening to the selected rows
+## Selected rows
 
 Listening to the selected rows is simply done by adding `select=True` to the `ITable` call, and then implementing a callback on `Input("my_dataframe", "selected_rows")`.
 
