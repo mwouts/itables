@@ -1,3 +1,5 @@
+from itables import __version__
+
 from .ITable import ITable as ITableComponent
 from .properties import (
     ITABLE_PROPERTIES,
@@ -20,7 +22,7 @@ _css_dist = []
 
 
 ITableComponent._js_dist = _js_dist
-ITableComponent._css_dis = _css_dist
+ITableComponent._css_dist = _css_dist
 
 
 def ITable(*, id, **kwargs):

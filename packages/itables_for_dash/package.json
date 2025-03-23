@@ -6,7 +6,7 @@
   "scripts": {
     "build:js": "webpack --mode production",
     "build:backends": "dash-generate-components src/lib/components itables_for_dash -p package-info.json",
-    "move": "mv itables_for_dash/* ../../src/itables/dash && rmdir itables_for_dash",
+    "move": "mv itables_for_dash/* ../../src/itables_for_dash && rmdir itables_for_dash",
     "build": "npm run build:js && npm run build:backends && npm run move"
   },
   "author": "Marc Wouts <marc.wouts@gmail.com>",

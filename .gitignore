@@ -29,8 +29,8 @@ dt_bundle.js
 dt_bundle.css
 
 # Dash component
-src/itables/dash/*.js*
-src/itables/dash/*_.py
+src/itables_for_dash/*.js*
+src/itables_for_dash/_imports_.py
 
 # Streamlit component
 src/itables/itables_for_streamlit

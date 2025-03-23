@@ -45,6 +45,8 @@ test = [
   "ipykernel",
   "nbconvert",
   "jupytext",
+  # Python apps
+  "dash",
   "shiny",
   # "shinywidgets",
   # Test urls
@@ -86,9 +88,9 @@ build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
-    "src/itables/dash/ITable.py",
-    "src/itables/dash/async-ITable.js",
-    "src/itables/dash/async-ITable.js.LICENSE.txt",
+    "src/itables_for_dash/ITable.py",
+    "src/itables_for_dash/async-ITable.js",
+    "src/itables_for_dash/async-ITable.js.LICENSE.txt",
     "src/itables/itables_for_streamlit/asset-manifest.json",
     "src/itables/widget/static/widget.js",
     ]
