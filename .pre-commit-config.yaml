@@ -1,6 +1,7 @@
 # Install pre-commit hooks via
 # pre-commit install
 
+exclude: ^src/itables_for_dash/ITable.py$  # auto-generated
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
