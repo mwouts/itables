@@ -425,8 +425,14 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datatables">DataTables</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternatives">Alternatives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#itables-and-its-alternatives">ITables and its alternatives</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-widgets">Jupyter Widgets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dash-component">Dash component</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamlit">Streamlit</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dt-in-r">DT in R</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d-tale">D-Tale</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -440,24 +446,45 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="references">
 <h1>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h1>
-<section id="datatables">
-<h2>DataTables<a class="headerlink" href="#datatables" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>DataTables is a plug-in for the jQuery Javascript library. It has a great <a class="reference external" href="https://datatables.net/manual/">documentation</a>, and a large set of <a class="reference external" href="https://datatables.net/examples/index">examples</a>.</p></li>
-<li><p>The R package <a class="reference external" href="https://rstudio.github.io/DT/">DT</a> uses <a class="reference external" href="https://datatables.net/">DataTables</a> as the underlying library for both R notebooks and Shiny applications. In addition to the standard functionalities of the library (display, sort, filtering and row selection), RStudio seems to have implemented cell edition.</p></li>
-</ul>
-</section>
-<section id="alternatives">
-<h2>Alternatives<a class="headerlink" href="#alternatives" title="Link to this heading">#</a></h2>
-<p>ITables uses basic Javascript. It is not a Jupyter widget, which means that it does not allows you to <strong>edit</strong> the content of the dataframe.</p>
-<p>If you are looking for Jupyter widgets, have a look at</p>
+<p>ITables is a wrapper for the <a class="reference external" href="https://datatables.net">datatables-net</a> Javascript library, for Python. That library is developped by <a class="reference external" href="https://sprymedia.co.uk/">SpryMedia</a> and made available under a MIT license. It has an extensive <a class="reference external" href="https://datatables.net/manual/">documentation</a>, as well as a large set of <a class="reference external" href="https://datatables.net/examples/index">examples</a>.</p>
+<section id="itables-and-its-alternatives">
+<h2>ITables and its alternatives<a class="headerlink" href="#itables-and-its-alternatives" title="Link to this heading">#</a></h2>
+<section id="jupyter-widgets">
+<h3>Jupyter Widgets<a class="headerlink" href="#jupyter-widgets" title="Link to this heading">#</a></h3>
+<p>In Jupyter or VS Code, ITables can render your dataframes using either HTML (with  <code class="docutils literal notranslate"><span class="pre">init_notebook_mode(all_interactive=True)</span></code> or <code class="docutils literal notranslate"><span class="pre">show</span></code>) or the <a class="reference internal" href="widget.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget</span></a>.</p>
+<p>Other Jupyter widgets that let you render a dataframe in Jupyter are</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/quantopian/qgrid">QGrid</a> by Quantopian</p></li>
 <li><p><a class="reference external" href="https://dgothrek.gitlab.io/ipyaggrid/">IPyaggrid</a> by Louis Raison and Olivier Borderies</p></li>
 <li><p><a class="reference external" href="https://github.com/QuantStack/ipysheet">IPySheet</a> by QuantStack.</p></li>
 </ul>
-<p>If you are looking for a table component that will fit in Dash applications, see <a class="reference external" href="https://github.com/plotly/dash-table/">datatable by Dash</a>.</p>
-<p>Please also checkout <a class="reference external" href="https://github.com/man-group/dtale">D-Tale</a> for exploring your Python DataFrames in the browser, using a local server.</p>
+</section>
+<section id="dash-component">
+<h3>Dash component<a class="headerlink" href="#dash-component" title="Link to this heading">#</a></h3>
+<p>Since ITables v2.3.0 you can use our <a class="reference internal" href="dash.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">ITable</span></code> component</span></a> in Dash applications.</p>
+<p>Alternatives for rendering DataFrames in Dash are</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dash.plotly.com/datatable">Dash DataTable</a></p></li>
+<li><p><a class="reference external" href="https://dash.plotly.com/dash-ag-grid">Dash AG Grid</a>.</p></li>
+</ul>
+</section>
+<section id="streamlit">
+<h3>Streamlit<a class="headerlink" href="#streamlit" title="Link to this heading">#</a></h3>
+<p>In ITables v2.1.0 we added the <a class="reference internal" href="streamlit.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">interactive_table</span></code> component</span></a> that can be used in Streamlit applications.</p>
+<p>Alternative for rendering DataFrames in Streamlit are</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.streamlit.io/develop/api-reference/data/st.dataframe"><code class="docutils literal notranslate"><span class="pre">st.dataframe</span></code></a></p></li>
+<li><p><a class="reference external" href="https://github.com/PablocFonseca/streamlit-aggrid"><code class="docutils literal notranslate"><span class="pre">streamlit-aggrid</span></code></a>.</p></li>
+</ul>
+</section>
+<section id="dt-in-r">
+<h3>DT in R<a class="headerlink" href="#dt-in-r" title="Link to this heading">#</a></h3>
+<p>The R package <a class="reference external" href="https://rstudio.github.io/DT/">DT</a> is a wrapper for <a class="reference external" href="https://datatables.net/">DataTables</a> that you can use both in R notebooks and R Shiny applications.</p>
+</section>
+<section id="d-tale">
+<h3>D-Tale<a class="headerlink" href="#d-tale" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://github.com/man-group/dtale">D-Tale</a> lets you explore your Python DataFrames in the browser, using a local server.</p>
+</section>
 </section>
 </section>
 
@@ -525,8 +552,14 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datatables">DataTables</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternatives">Alternatives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#itables-and-its-alternatives">ITables and its alternatives</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#jupyter-widgets">Jupyter Widgets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dash-component">Dash component</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamlit">Streamlit</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dt-in-r">DT in R</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d-tale">D-Tale</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
