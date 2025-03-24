@@ -101,19 +101,21 @@ build_cmd = "build"
 npm = ["npm"]
 
 [tool.hatch.build.targets.sdist]
+packages = ["src/itables", "src/itables_for_dash"]
 artifacts = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
-    "src/itables/dash/*",
+    "src/itables_for_dash/*",
     "src/itables/itables_for_streamlit/*",
     "src/itables/widget/static/*"
     ]
 
 [tool.hatch.build.targets.wheel]
+packages = ["src/itables", "src/itables_for_dash"]
 artifacts = [
     "src/itables/html/dt_bundle.js",
     "src/itables/html/dt_bundle.css",
-    "src/itables/dash/*",
+    "src/itables_for_dash/*",
     "src/itables/itables_for_streamlit/*",
     "src/itables/widget/static/*"
     ]
