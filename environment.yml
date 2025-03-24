@@ -26,5 +26,7 @@ dependencies:
   - shinywidgets
   - streamlit
   - anywidget
+  - hatch
+  - dash
   - pip:
     - world_bank_data
