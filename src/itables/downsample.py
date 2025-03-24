@@ -1,19 +1,21 @@
 import math
+from typing import Hashable, cast
 
 import pandas as pd
 
 from .datatables_format import _isetitem
+from .typing import DataFrame
 
 
-def nbytes(df):
+def nbytes(df: DataFrame) -> int:
     try:
         return sum(x.values.nbytes for _, x in df.items())
     except AttributeError:
         # Polars DataFrame
-        return df.estimated_size()
+        return df.estimated_size()  # type: ignore
 
 
-def as_nbytes(mem):
+def as_nbytes(mem: str | float | int) -> int:
     if isinstance(mem, (int, float)):
         return int(mem)
     assert isinstance(mem, str), mem
@@ -31,7 +33,9 @@ def as_nbytes(mem):
     return int(float(mem))
 
 
-def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
+def downsample(
+    df: DataFrame, max_rows: int = 0, max_columns: int = 0, max_bytes: int = 0
+) -> tuple[DataFrame, str]:
     """Return a subset of the dataframe that fits the limits"""
     org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
     max_bytes_numeric = as_nbytes(max_bytes)
@@ -64,8 +68,8 @@ def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
 
 
 def shrink_towards_target_aspect_ratio(
-    rows, columns, shrink_factor, target_aspect_ratio
-):
+    rows: int, columns: int, shrink_factor: float, target_aspect_ratio: float
+) -> tuple[int, int]:
     # current and target aspect ratio
     aspect_ratio = rows / float(columns)
 
@@ -91,7 +95,13 @@ def shrink_towards_target_aspect_ratio(
     return int(rows * row_shrink_factor), int(columns * column_shrink_factor)
 
 
-def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=None):
+def _downsample(
+    df: DataFrame,
+    max_rows: int = 0,
+    max_columns: int = 0,
+    max_bytes: int = 0,
+    target_aspect_ratio: float | None = None,
+):
     """Implementation of downsample - may be called recursively"""
     if len(df) > max_rows > 0:
         second_half = max_rows // 2
@@ -101,7 +111,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             try:
                 df = pd.concat((df.iloc[:first_half], df.iloc[-second_half:]))
             except AttributeError:
-                df = df.head(first_half).vstack(df.tail(second_half))
+                df = df.head(first_half).vstack(df.tail(second_half))  # type: ignore
         else:
             try:
                 df = df.iloc[:first_half]
@@ -118,12 +128,12 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
                     (df.iloc[:, :first_half], df.iloc[:, -second_half:]), axis=1
                 )
             except AttributeError:
-                df = df[df.columns[:first_half]].hstack(df[df.columns[-second_half:]])
+                df = df[df.columns[:first_half]].hstack(df[df.columns[-second_half:]])  # type: ignore
         else:
             try:
                 df = df.iloc[:, :first_half]
             except AttributeError:
-                df = df[df.columns[:first_half]]
+                df = df[df.columns[:first_half]]  # type: ignore
 
     df_nbytes = nbytes(df)
     if df_nbytes > max_bytes > 0:
@@ -152,7 +162,7 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
         except AttributeError:
             import polars as pl  # noqa
 
-            df = pl.DataFrame({df.columns[0]: ["..."]})
+            df = cast(DataFrame, pl.DataFrame({cast(Hashable, df.columns[0]): ["..."]}))
         return df
 
     return df

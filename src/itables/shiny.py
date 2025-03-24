@@ -1,15 +1,18 @@
+from pathlib import Path
+
 import itables.options as opt
 
 from .javascript import generate_init_offline_itables_html, to_html_datatable
+from .typing import DataFrame
 from .utils import read_package_file
 
-_CONNECTED = True
+_CONNECTED: bool = True
 
 
 def init_itables(
-    connected=False,
-    dt_bundle=None,
-):
+    connected: bool = False,
+    dt_bundle: Path | None = None,
+) -> str:
     """Load the DataTables library and the corresponding css (if connected=False),
     and (if all_interactive=True), activate the DataTables representation for all the Pandas DataFrames and Series.
 
@@ -29,7 +32,9 @@ def init_itables(
     return html
 
 
-def DT(df, caption=None, table_id=None, **kwargs):
+def DT(
+    df: DataFrame, caption: str | None = None, table_id: str | None = None, **kwargs
+) -> str:
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
 
     html = to_html_datatable(

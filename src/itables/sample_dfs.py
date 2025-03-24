@@ -12,9 +12,12 @@ try:
 except ImportError:
     pytz = None
 
+from typing import Final, Sequence, cast
+
+from .typing import DataFrame, SeriesOrDataFrame
 from .utils import find_package_file
 
-COLUMN_TYPES = [
+COLUMN_TYPES: Sequence[str] = [
     "bool",
     "int",
     "float",
@@ -27,9 +30,9 @@ COLUMN_TYPES = [
     "timedelta",
 ]
 
-PANDAS_VERSION_MAJOR, PANDAS_VERSION_MINOR, _ = pd.__version__.split(".", 2)
-PANDAS_VERSION_MAJOR = int(PANDAS_VERSION_MAJOR)
-PANDAS_VERSION_MINOR = int(PANDAS_VERSION_MINOR)
+PANDAS_VERSION_MAJOR_STR, PANDAS_VERSION_MINOR_STR, _ = pd.__version__.split(".", 2)
+PANDAS_VERSION_MAJOR: Final[int] = int(PANDAS_VERSION_MAJOR_STR)
+PANDAS_VERSION_MINOR: Final[int] = int(PANDAS_VERSION_MINOR_STR)
 if PANDAS_VERSION_MAJOR == 0:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
 if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
@@ -37,7 +40,7 @@ if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "timedelta"]
 
 
-def get_countries(html=True):
+def get_countries(html: bool = True) -> pd.DataFrame:
     """A Pandas DataFrame with the world countries (from the world bank data)
     Flags are loaded from https://flagpedia.net/"""
     df = pd.read_csv(find_package_file("samples/countries.csv"))
@@ -48,6 +51,7 @@ def get_countries(html=True):
     ].dropna()
     df.index.name = "code"
 
+    df = cast(pd.DataFrame, df)
     if not html:
         return df
 
@@ -68,19 +72,22 @@ def get_countries(html=True):
     return df
 
 
-def get_population():
+def get_population() -> pd.Series:
     """A Pandas Series with the world population (from the world bank data)"""
-    return pd.read_csv(find_package_file("samples/population.csv")).set_index(
-        "Country"
-    )["SP.POP.TOTL"]
+    return cast(
+        pd.Series,
+        pd.read_csv(find_package_file("samples/population.csv")).set_index("Country")[
+            "SP.POP.TOTL"
+        ],
+    )
 
 
-def get_indicators():
+def get_indicators() -> pd.DataFrame:
     """A Pandas DataFrame with a subset of the world bank indicators"""
     return pd.read_csv(find_package_file("samples/indicators.csv"))
 
 
-def get_df_complex_index():
+def get_df_complex_index() -> pd.DataFrame:
     df = get_countries()
     df = df.reset_index().set_index(["region", "country"])
     df.columns = pd.MultiIndex.from_arrays(
@@ -100,7 +107,7 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100, polars=False):
+def get_dict_of_test_dfs(N=100, M=100, polars=False) -> dict[str, DataFrame]:
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     test_dfs = {
@@ -166,7 +173,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 "timedelta": [
                     timedelta(days=2),
                     timedelta(seconds=50),
-                    pd.NaT - datetime(2000, 1, 1),
+                    pd.NaT - datetime(2000, 1, 1),  # type: ignore
                 ],
             }
         ),
@@ -242,7 +249,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             np.arange(4, 8).reshape((2, 2)),
             columns=pd.Index(["A", "A"]),
             index=pd.MultiIndex.from_arrays(
-                np.arange(4).reshape((2, 2)), names=["A", "A"]
+                np.arange(4).reshape((2, 2)), names=["A", "A"]  # type: ignore
             ),
         ),
         "named_column_index": pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1),
@@ -273,7 +280,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 # ValueError: Pandas dataframe contains non-unique indices and/or column names.
                 # Polars dataframes require unique string names for columns.
                 # See https://github.com/pola-rs/polars/issues/18130
-                df.index = df.index.tolist()
+                df.index = df.index.tolist()  # type: ignore
             try:
                 polars_dfs[key] = pl.from_pandas(df)
             except (pa.ArrowInvalid, ValueError):
@@ -283,7 +290,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
     return test_dfs
 
 
-def get_dict_of_test_series(polars=False):
+def get_dict_of_test_series(polars: bool = False) -> dict[str, SeriesOrDataFrame]:
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -317,26 +324,26 @@ def get_dict_of_test_series(polars=False):
 
 
 @lru_cache()
-def generate_date_series():
+def generate_date_series() -> pd.Series:
     if pd.__version__ >= "2.2.0":
         # https://github.com/pandas-dev/pandas/issues/55080 is back in 2.2.0?
         return pd.Series(pd.date_range("1970-01-01", "2099-12-31", freq="D"))
     return pd.Series(pd.date_range("1677-09-23", "2262-04-10", freq="D"))
 
 
-def generate_random_series(rows, type):
+def generate_random_series(rows: int, type: str) -> pd.Series:
     if type == "bool":
         return pd.Series(np.random.binomial(n=1, p=0.5, size=rows), dtype=bool)
     if type == "boolean":
         x = generate_random_series(rows, "bool").astype(type)
-        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
+        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
         return x
     if type == "int":
         return pd.Series(np.random.geometric(p=0.1, size=rows), dtype=int)
     if type == "Int64":
         x = generate_random_series(rows, "int").astype(type)
         if PANDAS_VERSION_MAJOR >= 1:
-            x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
+            x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
         return x
     if type == "float":
         x = pd.Series(np.random.normal(size=rows), dtype=float)
@@ -345,7 +352,7 @@ def generate_random_series(rows, type):
         x.loc[np.random.binomial(n=1, p=0.05, size=rows) == 0] = float("-inf")
         return x
     if type == "str":
-        return get_countries()["region"].sample(n=rows, replace=True)
+        return cast(pd.Series, get_countries()["region"]).sample(n=rows, replace=True)
     if type == "categories":
         x = generate_random_series(rows, "str")
         return pd.Series(x, dtype="category")
@@ -354,8 +361,8 @@ def generate_random_series(rows, type):
         x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NaT
         return x
     if type == "datetime":
-        x = generate_random_series(rows, "date") + np.random.uniform(
-            0, 1, rows
+        x = generate_random_series(rows, "date") + pd.Series(
+            np.random.uniform(0, 1, rows)
         ) * pd.Timedelta(1, unit="D")
         return x
     if type == "timedelta":
@@ -364,15 +371,18 @@ def generate_random_series(rows, type):
     raise NotImplementedError(type)
 
 
-def generate_random_df(rows, columns, column_types=COLUMN_TYPES):
+def generate_random_df(
+    rows: int, columns: int, column_types: Sequence[str] = COLUMN_TYPES
+) -> pd.DataFrame:
     rows = int(rows)
     types = np.random.choice(column_types, size=columns)
-    columns = [
+    column_names = [
         "Column{}OfType{}".format(col, type.title()) for col, type in enumerate(types)
     ]
 
     series = {
-        col: generate_random_series(rows, type) for col, type in zip(columns, types)
+        col: generate_random_series(rows, type)
+        for col, type in zip(column_names, types)
     }
     index = pd.Index(range(rows))
     for x in series.values():

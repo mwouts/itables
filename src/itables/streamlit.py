@@ -1,6 +1,7 @@
 import streamlit.components.v1 as components
 
 from .javascript import get_itables_extension_arguments
+from .typing import DataFrame
 from .utils import find_package_file
 
 _streamlit_component_func = components.declare_component(
@@ -8,6 +9,6 @@ _streamlit_component_func = components.declare_component(
 )
 
 
-def interactive_table(df, caption=None, **kwargs):
+def interactive_table(df: DataFrame, caption: str | None = None, **kwargs):
     dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
     return _streamlit_component_func(dt_args=dt_args, other_args=other_args)

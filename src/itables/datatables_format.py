@@ -1,10 +1,13 @@
 import json
 import re
 import warnings
+from typing import Any, Sequence
 
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
+
+from .typing import DataFrame
 
 try:
     import polars as pl
@@ -16,16 +19,20 @@ JS_MAX_SAFE_INTEGER = 2**53 - 1
 JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
 
-def _format_column(x, pure_json=False):
-    dtype_kind = x.dtype.kind
+def _format_column(
+    values: pd.Series, pure_json=False
+) -> pd.Series | np.ndarray | Sequence[Any]:
+    dtype_kind = values.dtype.kind
     if dtype_kind in ["b", "i", "s"]:
-        return x
+        return values
 
+    x: pd.Series | np.ndarray | Sequence[Any]
     try:
-        x = fmt.format_array(x._values, None, justify="all", leading_space=False)
+        x = fmt.format_array(values._values, None, justify="all", leading_space=False)  # type: ignore
     except TypeError:
         # Older versions of Pandas don't have 'leading_space'
-        x = fmt.format_array(x._values, None, justify="all")
+        x = fmt.format_array(values._values, None, justify="all")  # type: ignore
+
     if dtype_kind == "f":
         try:
             x = np.array(x).astype(float)
@@ -40,20 +47,20 @@ def _format_column(x, pure_json=False):
     return x
 
 
-def generate_encoder(warn_on_unexpected_types=True):
+def generate_encoder(warn_on_unexpected_types: bool = True) -> Any:
     class TableValuesEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj, (bool, int, float, str)):
-                return json.JSONEncoder.default(self, obj)
-            if isinstance(obj, np.bool_):
-                return bool(obj)
-            if isinstance(obj, np.integer):
-                return int(obj)
-            if isinstance(obj, np.floating):
-                return float(obj)
+        def default(self, o: Any):
+            if isinstance(o, (bool, int, float, str)):
+                return json.JSONEncoder.default(self, o)
+            if isinstance(o, np.bool_):
+                return bool(o)
+            if isinstance(o, np.integer):
+                return int(o)
+            if isinstance(o, np.floating):
+                return float(o)
             try:
-                if obj is pd.NA:
-                    return str(obj)
+                if o is pd.NA:
+                    return str(o)
             except AttributeError:
                 pass
 
@@ -63,15 +70,15 @@ def generate_encoder(warn_on_unexpected_types=True):
                     "You can report this warning at https://github.com/mwouts/itables/issues\n"
                     "To silence this warning, please run:\n"
                     "    import itables.options as opt\n"
-                    "    opt.warn_on_unexpected_types = False".format(type(obj), obj),
+                    "    opt.warn_on_unexpected_types = False".format(type(o), o),
                     category=RuntimeWarning,
                 )
-            return str(obj)
+            return str(o)
 
     return TableValuesEncoder
 
 
-def _isetitem(df, i, value):
+def _isetitem(df: pd.DataFrame, i: int, value: Any):
     """Older versions of Pandas don't have df.isetitem"""
     try:
         df.isetitem(i, value)
@@ -79,7 +86,12 @@ def _isetitem(df, i, value):
         df.iloc[:, i] = value
 
 
-def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=False):
+def datatables_rows(
+    df: DataFrame,
+    count: int | None = None,
+    warn_on_unexpected_types: bool = False,
+    pure_json: bool = False,
+) -> str:
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
@@ -110,8 +122,10 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
         )
     except AttributeError:
         # Polars DataFrame
-        data = df.rows()
         import polars as pl
+
+        assert isinstance(df, pl.DataFrame)
+        data = df.rows()
 
         has_bigints = any(
             (
@@ -129,7 +143,7 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
     return js
 
 
-def n_suffix_for_bigints(js, pure_json=False):
+def n_suffix_for_bigints(js: str, pure_json: bool = False) -> str:
     def n_suffix(matchobj):
         if pure_json:
             return matchobj.group(1) + '"' + matchobj.group(2) + '"' + matchobj.group(3)

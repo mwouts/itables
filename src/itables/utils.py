@@ -1,19 +1,26 @@
 from io import open
 from pathlib import Path
+from typing import Final
 
-UNPKG_DT_BUNDLE_URL = "https://www.unpkg.com/dt_for_itables@2.2.0/dt_bundle.js"
-UNPKG_DT_BUNDLE_CSS = UNPKG_DT_BUNDLE_URL.replace(".js", ".css")
-UNPKG_DT_BUNDLE_URL_NO_VERSION = "https://www.unpkg.com/dt_for_itables/dt_bundle.js"
-UNPKG_DT_BUNDLE_CSS_NO_VERSION = "https://www.unpkg.com/dt_for_itables/dt_bundle.css"
+UNPKG_DT_BUNDLE_URL: Final[str] = (
+    "https://www.unpkg.com/dt_for_itables@2.2.0/dt_bundle.js"
+)
+UNPKG_DT_BUNDLE_CSS: Final[str] = UNPKG_DT_BUNDLE_URL.replace(".js", ".css")
+UNPKG_DT_BUNDLE_URL_NO_VERSION: Final[str] = (
+    "https://www.unpkg.com/dt_for_itables/dt_bundle.js"
+)
+UNPKG_DT_BUNDLE_CSS_NO_VERSION: Final[str] = (
+    "https://www.unpkg.com/dt_for_itables/dt_bundle.css"
+)
 
 
-def find_package_file(*path):
+def find_package_file(*path: str) -> Path:
     """Return the full path to a file from the itables package"""
     current_path = Path(__file__).parent
     return Path(current_path, *path)
 
 
-def read_package_file(*path):
+def read_package_file(*path: str) -> str:
     """Return the content of a file from the itables package"""
     with open(find_package_file(*path), encoding="utf-8") as fp:
         return fp.read()

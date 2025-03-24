@@ -1,10 +1,12 @@
 import importlib.metadata
 import pathlib
+from typing import Sequence
 
 import anywidget
 import traitlets
 
 from itables.javascript import get_itables_extension_arguments
+from itables.typing import DataFrame
 
 try:
     __version__ = importlib.metadata.version("itables_anywidget")
@@ -20,7 +22,7 @@ class ITable(anywidget.AnyWidget):
     caption = traitlets.Unicode().tag(sync=True)
     classes = traitlets.Unicode().tag(sync=True)
     style = traitlets.Unicode().tag(sync=True)
-    selected_rows = traitlets.List(traitlets.Int).tag(sync=True)
+    selected_rows = traitlets.List(traitlets.Int).tag(sync=True)  # type: ignore
 
     # private traits that relate to df or to the DataTable arguments
     # (use .update() to update them)
@@ -31,7 +33,13 @@ class ITable(anywidget.AnyWidget):
     _dt_args = traitlets.Dict().tag(sync=True)
     _destroy_and_recreate = traitlets.Int(0).tag(sync=True)
 
-    def __init__(self, df=None, caption=None, selected_rows=None, **kwargs) -> None:
+    def __init__(
+        self,
+        df: DataFrame | None = None,
+        caption: str | None = None,
+        selected_rows: Sequence[int] | None = None,
+        **kwargs,
+    ) -> None:
         super().__init__()
 
         dt_args, other_args = get_itables_extension_arguments(

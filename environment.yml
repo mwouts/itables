@@ -29,5 +29,6 @@ dependencies:
   - hatch
   - dash
   - pyright
+  - pandas-stubs
   - pip:
     - world_bank_data
