@@ -1,7 +1,7 @@
 """
-This is an example Dash application that uses the ITable component.
+This is an example Dash application in which we update the table.
 
-Launch the app by running `python app.py`.
+Launch the app by running `python 3_update_table.py`.
 """
 
 import logging
@@ -19,18 +19,43 @@ app = Dash(__name__)
 
 df = get_countries(html=False)
 
-
+# Create the layout with sidebar
 app.layout = html.Div(
     [
-        html.H1("DataTable in a Dash application"),
-        dcc.Checklist(
-            ["Select", "Buttons", "HTML"],
-            ["Select"],
-            id="checklist",
-        ),
-        dcc.Input(id="caption", value="table caption"),
-        ITable(id="my_dataframe", df=df),
-        html.Div(id="output"),
+        html.Div(
+            className="container",
+            children=[
+                # Sidebar
+                html.Div(
+                    className="sidebar",
+                    children=[
+                        html.H2("Controls"),
+                        html.Label("Table Options:"),
+                        dcc.Checklist(
+                            ["Select", "Buttons", "HTML"],
+                            ["Select"],
+                            id="checklist",
+                            style={"marginBottom": "20px"},
+                        ),
+                        html.Label("Table Caption:"),
+                        dcc.Input(
+                            id="caption",
+                            value="table caption",
+                            style={"width": "100%", "marginBottom": "20px"},
+                        ),
+                    ],
+                ),
+                # Main content
+                html.Div(
+                    className="main-content",
+                    children=[
+                        html.H1("ITable in a Dash application"),
+                        ITable(id="my_dataframe"),
+                        html.Div(id="output", style={"marginTop": "20px"}),
+                    ],
+                ),
+            ],
+        )
     ]
 )
 
@@ -51,7 +76,7 @@ def update_table(checklist, caption, selected_rows, dt_args):
     kwargs = {}
 
     # When df=None and when the dt_args don't change, the table is not updated
-    if callback_context.triggered_id == "checklist":
+    if callback_context.triggered_id in {None, "checklist"}:
         kwargs["df"] = get_countries(html="HTML" in checklist)
 
     kwargs["select"] = "Select" in checklist
