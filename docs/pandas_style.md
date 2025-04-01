@@ -36,17 +36,15 @@ Pandas Style objects can't be used with the [Streamlit extension](streamlit.md) 
 import numpy as np
 import pandas as pd
 
-from itables import init_notebook_mode
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode()
 ```
 
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-import itables.options as opt
-
-opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
+itables.options.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 ```
 
 This is the DataFrame that we are going to style:

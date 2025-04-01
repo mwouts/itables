@@ -21,14 +21,12 @@ As usual, we initialize ITables with `init_notebook_mode`, and we create two sam
 
 import pandas as pd
 
-import itables.options as opt
-from itables import init_notebook_mode, show
-from itables.sample_dfs import get_countries
+import itables
 
-df = get_countries(html=False)
+df = itables.sample_dfs.get_countries(html=False)
 df_small = pd.DataFrame({"a": [2, 1]})
 
-init_notebook_mode()
+itables.init_notebook_mode()
 ```
 
 ## Classes
@@ -40,7 +38,7 @@ Add `"compact"` if you want a denser table:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, classes="display nowrap compact")
+itables.show(df, classes="display nowrap compact")
 ```
 
 Remove `"nowrap"` if you want the cell content to be wrapped:
@@ -48,7 +46,7 @@ Remove `"nowrap"` if you want the cell content to be wrapped:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, classes="display")
+itables.show(df, classes="display")
 ```
 
 [More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
@@ -56,7 +54,7 @@ show(df, classes="display")
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, classes="display nowrap cell-border")
+itables.show(df, classes="display nowrap cell-border")
 ```
 
 ## CSS
@@ -104,7 +102,7 @@ display(HTML(f"<style>{class_specific_css}</style>" ""))
 ```
 
 ```{code-cell} ipython3
-show(df, classes="display nowrap table_with_monospace_font")
+itables.show(df, classes="display nowrap table_with_monospace_font")
 ```
 
 (style)=
@@ -122,15 +120,13 @@ Using `margin:auto` makes non-wide tables centered.
 You can set a specific width or position for a table using with the `style` argument of the show function:
 
 ```{code-cell} ipython3
-show(df_small, style="table-layout:auto;width:50%;float:right")
+itables.show(df_small, style="table-layout:auto;width:50%;float:right")
 ```
 
 or you can also change it for all tables by changing `itables.options.style`:
 
 ```python
-import itables.options as opt
-
-opt.style = "table-layout:auto;width:auto"
+itables.options.style = "table-layout:auto;width:auto"
 ```
 
 ```{tip}
@@ -149,7 +145,7 @@ You can set a fixed width for all the columns with `"targets": "_all"`:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     columnDefs=[{"width": "120px", "targets": "_all"}],
     style="width:1200px",
@@ -162,7 +158,7 @@ You can also adjust the width of selected columns only:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     columnDefs=[{"width": "30%", "targets": [2, 3]}],
     style="width:100%;margin:auto",
@@ -176,12 +172,12 @@ If you wish you can also set a value for `columnDefs` permanently in `itables.op
 You can use the DataTables [cell classes](https://datatables.net/manual/styling/classes#Cell-classes) like `dt-left`, `dt-center`, `dt-right` etc. to set the cell alignment. Specify it for one table by using the `columnDefs` argument of `show`
 
 ```{code-cell} ipython3
-show(df, columnDefs=[{"className": "dt-center", "targets": "_all"}])
+itables.show(df, columnDefs=[{"className": "dt-center", "targets": "_all"}])
 ```
 
-or globally by setting `opt.columnDefs`:
+or globally by setting `itables.options.columnDefs`:
 
 ```{code-cell} ipython3
-opt.columnDefs = [{"className": "dt-center", "targets": "_all"}]
+itables.options.columnDefs = [{"className": "dt-center", "targets": "_all"}]
 df
 ```

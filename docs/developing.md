@@ -71,13 +71,12 @@ jupyter lab
 
 You should test at least this code snippet:
 ```python
-from itables import init_notebook_mode
-from itables.sample_dfs import get_countries
+import itables
 
 # try both connected=False (the default) and connected=True
-init_notebook_mode(connected=False)
+itables.init_notebook_mode(connected=False)
 
-get_countries()
+itables.sample_dfs.get_countries()
 ```
 
 You can do this using for instance the notebook at `tests/test_notebook.ipynb`.

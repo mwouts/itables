@@ -18,9 +18,9 @@ The [select](https://datatables.net/extensions/select) extension let you select 
 only the selected rows are exported
 
 ```{code-cell} ipython3
-from itables import init_notebook_mode, show
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode()
 ```
 
 ```{code-cell} ipython3
@@ -57,7 +57,7 @@ wide_df = pd.DataFrame(
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     select=True,
     selected_rows=[2, 4, 5],

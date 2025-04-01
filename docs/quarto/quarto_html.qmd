@@ -43,9 +43,9 @@ display(HTML("<style>.dt-container { font-size: small; }</style>"))
 ```{python}
 #| echo: true
 
-from itables import init_notebook_mode
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode(all_interactive=True)
 ```
 :::
 

@@ -30,10 +30,10 @@ from IPython.display import display, HTML
 import itables.options as opt
 
 # show 5 rows per 'page'
-opt.lengthMenu = [5]
+itables.options.lengthMenu = [5]
 
 # don't show the length control
-opt.layout["topStart"] = None
+itables.options.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
@@ -43,9 +43,9 @@ display(HTML("<style>.dt-container { font-size: medium; }</style>"))
 ```{python}
 #| echo: true
 
-from itables import init_notebook_mode
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode(all_interactive=True)
 ```
 :::
 
@@ -53,9 +53,8 @@ init_notebook_mode()
 #| echo: true
 #| code-fold: true
 #| code-summary: "... and all DataFrames become interactive!"
-from itables.sample_dfs import get_countries
 
-get_countries(html=False)
+itables.get_countries(html=False)
 ```
 
 ## How to make my table fit in one slide?
@@ -72,14 +71,13 @@ get_countries(html=False)
 
 ```python
 from IPython.display import display, HTML
-import itables.options as opt
 
 
 # show 5 rows per 'page'
-opt.lengthMenu = [5]
+itables.options.lengthMenu = [5]
 
 # don't show the length control
-opt.layout["topStart"] = None
+itables.options.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
