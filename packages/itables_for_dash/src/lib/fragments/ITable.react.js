@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import DataTable from "dt_for_itables";
+import { DataTable, jQuery} from "dt_for_itables";
 import { defaultProps, propTypes } from '../components/ITable.react.js';
 import "dt_for_itables/dt_bundle.css";
 
@@ -50,7 +50,8 @@ const ITable = (props) => {
         }
 
         console.debug("Destroying DataTable(id='%s')", id);
-        dtInstance.current.clear().destroy();
+        dtInstance.current.destroy();
+        jQuery("#".concat(id)).empty();
         dtInstance.current = null;
       }
     }
