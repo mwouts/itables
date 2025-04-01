@@ -1,15 +1,15 @@
 ITables ChangeLog
 =================
 
-2.3.0-dev
+2.3.0rc1
 ---------
 
 **Added**
 - ITable now has a component for Dash! You can render your Python DataFrames in your Dash application with `from itables.dash import ITable` ([#245](https://github.com/mwouts/itables/issues/245))
 
-
 **Changed**
-- The default value of the `all_interactive` argument of `itables.init_notebook_mode` is now `True`
+- We have changed the default value of the `all_interactive` argument of `itables.init_notebook_mode` to `True`
+- The ITables options can be imported and modified directly through `itables.options`
 - We have upgraded `datatables.net-dt==2.2.2` and `datatables.net-select-dt==3.0.0`, and the dependency of both the Jupyter widget and the Streamlit component.
 
 

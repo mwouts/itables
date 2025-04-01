@@ -21,10 +21,9 @@ you can use [Pandas' formatting options](https://pandas.pydata.org/pandas-docs/s
 For instance, you can change the precision used to display floating numbers:
 
 ```{code-cell} ipython3
-from itables import init_notebook_mode, show
-from itables.sample_dfs import get_countries
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode()
 ```
 
 ```{code-cell} ipython3
@@ -33,14 +32,14 @@ import math
 import pandas as pd
 
 with pd.option_context("display.float_format", "{:,.2f}".format):
-    show(pd.Series([i * math.pi for i in range(1, 6)]))
+    itables.show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 Or you can use a custom formatter:
 
 ```{code-cell} ipython3
 with pd.option_context("display.float_format", "${:,.2f}".format):
-    show(pd.Series([i * math.pi for i in range(1, 6)]))
+    itables.show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 ## Formatting with Javascript
@@ -54,14 +53,14 @@ For instance, this [example](https://datatables.net/forums/discussion/61407/how-
 can be ported like this:
 
 ```{code-cell} ipython3
-from itables import JavascriptCode
-
-show(
+itables.show(
     pd.Series([i * math.pi * 1e4 for i in range(1, 6)]),
     columnDefs=[
         {
             "targets": "_all",
-            "render": JavascriptCode("$.fn.dataTable.render.number(',', '.', 3, '$')"),
+            "render": itables.JavascriptCode(
+                "$.fn.dataTable.render.number(',', '.', 3, '$')"
+            ),
         }
     ],
 )
@@ -76,14 +75,12 @@ The example below, in which we color in red the cells with negative numbers, is 
 Note how the Javascript callback is declared as `JavascriptFunction` object below.
 
 ```{code-cell} ipython3
-from itables import JavascriptFunction
-
-show(
+itables.show(
     pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": JavascriptFunction(
+            "createdCell": itables.JavascriptFunction(
                 """
 function (td, cellData, rowData, row, col) {
     if (cellData < 0) {
@@ -136,7 +133,7 @@ pd.Series(
 ```{code-cell} ipython3
 :tags: [full-width]
 
-df = get_countries(html=False)
+df = itables.sample_dfs.get_countries(html=False)
 
 df["flag"] = [
     '<a href="https://flagpedia.net/{code}">'

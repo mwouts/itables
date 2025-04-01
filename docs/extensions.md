@@ -20,9 +20,9 @@ A selection of these extensions are included in ITables.
 As usual, we activate ITables with:
 
 ```{code-cell} ipython3
-from itables import init_notebook_mode, show
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode()
 ```
 
 and then, we create a few example dataframes:
@@ -35,9 +35,7 @@ import string
 import numpy as np
 import pandas as pd
 
-from itables.sample_dfs import get_countries
-
-df = get_countries(html=False)
+df = itables.sample_dfs.get_countries(html=False)
 # Add columns for the searchPanes demo
 df["climate_zone"] = np.where(
     df["latitude"].abs() < 23.43615,
@@ -71,7 +69,7 @@ To display the buttons, you need to pass a `buttons` argument to the `show` func
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
+itables.show(df, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
 ```
 
 You can also specify a [`layout`](layout) modifier that will decide
@@ -80,7 +78,7 @@ you want to keep the pagination control too, you can add `"pageLength"` to the l
 
 As always, it is possible to set default values for these parameters by setting these on `itables.options`. For instance, set
 ```python
-opt.buttons = ["copyHtml5", "csvHtml5", "excelHtml5"]
+itables.options.buttons = ["copyHtml5", "csvHtml5", "excelHtml5"]
 ```
 to get the buttons for all tables.
 
@@ -92,7 +90,7 @@ here:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     buttons=[
         "pageLength",
@@ -126,7 +124,7 @@ buttons of DataTables let you select which columns are visible.
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     # column visibility works best with a flat header
     df.reset_index(),
     buttons=["columnsToggle"],
@@ -187,7 +185,7 @@ argument is required (otherwise the search panes are too wide).
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     layout={"top1": "searchPanes"},
     searchPanes={"layout": "columns-3", "cascadePanes": True, "columns": [1, 6, 7]},
@@ -209,7 +207,7 @@ It is possible to set a predefined search, as we do in the below:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     layout={"top1": "searchBuilder"},
     searchBuilder={
@@ -230,7 +228,7 @@ that let you fix some columns as you scroll horizontally.
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     wide_df,
     fixedColumns={"start": 1, "end": 2},
     scrollX=True,
@@ -244,16 +242,14 @@ With the [KeyTable](https://datatables.net/extensions/keytable/) extension you c
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, keys=True)
+itables.show(df, keys=True)
 ```
 
 ```{tip}
 You can activate this option for all your tables with
 
 ~~~python
-import itables.options as opt
-
-opt.keys = True
+itables.options.keys = True
 ~~~
 ```
 
@@ -270,7 +266,7 @@ of that column to avoid duplicating the information.
 ```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df.sort_values("region"),
     rowGroup={"dataSrc": 1},
     columnDefs=[{"targets": 1, "visible": False}],
