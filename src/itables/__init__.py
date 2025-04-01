@@ -1,3 +1,5 @@
+from itables import downsample, options, sample_dfs
+
 from .javascript import (
     JavascriptCode,
     JavascriptFunction,
@@ -14,4 +16,7 @@ __all__ = [
     "init_notebook_mode",
     "JavascriptCode",
     "JavascriptFunction",
+    "options",
+    "downsample",
+    "sample_dfs",
 ]

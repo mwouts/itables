@@ -19,11 +19,10 @@ To get the HTML representation of a Pandas DataFrame `df` as an interactive [Dat
 ```{code-cell} ipython3
 from IPython.display import HTML, display
 
-from itables import to_html_datatable
-from itables.sample_dfs import get_countries
+import itables
 
-df = get_countries(html=False)
-html = to_html_datatable(df.head(3), display_logo_when_loading=False)
+df = itables.sample_dfs.get_countries(html=False)
+html = itables.to_html_datatable(df.head(3), display_logo_when_loading=False)
 ```
 
 You can then save the `html` variable to a text file (note: if you're writing an HTML application, you could consider using [Shiny](shiny.md) or [Streamlit](streamlit.md) instead), or print it:

@@ -6,7 +6,7 @@ ITables is a wrapper for the [datatables-net](https://datatables.net) Javascript
 
 ### Jupyter Widgets
 
-In Jupyter or VS Code, ITables can render your dataframes using either HTML (with `init_notebook_mode()`, or `init_notebook_mode(all_interactive=False)` and `show`) or the [`ITable` widget](widget.md).
+In Jupyter or VS Code, ITables can render your dataframes using either HTML (with either `init_notebook_mode()`, or `init_notebook_mode(all_interactive=False)` and `show`) or the [`ITable` widget](widget.md).
 
 Other Jupyter widgets that let you render a dataframe in Jupyter are
 - [QGrid](https://github.com/quantopian/qgrid) by Quantopian
