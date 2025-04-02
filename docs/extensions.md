@@ -19,7 +19,7 @@ A selection of these extensions are included in ITables.
 
 As usual, we activate ITables with:
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import init_notebook_mode, show
 
 init_notebook_mode()
@@ -27,7 +27,7 @@ init_notebook_mode()
 
 and then, we create a few example dataframes:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [hide-input]
 
 import string
@@ -68,7 +68,7 @@ The DataTables [buttons](https://datatables.net/extensions/buttons/) let you cop
 
 To display the buttons, you need to pass a `buttons` argument to the `show` function:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
@@ -89,7 +89,7 @@ By default, the exported file name is the name of the HTML page. To change it, s
 [`title` option](https://datatables.net/extensions/buttons/examples/html5/filename.html) on the buttons, like
 here:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(
@@ -123,7 +123,7 @@ have a large footprint on the bundle size. Still, you can add it to your custom 
 The [column visibility](https://datatables.net/extensions/buttons/examples/column_visibility/index.html)
 buttons of DataTables let you select which columns are visible.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(
@@ -184,7 +184,7 @@ unique values. In the example below we have activated the cascade filtering thro
 Note that, in Jupyter, the [`searchPanes.layout`](https://datatables.net/extensions/searchpanes/layout)
 argument is required (otherwise the search panes are too wide).
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(
@@ -206,7 +206,7 @@ by passing e.g. `layout={"top1": "searchBuilder"}`.
 
 It is possible to set a predefined search, as we do in the below:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(
@@ -227,7 +227,7 @@ show(
 [FixedColumn](https://datatables.net/extensions/fixedcolumns/) is an extension
 that let you fix some columns as you scroll horizontally.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(
@@ -241,7 +241,7 @@ show(
 
 With the [KeyTable](https://datatables.net/extensions/keytable/) extension you can navigate in a table using the arrow keys:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df, keys=True)
@@ -267,7 +267,7 @@ Use the [RowGroup](https://datatables.net/extensions/rowgroup/) extension to gro
 the data according to the content of one colum. Optionally, you can hide the content
 of that column to avoid duplicating the information.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(

@@ -32,7 +32,7 @@ corresponding DataFrame. In particular,
 Pandas Style objects can't be used with the [Streamlit extension](streamlit.md) for ITables.
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 import numpy as np
 import pandas as pd
 
@@ -41,7 +41,7 @@ from itables import init_notebook_mode
 init_notebook_mode(all_interactive=True)
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-input]
 
 import itables.options as opt
@@ -51,7 +51,7 @@ opt.lengthMenu = [5, 10, 20, 50, 100, 200, 500]
 
 This is the DataFrame that we are going to style:
 
-```{code-cell}
+```{code-cell} ipython3
 x = np.linspace(0, np.pi, 21)
 df = pd.DataFrame({"sin": np.sin(x), "cos": np.cos(x)}, index=pd.Index(x, name="alpha"))
 
@@ -65,7 +65,7 @@ From now on we will display `df.style`
 
 Let's start with a background gradient:
 
-```{code-cell}
+```{code-cell} ipython3
 s = df.style
 s.background_gradient(axis=None, cmap="YlOrRd")
 ```
@@ -74,13 +74,13 @@ s.background_gradient(axis=None, cmap="YlOrRd")
 
 We can also choose how the data is formatted:
 
-```{code-cell}
+```{code-cell} ipython3
 s.format("{:.3f}").format_index("{:.3f}")
 ```
 
 ## Caption
 
-```{code-cell}
+```{code-cell} ipython3
 s.set_caption("A Pandas Styler object with background colors").set_table_styles(
     [{"selector": "caption", "props": "caption-side: bottom; font-size:1em;"}]
 )
@@ -88,7 +88,7 @@ s.set_caption("A Pandas Styler object with background colors").set_table_styles(
 
 ## Tooltips
 
-```{code-cell}
+```{code-cell} ipython3
 ttips = pd.DataFrame(
     {
         "sin": ["The sinus of {:.6f} is {:.6f}".format(t, np.sin(t)) for t in x],

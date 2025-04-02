@@ -56,7 +56,7 @@ conda install itables -c conda-forge
 
 Activate the interactive mode in notebook-like environment with `init_notebook_mode`:
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import init_notebook_mode
 
 init_notebook_mode(all_interactive=True)
@@ -66,7 +66,7 @@ After this, any Pandas or Polars DataFrame, or Series,
 is displayed as an interactive [DataTables](https://datatables.net/),
 which lets you explore, filter or sort your data.
 
-```{code-cell}
+```{code-cell} ipython3
 from itables.sample_dfs import get_countries
 
 df = get_countries(html=False)
@@ -77,7 +77,7 @@ If you prefer to render only certain tables using `itables`, or want
 to pass [advanced parameters](advanced_parameters.md) along with the
 DataFrame, use `show`:
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import show
 
 show(df, lengthMenu=[2, 5, 10, 25, 50, 100, 250])

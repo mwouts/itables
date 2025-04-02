@@ -20,7 +20,7 @@ Below we give a series of examples of how the DataTables examples can be ported 
 
 As always, we initialize the `itables` library with
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import init_notebook_mode, show
 
 init_notebook_mode(all_interactive=True)
@@ -28,7 +28,7 @@ init_notebook_mode(all_interactive=True)
 
 Then we create two sample dataframes:
 
-```{code-cell}
+```{code-cell} ipython3
 import pandas as pd
 
 from itables.sample_dfs import get_countries
@@ -37,7 +37,7 @@ df_small = pd.DataFrame({"a": [2, 1]})
 df = get_countries(html=False)
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-cell]
 
 import itables.options as opt
@@ -53,7 +53,7 @@ The rocket icon at the top of the page will let you run this notebook in Binder!
 
 You can set additional `tags` on the table like e.g. a [caption](https://datatables.net/blog/2014-11-07):
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df, "Countries from the World Bank Database")
@@ -69,7 +69,7 @@ By default, datatables that don't fit in one page come with a search box, a pagi
 You can select which elements are actually displayed using
 DataTables' [`layout` option](https://datatables.net/reference/option/layout) with e.g.:
 
-```{code-cell}
+```{code-cell} ipython3
 show(df_small, layout={"topStart": "search", "topEnd": None})
 ```
 
@@ -99,7 +99,7 @@ If you wish to continue using the `dom` option, set `opt.warn_on_dom = False`.
 
 The [search option](https://datatables.net/reference/option/search) let you control the initial value for the search field, and whether the query should be treated as a regular expression or not:
 
-```{code-cell}
+```{code-cell} ipython3
 show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
 
@@ -109,7 +109,7 @@ show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 
 Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df, lengthMenu=[2, 5, 10, 20, 50])
@@ -119,7 +119,7 @@ show(df, lengthMenu=[2, 5, 10, 20, 50])
 
 Use [`paging=False`](https://datatables.net/reference/option/paging) to show the table in full:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df.head(8), paging=False)
@@ -129,7 +129,7 @@ show(df.head(8), paging=False)
 
 You can replace the pagination with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df, scrollY="200px", scrollCollapse=True, paging=False)
@@ -141,7 +141,7 @@ Since ITables 2.1.2, the `.dt-layout-table` div has a default overflow equal to 
 
 Use `footer = True` if you wish to display a table footer.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(df, footer=True)
@@ -152,7 +152,7 @@ show(df, footer=True)
 Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters
 (remove the global search box with a [`layout`](layout) modifier if desired).
 
-```{code-cell}
+```{code-cell} ipython3
 alpha_numeric_df = pd.DataFrame(
     [["one", 1.5], ["two", 2.3]], columns=["string", "numeric"]
 )
@@ -162,19 +162,19 @@ show(alpha_numeric_df, column_filters="footer", layout={"topEnd": None})
 
 As always you can set activate column filters by default with e.g.
 
-```{code-cell}
+```{code-cell} ipython3
 opt.column_filters = "footer"
 ```
 
 Column filters also work on dataframes with multiindex columns:
 
-```{code-cell}
+```{code-cell} ipython3
 from itables.sample_dfs import get_dict_of_test_dfs
 
 get_dict_of_test_dfs()["multiindex"]
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [remove-cell]
 
 opt.column_filters = False
@@ -184,7 +184,7 @@ opt.column_filters = False
 
 Since `itables>=1.3.0`, the interactive datatable shows the rows in the same order as the original dataframe:
 
-```{code-cell}
+```{code-cell} ipython3
 from itables.sample_dfs import get_dict_of_test_dfs
 
 for name, test_df in get_dict_of_test_dfs().items():
@@ -194,7 +194,7 @@ for name, test_df in get_dict_of_test_dfs().items():
 
 You can also set an explicit [`order`](https://datatables.net/reference/option/order) argument:
 
-```{code-cell}
+```{code-cell} ipython3
 sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
 show(sorted_df, order=[[1, "asc"]])
 ```
@@ -214,7 +214,7 @@ opt.showIndex = True
 
 or locally by passing an argument `showIndex` to the `show` function:
 
-```{code-cell}
+```{code-cell} ipython3
 df_with_range_index = pd.DataFrame({"letter": list("abcd")})
 show(df_with_range_index, showIndex=True)
 ```

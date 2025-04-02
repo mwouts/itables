@@ -27,7 +27,7 @@ pip install itables[widget]
 The `ITable` class accepts the same arguments as the `show` method, but
 the `df` argument is optional.
 
-```{code-cell}
+```{code-cell} ipython3
 from itables.sample_dfs import get_dict_of_test_dfs
 from itables.widget import ITable
 
@@ -50,11 +50,11 @@ rows that have been selected in the table (remember to pass [`select=True`](sele
 to activate the row selection). You can use it to either retrieve
 or change the current row selection:
 
-```{code-cell}
+```{code-cell} ipython3
 table.selected_rows
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 table.selected_rows = [3, 4]
 ```
 
@@ -62,13 +62,13 @@ table.selected_rows = [3, 4]
 
 Use it to retrieve the table data:
 
-```{code-cell}
+```{code-cell} ipython3
 table.df.iloc[table.selected_rows]
 ```
 
 or to update it
 
-```{code-cell}
+```{code-cell} ipython3
 table.df = df.head(6)
 ```
 
@@ -81,7 +81,7 @@ updated data. If you need to update the two simultaneously, use `table.update(df
 
 You can update these traits from Python, e.g.
 
-```{code-cell}
+```{code-cell} ipython3
 table.caption = "numbers and strings"
 ```
 
@@ -89,7 +89,7 @@ table.caption = "numbers and strings"
 
 Last but not least, you can update the `ITable` arguments simultaneously using the `update` method:
 
-```{code-cell}
+```{code-cell} ipython3
 table.update(df.head(20), selected_rows=[7, 8])
 ```
 
