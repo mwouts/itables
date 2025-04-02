@@ -16,7 +16,7 @@ kernelspec:
 
 ## Loading takes forever?
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [hide-input]
 
 import pandas as pd

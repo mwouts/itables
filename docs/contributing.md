@@ -39,7 +39,7 @@ It's always great to see new stars coming to ITables! <a class="github-button" h
 
 If you wanted to share a link to ITables and DataTables (no obligation whatsoever), you could use something like this:
 
-```{code-cell}
+```{code-cell} ipython3
 from IPython.display import HTML, display
 
 display(
