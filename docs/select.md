@@ -17,13 +17,13 @@ kernelspec:
 The [select](https://datatables.net/extensions/select) extension let you select rows (or cells). When you do so,
 only the selected rows are exported
 
-```{code-cell}
+```{code-cell} ipython3
 from itables import init_notebook_mode, show
 
 init_notebook_mode()
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [hide-input]
 
 import string
@@ -54,7 +54,7 @@ wide_df = pd.DataFrame(
 )
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 show(

@@ -30,7 +30,7 @@ repos:
         args: ["--fix", "--show-fixes"]
 
   - repo: https://github.com/mwouts/jupytext
-    rev: v1.16.2
+    rev: v1.17.0
     hooks:
     - id: jupytext
       exclude: packages/
