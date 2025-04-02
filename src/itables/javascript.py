@@ -68,7 +68,7 @@ except ImportError:
 
 
 def init_notebook_mode(
-    all_interactive=False,
+    all_interactive=True,
     connected=GOOGLE_COLAB,
     dt_bundle=None,
 ):

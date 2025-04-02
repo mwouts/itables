@@ -23,7 +23,7 @@ As always, we initialize the `itables` library with
 ```{code-cell} ipython3
 from itables import init_notebook_mode, show
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 Then we create two sample dataframes:

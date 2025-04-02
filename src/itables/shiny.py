@@ -10,8 +10,7 @@ def init_itables(
     connected=False,
     dt_bundle=None,
 ):
-    """Load the DataTables library and the corresponding css (if connected=False),
-    and (if all_interactive=True), activate the DataTables representation for all the Pandas DataFrames and Series.
+    """Load the DataTables library and the corresponding css (if connected=False).
 
     Warning: make sure you keep the output of this cell when 'connected=False',
     otherwise the interactive tables will stop working.

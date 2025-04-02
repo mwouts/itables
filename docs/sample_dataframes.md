@@ -21,7 +21,7 @@ from itables import init_notebook_mode, show
 from itables.sample_dfs import get_dict_of_test_dfs
 
 dict_of_test_dfs = get_dict_of_test_dfs()
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 ## empty
