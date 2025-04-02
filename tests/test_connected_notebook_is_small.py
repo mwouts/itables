@@ -8,7 +8,7 @@ from itables import init_notebook_mode
 import itables.options as opt
 
 opt.display_logo_when_loading = {display_logo_when_loading}
-init_notebook_mode(all_interactive=True, connected={connected})
+init_notebook_mode(connected={connected})
 
 # %%
 import pandas as pd

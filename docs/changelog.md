@@ -9,6 +9,7 @@ ITables ChangeLog
 
 
 **Changed**
+- The default value of the `all_interactive` argument of `itables.init_notebook_mode` is now `True`
 - We have upgraded `datatables.net-dt==2.2.2` and `datatables.net-select-dt==3.0.0`, and the dependency of both the Jupyter widget and the Streamlit component.
 
 

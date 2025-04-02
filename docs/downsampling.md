@@ -26,7 +26,7 @@ from itables import init_notebook_mode, show
 from itables.downsample import as_nbytes, nbytes
 from itables.sample_dfs import get_indicators
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 ```{code-cell} ipython3

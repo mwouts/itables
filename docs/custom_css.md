@@ -28,7 +28,7 @@ from itables.sample_dfs import get_countries
 df = get_countries(html=False)
 df_small = pd.DataFrame({"a": [2, 1]})
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 ## Classes

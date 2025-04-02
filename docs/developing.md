@@ -75,7 +75,7 @@ from itables import init_notebook_mode
 from itables.sample_dfs import get_countries
 
 # try both connected=False (the default) and connected=True
-init_notebook_mode(all_interactive=True, connected=False)
+init_notebook_mode(connected=False)
 
 get_countries()
 ```

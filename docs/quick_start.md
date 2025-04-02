@@ -59,7 +59,7 @@ Activate the interactive mode in notebook-like environment with `init_notebook_m
 ```{code-cell} ipython3
 from itables import init_notebook_mode
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 After this, any Pandas or Polars DataFrame, or Series,
@@ -72,6 +72,13 @@ from itables.sample_dfs import get_countries
 df = get_countries(html=False)
 df
 ```
+
+:::{tip}
+The arguments to `init_notebook_mode` are:
+- `all_interactive`, which defaults to `True` since v2.3.0
+- `connected`, which defaults to `False` (except in Colab)
+:::
+
 
 If you prefer to render only certain tables using `itables`, or want
 to pass [advanced parameters](advanced_parameters.md) along with the

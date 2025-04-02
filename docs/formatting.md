@@ -24,7 +24,7 @@ For instance, you can change the precision used to display floating numbers:
 from itables import init_notebook_mode, show
 from itables.sample_dfs import get_countries
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 ```{code-cell} ipython3
