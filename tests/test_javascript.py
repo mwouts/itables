@@ -108,6 +108,9 @@ def test_check_table_id():
 
 @pytest.mark.parametrize("url", [UNPKG_DT_BUNDLE_URL, UNPKG_DT_BUNDLE_CSS])
 def test_unpkg_links(url):
+    response_no_version = requests.get("https://www.unpkg.com/dt_for_itables/")
+    if not response_no_version.ok:
+        pytest.skip("unpkg.com is not reachable")
     response = requests.get(url)
     assert response.ok, url
 
