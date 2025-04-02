@@ -42,7 +42,7 @@ Activate the interactive mode for all series and dataframes with
 ```python
 from itables import init_notebook_mode
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 and then render any DataFrame as an interactive table that you can sort, search and explore:
 ![df](docs/df_example.png)

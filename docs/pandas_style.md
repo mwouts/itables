@@ -38,7 +38,7 @@ import pandas as pd
 
 from itables import init_notebook_mode
 
-init_notebook_mode(all_interactive=True)
+init_notebook_mode()
 ```
 
 ```{code-cell} ipython3
