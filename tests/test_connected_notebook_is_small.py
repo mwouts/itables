@@ -4,11 +4,10 @@ from jupytext.cli import jupytext
 
 def text_notebook(connected, display_logo_when_loading=True):
     return f"""# %%
-from itables import init_notebook_mode
-import itables.options as opt
+import itables
 
-opt.display_logo_when_loading = {display_logo_when_loading}
-init_notebook_mode(connected={connected})
+itables.options.display_logo_when_loading = {display_logo_when_loading}
+itables.init_notebook_mode(connected={connected})
 
 # %%
 import pandas as pd

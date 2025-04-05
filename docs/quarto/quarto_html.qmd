@@ -27,13 +27,13 @@ jupyter:
 #| echo: false
 
 from IPython.display import display, HTML
-import itables.options as opt
+import itables
 
 # show 5 rows per 'page'
-opt.lengthMenu = [5]
+itables.options.lengthMenu = [5]
 
 # don't show the length control
-opt.layout["topStart"] = None
+itables.options.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
@@ -53,9 +53,7 @@ itables.init_notebook_mode(all_interactive=True)
 #| echo: true
 #| code-fold: true
 #| code-summary: "... and all DataFrames become interactive!"
-from itables.sample_dfs import get_countries
-
-get_countries(html=False)
+itables.sample_dfs.get_countries(html=False)
 ```
 
 ## How to make my table fit in the report?
@@ -72,14 +70,12 @@ get_countries(html=False)
 
 ```python
 from IPython.display import display, HTML
-import itables.options as opt
-
 
 # show 5 rows per 'page'
-opt.lengthMenu = [5]
+itables.options.lengthMenu = [5]
 
 # don't show the length control
-opt.layout["topStart"] = None
+itables.options.layout["topStart"] = None
 
 # use a smaller font (default is medium)
 # see https://developer.mozilla.org/en-US/docs/Web/CSS/font-size
@@ -94,7 +90,7 @@ display(HTML("<style>.dt-container { font-size: small; }</style>"))
 
 ITables' [advanced parameters](https://mwouts.github.io/itables/advanced_parameters.html):
 
-- Can be set globally on `opt`, or
+- Can be set globally on `itables.options`, or
 - Passed as arguments to the `show` function.
 - Table-specific arguments like [caption](https://mwouts.github.io/itables/advanced_parameters.html#caption) are only available in `show`.
 :::
@@ -114,7 +110,8 @@ In that case, use `--cache-refresh` or even `--execute-daemon-restart`.
 ## GitHub <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 
 ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
-under a MIT license.
+under a MIT license. ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
+[(sponsor him!)](https://github.com/sponsors/AllanJard), also under a MIT license.
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 :::
