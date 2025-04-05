@@ -27,7 +27,7 @@ jupyter:
 #| echo: false
 
 from IPython.display import display, HTML
-import itables.options as opt
+import itables
 
 # show 5 rows per 'page'
 itables.options.lengthMenu = [5]
@@ -54,7 +54,7 @@ itables.init_notebook_mode(all_interactive=True)
 #| code-fold: true
 #| code-summary: "... and all DataFrames become interactive!"
 
-itables.get_countries(html=False)
+itables.sample_dfs.get_countries(html=False)
 ```
 
 ## How to make my table fit in one slide?
@@ -92,7 +92,7 @@ display(HTML("<style>.dt-container { font-size: medium; }</style>"))
 
 ITables' [advanced parameters](https://mwouts.github.io/itables/advanced_parameters.html):
 
-- Can be set globally on `opt`, or
+- Can be set globally on `itables.options`, or
 - Passed as arguments to the `show` function.
 - Table-specific arguments like [caption](https://mwouts.github.io/itables/advanced_parameters.html#caption) are only available in `show`.
 :::
@@ -112,7 +112,8 @@ In that case, use `--cache-refresh` or even `--execute-daemon-restart`.
 ## GitHub <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true" aria-label="Star mwouts/itables on GitHub">Star</a>
 
 ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
-under a MIT license.
+under a MIT license. ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
+[(sponsor him!)](https://github.com/sponsors/AllanJard), also under a MIT license.
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 :::
