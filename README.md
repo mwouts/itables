@@ -8,6 +8,7 @@
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://mwouts.github.io/itables/widget.html)
+[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://mwouts.github.io/itables/dash.html)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 
 This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
@@ -72,3 +73,11 @@ Last but not least, ITables is also available as
 - a [Dash](https://mwouts.github.io/itables/dash.html) component
 - a [Streamlit](https://mwouts.github.io/itables/streamlit.html) component,
 - and it also works in [Shiny](https://mwouts.github.io/itables/shiny.html) applications.
+
+## Licence
+
+ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
+under a MIT license.
+
+ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
+[(sponsor him!)](https://github.com/sponsors/AllanJard), also under a MIT license.
