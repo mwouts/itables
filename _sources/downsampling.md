@@ -20,24 +20,21 @@ When the data in a table is larger than `maxBytes`, which is equal to 64KB by de
 
 If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0`). Similarly, you can set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `200`).
 
-```{code-cell}
-import itables.options as opt
-from itables import init_notebook_mode, show
-from itables.downsample import as_nbytes, nbytes
-from itables.sample_dfs import get_indicators
+```{code-cell} ipython3
+import itables
 
-init_notebook_mode(all_interactive=True)
+itables.init_notebook_mode()
 ```
 
-```{code-cell}
-opt.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
-opt.maxBytes = "8KB"
+```{code-cell} ipython3
+itables.options.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
+itables.options.maxBytes = "8KB"
 
-df = get_indicators()
-as_nbytes(opt.maxBytes), nbytes(df)
+df = itables.sample_dfs.get_indicators()
+itables.downsample.as_nbytes(itables.options.maxBytes), itables.downsample.nbytes(df)
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
 df
@@ -45,17 +42,17 @@ df
 
 To show the table in full, we can modify the value of `maxBytes` either locally:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, maxBytes=0)
+itables.show(df, maxBytes=0)
 ```
 
 or globally:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-opt.maxBytes = "1MB"
+itables.options.maxBytes = "1MB"
 df
 ```

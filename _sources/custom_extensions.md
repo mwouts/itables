@@ -16,19 +16,18 @@ kernelspec:
 
 ## Internationalisation
 
-```{code-cell}
-from itables import show
-from itables.sample_dfs import get_countries
+```{code-cell} ipython3
+import itables
 
-df = get_countries(html=False)
+df = itables.sample_dfs.get_countries(html=False)
 ```
 
 DataTables controls can use a different language than English. To
 display the table controls in another language, go to the [internationalisation](https://datatables.net/plug-ins/i18n/)
 plug-ins page and find the language URL, like e.g.
 
-```{code-cell}
-show(
+```{code-cell} ipython3
+itables.show(
     df,
     language={"url": "https://cdn.datatables.net/plug-ins/2.0.2/i18n/fr-FR.json"},
 )
@@ -36,14 +35,13 @@ show(
 
 ```{tip}
 You can also use the internationalization in the offline mode. Download the translation file,
-then set `opt.language` accordingly:
+then set `itables.options.language` accordingly:
 
 ~~~python
 import json
-import itables.options as opt
 
 with open("fr-FR.json") as fp:
-    opt.language = json.load(fp)
+    itables.options.language = json.load(fp)
 ~~~
 ```
 

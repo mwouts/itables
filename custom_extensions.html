@@ -492,10 +492,9 @@ document.write(`
 <h2>Internationalisation<a class="headerlink" href="#internationalisation" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itables</span><span class="w"> </span><span class="kn">import</span> <span class="n">show</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">itables.sample_dfs</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_countries</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">itables</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">itables</span><span class="o">.</span><span class="n">sample_dfs</span><span class="o">.</span><span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -505,7 +504,7 @@ display the table controls in another language, go to the <a class="reference ex
 plug-ins page and find the language URL, like e.g.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">show</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">itables</span><span class="o">.</span><span class="n">show</span><span class="p">(</span>
     <span class="n">df</span><span class="p">,</span>
     <span class="n">language</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://cdn.datatables.net/plug-ins/2.0.2/i18n/fr-FR.json&quot;</span><span class="p">},</span>
 <span class="p">)</span>
@@ -513,7 +512,7 @@ plug-ins page and find the language URL, like e.g.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_8fab9b89_5ffa_40e8_adf9_0ebb10c6d7e9" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_1412d27c_117c_47b2_8f89_a2afe4961f40" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -623,7 +622,7 @@ width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
     </g>
 </svg>
 </a>
-Loading ITables v2.3.0-dev from the internet...
+Loading ITables v2.3.0 from the internet...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </tr></tbody>
 </table>
@@ -631,7 +630,7 @@ Loading ITables v2.3.0-dev from the internet...
 <script type="module">
     import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables@2.2.0/dt_bundle.js';
 
-    document.querySelectorAll("#itables_8fab9b89_5ffa_40e8_adf9_0ebb10c6d7e9:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_1412d27c_117c_47b2_8f89_a2afe4961f40:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -651,12 +650,11 @@ Loading ITables v2.3.0-dev from the internet...
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>You can also use the internationalization in the offline mode. Download the translation file,
-then set <code class="docutils literal notranslate"><span class="pre">opt.language</span></code> accordingly:</p>
+then set <code class="docutils literal notranslate"><span class="pre">itables.options.language</span></code> accordingly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">itables.options</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">opt</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;fr-FR.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-    <span class="n">opt</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+    <span class="n">itables</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

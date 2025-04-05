@@ -19,15 +19,15 @@ A selection of these extensions are included in ITables.
 
 As usual, we activate ITables with:
 
-```{code-cell}
-from itables import init_notebook_mode, show
+```{code-cell} ipython3
+import itables
 
-init_notebook_mode()
+itables.init_notebook_mode()
 ```
 
 and then, we create a few example dataframes:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [hide-input]
 
 import string
@@ -35,9 +35,7 @@ import string
 import numpy as np
 import pandas as pd
 
-from itables.sample_dfs import get_countries
-
-df = get_countries(html=False)
+df = itables.sample_dfs.get_countries(html=False)
 # Add columns for the searchPanes demo
 df["climate_zone"] = np.where(
     df["latitude"].abs() < 23.43615,
@@ -68,10 +66,10 @@ The DataTables [buttons](https://datatables.net/extensions/buttons/) let you cop
 
 To display the buttons, you need to pass a `buttons` argument to the `show` function:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
+itables.show(df, buttons=["copyHtml5", "csvHtml5", "excelHtml5"])
 ```
 
 You can also specify a [`layout`](layout) modifier that will decide
@@ -80,7 +78,7 @@ you want to keep the pagination control too, you can add `"pageLength"` to the l
 
 As always, it is possible to set default values for these parameters by setting these on `itables.options`. For instance, set
 ```python
-opt.buttons = ["copyHtml5", "csvHtml5", "excelHtml5"]
+itables.options.buttons = ["copyHtml5", "csvHtml5", "excelHtml5"]
 ```
 to get the buttons for all tables.
 
@@ -89,10 +87,10 @@ By default, the exported file name is the name of the HTML page. To change it, s
 [`title` option](https://datatables.net/extensions/buttons/examples/html5/filename.html) on the buttons, like
 here:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     buttons=[
         "pageLength",
@@ -123,10 +121,10 @@ have a large footprint on the bundle size. Still, you can add it to your custom 
 The [column visibility](https://datatables.net/extensions/buttons/examples/column_visibility/index.html)
 buttons of DataTables let you select which columns are visible.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     # column visibility works best with a flat header
     df.reset_index(),
     buttons=["columnsToggle"],
@@ -184,10 +182,10 @@ unique values. In the example below we have activated the cascade filtering thro
 Note that, in Jupyter, the [`searchPanes.layout`](https://datatables.net/extensions/searchpanes/layout)
 argument is required (otherwise the search panes are too wide).
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     layout={"top1": "searchPanes"},
     searchPanes={"layout": "columns-3", "cascadePanes": True, "columns": [1, 6, 7]},
@@ -206,10 +204,10 @@ by passing e.g. `layout={"top1": "searchBuilder"}`.
 
 It is possible to set a predefined search, as we do in the below:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df,
     layout={"top1": "searchBuilder"},
     searchBuilder={
@@ -227,10 +225,10 @@ show(
 [FixedColumn](https://datatables.net/extensions/fixedcolumns/) is an extension
 that let you fix some columns as you scroll horizontally.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     wide_df,
     fixedColumns={"start": 1, "end": 2},
     scrollX=True,
@@ -241,19 +239,17 @@ show(
 
 With the [KeyTable](https://datatables.net/extensions/keytable/) extension you can navigate in a table using the arrow keys:
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(df, keys=True)
+itables.show(df, keys=True)
 ```
 
 ```{tip}
 You can activate this option for all your tables with
 
 ~~~python
-import itables.options as opt
-
-opt.keys = True
+itables.options.keys = True
 ~~~
 ```
 
@@ -267,10 +263,10 @@ Use the [RowGroup](https://datatables.net/extensions/rowgroup/) extension to gro
 the data according to the content of one colum. Optionally, you can hide the content
 of that column to avoid duplicating the information.
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-show(
+itables.show(
     df.sort_values("region"),
     rowGroup={"dataSrc": 1},
     columnDefs=[{"targets": 1, "visible": False}],

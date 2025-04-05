@@ -500,7 +500,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">itables</span><span class="w"> </span><span class="kn">import</span> <span class="n">show</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itables</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 <span class="n">tags</span> <span class="o">=</span> <span class="p">(</span>
@@ -508,13 +508,13 @@ document.write(`
     <span class="s2">&quot;to &lt;code&gt;init_notebook_mode&lt;/code&gt;&lt;br&gt;not being called in this document&lt;/caption&gt;&quot;</span>
 <span class="p">)</span>
 
-<span class="n">show</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">)</span>
+<span class="n">itables</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">connected</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </details>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_ad05ea94_0481_473d_924e_76b7adfed9b9" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_c89bb22d_069f_4241_9498_1d820edae7b3" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <caption style="caption-side: bottom">A table that does not load, due to <code>init_notebook_mode</code><br>not being called in this document</caption><thead>
     <tr style="text-align: right;">
       <th></th>
@@ -611,14 +611,14 @@ width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
     </g>
 </svg>
 </a>
-Loading ITables v2.3.0-dev from the <code>init_notebook_mode</code> cell...
+Loading ITables v2.3.0 from the <code>init_notebook_mode</code> cell...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </tr></tbody>
 </table>
 <script type="module">
-    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_3_0_dev);
+    const { DataTable, jQuery: $ } = await import(window._datatables_src_for_itables_2_3_0);
 
-    document.querySelectorAll("#itables_ad05ea94_0481_473d_924e_76b7adfed9b9:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_c89bb22d_069f_4241_9498_1d820edae7b3:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 

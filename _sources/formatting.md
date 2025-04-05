@@ -20,27 +20,26 @@ kernelspec:
 you can use [Pandas' formatting options](https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html).
 For instance, you can change the precision used to display floating numbers:
 
-```{code-cell}
-from itables import init_notebook_mode, show
-from itables.sample_dfs import get_countries
+```{code-cell} ipython3
+import itables
 
-init_notebook_mode(all_interactive=True)
+itables.init_notebook_mode()
 ```
 
-```{code-cell}
+```{code-cell} ipython3
 import math
 
 import pandas as pd
 
 with pd.option_context("display.float_format", "{:,.2f}".format):
-    show(pd.Series([i * math.pi for i in range(1, 6)]))
+    itables.show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 Or you can use a custom formatter:
 
-```{code-cell}
+```{code-cell} ipython3
 with pd.option_context("display.float_format", "${:,.2f}".format):
-    show(pd.Series([i * math.pi for i in range(1, 6)]))
+    itables.show(pd.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 ## Formatting with Javascript
@@ -53,15 +52,15 @@ of DataTables.
 For instance, this [example](https://datatables.net/forums/discussion/61407/how-to-apply-a-numeric-format-to-a-column)
 can be ported like this:
 
-```{code-cell}
-from itables import JavascriptCode
-
-show(
+```{code-cell} ipython3
+itables.show(
     pd.Series([i * math.pi * 1e4 for i in range(1, 6)]),
     columnDefs=[
         {
             "targets": "_all",
-            "render": JavascriptCode("$.fn.dataTable.render.number(',', '.', 3, '$')"),
+            "render": itables.JavascriptCode(
+                "$.fn.dataTable.render.number(',', '.', 3, '$')"
+            ),
         }
     ],
 )
@@ -75,15 +74,13 @@ The example below, in which we color in red the cells with negative numbers, is 
 
 Note how the Javascript callback is declared as `JavascriptFunction` object below.
 
-```{code-cell}
-from itables import JavascriptFunction
-
-show(
+```{code-cell} ipython3
+itables.show(
     pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
     columnDefs=[
         {
             "targets": "_all",
-            "createdCell": JavascriptFunction(
+            "createdCell": itables.JavascriptFunction(
                 """
 function (td, cellData, rowData, row, col) {
     if (cellData < 0) {
@@ -120,7 +117,7 @@ the default JS data export used by ITables.
 HTML content is supported, which means that you can have formatted text,
 links or even images in your tables:
 
-```{code-cell}
+```{code-cell} ipython3
 pd.Series(
     [
         "<b>bold</b>",
@@ -133,10 +130,10 @@ pd.Series(
 
 ### Images in a table
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [full-width]
 
-df = get_countries(html=False)
+df = itables.sample_dfs.get_countries(html=False)
 
 df["flag"] = [
     '<a href="https://flagpedia.net/{code}">'
@@ -159,7 +156,7 @@ df
 
 [Base64 encoded image](https://stackoverflow.com/a/8499716/9817073) are supported, too:
 
-```{code-cell}
+```{code-cell} ipython3
 pd.Series(
     {
         "url": '<img src="https://storage.googleapis.com/tfds-data/visualization/fig/mnist-3.0.1.png" height="50" alt="MNIST">',

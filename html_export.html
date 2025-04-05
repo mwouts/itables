@@ -482,11 +482,10 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">display</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">itables</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_html_datatable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">itables.sample_dfs</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_countries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itables</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">html</span> <span class="o">=</span> <span class="n">to_html_datatable</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">display_logo_when_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">itables</span><span class="o">.</span><span class="n">sample_dfs</span><span class="o">.</span><span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">itables</span><span class="o">.</span><span class="n">to_html_datatable</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">display_logo_when_loading</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -499,7 +498,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;table id=&quot;itables_3de88ea6_9ec9_428b_9f6c_de8e55da0dd2&quot; class=&quot;display nowrap&quot; data-quarto-disable-processing=&quot;true&quot; style=&quot;table-layout:auto;width:auto;margin:auto;caption-side:bottom&quot;&gt;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;table id=&quot;itables_a09b8c7f_5488_4a8f_96a9_d05e1b270f12&quot; class=&quot;display nowrap&quot; data-quarto-disable-processing=&quot;true&quot; style=&quot;table-layout:auto;width:auto;margin:auto;caption-side:bottom&quot;&gt;
 &lt;thead&gt;
     &lt;tr style=&quot;text-align: right;&quot;&gt;
       &lt;th&gt;&lt;/th&gt;
@@ -520,7 +519,7 @@ document.write(`
   &lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;
 &lt;td style=&quot;vertical-align:middle; text-align:left&quot;&gt;
 
-Loading ITables v2.3.0-dev from the internet...
+Loading ITables v2.3.0 from the internet...
 (need &lt;a href=https://mwouts.github.io/itables/troubleshooting.html&gt;help&lt;/a&gt;?)&lt;/td&gt;
 &lt;/tr&gt;&lt;/tbody&gt;
 &lt;/table&gt;
@@ -528,7 +527,7 @@ Loading ITables v2.3.0-dev from the internet...
 &lt;script type=&quot;module&quot;&gt;
     import {DataTable, jQuery as $} from &#39;https://www.unpkg.com/dt_for_itables@2.2.0/dt_bundle.js&#39;;
 
-    document.querySelectorAll(&quot;#itables_3de88ea6_9ec9_428b_9f6c_de8e55da0dd2:not(.dataTable)&quot;).forEach(table =&gt; {
+    document.querySelectorAll(&quot;#itables_a09b8c7f_5488_4a8f_96a9_d05e1b270f12:not(.dataTable)&quot;).forEach(table =&gt; {
         if (!(table instanceof HTMLTableElement))
             return;
 
@@ -555,7 +554,7 @@ Loading ITables v2.3.0-dev from the internet...
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_html"><table id="itables_3de88ea6_9ec9_428b_9f6c_de8e55da0dd2" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
+<div class="output text_html"><table id="itables_a09b8c7f_5488_4a8f_96a9_d05e1b270f12" class="display nowrap" data-quarto-disable-processing="true" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom">
 <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -576,7 +575,7 @@ Loading ITables v2.3.0-dev from the internet...
   </thead><tbody><tr>
 <td style="vertical-align:middle; text-align:left">
 
-Loading ITables v2.3.0-dev from the internet...
+Loading ITables v2.3.0 from the internet...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </tr></tbody>
 </table>
@@ -584,7 +583,7 @@ Loading ITables v2.3.0-dev from the internet...
 <script type="module">
     import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables@2.2.0/dt_bundle.js';
 
-    document.querySelectorAll("#itables_3de88ea6_9ec9_428b_9f6c_de8e55da0dd2:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_a09b8c7f_5488_4a8f_96a9_d05e1b270f12:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 

@@ -16,12 +16,12 @@ kernelspec:
 
 ## Loading takes forever?
 
-```{code-cell}
+```{code-cell} ipython3
 :tags: [hide-input]
 
 import pandas as pd
 
-from itables import show
+import itables
 
 df = pd.DataFrame()
 tags = (
@@ -29,7 +29,7 @@ tags = (
     "to <code>init_notebook_mode</code><br>not being called in this document</caption>"
 )
 
-show(df, connected=False, tags=tags)
+itables.show(df, connected=False, tags=tags)
 ```
 
 If a table says "Loading..." forever, then maybe
