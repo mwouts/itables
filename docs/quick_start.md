@@ -22,6 +22,7 @@ kernelspec:
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](widget.md)
+[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](dash.md)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true"></a>
 <script src="https://buttons.github.io/buttons.js"></script>
@@ -103,3 +104,11 @@ about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_n
 ## Try ITables on Binder
 
 You can run the examples above (or any other documentation page) directly on ![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg), without having to install anything on your end - just click on the rocket icon at the top of the page.
+
+## Licence
+
+ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
+under a MIT license.
+
+ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
+[(sponsor him!)](https://github.com/sponsors/AllanJard), also under a MIT license.
