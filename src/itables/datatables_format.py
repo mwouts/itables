@@ -59,12 +59,10 @@ def generate_encoder(warn_on_unexpected_types=True):
 
             if warn_on_unexpected_types:
                 warnings.warn(
-                    "Unexpected type '{}' for '{}'.\n"
+                    f"Unexpected type '{type(o)}' for '{o}'.\n"
                     "You can report this warning at https://github.com/mwouts/itables/issues\n"
                     "To silence this warning, please run:\n"
-                    "    itables.options.warn_on_unexpected_types = False".format(
-                        type(o), o
-                    ),
+                    "    itables.options.warn_on_unexpected_types = False",
                     category=RuntimeWarning,
                 )
             return str(o)
