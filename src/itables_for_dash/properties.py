@@ -1,5 +1,5 @@
 try:
-    from dash import Output, no_update
+    from dash import Output, no_update  # type: ignore
 except ImportError as e:
     import_error = e
 
@@ -10,7 +10,10 @@ except ImportError as e:
         raise import_error
 
 
+from typing_extensions import Unpack
+
 from itables.javascript import get_itables_extension_arguments
+from itables.typing import DataTableOptions, ITableOptions
 
 ITABLE_PROPERTIES = (
     "data",
@@ -25,10 +28,12 @@ ITABLE_PROPERTIES = (
 )
 
 
-def get_itable_component_kwargs(df=None, caption=None, selected_rows=None, **kwargs):
-    dt_args, other_args = get_itables_extension_arguments(
-        df=df, caption=caption, selected_rows=selected_rows, **kwargs
-    )
+def get_itable_component_kwargs(
+    df=None,
+    *args,
+    **kwargs: Unpack[ITableOptions],
+):
+    dt_args, other_args = get_itables_extension_arguments(df=df, *args, **kwargs)
 
     style = other_args.pop("style")
     style = {key: value for key, value in [x.split(":") for x in style.split(";")]}
@@ -49,19 +54,18 @@ def ITableOutputs(id):
 
 
 def updated_itable_outputs(
-    df=None, caption=None, selected_rows=None, current_dt_args=None, **kwargs
+    df=None,
+    current_dt_args: DataTableOptions | None = None,
+    **kwargs: Unpack[ITableOptions],
 ):
-    if df is not None:
-        kwargs["selected_rows"] = selected_rows
-
-    updated_properties = get_itable_component_kwargs(df, caption=caption, **kwargs)
+    updated_properties = get_itable_component_kwargs(df, **kwargs)
 
     if df is None:
         updated_properties["data"] = no_update
         updated_properties["columns"] = no_update
         updated_properties["filtered_row_count"] = no_update
         updated_properties["downsampling_warning"] = no_update
-        updated_properties["selected_rows"] = selected_rows or []
+        updated_properties["selected_rows"] = kwargs.get("selected_rows") or []
 
     if current_dt_args is not None:
         if current_dt_args == updated_properties["dt_args"]:

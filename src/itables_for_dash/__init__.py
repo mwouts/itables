@@ -1,18 +1,9 @@
+from typing_extensions import Unpack
+
 from itables import __version__
+from itables.typing import ITableOptions
 
-try:
-    from .ITable import ITable as ITableComponent
-except (ImportError, ModuleNotFoundError) as e:
-    import_error = e
-
-    class ITableComponent:
-        def __init__(self, *args, **kwargs):
-            raise import_error
-
-    itables_for_dash_is_available = False
-else:
-    itables_for_dash_is_available = True
-
+from .ITable import ITable as ITableComponent
 from .properties import (
     ITABLE_PROPERTIES,
     ITableOutputs,
@@ -33,13 +24,30 @@ _js_dist = [
 _css_dist = []
 
 
-ITableComponent._js_dist = _js_dist
-ITableComponent._css_dist = _css_dist
+ITableComponent._js_dist = _js_dist  # type: ignore
+ITableComponent._css_dist = _css_dist  # type: ignore
 
 
-def ITable(*, id, **kwargs):
-    """Return an ITable component with the given id"""
-    return ITableComponent(id=id, **get_itable_component_kwargs(**kwargs))
+class ITable(ITableComponent):
+    """An ITable component for Dash"""
+
+    def __init__(self, id, df=None, **kwargs: Unpack[ITableOptions]):
+        """
+        Initialize the ITable component.
+
+        Parameters
+        ----------
+        id : str
+            The ID of the component.
+        **kwargs : dict
+            Additional keyword arguments for the component.
+        """
+        if not isinstance(id, str):
+            raise ValueError("The id must be a string.")
+        if not id:
+            raise ValueError("The id cannot be an empty string.")
+
+        return super().__init__(id=id, **get_itable_component_kwargs(df=df, **kwargs))
 
 
 __all__ = [

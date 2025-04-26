@@ -73,3 +73,6 @@ dt_bundle = find_package_file("html/dt_bundle.js")
 
 """Display the ITables animated logo when loading"""
 display_logo_when_loading = True
+
+"""Check that all options passed to ITable are valid and have the expected type."""
+warn_on_undocumented_option = True

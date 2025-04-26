@@ -166,7 +166,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 "timedelta": [
                     timedelta(days=2),
                     timedelta(seconds=50),
-                    pd.NaT - datetime(2000, 1, 1),
+                    pd.NaT - datetime(2000, 1, 1),  # type: ignore
                 ],
             }
         ),
@@ -242,7 +242,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
             np.arange(4, 8).reshape((2, 2)),
             columns=pd.Index(["A", "A"]),
             index=pd.MultiIndex.from_arrays(
-                np.arange(4).reshape((2, 2)), names=["A", "A"]
+                np.arange(4).reshape((2, 2)), names=["A", "A"]  # type: ignore
             ),
         ),
         "named_column_index": pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1),
@@ -273,7 +273,7 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
                 # ValueError: Pandas dataframe contains non-unique indices and/or column names.
                 # Polars dataframes require unique string names for columns.
                 # See https://github.com/pola-rs/polars/issues/18130
-                df.index = df.index.tolist()
+                df.index = df.index.tolist()  # type: ignore
             try:
                 polars_dfs[key] = pl.from_pandas(df)
             except (pa.ArrowInvalid, ValueError):
@@ -329,14 +329,14 @@ def generate_random_series(rows, type):
         return pd.Series(np.random.binomial(n=1, p=0.5, size=rows), dtype=bool)
     if type == "boolean":
         x = generate_random_series(rows, "bool").astype(type)
-        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
+        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
         return x
     if type == "int":
         return pd.Series(np.random.geometric(p=0.1, size=rows), dtype=int)
     if type == "Int64":
         x = generate_random_series(rows, "int").astype(type)
-        if PANDAS_VERSION_MAJOR >= 1:
-            x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA
+        if int(PANDAS_VERSION_MAJOR) >= 1:
+            x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
         return x
     if type == "float":
         x = pd.Series(np.random.normal(size=rows), dtype=float)
@@ -351,7 +351,7 @@ def generate_random_series(rows, type):
         return pd.Series(x, dtype="category")
     if type == "date":
         x = generate_date_series().sample(rows, replace=True)
-        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NaT
+        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NaT  # type: ignore
         return x
     if type == "datetime":
         x = generate_random_series(rows, "date") + np.random.uniform(

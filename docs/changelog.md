@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.4.0-dev
+---------
+
+**Added**
+- We have added type hints for the `show` function, and for the various ITable widgets and app components. A RunTimeWarning will be issued if
+either the argument name or type does not match when `warn_on_undocumented_option=True` (the default).
+
+
 2.3.0 (2025-04-05)
 ------------------
 

@@ -32,10 +32,11 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 polars = ["polars", "pyarrow"]
+check_type = ["typeguard"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]
-all = ["itables[polars,style,samples,widget]"]
+all = ["itables[polars,style,samples,widget,typeguard]"]
 test = [
   "itables[all]",
   # Pytest

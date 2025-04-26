@@ -1,12 +1,7 @@
 from itables import downsample, options, sample_dfs
 
-from .javascript import (
-    JavascriptCode,
-    JavascriptFunction,
-    init_notebook_mode,
-    show,
-    to_html_datatable,
-)
+from .javascript import init_notebook_mode, show, to_html_datatable
+from .typing import JavascriptCode, JavascriptFunction
 from .version import __version__
 
 __all__ = [
