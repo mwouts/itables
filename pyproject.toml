@@ -35,7 +35,7 @@ check_type = ["typeguard"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]
-all = ["itables[polars,style,samples,widget,typeguard]"]
+all = ["itables[polars,style,samples,widget,check_type]"]
 test = [
   "itables[all]",
   # Pytest
