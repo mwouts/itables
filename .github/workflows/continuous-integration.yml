@@ -59,11 +59,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
         pandas-version: [latest]
         numpy-version: [latest]
         include:
-          - python-version: 3.7
+          - python-version: 3.8
             pandas-version: '<1.0'
           - python-version: 3.9
             pandas-version: '<2.0'
@@ -107,7 +107,6 @@ jobs:
         run: pip install -e .[polars]
 
       - name: Install shiny
-        if: matrix.python-version != '3.7'
         run: pip install "shiny>=1.0"
 
       - name: Uninstall jinja2 and dash
