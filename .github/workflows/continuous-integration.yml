@@ -35,6 +35,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install pandas-stubs
+          pip install streamlit
           pip install -e .[test]
       - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - name: Run Pyright
