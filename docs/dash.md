@@ -69,6 +69,8 @@ def update_table(checklist, caption, selected_rows, dt_args):
     )
 ```
 
+<iframe src="https://py.cafe/embed/mwouts/itables_for_dash?pycafe-theme=auto&pycafe-link-to-app=false" width="100%" height="600px" style="border: 1px solid #e6e6e6; border-radius: 8px;"></iframe>
+
 ## Limitations
 
 Compared to `show`, the `ITable` component has the same limitations as the [Jupyter Widget](widget.md#limitations)
