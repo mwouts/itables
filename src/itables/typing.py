@@ -1,5 +1,7 @@
 import warnings
-from typing import Any, Literal, Mapping, NotRequired, TypedDict, Union
+from typing import Any, Literal, Mapping, TypedDict, Union
+
+from typing_extensions import NotRequired
 
 
 class JavascriptFunction(str):
