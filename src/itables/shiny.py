@@ -35,10 +35,10 @@ def init_itables(
     return html
 
 
-def DT(df, *caption, table_id=None, **kwargs: Unpack[ITableOptions]):
+def DT(df, *args, table_id=None, **kwargs: Unpack[ITableOptions]):
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
     kwargs["connected"] = kwargs.get("connected", _CONNECTED)
-    set_caption_from_positional_args(caption, kwargs)
+    set_caption_from_positional_args(args, kwargs)
     html = to_html_datatable(
         df,
         table_id=table_id,
