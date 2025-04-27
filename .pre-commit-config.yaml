@@ -5,7 +5,7 @@ exclude: ^src/itables_for_dash/ITable.py$  # auto-generated
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
     - id: check-json
     - id: check-yaml
@@ -13,24 +13,24 @@ repos:
     - id: trailing-whitespace
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
     - id: isort
       args: ["--profile", "black", "--filter-files"]
 
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 25.1.0
     hooks:
     - id: black
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.5
+    rev: v0.11.7
     hooks:
       - id: ruff
         args: ["--fix", "--show-fixes"]
 
   - repo: https://github.com/mwouts/jupytext
-    rev: v1.17.0
+    rev: v1.17.1
     hooks:
     - id: jupytext
       exclude: packages/
