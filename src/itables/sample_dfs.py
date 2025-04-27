@@ -3,6 +3,7 @@ import string
 from datetime import datetime, timedelta
 from functools import lru_cache
 from itertools import cycle
+from typing import cast
 
 import numpy as np
 import pandas as pd
@@ -54,7 +55,9 @@ def get_countries(html=True):
     df["flag"] = [
         '<a href="https://flagpedia.net/{code}">'
         '<img src="https://flagpedia.net/data/flags/h80/{code}.webp" '
-        'alt="Flag of {country}"></a>'.format(code=code.lower(), country=country)
+        'alt="Flag of {country}"></a>'.format(
+            code=cast(str, code).lower(), country=country
+        )
         for code, country in zip(df.index, df["country"])
     ]
     df["country"] = [

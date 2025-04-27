@@ -3,8 +3,6 @@ from typing import Union
 
 import pandas as pd
 
-from .datatables_format import _isetitem
-
 
 def nbytes(df):
     try:
@@ -149,11 +147,13 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             )
 
         # max_bytes is smaller than the average size of one cell
-        try:
-            df = df.iloc[:1, :1]
-            _isetitem(df, 0, ["..."])
-        except AttributeError:
+        if isinstance(df, pd.DataFrame):
+            return pd.DataFrame("...", index=df.index[:1], columns=df.columns[:1])
+
+        else:
             import polars as pl  # noqa
+
+            assert isinstance(df, pl.DataFrame)
 
             df = pl.DataFrame({df.columns[0]: ["..."]})
         return df
