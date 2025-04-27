@@ -394,11 +394,7 @@ def get_pandas_styler():
     s = df.style
     s.background_gradient(axis=None, cmap="YlOrRd")
     s.format("{:.3f}")
-    try:
-        s.format_index("{:.3f}")
-    except AttributeError:
-        # Python 3.7 AttributeError: 'Styler' object has no attribute 'format_index'
-        pass
+    s.format_index("{:.3f}")
 
     s.set_caption(
         "A Pandas Styler object with background colors and tooltips"

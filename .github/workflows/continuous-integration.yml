@@ -34,6 +34,7 @@ jobs:
       - run: |
           python -m venv .venv
           source .venv/bin/activate
+          pip install dash
           pip install -e .[all]
       - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - name: Run Pyright
@@ -59,11 +60,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
+        python-version: [3.9, "3.10", "3.11", "3.12", "3.13"]
         pandas-version: [latest]
         numpy-version: [latest]
         include:
-          - python-version: 3.8
+          - python-version: 3.9
             pandas-version: '<1.0'
           - python-version: 3.9
             pandas-version: '<2.0'
