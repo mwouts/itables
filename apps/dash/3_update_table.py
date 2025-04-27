@@ -32,7 +32,7 @@ app.layout = html.Div(
                         html.H2("Controls"),
                         html.Label("Table Options:"),
                         dcc.Checklist(
-                            ["Select", "Buttons", "HTML"],
+                            ["Select", "Buttons", "HTML", "Fixed Columns"],
                             ["Select"],
                             id="checklist",
                             style={"marginBottom": "20px"},
@@ -82,6 +82,13 @@ def update_table(checklist, caption, selected_rows, dt_args):
     kwargs["select"] = "Select" in checklist
     if "Buttons" in checklist:
         kwargs["buttons"] = ["copyHtml5", "csvHtml5", "excelHtml5"]
+
+    if "Fixed Columns" in checklist:
+        kwargs["fixedColumns"] = {
+            "left": 1,
+            "right": 2,
+        }
+        kwargs["scrollX"] = True
 
     return updated_itable_outputs(
         caption=caption, selected_rows=selected_rows, current_dt_args=dt_args, **kwargs
