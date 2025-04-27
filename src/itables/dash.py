@@ -3,7 +3,6 @@ from itables_for_dash import (
     ITABLE_PROPERTIES,
     ITable,
     ITableOutputs,
-    itables_for_dash_is_available,
     updated_itable_outputs,
 )
 
@@ -12,6 +11,5 @@ __all__ = [
     "ITABLE_PROPERTIES",
     "ITableOutputs",
     "updated_itable_outputs",
-    "itables_for_dash_is_available",
     "__version__",
 ]

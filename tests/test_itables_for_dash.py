@@ -3,10 +3,10 @@ import sys
 
 import pytest
 
-from itables.dash import ITable, itables_for_dash_is_available
-
-if not itables_for_dash_is_available:
-    pytestmark = pytest.mark.skip(reason="itables_for_dash is not available")
+try:
+    from itables.dash import ITable
+except ImportError as e:
+    pytest.skip(str(e), allow_module_level=True)
 
 
 def check_ressource(relative_package_path, namespace, **kwargs):
