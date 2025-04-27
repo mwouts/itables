@@ -1,4 +1,5 @@
 import math
+from typing import Union
 
 import pandas as pd
 
@@ -31,7 +32,9 @@ def as_nbytes(mem):
     return int(float(mem))
 
 
-def downsample(df, max_rows: int = 0, max_columns: int = 0, max_bytes: int | str = 0):
+def downsample(
+    df, max_rows: int = 0, max_columns: int = 0, max_bytes: Union[int, str] = 0
+):
     """Return a subset of the dataframe that fits the limits"""
     org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
     max_bytes_numeric = as_nbytes(max_bytes)

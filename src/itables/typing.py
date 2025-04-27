@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Literal, Mapping, NotRequired, TypedDict
+from typing import Any, Literal, Mapping, NotRequired, TypedDict, Union
 
 
 class JavascriptFunction(str):
@@ -26,27 +26,27 @@ class DataTableOptions(TypedDict):
 
     # DataTable options
     caption: NotRequired[str]
-    lengthMenu: NotRequired[list[int | str] | list[list[int | str]]]
-    order: NotRequired[list[list[int | str]] | Mapping[str, Any]]
+    lengthMenu: NotRequired[Union[list[Union[int, str]], list[list[Union[int, str]]]]]
+    order: NotRequired[Union[list[list[Union[int, str]]], Mapping[str, Any]]]
     layout: NotRequired[dict[str, Any]]
     columnDefs: NotRequired[list[Mapping[str, Any]]]
     paging: NotRequired[bool]
     pageLength: NotRequired[int]
     autoWidth: NotRequired[bool]
     scrollX: NotRequired[bool]
-    scrollY: NotRequired[str | int]
+    scrollY: NotRequired[Union[int, str]]
     scrollCollapse: NotRequired[bool]
     language: NotRequired[dict[str, str]]
     search: NotRequired[dict[str, Any]]
     fnInfoCallback: NotRequired[JavascriptFunction]
 
     # DataTable options provided by its extensions
-    buttons: NotRequired[list[str | dict]]
-    fixedColumns: NotRequired[bool | dict]
+    buttons: NotRequired[list[Union[str, dict]]]
+    fixedColumns: NotRequired[Union[bool, dict]]
     searchPanes: NotRequired[dict[str, Any]]
     searchBuilder: NotRequired[dict[str, Any]]
     rowGroup: NotRequired[dict[str, Any]]
-    select: NotRequired[bool | str | dict[str, str]]
+    select: NotRequired[Union[bool, str, dict[str, str]]]
     keys: NotRequired[bool]
 
     # Add addition of the dt_for_itables package
@@ -62,9 +62,9 @@ class ITableOptions(DataTableOptions):
     classes: NotRequired[str]
     style: NotRequired[str]
 
-    showIndex: NotRequired[bool | str]
+    showIndex: NotRequired[Union[bool, str]]
 
-    maxBytes: NotRequired[str | int]
+    maxBytes: NotRequired[Union[int, str]]
     maxRows: NotRequired[int]
     maxColumns: NotRequired[int]
 

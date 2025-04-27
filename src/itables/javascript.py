@@ -7,7 +7,7 @@ import warnings
 from base64 import b64encode
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Optional, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -77,7 +77,7 @@ GOOGLE_COLAB = (find_spec("google") is not None) and (
 def init_notebook_mode(
     all_interactive: bool = True,
     connected: bool = GOOGLE_COLAB,
-    dt_bundle: Path | str | None = None,
+    dt_bundle: Optional[Union[Path, str]] = None,
 ):
     """Load the DataTables library and the corresponding css (if connected=False),
     and (if all_interactive=True), activate the DataTables representation for all the Pandas DataFrames and Series.
@@ -125,7 +125,7 @@ def get_animated_logo(display_logo_when_loading):
     return f"<a href=https://mwouts.github.io/itables/>{read_package_file('logo/loading.svg')}</a>"
 
 
-def generate_init_offline_itables_html(dt_bundle: Path | str) -> str:
+def generate_init_offline_itables_html(dt_bundle: Union[Path, str]) -> str:
     dt_bundle = Path(dt_bundle)
     assert dt_bundle.suffix == ".js"
     dt_src = dt_bundle.read_text(encoding="utf-8")
@@ -302,7 +302,7 @@ def set_caption_from_positional_args(args: tuple, kwargs: ITableOptions):
 def to_html_datatable(
     df,
     *args,
-    table_id: str | None = None,
+    table_id: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ):
     """
@@ -634,7 +634,7 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: str | None, kwargs: DataTableOptions) -> str | None:
+def check_table_id(table_id: Optional[str], kwargs: DataTableOptions) -> Optional[str]:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
@@ -714,7 +714,7 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
 
 
 def to_html_datatable_using_to_html(
-    df, *args, table_id: str | None = None, **kwargs: Unpack[ITableOptions]
+    df, *args, table_id: Optional[str] = None, **kwargs: Unpack[ITableOptions]
 ):
     """Return the HTML representation of the given dataframe as an interactive datatable,
     using df.to_html() rather than the underlying dataframe data."""

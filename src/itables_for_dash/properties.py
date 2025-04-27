@@ -10,6 +10,8 @@ except ImportError as e:
         raise import_error
 
 
+from typing import Optional
+
 from typing_extensions import Unpack
 
 from itables.javascript import get_itables_extension_arguments
@@ -55,7 +57,7 @@ def ITableOutputs(id):
 
 def updated_itable_outputs(
     df=None,
-    current_dt_args: DataTableOptions | None = None,
+    current_dt_args: Optional[DataTableOptions] = None,
     **kwargs: Unpack[ITableOptions],
 ):
     updated_properties = get_itable_component_kwargs(df, **kwargs)
