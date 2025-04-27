@@ -34,7 +34,7 @@ Listening to the selected rows is simply done by adding `select=True` to the `IT
 
 ## Updating the DataFrame
 
-The `ITable` fonction returns an `ITableComponent` that has many properties. These properties (data, columns, selected rows etc) need to be updated in a consistent way. Therefore we recommend that you list the outputs with `ITableOutputs("my_dataframe")` in your callback, and update them with `updated_itable_outputs` which takes the same arguments as `show`, e.g. `df`, `caption`,`selected_rows`, etc, like in the below (extracted from this [example app](https://github.com/mwouts/itables/tree/main/apps/dash/3_update_table.py)):
+The `ITable` component has many properties. These properties (data, columns, selected rows etc) need to be updated in a consistent way. Therefore we recommend that you list the outputs with `ITableOutputs("my_dataframe")` in your callback, and update them with `updated_itable_outputs` which takes the same arguments as `show`, e.g. `df`, `caption`,`selected_rows`, etc, like in the below (extracted from this [example app](https://github.com/mwouts/itables/tree/main/apps/dash/3_update_table.py)):
 
 ```python
 from itables.dash import ITable, ITableOutputs, updated_itable_outputs

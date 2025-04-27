@@ -3,7 +3,19 @@ from typing_extensions import Unpack
 from itables import __version__
 from itables.typing import ITableOptions
 
-from .ITable import ITable as ITableComponent
+try:
+    from .ITable import ITable as ITableComponent
+except ImportError as e:
+    import_error = e
+
+    class ITableComponent:
+        def __init__(self, **kwargs):
+            raise import_error
+
+    itables_for_dash_is_available = False
+else:
+    itables_for_dash_is_available = True
+
 from .properties import (
     ITABLE_PROPERTIES,
     ITableOutputs,
@@ -52,10 +64,9 @@ class ITable(ITableComponent):
 
 __all__ = [
     "ITable",
-    "ITableComponent",
     "ITABLE_PROPERTIES",
-    "get_itable_component_kwargs",
     "ITableOutputs",
     "updated_itable_outputs",
+    "itables_for_dash_is_available",
     "__version__",
 ]
