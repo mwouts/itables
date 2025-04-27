@@ -69,7 +69,7 @@ DEFAULT_LAYOUT = {
 DEFAULT_LAYOUT_CONTROLS = set(DEFAULT_LAYOUT.values())
 
 
-GOOGLE_COLAB = find_spec("google.colab") is not None
+GOOGLE_COLAB = find_spec("google") and (find_spec("google.colab") is not None)
 
 
 def init_notebook_mode(
