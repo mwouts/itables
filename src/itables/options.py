@@ -4,7 +4,7 @@ These parameters are documented at
 https://mwouts.github.io/itables/advanced_parameters.html
 """
 
-from .utils import UNPKG_DT_BUNDLE_URL, find_package_file
+from .utils import UNPKG_DT_BUNDLE_URL, find_package_file, is_typeguard_available
 
 """Table layout, see https://datatables.net/reference/option/layout
 NB: to remove a control, replace it by None"""
@@ -75,4 +75,4 @@ dt_bundle = find_package_file("html/dt_bundle.js")
 display_logo_when_loading = True
 
 """Check that all options passed to ITable are valid and have the expected type."""
-warn_on_undocumented_option = True
+warn_on_undocumented_option = is_typeguard_available()

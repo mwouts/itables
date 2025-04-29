@@ -693,6 +693,7 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
             not in {
                 "dt_bundle",
                 "find_package_file",
+                "is_typeguard_available",
                 "UNPKG_DT_BUNDLE_URL",
             }
         ):
