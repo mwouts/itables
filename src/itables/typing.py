@@ -28,27 +28,31 @@ class DataTableOptions(TypedDict):
 
     # DataTable options
     caption: NotRequired[str]
-    lengthMenu: NotRequired[Union[list[Union[int, str]], list[list[Union[int, str]]]]]
-    order: NotRequired[Union[list[list[Union[int, str]]], Mapping[str, Any]]]
-    layout: NotRequired[dict[str, Any]]
+    lengthMenu: NotRequired[
+        Union[list[Union[int, str, Mapping[str, Any]]], list[list[Union[int, str]]]]
+    ]
+    order: NotRequired[
+        Union[list[list[Union[int, str]]], Mapping[str, Union[int, str]]]
+    ]
+    layout: NotRequired[Mapping[str, Union[None, str, Mapping[str, Any]]]]
     columnDefs: NotRequired[list[Mapping[str, Any]]]
     paging: NotRequired[bool]
-    pageLength: NotRequired[int]
     autoWidth: NotRequired[bool]
     scrollX: NotRequired[bool]
-    scrollY: NotRequired[Union[int, str]]
+    scrollY: NotRequired[str]
     scrollCollapse: NotRequired[bool]
-    language: NotRequired[dict[str, str]]
-    search: NotRequired[dict[str, Any]]
+    language: NotRequired[Mapping[str, str]]
+    search: NotRequired[Mapping[str, Any]]
+    searchCols: NotRequired[list[Any]]
     fnInfoCallback: NotRequired[JavascriptFunction]
 
     # DataTable options provided by its extensions
-    buttons: NotRequired[list[Union[str, dict]]]
-    fixedColumns: NotRequired[Union[bool, dict]]
-    searchPanes: NotRequired[dict[str, Any]]
-    searchBuilder: NotRequired[dict[str, Any]]
-    rowGroup: NotRequired[dict[str, Any]]
-    select: NotRequired[Union[bool, str, dict[str, str]]]
+    buttons: NotRequired[list[Union[str, Mapping[str, Any]]]]
+    fixedColumns: NotRequired[Mapping[Literal["left", "right"], int]]
+    searchPanes: NotRequired[Mapping[str, Any]]
+    searchBuilder: NotRequired[Mapping[str, Any]]
+    rowGroup: NotRequired[Mapping[str, Any]]
+    select: NotRequired[Union[bool, str, Mapping[str, str]]]
     keys: NotRequired[bool]
 
     # Add addition of the dt_for_itables package
