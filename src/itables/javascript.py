@@ -688,13 +688,11 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
             option not in not_available
             and (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
             and option not in kwargs
-            and not option.startswith("__")
+            and not option.startswith("_")
             and option
             not in {
-                "dt_bundle",
-                "find_package_file",
-                "is_typeguard_available",
-                "UNPKG_DT_BUNDLE_URL",
+                # this one is for init_notebook_mode
+                "dt_bundle"
             }
         ):
             kwargs[option] = getattr(opt, option)

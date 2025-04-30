@@ -44,6 +44,7 @@ class DataTableOptions(TypedDict):
     language: NotRequired[Mapping[str, str]]
     search: NotRequired[Mapping[str, Any]]
     searchCols: NotRequired[list[Any]]
+    initComplete: NotRequired[JavascriptFunction]
     fnInfoCallback: NotRequired[JavascriptFunction]
 
     # DataTable options provided by its extensions
