@@ -1,7 +1,9 @@
 import warnings
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Literal, Mapping, TypedDict, Union
 
+from packaging.version import Version
 from typing_extensions import NotRequired
 
 
@@ -77,7 +79,7 @@ class ITableOptions(DataTableOptions):
     maxColumns: NotRequired[int]
 
     dt_url: NotRequired[str]
-    dt_bundle: NotRequired[str | Path]
+    dt_bundle: NotRequired[Union[str, Path]]
     connected: NotRequired[bool]
     display_logo_when_loading: NotRequired[bool]
 
@@ -101,10 +103,11 @@ class ITableOptions(DataTableOptions):
 def is_typeguard_available():
     """Check if typeguard is available"""
     try:
-        from typeguard import TypeCheckError, check_type  # noqa: F401
-    except ImportError:
+        typeguard_version = version("typeguard")
+    except PackageNotFoundError:
         return False
-    return True
+    else:
+        return Version(typeguard_version) >= Version("4.0")
 
 
 def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
