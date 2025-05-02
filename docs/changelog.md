@@ -5,11 +5,10 @@ ITables ChangeLog
 ---------
 
 **Added**
-- We have added type hints for the `show` function, and for the various ITable widgets and app components. A RunTimeWarning will be issued if
-either the argument name or type does not match when `warn_on_undocumented_option=True` (the default).
+- We have added type hints for the `show` function, and for the various app components. A SyntaxWarning is issued if either the argument name or type does not match when `warn_on_undocumented_option=True` (the default when `typeguard>3` is installed).
 
 **Changed**
-- Python 3.9 is required following the addition of type hints.
+- ITable now requires Python 3.9, due to the addition of type hints.
 
 
 2.3.0 (2025-04-05)
