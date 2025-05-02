@@ -48,14 +48,14 @@ from itables.sample_dfs import PANDAS_VERSION_MAJOR
             pd.DataFrame(
                 {
                     "t": pd.to_datetime(
-                        [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]
+                        [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]  # type: ignore
                     ).tz_localize("US/Eastern")
                 }
             ),
             [["2022-01-01 18:05:27-05:00"], ["NaT"]],
         ),
         (
-            pd.DataFrame({"dt": [pd.Timedelta(1, unit="h"), pd.NaT - pd.NaT]}),
+            pd.DataFrame({"dt": [pd.Timedelta(1, unit="h"), pd.NaT - pd.NaT]}),  # type: ignore
             [["0 days 01:00:00"], ["NaT"]],
         ),
         (pd.DataFrame({"list": [[1], [2, 3]]}), [["[1]"], ["[2, 3]"]]),

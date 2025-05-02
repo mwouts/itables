@@ -22,6 +22,27 @@ jobs:
         uses: actions/setup-python@v5
       - uses: pre-commit/action@v3.0.1
 
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          cache: 'pip'
+      - run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install pandas-stubs
+          pip install streamlit
+          pip install -e .[test]
+      - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
+      - name: Run Pyright
+        uses: jakebailey/pyright-action@v2
+        with:
+          pylance-version: latest-release
+
   codeql:
     runs-on: ubuntu-latest
     permissions:
@@ -40,12 +61,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12", "3.13"]
+        python-version: [3.9, "3.10", "3.11", "3.12", "3.13"]
         pandas-version: [latest]
         numpy-version: [latest]
+        typeguard-version: [latest]
         include:
-          - python-version: 3.7
-            pandas-version: '<1.0'
           - python-version: 3.9
             pandas-version: '<2.0'
             numpy-version: '<2.0'
@@ -54,7 +74,11 @@ jobs:
             polars: true
           - python-version: "3.13"
             uninstall_jinja2_and_dash: true
-    runs-on: ubuntu-20.04
+          - python-version: "3.10"
+            typeguard-version: "<4.4.1"
+          - python-version: "3.10"
+            typeguard-version: "<4"
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -82,13 +106,15 @@ jobs:
       - name: Install numpy ${{ matrix.numpy-version }}
         if: matrix.numpy-version != 'latest'
         run: pip install 'numpy${{ matrix.numpy-version }}'
+      - name: Install typeguard ${{ matrix.typeguard-version }}
+        if: matrix.typeguard-version != 'latest'
+        run: pip install 'typeguard${{ matrix.typeguard-version }}'
 
       - name: Install polars
         if: matrix.polars
         run: pip install -e .[polars]
 
       - name: Install shiny
-        if: matrix.python-version != '3.7'
         run: pip install "shiny>=1.0"
 
       - name: Uninstall jinja2 and dash

@@ -18,6 +18,8 @@ dependencies:
   - pytest-xdist
   - pytest-cov
   - pre-commit
+  - pyright
+  - typeguard
   - pip
   - setuptools
   - twine

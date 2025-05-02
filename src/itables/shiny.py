@@ -1,6 +1,13 @@
+from typing_extensions import Unpack
+
 import itables.options as opt
 
-from .javascript import generate_init_offline_itables_html, to_html_datatable
+from .javascript import (
+    generate_init_offline_itables_html,
+    set_caption_from_positional_args,
+    to_html_datatable,
+)
+from .typing import ITableOptions
 from .utils import read_package_file
 
 _CONNECTED = True
@@ -28,14 +35,13 @@ def init_itables(
     return html
 
 
-def DT(df, caption=None, table_id=None, **kwargs):
+def DT(df, *args, table_id=None, **kwargs: Unpack[ITableOptions]):
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
-
+    kwargs["connected"] = kwargs.get("connected", _CONNECTED)
+    set_caption_from_positional_args(args, kwargs)
     html = to_html_datatable(
         df,
-        caption=caption,
         table_id=table_id,
-        connected=_CONNECTED,
         **kwargs,
     )
 

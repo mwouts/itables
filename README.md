@@ -11,7 +11,7 @@
 [![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://mwouts.github.io/itables/dash.html)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 
-This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
+This packages changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
 With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 that you can sort, paginate, scroll or filter.
 
@@ -39,7 +39,7 @@ or
 conda install itables -c conda-forge
 ```
 
-Activate the interactive mode for all series and dataframes with
+Activate the interactive mode for all series and dataframes in Jupyter with
 ```python
 import itables
 

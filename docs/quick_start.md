@@ -27,7 +27,7 @@ kernelspec:
 <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true"></a>
 <script src="https://buttons.github.io/buttons.js"></script>
 
-This packages changes how Pandas and Polars DataFrames are rendered in Jupyter Notebooks.
+This packages changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
 With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 that you can sort, paginate, scroll or filter.
 

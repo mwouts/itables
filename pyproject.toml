@@ -18,24 +18,23 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
-requires-python = ">= 3.7"
+requires-python = ">= 3.9"
 dependencies = ["IPython", "pandas", "numpy"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 polars = ["polars", "pyarrow"]
+check_type = ["typeguard>=4.4.1"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]
-all = ["itables[polars,style,samples,widget]"]
+all = ["itables[polars,style,samples,widget,check_type]"]
 test = [
   "itables[all]",
   # Pytest

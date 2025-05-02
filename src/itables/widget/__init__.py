@@ -3,8 +3,10 @@ import pathlib
 
 import anywidget
 import traitlets
+from typing_extensions import Unpack
 
 from itables.javascript import get_itables_extension_arguments
+from itables.typing import ITableOptions
 
 try:
     __version__ = importlib.metadata.version("itables_anywidget")
@@ -20,7 +22,7 @@ class ITable(anywidget.AnyWidget):
     caption = traitlets.Unicode().tag(sync=True)
     classes = traitlets.Unicode().tag(sync=True)
     style = traitlets.Unicode().tag(sync=True)
-    selected_rows = traitlets.List(traitlets.Int).tag(sync=True)
+    selected_rows = traitlets.List(traitlets.Int).tag(sync=True)  # type: ignore
 
     # private traits that relate to df or to the DataTable arguments
     # (use .update() to update them)
@@ -31,12 +33,14 @@ class ITable(anywidget.AnyWidget):
     _dt_args = traitlets.Dict().tag(sync=True)
     _destroy_and_recreate = traitlets.Int(0).tag(sync=True)
 
-    def __init__(self, df=None, caption=None, selected_rows=None, **kwargs) -> None:
+    def __init__(
+        self,
+        df=None,
+        *args,
+        **kwargs: Unpack[ITableOptions],
+    ) -> None:
         super().__init__()
-
-        dt_args, other_args = get_itables_extension_arguments(
-            df, caption, selected_rows, **kwargs
-        )
+        dt_args, other_args = get_itables_extension_arguments(df, *args, **kwargs)
         self._df = df
         self.caption = other_args.pop("caption") or ""
         self.classes = other_args.pop("classes")
@@ -50,7 +54,12 @@ class ITable(anywidget.AnyWidget):
         self._filtered_row_count = other_args.pop("filtered_row_count", 0)
         assert not other_args, other_args
 
-    def update(self, df=None, caption=None, selected_rows=None, **kwargs):
+    def update(
+        self,
+        df=None,
+        *args,
+        **kwargs: Unpack[ITableOptions],
+    ):
         """
         Update either the table data, attributes, or the arguments passed
         to DataTable. Arguments that are not mentioned
@@ -64,18 +73,16 @@ class ITable(anywidget.AnyWidget):
 
         if df is None:
             df = self._df
-        if selected_rows is None:
-            selected_rows = self.selected_rows
-        if caption is None:
-            caption = self.caption
+        if "selected_rows" not in kwargs:
+            kwargs["selected_rows"] = self.selected_rows
+        if "caption" not in kwargs and self.caption is not None:
+            kwargs["caption"] = self.caption
         if "classes" not in kwargs:
             kwargs["classes"] = self.classes
         if "style" not in kwargs:
             kwargs["style"] = self.style
 
-        dt_args, other_args = get_itables_extension_arguments(
-            df, caption, selected_rows, **kwargs
-        )
+        dt_args, other_args = get_itables_extension_arguments(df, *args, **kwargs)
 
         self.classes = other_args.pop("classes")
         self.style = other_args.pop("style")

@@ -31,7 +31,7 @@ def large_tables(N=1000, M=1000):
         pd.DataFrame("abcdefg", columns=range(M), index=range(N)),
     ]
     if pl is not None:
-        dfs.extend([pl.from_pandas(df) for df in dfs])
+        dfs.extend([pl.from_pandas(df) for df in dfs])  # type: ignore
     return dfs
 
 
@@ -41,7 +41,7 @@ def test_max_rows(df, max_rows):
     dn, message = downsample(df, max_rows=max_rows)
     assert len(dn) == max_rows
     try:
-        pd.testing.assert_index_equal(dn.columns, df.columns)
+        pd.testing.assert_index_equal(dn.columns, df.columns)  # type: ignore
     except AssertionError:
         assert dn.columns == df.columns
 
@@ -52,9 +52,9 @@ def test_max_columns(df, max_columns):
     dn, message = downsample(df, max_columns=max_columns)
     assert len(dn.columns) == max_columns
     try:
-        pd.testing.assert_index_equal(dn.index, df.index)
+        pd.testing.assert_index_equal(dn.index, df.index)  # type: ignore
     except AttributeError:
-        assert len(df) == len(df)
+        assert len(dn) == len(df)
 
 
 @pytest.mark.parametrize("df", large_tables())
@@ -70,9 +70,9 @@ def test_max_one_byte(df, max_bytes=1):
     dn, message = downsample(df, max_bytes=max_bytes)
     assert len(dn.columns) == len(dn) == 1
     try:
-        assert dn.iloc[0, 0] == "..."
+        assert dn.iloc[0, 0] == "..."  # type: ignore
     except AttributeError:
-        assert dn[0, df.columns[0]] == "..."
+        assert dn[0, df.columns[0]] == "..."  # type: ignore
 
 
 def test_shrink_towards_target_aspect_ratio():

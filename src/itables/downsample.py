@@ -1,8 +1,7 @@
 import math
+from typing import Union
 
 import pandas as pd
-
-from .datatables_format import _isetitem
 
 
 def nbytes(df):
@@ -31,7 +30,9 @@ def as_nbytes(mem):
     return int(float(mem))
 
 
-def downsample(df, max_rows=0, max_columns=0, max_bytes=0):
+def downsample(
+    df, max_rows: int = 0, max_columns: int = 0, max_bytes: Union[int, str] = 0
+):
     """Return a subset of the dataframe that fits the limits"""
     org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
     max_bytes_numeric = as_nbytes(max_bytes)
@@ -113,16 +114,16 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
         first_half = max_columns - second_half
         assert first_half >= second_half
         if second_half:
-            try:
+            if isinstance(df, pd.DataFrame):
                 df = pd.concat(
                     (df.iloc[:, :first_half], df.iloc[:, -second_half:]), axis=1
                 )
-            except AttributeError:
+            else:
                 df = df[df.columns[:first_half]].hstack(df[df.columns[-second_half:]])
         else:
-            try:
+            if isinstance(df, pd.DataFrame):
                 df = df.iloc[:, :first_half]
-            except AttributeError:
+            else:
                 df = df[df.columns[:first_half]]
 
     df_nbytes = nbytes(df)
@@ -146,11 +147,13 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             )
 
         # max_bytes is smaller than the average size of one cell
-        try:
-            df = df.iloc[:1, :1]
-            _isetitem(df, 0, ["..."])
-        except AttributeError:
+        if isinstance(df, pd.DataFrame):
+            return pd.DataFrame("...", index=df.index[:1], columns=df.columns[:1])
+
+        else:
             import polars as pl  # noqa
+
+            assert isinstance(df, pl.DataFrame)
 
             df = pl.DataFrame({df.columns[0]: ["..."]})
         return df

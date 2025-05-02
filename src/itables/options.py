@@ -4,7 +4,8 @@ These parameters are documented at
 https://mwouts.github.io/itables/advanced_parameters.html
 """
 
-from .utils import UNPKG_DT_BUNDLE_URL, find_package_file
+import itables.typing as _typing
+import itables.utils as _utils
 
 """Table layout, see https://datatables.net/reference/option/layout
 NB: to remove a control, replace it by None"""
@@ -66,10 +67,18 @@ filtered by the downsampling?"""
 warn_on_selected_rows_not_rendered = True
 
 """The DataTables URL for the connected mode"""
-dt_url = UNPKG_DT_BUNDLE_URL
+dt_url = _utils.UNPKG_DT_BUNDLE_URL
 
-"""The DataTable bundle for the offline mode"""
-dt_bundle = find_package_file("html/dt_bundle.js")
+"""The DataTable bundle for the offline mode
+(this option is for 'init_notebook_mode')"""
+dt_bundle = _utils.find_package_file("html/dt_bundle.js")
 
 """Display the ITables animated logo when loading"""
 display_logo_when_loading = True
+
+"""Check that all options passed to ITable are valid and have the expected type."""
+if warn_on_undocumented_option := _typing.is_typeguard_available():
+    _typing.check_itable_arguments(
+        {k: v for k, v in locals().items() if not k.startswith("_")},
+        _typing.ITableOptions,
+    )

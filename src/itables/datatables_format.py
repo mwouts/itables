@@ -22,10 +22,10 @@ def _format_column(x, pure_json=False):
         return x
 
     try:
-        x = fmt.format_array(x._values, None, justify="all", leading_space=False)
+        x = fmt.format_array(x._values, None, justify="all", leading_space=False)  # type: ignore
     except TypeError:
         # Older versions of Pandas don't have 'leading_space'
-        x = fmt.format_array(x._values, None, justify="all")
+        x = fmt.format_array(x._values, None, justify="all")  # type: ignore
     if dtype_kind == "f":
         try:
             x = np.array(x).astype(float)
@@ -42,32 +42,30 @@ def _format_column(x, pure_json=False):
 
 def generate_encoder(warn_on_unexpected_types=True):
     class TableValuesEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj, (bool, int, float, str)):
-                return json.JSONEncoder.default(self, obj)
-            if isinstance(obj, np.bool_):
-                return bool(obj)
-            if isinstance(obj, np.integer):
-                return int(obj)
-            if isinstance(obj, np.floating):
-                return float(obj)
+        def default(self, o):
+            if isinstance(o, (bool, int, float, str)):
+                return json.JSONEncoder.default(self, o)
+            if isinstance(o, np.bool_):
+                return bool(o)
+            if isinstance(o, np.integer):
+                return int(o)
+            if isinstance(o, np.floating):
+                return float(o)
             try:
-                if obj is pd.NA:
-                    return str(obj)
+                if o is pd.NA:
+                    return str(o)
             except AttributeError:
                 pass
 
             if warn_on_unexpected_types:
                 warnings.warn(
-                    "Unexpected type '{}' for '{}'.\n"
+                    f"Unexpected type '{type(o)}' for '{o}'.\n"
                     "You can report this warning at https://github.com/mwouts/itables/issues\n"
                     "To silence this warning, please run:\n"
-                    "    itables.options.warn_on_unexpected_types = False".format(
-                        type(obj), obj
-                    ),
+                    "    itables.options.warn_on_unexpected_types = False",
                     category=RuntimeWarning,
                 )
-            return str(obj)
+            return str(o)
 
     return TableValuesEncoder
 

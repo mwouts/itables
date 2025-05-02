@@ -3,23 +3,23 @@ import sys
 
 import pytest
 
-from itables.dash import ITable, ITableComponent, itables_for_dash_is_available
-
-if not itables_for_dash_is_available:
-    pytestmark = pytest.mark.skip(reason="itables_for_dash is not available")
+try:
+    from itables.dash import ITable
+except ImportError as e:
+    pytest.skip(str(e), allow_module_level=True)
 
 
 def check_ressource(relative_package_path, namespace, **kwargs):
-    module_path = os.path.join(
-        os.path.dirname(sys.modules[namespace].__file__), relative_package_path
-    )
+    ressource_file = sys.modules[namespace].__file__
+    assert isinstance(ressource_file, str), ressource_file
+    module_path = os.path.join(os.path.dirname(ressource_file), relative_package_path)
     assert os.path.exists(module_path), module_path
 
 
 def test_itable_component_ressources():
-    for js in ITableComponent._js_dist:
+    for js in ITable._js_dist:  # type: ignore
         check_ressource(**js)
-    for css in ITableComponent._css_dist:
+    for css in ITable._css_dist:  # type: ignore
         check_ressource(**css)
 
 
