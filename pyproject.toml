@@ -30,7 +30,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 polars = ["polars", "pyarrow"]
-check_type = ["typeguard>=4"]
+check_type = ["typeguard>=4.4.1"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]

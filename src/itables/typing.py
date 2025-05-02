@@ -107,7 +107,7 @@ def is_typeguard_available():
     except PackageNotFoundError:
         return False
     else:
-        return Version(typeguard_version) >= Version("4.0")
+        return Version(typeguard_version) >= Version("4.4.1")
 
 
 def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:

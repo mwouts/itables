@@ -75,7 +75,7 @@ jobs:
           - python-version: "3.13"
             uninstall_jinja2_and_dash: true
           - python-version: "3.10"
-            typeguard-version: "<4.1"
+            typeguard-version: "<4.4.1"
           - python-version: "3.10"
             typeguard-version: "<4"
     runs-on: ubuntu-24.04
