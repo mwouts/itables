@@ -77,7 +77,7 @@ dt_bundle = _utils.find_package_file("html/dt_bundle.js")
 display_logo_when_loading = True
 
 """Check that all options passed to ITable are valid and have the expected type."""
-if warn_on_undocumented_option := _utils.is_typeguard_available():
+if warn_on_undocumented_option := _typing.is_typeguard_available():
     _typing.check_itable_arguments(
         {k: v for k, v in locals().items() if not k.startswith("_")},
         _typing.ITableOptions,

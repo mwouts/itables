@@ -1,4 +1,5 @@
 import warnings
+from pathlib import Path
 from typing import Any, Literal, Mapping, TypedDict, Union
 
 from typing_extensions import NotRequired
@@ -76,7 +77,7 @@ class ITableOptions(DataTableOptions):
     maxColumns: NotRequired[int]
 
     dt_url: NotRequired[str]
-    dt_bundle: NotRequired[str]
+    dt_bundle: NotRequired[str | Path]
     connected: NotRequired[bool]
     display_logo_when_loading: NotRequired[bool]
 
@@ -97,6 +98,15 @@ class ITableOptions(DataTableOptions):
     eval_functions: NotRequired[bool]
 
 
+def is_typeguard_available():
+    """Check if typeguard is available"""
+    try:
+        from typeguard import TypeCheckError, check_type  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
 def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     """
     Check the arguments passed to the ITable constructor
@@ -108,6 +118,23 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     if not warn_on_undocumented_option:
         return
 
+    silence_msg = (
+        "You can silence this warning by setting "
+        "`itables.options.warn_on_undocumented_option=False`. If you believe ITableOptions "
+        " needs to be updated, please open an issue at https://github.com/mwouts/itables"
+    )
+
+    documented_options = set(typed_dict.__required_keys__).union(
+        typed_dict.__optional_keys__
+    )
+    undocumented_options = set(kwargs.keys()) - documented_options
+    if undocumented_options:
+        warnings.warn(
+            f"These arguments are not documented in ITableOptions: {undocumented_options}. "
+            + silence_msg,
+            category=SyntaxWarning,
+        )
+
     try:
         from typeguard import TypeCheckError, check_type
     except ImportError as e:
@@ -117,13 +144,14 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
             "or deactivate the check by setting `itables.options.warn_on_undocumented_option=False`."
         ) from e
 
-    try:
-        check_type(kwargs, typed_dict)
-    except TypeCheckError as e:
-        warnings.warn(
-            f"These arguments are either not documented in ITableOptions, or don't have "
-            f"the right type: {e}. You can silence this warning by setting "
-            "`itables.options.warn_on_undocumented_option=False`. If you believe ITableOptions "
-            " needs to be updated, please open an issue at https://github.com/mwouts/itables/issues.",
-            category=RuntimeWarning,
-        )
+    for key, value in kwargs.items():
+        if key in undocumented_options:
+            continue
+        try:
+            check_type({key: value}, typed_dict)
+        except TypeCheckError as e:
+            type_repr = str(typed_dict.__annotations__[key]).replace("typing.", "")
+            warnings.warn(
+                f"{key}={value} does not match {type_repr}: {e}. " + silence_msg,
+                category=SyntaxWarning,
+            )

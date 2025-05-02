@@ -709,7 +709,12 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
                 )
             )
 
-    check_itable_arguments(kwargs, ITableOptions)
+    dt_args = set(ITableOptions.__optional_keys__) - set(
+        DataTableOptions.__optional_keys__
+    )
+    check_itable_arguments(
+        {k: v for k, v in kwargs.items() if k not in dt_args}, ITableOptions
+    )
 
 
 def to_html_datatable_using_to_html(

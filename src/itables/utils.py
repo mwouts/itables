@@ -17,12 +17,3 @@ def read_package_file(*path):
     """Return the content of a file from the itables package"""
     with open(find_package_file(*path), encoding="utf-8") as fp:
         return fp.read()
-
-
-def is_typeguard_available():
-    """Check if typeguard is available"""
-    try:
-        from typeguard import TypeCheckError, check_type  # noqa: F401
-    except ImportError:
-        return False
-    return True
