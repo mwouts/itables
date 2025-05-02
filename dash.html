@@ -556,7 +556,7 @@ document.write(`
 </section>
 <section id="updating-the-dataframe">
 <h2>Updating the DataFrame<a class="headerlink" href="#updating-the-dataframe" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> fonction returns an <code class="docutils literal notranslate"><span class="pre">ITableComponent</span></code> that has many properties. These properties (data, columns, selected rows etc) need to be updated in a consistent way. Therefore we recommend that you list the outputs with <code class="docutils literal notranslate"><span class="pre">ITableOutputs(&quot;my_dataframe&quot;)</span></code> in your callback, and update them with <code class="docutils literal notranslate"><span class="pre">updated_itable_outputs</span></code> which takes the same arguments as <code class="docutils literal notranslate"><span class="pre">show</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">df</span></code>, <code class="docutils literal notranslate"><span class="pre">caption</span></code>,<code class="docutils literal notranslate"><span class="pre">selected_rows</span></code>, etc, like in the below (extracted from this <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/dash/3_update_table.py">example app</a>):</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ITable</span></code> component has many properties. These properties (data, columns, selected rows etc) need to be updated in a consistent way. Therefore we recommend that you list the outputs with <code class="docutils literal notranslate"><span class="pre">ITableOutputs(&quot;my_dataframe&quot;)</span></code> in your callback, and update them with <code class="docutils literal notranslate"><span class="pre">updated_itable_outputs</span></code> which takes the same arguments as <code class="docutils literal notranslate"><span class="pre">show</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">df</span></code>, <code class="docutils literal notranslate"><span class="pre">caption</span></code>, <code class="docutils literal notranslate"><span class="pre">selected_rows</span></code>, etc, like in the below (extracted from this <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/dash/3_update_table.py">example app</a>):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">itables.dash</span><span class="w"> </span><span class="kn">import</span> <span class="n">ITable</span><span class="p">,</span> <span class="n">ITableOutputs</span><span class="p">,</span> <span class="n">updated_itable_outputs</span>
 
 <span class="c1"># (...)</span>
@@ -690,7 +690,7 @@ By Marc Wouts
 
   <p class="copyright">
     
-      © Copyright 2019-2024.
+      © Copyright 2019-2025.
       <br/>
     
   </p>

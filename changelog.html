@@ -425,6 +425,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev">2.4.0-dev</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.3.0 (2025-04-05)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.2.5 (2025-02-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.2.4 (2024-12-07)</a></li>
@@ -498,6 +499,17 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="itables-changelog">
 <h1>ITables ChangeLog<a class="headerlink" href="#itables-changelog" title="Link to this heading">#</a></h1>
+<section id="dev">
+<h2>2.4.0-dev<a class="headerlink" href="#dev" title="Link to this heading">#</a></h2>
+<p><strong>Added</strong></p>
+<ul class="simple">
+<li><p>We have added type hints for the <code class="docutils literal notranslate"><span class="pre">show</span></code> function and for the various app components. A SyntaxWarning is issued if either the argument name or type does not match when <code class="docutils literal notranslate"><span class="pre">warn_on_undocumented_option=True</span></code> (the default when <code class="docutils literal notranslate"><span class="pre">typeguard&gt;=4.4.1</span></code> is installed).</p></li>
+</ul>
+<p><strong>Changed</strong></p>
+<ul class="simple">
+<li><p>ITable now requires Python 3.9, due to the addition of type hints.</p></li>
+</ul>
+</section>
 <section id="id1">
 <h2>2.3.0 (2025-04-05)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p><strong>Added</strong></p>
@@ -1190,6 +1202,7 @@ and <a class="reference external" href="https://github.com/fwouts">François Wou
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev">2.4.0-dev</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.3.0 (2025-04-05)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.2.5 (2025-02-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.2.4 (2024-12-07)</a></li>
@@ -1274,7 +1287,7 @@ By Marc Wouts
 
   <p class="copyright">
     
-      © Copyright 2019-2024.
+      © Copyright 2019-2025.
       <br/>
     
   </p>
