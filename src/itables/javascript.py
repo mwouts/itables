@@ -911,6 +911,14 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
         output = replace_value(output, 'dt_args["data"] = data;', "")
         output = replace_value(output, "const data = [];", "")
 
+    # ---------------------------hack for pagination jump start---------------------------------
+
+    output = output.replace("jumpPageBtntable_id", "jumpPageBtn"+table_id) 
+    output = output.replace("jumpPageInputtable_id", "jumpPageInput"+table_id) 
+    output = output.replace("itable_id", table_id) 
+
+    # ---------------------------hack for pagination jump end---------------------------------
+
     return output
 
 
