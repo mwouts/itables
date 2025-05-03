@@ -1,3 +1,8 @@
+# 2.3.0-dev
+
+- We have updated `datatables.net-dt=2.3.0`
+
+
 # 2.2.0 (2025-03-15)
 
 - We have upgraded `datatables.net-dt==2.2.2` and `datatables.net-select-dt==3.0.0`

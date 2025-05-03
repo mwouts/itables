@@ -9,6 +9,7 @@ ITables ChangeLog
 
 **Changed**
 - ITable now requires Python 3.9, due to the addition of type hints.
+- We have updated datatables to version 2.3.0
 
 
 2.3.0 (2025-04-05)

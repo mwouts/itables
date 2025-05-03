@@ -9,7 +9,7 @@
 	},
 	"devDependencies": {
 		"@anywidget/types": "^0.2.0",
-		"esbuild": "^0.25.1",
-		"typescript": "^5.8.2"
+		"esbuild": "^0.25.3",
+		"typescript": "^5.8.3"
 	}
 }
