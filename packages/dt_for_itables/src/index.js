@@ -54,13 +54,16 @@ DataTable.set_selected_rows = function (dt, filtered_row_count, selected_rows) {
     dt.rows(selected_rows).select();
 }
 
-DataTable.parseWithBigInts = function(jsonString) {
+DataTable.parseJSON = function(jsonString) {
     return JSON.parse(jsonString, (key, value, context) => {
         // At this stage, BigInts have been parsed as numbers already. Consequently, if the value appears
         // to be a number that should be a BigInt, we re-evaluate it from the original string.
         if (typeof value === 'number' &&!Number.isSafeInteger(value) && /^-?\d+$/.test(context.source)) {
             return BigInt(context.source);
         }
+        if (value === "___NaN___") return NaN;
+        if (value === "___Infinity___") return Infinity;
+        if (value === "___-Infinity___") return -Infinity;
         return value;
     });
 }

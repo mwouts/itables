@@ -11,7 +11,7 @@ except ImportError:
     pl = None
 
 
-def _format_column(x, pure_json=False):
+def _format_column(x):
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i", "s"]:
         return x
@@ -26,13 +26,23 @@ def _format_column(x, pure_json=False):
             x = np.array(x).astype(float)
         except ValueError:
             pass
-        if pure_json:
-            # While JavaScript accept these values,
-            # JSON (in the streamlit component)
-            # cannot encode non-finite float values
-            x = [f if np.isfinite(f) else str(f) for f in x]
+
+        x = [escape_non_finite_float(f) for f in x]
 
     return x
+
+
+def escape_non_finite_float(value):
+    """Encode non-finite float values to strings that will be parsed by parseJSON"""
+    if not isinstance(value, float):
+        return value
+    if np.isnan(value):
+        return "___NaN___"
+    if value == np.inf:
+        return "___Infinity___"
+    if value == -np.inf:
+        return "___-Infinity___"
+    return value
 
 
 def generate_encoder(warn_on_unexpected_types=True):
@@ -73,7 +83,7 @@ def _isetitem(df, i, value):
         df.iloc[:, i] = value
 
 
-def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=False):
+def datatables_rows(df, count=None, warn_on_unexpected_types=False):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
@@ -87,18 +97,15 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
 
     try:
         # Pandas DataFrame
-        data = list(
-            zip(
-                *(empty_columns + [_format_column(x, pure_json) for _, x in df.items()])
-            )
-        )
+        data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
         return json.dumps(
             data,
             cls=generate_encoder(warn_on_unexpected_types),
-            allow_nan=not pure_json,
+            allow_nan=False,
         )
     except AttributeError:
         # Polars DataFrame
         data = df.rows()
+        data = [[escape_non_finite_float(f) for f in row] for row in data]
 
-        return json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
+        return json.dumps(data, cls=generate_encoder(False), allow_nan=False)

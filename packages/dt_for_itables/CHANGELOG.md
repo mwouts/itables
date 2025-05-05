@@ -1,8 +1,7 @@
 # 2.3.0-dev
 
 - We have updated `datatables.net-dt=2.3.0`
-- We have added a function `parseJSON` that can parse BigInts
-
+- We have added a function `parseJSON` that can parse BigInts and float values encoded as `"___NaN___"` or `"___Infinity___"`.
 
 # 2.2.0 (2025-03-15)
 

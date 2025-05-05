@@ -558,7 +558,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
 
     data_json = ""
     try:
-        data_json = datatables_rows(df, None, warn_on_unexpected_types, pure_json=True)
+        data_json = datatables_rows(df, None, warn_on_unexpected_types)
     except ValueError as e:
         raise NotImplementedError(
             f"This dataframe can't be serialized to JSON:\n{e}\n{df}"
@@ -902,13 +902,13 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
         pre_dt_code.replace("#table_id", "#{}".format(table_id)),
     )
 
-    data_definition_code = """const data = DataTable.parseWithBigInts("[]");"""
+    data_definition_code = """const data = DataTable.parseJSON("[]");"""
     if data is not None:
         data_str = json.dumps(data)
         output = replace_value(
             output,
             data_definition_code,
-            f"const data = DataTable.parseWithBigInts({data_str});",
+            f"const data = DataTable.parseJSON({data_str});",
         )
     else:
         # No data since we pass the html table
