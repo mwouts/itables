@@ -580,7 +580,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
 
     check_itable_arguments(cast(dict[str, Any], kwargs), DataTableOptions)
 
-    return {"columns": columns, "data": data, **kwargs}, {
+    return {"columns": columns, "data_json": data_json, **kwargs}, {
         "classes": classes,
         "style": style,
         "caption": kwargs.pop("caption", None),

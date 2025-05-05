@@ -18,7 +18,7 @@ from itables.javascript import get_itables_extension_arguments
 from itables.typing import DataTableOptions, ITableOptions
 
 ITABLE_PROPERTIES = (
-    "data",
+    "data_json",
     "columns",
     "caption",
     "selected_rows",
@@ -43,7 +43,7 @@ def get_itable_component_kwargs(
     style["tableLayout"] = style.pop("table-layout")
 
     return {
-        "data": dt_args.pop("data"),
+        "data_json": dt_args.pop("data_json"),
         "columns": dt_args.pop("columns"),
         "dt_args": dt_args,
         "style": style,
@@ -63,7 +63,7 @@ def updated_itable_outputs(
     updated_properties = get_itable_component_kwargs(df, **kwargs)
 
     if df is None:
-        updated_properties["data"] = no_update
+        updated_properties["data_json"] = no_update
         updated_properties["columns"] = no_update
         updated_properties["filtered_row_count"] = no_update
         updated_properties["downsampling_warning"] = no_update

@@ -26,7 +26,7 @@ class ITable(anywidget.AnyWidget):
 
     # private traits that relate to df or to the DataTable arguments
     # (use .update() to update them)
-    _data = traitlets.List(traitlets.List()).tag(sync=True)
+    _data_json = traitlets.Unicode().tag(sync=True)
     _columns = traitlets.List(traitlets.Dict()).tag(sync=True)
     _filtered_row_count = traitlets.Int().tag(sync=True)
     _downsampling_warning = traitlets.Unicode().tag(sync=True)
@@ -47,7 +47,7 @@ class ITable(anywidget.AnyWidget):
         self.style = other_args.pop("style")
         self.selected_rows = other_args.pop("selected_rows")
 
-        self._data = dt_args.pop("data")
+        self._data_json = dt_args.pop("data_json")
         self._columns = dt_args.pop("columns")
         self._dt_args = dt_args
         self._downsampling_warning = other_args.pop("downsampling_warning") or ""
@@ -89,7 +89,7 @@ class ITable(anywidget.AnyWidget):
         self.caption = other_args.pop("caption")
 
         if df is None:
-            del dt_args["data"]
+            del dt_args["data_json"]
             del dt_args["columns"]
 
             # Don't trigger an update if nor data nor the dt args changed
@@ -98,7 +98,7 @@ class ITable(anywidget.AnyWidget):
             )
         else:
             self._df = df
-            self._data = dt_args.pop("data")
+            self._data_json = dt_args.pop("data_json")
             self._columns = dt_args.pop("columns")
             self._update_dt_args(dt_args)
             self._downsampling_warning = other_args.pop("downsampling_warning") or ""

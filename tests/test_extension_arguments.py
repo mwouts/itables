@@ -12,12 +12,12 @@ def test_get_itables_extension_arguments(df):
         pytest.skip(str(e))
 
     assert set(dt_args) <= {
-        "data",
+        "data_json",
         "columns",
         "layout",
         "order",
     }, set(dt_args)
-    assert isinstance(dt_args["data"], list)
+    assert isinstance(dt_args["data_json"], str)
     assert isinstance(dt_args["columns"], list)
 
     assert set(other_args) <= {

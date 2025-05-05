@@ -10,8 +10,9 @@ let dt = new DataTable(table)
 
 function onRender(event: Event): void {
   // dt_args is the whole map of arguments passed on the Python side
-  var other_args = (event as CustomEvent<RenderData>).detail.args.other_args
-  var dt_args = (event as CustomEvent<RenderData>).detail.args.dt_args
+  var other_args = (event as CustomEvent<RenderData>).detail.args.other_args;
+  const { data_json, ...dt_args } = (event as CustomEvent<RenderData>).detail.args.dt_args;
+  dt_args['data'] = DataTable.parseJSON(data_json);
 
   if (other_args.downsampling_warning) {
     dt_args["fnInfoCallback"] = function (oSettings: any, iStart: number, iEnd: number, iMax: number, iTotal: number, sPre: string) {

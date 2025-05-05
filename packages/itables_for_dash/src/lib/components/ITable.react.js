@@ -24,7 +24,7 @@ ITable.propTypes = {
     /**
      * The table data - a list of lists with the same length as the columns.
      */
-    data: PropTypes.array.isRequired,
+    data_json: PropTypes.string.isRequired,
 
     /**
      * The table columns - a list of dicts with a 'title' key.

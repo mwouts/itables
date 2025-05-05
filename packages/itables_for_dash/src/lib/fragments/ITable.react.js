@@ -4,7 +4,7 @@ import { defaultProps, propTypes } from '../components/ITable.react.js';
 import "dt_for_itables/dt_bundle.css";
 
 const ITable = (props) => {
-  const { id, data, columns, caption, selected_rows, classes, style, dt_args, downsampling_warning, filtered_row_count, setProps } = props;
+  const { id, data_json, columns, caption, selected_rows, classes, style, dt_args, downsampling_warning, filtered_row_count, setProps } = props;
 
   const dtInstance = useRef(null);
   const emptyRowSelectionTimeout = useRef(null);
@@ -12,7 +12,7 @@ const ITable = (props) => {
 
   const [state, setState] = useState({
     localDtArgs: dt_args,
-    localData: data,
+    localDataJSON: data_json,
     localColumns: columns,
     localCaption: caption,
     localSelectedRows: selected_rows
@@ -22,17 +22,17 @@ const ITable = (props) => {
     setState(prevState => ({
       ...prevState,
       localDtArgs: dt_args,
-      localData: data,
+      localDataJSON: data_json,
       localColumns: columns,
       localCaption: caption,
       localSelectedRows: selected_rows
     }));
-  }, [dt_args, data, columns, caption, selected_rows]);
+  }, [dt_args, data_json, columns, caption, selected_rows]);
 
   useEffect(() => {
     console.debug("Updating dt_args for DataTable(id='%s')", id);
     let dtArgs = { ...state.localDtArgs };
-    dtArgs.data = state.localData;
+    dtArgs.data = DataTable.parseJSON(state.localDataJSON);
     dtArgs.columns = state.localColumns;
 
     if (downsampling_warning) {
@@ -64,7 +64,7 @@ const ITable = (props) => {
 
 
     return destroyDtInstance;
-  }, [state.localDtArgs, state.localData, state.localColumns]);
+  }, [state.localDtArgs, state.localDataJSON, state.localColumns]);
 
   useEffect(() => {
     if (dtInstance.current) {
@@ -92,7 +92,7 @@ const ITable = (props) => {
       DataTable.set_selected_rows(dtInstance.current, filtered_row_count, state.localSelectedRows);
       ignoreSelectEvents.current = false;
     }
-  }, [state.localData, state.localSelectedRows]);
+  }, [state.localDataJSON, state.localSelectedRows]);
 
   const export_selected_rows = useCallback((e, dt, type, indexes) => {
     if (ignoreSelectEvents.current) return;

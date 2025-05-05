@@ -63,7 +63,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		}
 
 		let dt_args = model.get('_dt_args');
-		dt_args['data'] = model.get('_data');
+		dt_args['data'] = DataTable.parseJSON(model.get('_data_json'));
 		dt_args['columns'] = model.get('_columns');
 		dt_args["fnInfoCallback"] = function (oSettings: any, iStart: number, iEnd: number, iMax: number, iTotal: number, sPre: string) {
 			let msg = model.get("_downsampling_warning");
