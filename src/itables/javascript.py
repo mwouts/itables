@@ -113,8 +113,6 @@ def init_notebook_mode(
         if hasattr(pl.Series, "_repr_html_"):
             del pl.Series._repr_html_  # type: ignore
 
-    display(HTML(read_package_file("html/init_datatables.html")))
-
     if not connected:
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
 

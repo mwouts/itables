@@ -68,6 +68,32 @@ DataTable.parseJSON = function(jsonString) {
     });
 }
 
+DataTable.adjust_theme = function () {
+    let is_dark_theme = function () {
+        // Jupyter Lab
+        if ('jpThemeLight' in document.body.dataset)
+            return (document.body.dataset.jpThemeLight === "false");
+
+        // VS Code
+        if ('vscodeThemeKind' in document.body.dataset)
+            return document.body.dataset.vscodeThemeKind.includes('dark');
+
+        // Jupyter Book
+        if ('theme' in document.documentElement.dataset)
+            return document.documentElement.dataset.theme.includes('dark');
+
+        // Default
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    if (is_dark_theme()) {
+        document.documentElement.classList.add('dark');
+    }
+    else {
+        document.documentElement.classList.remove('dark');
+    }
+}
+
 export { DataTable, DateTime, jQuery };
 
 export default DataTable;

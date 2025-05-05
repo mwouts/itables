@@ -7,6 +7,8 @@
         if (!(table instanceof HTMLTableElement))
             return;
 
+        DataTable.adjust_theme();
+
         // Define the table data
         const data = DataTable.parseJSON("[]");
 
