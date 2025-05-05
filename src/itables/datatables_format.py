@@ -1,5 +1,4 @@
 import json
-import re
 import warnings
 
 import numpy as np
@@ -10,10 +9,6 @@ try:
     import polars as pl
 except ImportError:
     pl = None
-
-
-JS_MAX_SAFE_INTEGER = 2**53 - 1
-JS_MIN_SAFE_INTEGER = -(2**53 - 1)
 
 
 def _format_column(x, pure_json=False):
@@ -97,12 +92,7 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
                 *(empty_columns + [_format_column(x, pure_json) for _, x in df.items()])
             )
         )
-        has_bigints = any(
-            x.dtype.kind == "i"
-            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
-            for _, x in df.items()
-        )
-        js = json.dumps(
+        return json.dumps(
             data,
             cls=generate_encoder(warn_on_unexpected_types),
             allow_nan=not pure_json,
@@ -110,36 +100,5 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
     except AttributeError:
         # Polars DataFrame
         data = df.rows()
-        import polars as pl
 
-        has_bigints = any(
-            (
-                x.dtype == pl.Int64
-                and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
-            )
-            or (x.dtype == pl.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
-            for x in (df[col] for col in df.columns)
-        )
-        js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
-
-    if has_bigints:
-        js = n_suffix_for_bigints(js, pure_json=pure_json)
-
-    return js
-
-
-def n_suffix_for_bigints(js, pure_json=False):
-    def n_suffix(matchobj):
-        if pure_json:
-            return matchobj.group(1) + '"' + matchobj.group(2) + '"' + matchobj.group(3)
-        return (
-            matchobj.group(1)
-            + 'BigInt("'
-            + matchobj.group(2)
-            + '")'
-            + matchobj.group(3)
-        )
-
-    big_int_re = re.compile(r"^([\[\s]+)(-?\d{16,})(\]*)$")
-    parts = js.split(",")
-    return ",".join(re.sub(big_int_re, n_suffix, part) for part in parts)
+        return json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)

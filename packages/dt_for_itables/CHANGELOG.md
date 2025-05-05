@@ -1,6 +1,7 @@
 # 2.3.0-dev
 
 - We have updated `datatables.net-dt=2.3.0`
+- We have added a function `parseJSON` that can parse BigInts
 
 
 # 2.2.0 (2025-03-15)

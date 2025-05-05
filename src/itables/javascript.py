@@ -902,14 +902,18 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
         pre_dt_code.replace("#table_id", "#{}".format(table_id)),
     )
 
+    data_definition_code = """const data = DataTable.parseWithBigInts("[]");"""
     if data is not None:
+        data_str = json.dumps(data)
         output = replace_value(
-            output, "const data = [];", "const data = {};".format(data)
+            output,
+            data_definition_code,
+            f"const data = DataTable.parseWithBigInts({data_str});",
         )
     else:
         # No data since we pass the html table
         output = replace_value(output, 'dt_args["data"] = data;', "")
-        output = replace_value(output, "const data = [];", "")
+        output = replace_value(output, data_definition_code, "")
 
     return output
 

@@ -10,6 +10,10 @@ ITables ChangeLog
 **Changed**
 - ITable now requires Python 3.9, due to the addition of type hints.
 - We have updated datatables to version 2.3.0
+- BigInts don't trigger any specific Python code, instead they are now handled on the Javascript side directly.
+
+**Fixed**
+- Non-finite floats are now supported in the ITable widget and in the Streamlit and Dash components ([#374](https://github.com/mwouts/itables/issues/374))
 
 
 2.3.0 (2025-04-05)

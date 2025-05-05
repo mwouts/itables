@@ -7,13 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from itables.datatables_format import (
-    JS_MAX_SAFE_INTEGER,
-    JS_MIN_SAFE_INTEGER,
-    datatables_rows,
-    generate_encoder,
-    n_suffix_for_bigints,
-)
+from itables.datatables_format import datatables_rows, generate_encoder
 from itables.javascript import _column_count_in_header, _table_header
 from itables.sample_dfs import PANDAS_VERSION_MAJOR
 
@@ -80,7 +74,7 @@ from itables.sample_dfs import PANDAS_VERSION_MAJOR
                     ]
                 }
             ),
-            '[[BigInt("1234567890123456789")], [BigInt("2345678901234567890")], [BigInt("3456789012345678901")]]',
+            "[[1234567890123456789], [2345678901234567890], [3456789012345678901]]",
         ),
     ],
     ids=[
@@ -135,25 +129,13 @@ def test_TableValuesEncoder():
         )
 
 
-def test_encode_large_int_to_bigint(large=3456789012345678901):
+def test_encode_large_int(large=3456789012345678901):
+    """Encoding large integers from Python using json.dumps works"""
+    assert json.dumps([large]) == "[3456789012345678901]"
     assert (
-        n_suffix_for_bigints(json.dumps([large])) == '[BigInt("3456789012345678901")]'
+        json.dumps([large * 100, large])
+        == "[345678901234567890100, 3456789012345678901]"
     )
-    assert (
-        n_suffix_for_bigints(json.dumps([large * 100, large]))
-        == '[BigInt("345678901234567890100"), BigInt("3456789012345678901")]'
-    )
-
-
-@pytest.mark.parametrize("large", [JS_MIN_SAFE_INTEGER, JS_MAX_SAFE_INTEGER])
-def test_encode_max_int(large):
-    assert n_suffix_for_bigints(json.dumps([large])) == '[BigInt("{}")]'.format(large)
-
-
-@pytest.mark.parametrize("large", [JS_MIN_SAFE_INTEGER, JS_MAX_SAFE_INTEGER])
-def test_encode_not_max_int(large):
-    large //= 10
-    assert n_suffix_for_bigints(json.dumps([large])) == "[{}]".format(large)
 
 
 def test_encode_mixed_contents():
@@ -168,5 +150,5 @@ def test_encode_mixed_contents():
     )
     assert (
         datatables_rows(df)
-        == '[[BigInt("1666767918216000000"), 1699300000000, 0.951057, -0.309017]]'
+        == "[[1666767918216000000, 1699300000000, 0.951057, -0.309017]]"
     )
