@@ -1,24 +1,16 @@
 <table id="table_id"><thead><tr><th>A</th></tr></thead></table>
 <link href="https://www.unpkg.com/dt_for_itables/dt_bundle.css" rel="stylesheet">
 <script type="module">
-    import {DataTable, jQuery as $} from 'https://www.unpkg.com/dt_for_itables/dt_bundle.js';
+    import { ITable, jQuery as $ } from 'https://www.unpkg.com/dt_for_itables/dt_bundle.js';
 
     document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
-        DataTable.adjust_theme();
-
-        // Define the table data
-        const data = DataTable.parseJSON("[]");
-
-        // Define the dt_args
         let dt_args = {};
-        dt_args["data"] = data;
-
-        DataTable.updateInitComplete(dt_args);
 
         // [pre-dt-code]
-        new DataTable(table, dt_args);
+
+        new ITable(table, dt_args);
     });
 </script>

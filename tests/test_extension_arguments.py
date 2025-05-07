@@ -16,6 +16,9 @@ def test_get_itables_extension_arguments(df):
         "columns",
         "layout",
         "order",
+        "text_in_header_can_be_selected",
+        "filtered_row_count",
+        "downsampling_warning",
     }, set(dt_args)
     assert isinstance(dt_args["data_json"], str)
     assert isinstance(dt_args["columns"], list)
@@ -24,9 +27,7 @@ def test_get_itables_extension_arguments(df):
         "classes",
         "style",
         "caption",
-        "downsampling_warning",
         "selected_rows",
-        "filtered_row_count",
     }, set(dt_args)
     assert isinstance(other_args["classes"], str)
     assert isinstance(other_args["style"], str)
@@ -36,7 +37,7 @@ def test_get_itables_extension_arguments(df):
 def test_no_use_to_html():
     with pytest.raises(
         TypeError,
-        match="In the context of the itable widget or streamlit extension, these options are not available",
+        match="In Python apps, these options are not available",
     ):
         get_itables_extension_arguments(pd.DataFrame({"a": [0]}), use_to_html=True)
 

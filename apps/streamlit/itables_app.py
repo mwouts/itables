@@ -1,5 +1,7 @@
 """Run this app with: streamlit run apps/streamlit/itables_app.py"""
 
+from typing import Sequence, cast
+
 import pyarrow
 import streamlit as st
 from st_aggrid import AgGrid
@@ -67,15 +69,15 @@ if caption:
 
 if render_with == "st.dataframe":
 
-    def interactive_table(df, **not_used):
-        return st.dataframe(df)
+    def render_table(df, key: str, **not_used):  # type: ignore
+        return st.dataframe(df, key=key)
 
     snippet = """st.dataframe(df)
 """
 
 elif render_with == "streamlit-aggrid":
 
-    def interactive_table(df, key=None, **not_used):
+    def render_table(df, key: str, **not_used):  # type: ignore
         return AgGrid(df, key=key)
 
     snippet = """from st_aggrid import AgGrid
@@ -88,6 +90,10 @@ else:
         for key, value in it_args.items()
     ]
     formatted_args = ",\n                  ".join(formatted_args)
+
+    def render_table(df, key, **it_args):
+        return interactive_table(df, key=key, **it_args)
+
     snippet = f"""from itables.streamlit import interactive_table
 
 interactive_table({formatted_args})
@@ -100,7 +106,7 @@ st.markdown(
 """
 )
 
-t = interactive_table(df, **it_args)
+t = render_table(df, "my_table", **it_args)
 
 st.header("Table state")
 st.markdown(
@@ -111,7 +117,7 @@ st.write(t)
 
 st.header("More sample dataframes")
 test_dfs = get_dict_of_test_dfs()
-tabs = st.tabs(test_dfs.keys())
+tabs = st.tabs(cast(Sequence[str], test_dfs.keys()))
 
 for (name, df), tab in zip(test_dfs.items(), tabs):
     with tab:
@@ -123,7 +129,7 @@ for (name, df), tab in zip(test_dfs.items(), tabs):
             # st.dataframe
             ValueError,
             # streamlit-aggrid
-            pyarrow.lib.ArrowInvalid,
+            pyarrow.lib.ArrowInvalid,  # type: ignore
             MarshallComponentException,
         ) as e:
             st.warning(e)

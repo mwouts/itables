@@ -33,21 +33,8 @@ Keyword arguments:
 - classes (string; required):
     The table classes.
 
-- columns (list; required):
-    The table columns - a list of dicts with a 'title' key.
-
-- data_json (string; required):
-    The table data - a list of lists with the same length as the
-    columns.
-
-- downsampling_warning (string; required):
-    The downsampling warning message, if any.
-
 - dt_args (dict; required):
     The arguments for DataTable e.g. select, buttons, layout etc.
-
-- filtered_row_count (number; required):
-    How many lines of the tables are not shown due to downsampling.
 
 - selected_rows (list; required):
     The index of the selected rows (pass select=True to allow
@@ -61,27 +48,23 @@ Keyword arguments:
     def __init__(
         self,
         id: typing.Optional[typing.Union[str, dict]] = None,
-        data_json: typing.Optional[str] = None,
-        columns: typing.Optional[typing.Sequence] = None,
         caption: typing.Optional[str] = None,
         selected_rows: typing.Optional[typing.Sequence] = None,
         style: typing.Optional[typing.Any] = None,
         classes: typing.Optional[str] = None,
         dt_args: typing.Optional[dict] = None,
-        filtered_row_count: typing.Optional[NumberType] = None,
-        downsampling_warning: typing.Optional[str] = None,
         **kwargs
     ):
-        self._prop_names = ['id', 'caption', 'classes', 'columns', 'data_json', 'downsampling_warning', 'dt_args', 'filtered_row_count', 'selected_rows', 'style']
+        self._prop_names = ['id', 'caption', 'classes', 'dt_args', 'selected_rows', 'style']
         self._valid_wildcard_attributes =            []
-        self.available_properties = ['id', 'caption', 'classes', 'columns', 'data_json', 'downsampling_warning', 'dt_args', 'filtered_row_count', 'selected_rows', 'style']
+        self.available_properties = ['id', 'caption', 'classes', 'dt_args', 'selected_rows', 'style']
         self.available_wildcard_properties =            []
         _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        for k in ['id', 'classes', 'columns', 'data_json', 'downsampling_warning', 'dt_args', 'filtered_row_count', 'selected_rows', 'style']:
+        for k in ['id', 'classes', 'dt_args', 'selected_rows', 'style']:
             if k not in args:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')

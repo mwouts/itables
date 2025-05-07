@@ -60,9 +60,11 @@ class DataTableOptions(TypedDict):
     select: NotRequired[Union[bool, str, Mapping[str, str]]]
     keys: NotRequired[bool]
 
-    # Add addition of the dt_for_itables package
+    # Added by the dt_for_itables package
+    data_json: NotRequired[str]
     filtered_row_count: NotRequired[int]
     text_in_header_can_be_selected: NotRequired[bool]
+    downsampling_warning: NotRequired[str]
 
 
 class ITableOptions(DataTableOptions):
@@ -71,8 +73,10 @@ class ITableOptions(DataTableOptions):
     to the ITable constructors
     """
 
-    classes: NotRequired[str]
+    classes: NotRequired[Union[str, list[str]]]
     style: NotRequired[str]
+
+    selected_rows: NotRequired[list[int]]
 
     showIndex: NotRequired[Union[bool, str]]
 
@@ -87,8 +91,6 @@ class ITableOptions(DataTableOptions):
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
     footer: NotRequired[bool]
-
-    selected_rows: NotRequired[list[int]]
 
     pre_dt_code: NotRequired[str]
     tags: NotRequired[str]

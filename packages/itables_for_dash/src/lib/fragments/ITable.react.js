@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { DataTable, jQuery} from "dt_for_itables";
+import { ITable as ITableClass, set_or_remove_dark_class} from "dt_for_itables";
 import { defaultProps, propTypes } from '../components/ITable.react.js';
 import "dt_for_itables/dt_bundle.css";
 
 const ITable = (props) => {
-  const { id, data_json, columns, caption, selected_rows, classes, style, dt_args, downsampling_warning, filtered_row_count, setProps } = props;
+  const { id, caption, selected_rows, classes, style, dt_args, setProps } = props;
 
   const dtInstance = useRef(null);
   const emptyRowSelectionTimeout = useRef(null);
@@ -12,8 +12,6 @@ const ITable = (props) => {
 
   const [state, setState] = useState({
     localDtArgs: dt_args,
-    localDataJSON: data_json,
-    localColumns: columns,
     localCaption: caption,
     localSelectedRows: selected_rows
   });
@@ -22,25 +20,16 @@ const ITable = (props) => {
     setState(prevState => ({
       ...prevState,
       localDtArgs: dt_args,
-      localDataJSON: data_json,
-      localColumns: columns,
       localCaption: caption,
       localSelectedRows: selected_rows
     }));
-  }, [dt_args, data_json, columns, caption, selected_rows]);
+  }, [dt_args, caption, selected_rows]);
 
   useEffect(() => {
+    set_or_remove_dark_class();
+
     console.debug("Updating dt_args for DataTable(id='%s')", id);
     let dtArgs = { ...state.localDtArgs };
-    dtArgs.data = DataTable.parseJSON(state.localDataJSON);
-    dtArgs.columns = state.localColumns;
-
-    if (downsampling_warning) {
-      dt_args["fnInfoCallback"] = function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {
-        return sPre + ' (' +
-          downsampling_warning + ')'
-      }
-    }
 
     function destroyDtInstance() {
       if (dtInstance.current) {
@@ -49,27 +38,25 @@ const ITable = (props) => {
           emptyRowSelectionTimeout.current = null;
         }
 
-        console.debug("Destroying DataTable(id='%s')", id);
         dtInstance.current.destroy();
-        jQuery("#".concat(id)).empty();
         dtInstance.current = null;
       }
     }
 
     destroyDtInstance();
 
-    dtInstance.current = new DataTable("#".concat(id), dtArgs);
-    dtInstance.current.on('select', export_selected_rows);
-    dtInstance.current.on('deselect', export_selected_rows);
+    dtInstance.current = new ITableClass("#".concat(id), dtArgs);
+    dtInstance.current.dt.on('select', export_selected_rows);
+    dtInstance.current.dt.on('deselect', export_selected_rows);
 
 
     return destroyDtInstance;
-  }, [state.localDtArgs, state.localDataJSON, state.localColumns]);
+  }, [state.localDtArgs]);
 
   useEffect(() => {
     if (dtInstance.current) {
       console.debug("Updating caption for DataTable(id='%s'): %s", id, state.localCaption);
-      dtInstance.current.caption(state.localCaption);
+      dtInstance.current.dt.caption(state.localCaption);
     }
   }, [state.localCaption]);
 
@@ -80,7 +67,7 @@ const ITable = (props) => {
         emptyRowSelectionTimeout.current = null;
       }
 
-      const current_rows = DataTable.get_selected_rows(dtInstance.current, filtered_row_count);
+      const current_rows = dtInstance.current.selected_rows;
       if (current_rows.length == state.localSelectedRows.length) {
         if (current_rows.every((value, index) => value === state.localSelectedRows[index])) {
           return;
@@ -89,15 +76,15 @@ const ITable = (props) => {
 
       console.info("Setting row selection for DataTable(id='%s') to ", id, state.localSelectedRows, "from ", current_rows);
       ignoreSelectEvents.current = true;
-      DataTable.set_selected_rows(dtInstance.current, filtered_row_count, state.localSelectedRows);
+      dtInstance.current.selected_rows = state.localSelectedRows;
       ignoreSelectEvents.current = false;
     }
-  }, [state.localDataJSON, state.localSelectedRows]);
+  }, [state.localSelectedRows]);
 
   const export_selected_rows = useCallback((e, dt, type, indexes) => {
     if (ignoreSelectEvents.current) return;
 
-    const current_rows = DataTable.get_selected_rows(dt, filtered_row_count);
+    const current_rows = dtInstance.current.selected_rows;
 
     function update_selected_rows(rows) {
       if (ignoreSelectEvents.current)

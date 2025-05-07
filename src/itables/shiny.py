@@ -52,12 +52,11 @@ def DT(df, *args, table_id=None, **kwargs: Unpack[ITableOptions]):
 
     script_end = "\n    });\n</script>\n"
     assert html.endswith(script_end)
-    assert "let dt = new DataTable" in html
-    assert "let filtered_row_count =" in html
+    assert "let dt = new ITable" in html
 
     selected_rows_code = f"""
         function set_selected_rows_in_shiny(...args) {{
-            Shiny.setInputValue('{table_id}_selected_rows', DataTable.get_selected_rows(dt, filtered_row_count));
+            Shiny.setInputValue('{table_id}_selected_rows', dt.selected_rows);
         }};
 
         set_selected_rows_in_shiny();

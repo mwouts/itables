@@ -22,16 +22,6 @@ ITable.propTypes = {
     id: PropTypes.string.isRequired,
 
     /**
-     * The table data - a list of lists with the same length as the columns.
-     */
-    data_json: PropTypes.string.isRequired,
-
-    /**
-     * The table columns - a list of dicts with a 'title' key.
-     */
-    columns: PropTypes.array.isRequired,
-
-    /**
      * The table caption
      */
     caption: PropTypes.string,
@@ -55,16 +45,6 @@ ITable.propTypes = {
      * The arguments for DataTable e.g. select, buttons, layout etc.
      */
     dt_args: PropTypes.object.isRequired,
-
-    /**
-     * How many lines of the tables are not shown due to downsampling
-     */
-    filtered_row_count: PropTypes.number.isRequired,
-
-    /**
-     * The downsampling warning message, if any
-     */
-    downsampling_warning: PropTypes.string.isRequired,
 
     /**
      * Dash-assigned callback that should be called to report property changes

@@ -10,7 +10,7 @@ _streamlit_component_func = components.declare_component(
 )
 
 
-def interactive_table(df, *args, **kwargs: Unpack[ITableOptions]):
+def interactive_table(df, key: str, *args, **kwargs: Unpack[ITableOptions]):
     """Render the DataFrame as an interactive datatable in Streamlit applications"""
     dt_args, other_args = get_itables_extension_arguments(df, *args, **kwargs)
-    return _streamlit_component_func(dt_args=dt_args, other_args=other_args)
+    return _streamlit_component_func(key=key, dt_args=dt_args, other_args=other_args)

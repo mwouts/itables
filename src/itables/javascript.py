@@ -113,6 +113,21 @@ def init_notebook_mode(
         if hasattr(pl.Series, "_repr_html_"):
             del pl.Series._repr_html_  # type: ignore
 
+    init_datatables = read_package_file("html/init_datatables.html")
+    if not connected:
+        connected_import = (
+            "import { set_or_remove_dark_class } from '"
+            + UNPKG_DT_BUNDLE_URL_NO_VERSION
+            + "';"
+        )
+        local_import = (
+            "const { set_or_remove_dark_class } = await import(window."
+            + DATATABLES_SRC_FOR_ITABLES
+            + ");"
+        )
+        init_datatables = replace_value(init_datatables, connected_import, local_import)
+    display(HTML(init_datatables))
+
     if not connected:
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
 
@@ -374,14 +389,9 @@ def to_html_datatable(
             warn_on_selected_rows_not_rendered,
         )
 
-    if len(df) < full_row_count:
-        kwargs["filtered_row_count"] = full_row_count - len(df)
-        if "fnInfoCallback" not in kwargs:
-            kwargs["fnInfoCallback"] = JavascriptFunction(
-                "function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {{ return sPre + ' ({warning})'; }}".format(
-                    warning=downsampling_warning
-                )
-            )
+    if downsampling_warning:
+        kwargs["downsampling_warning"] = downsampling_warning
+    kwargs["filtered_row_count"] = full_row_count - len(df)
 
     _adjust_layout(
         df,
@@ -430,7 +440,7 @@ def to_html_datatable(
     # When the header has an extra column, we add
     # an extra empty column in the table data #141
     column_count = _column_count_in_header(table_header)
-    dt_data = datatables_rows(
+    data_json = datatables_rows(
         df,
         column_count,
         warn_on_unexpected_types=warn_on_unexpected_types,
@@ -439,7 +449,7 @@ def to_html_datatable(
     return html_table_from_template(
         table_header,
         table_id=table_id,
-        data=dt_data,
+        data_json=data_json,
         kwargs=kwargs,
         column_filters=column_filters,
     )
@@ -482,7 +492,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
     set_default_options(
         kwargs,
         use_to_html=False,
-        context="the itable widget or streamlit extension",
+        context="Python apps",
         not_available=[
             "columns",
             "tags",
@@ -580,14 +590,22 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
 
     check_itable_arguments(cast(dict[str, Any], kwargs), DataTableOptions)
 
-    return {"columns": columns, "data_json": data_json, **kwargs}, {
+    other_args = {
         "classes": classes,
         "style": style,
         "caption": kwargs.pop("caption", None),
-        "downsampling_warning": downsampling_warning,
-        "filtered_row_count": full_row_count - len(data),
-        "selected_rows": selected_rows,
     }
+    dt_args = {
+        "columns": columns,
+        "data_json": data_json,
+        "filtered_row_count": full_row_count - len(data),
+        **kwargs,
+    }
+    if downsampling_warning:
+        dt_args["downsampling_warning"] = downsampling_warning
+    if selected_rows is not None:
+        other_args["selected_rows"] = selected_rows
+    return dt_args, other_args
 
 
 def warn_if_selected_rows_are_not_visible(
@@ -663,8 +681,7 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
     args_not_available = set(kwargs).intersection(not_available)
     if args_not_available:
         raise TypeError(
-            f"In the context of {context}, "
-            f"these options are not available: {args_not_available}"
+            f"In {context}, " f"these options are not available: {args_not_available}"
         )
     if use_to_html:
         options_not_available = set(kwargs).intersection(
@@ -805,13 +822,13 @@ def to_html_datatable_using_to_html(
     return html_table_from_template(
         html_table,
         table_id=table_id,
-        data=None,
+        data_json=None,
         kwargs=kwargs,
         column_filters=None,
     )
 
 
-def html_table_from_template(html_table, table_id, data, kwargs, column_filters):
+def html_table_from_template(html_table, table_id, data_json, kwargs, column_filters):
     if "css" in kwargs:
         TypeError(
             "The 'css' argument has been deprecated, see the new "
@@ -837,12 +854,12 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
         )
         output = replace_value(output, connected_style, "")
         connected_import = (
-            "import {DataTable, jQuery as $} from '"
+            "import { ITable, jQuery as $ } from '"
             + UNPKG_DT_BUNDLE_URL_NO_VERSION
             + "';"
         )
         local_import = (
-            "const { DataTable, jQuery: $ } = await import(window."
+            "const { ITable, jQuery: $ } = await import(window."
             + DATATABLES_SRC_FOR_ITABLES
             + ");"
         )
@@ -858,10 +875,10 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
     if "selected_rows" in kwargs:
         output = replace_value(
             output,
-            "new DataTable(table, dt_args);",
-            f"""let dt = new DataTable(table, dt_args);
-        let filtered_row_count = {kwargs.pop("filtered_row_count", 0)};
-        DataTable.set_selected_rows(dt, filtered_row_count, {kwargs.pop("selected_rows")});""",
+            "new ITable(table, dt_args);",
+            f"""let dt = new ITable(table, dt_args);
+        dt.selected_rows = {kwargs.pop("selected_rows")};
+""",
         )
 
     if column_filters:
@@ -889,6 +906,8 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
 
     # Export the DT args to JSON
     check_itable_arguments(kwargs, DataTableOptions)
+    if data_json is not None:
+        kwargs["data_json"] = data_json
     dt_args = json_dumps(kwargs, eval_functions)
 
     output = replace_value(
@@ -899,19 +918,6 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
         "// [pre-dt-code]",
         pre_dt_code.replace("#table_id", "#{}".format(table_id)),
     )
-
-    data_definition_code = """const data = DataTable.parseJSON("[]");"""
-    if data is not None:
-        data_str = json.dumps(data)
-        output = replace_value(
-            output,
-            data_definition_code,
-            f"const data = DataTable.parseJSON({data_str});",
-        )
-    else:
-        # No data since we pass the html table
-        output = replace_value(output, 'dt_args["data"] = data;', "")
-        output = replace_value(output, data_definition_code, "")
 
     return output
 

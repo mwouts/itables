@@ -34,27 +34,7 @@ import 'datatables.net-select-dt/css/select.dataTables.min.css';
 
 import './index.css';
 
-DataTable.get_selected_rows = function (dt, filtered_row_count) {
-    // Here the selected rows are for the datatable.
-    // We convert them back to the full table
-    let data_row_count = dt.rows().count();
-    let bottom_half = data_row_count / 2;
-    return Array.from(dt.rows({ selected: true }).indexes().map(
-        i => (i < bottom_half ? i : i + filtered_row_count)));
-}
-
-DataTable.set_selected_rows = function (dt, filtered_row_count, selected_rows) {
-    let data_row_count = dt.rows().count();
-    let bottom_half = data_row_count / 2;
-    let top_half = bottom_half + filtered_row_count;
-    let full_row_count = data_row_count + filtered_row_count;
-    selected_rows = Array.from(selected_rows.filter(i => i >= 0 && i < full_row_count && (i < bottom_half || i >= top_half)).map(
-        i => (i < bottom_half) ? i : i - filtered_row_count));
-    dt.rows().deselect();
-    dt.rows(selected_rows).select();
-}
-
-DataTable.parseJSON = function (jsonString) {
+function parseJSON(jsonString) {
     return JSON.parse(jsonString, (key, value, context) => {
         // At this stage, BigInts have been parsed as numbers already. Consequently, if the value appears
         // to be a number that should be a BigInt, we re-evaluate it from the original string.
@@ -97,22 +77,69 @@ function textInHeaderCanBeSelected(settings, json) {
     });
 };
 
-DataTable.updateInitComplete = function (dt_args) {
-if (dt_args['text_in_header_can_be_selected'] === true) {
-    if (dt_args['initComplete'] === undefined) {
-        dt_args['initComplete'] = textInHeaderCanBeSelected;
-    } else {
-        const oldInitComplete = dt_args['initComplete'];
-        dt_args['initComplete'] = function(settings, json) {
-            textInHeaderCanBeSelected(settings, json);
-            oldInitComplete(settings, json);
-        };
+class ITable {
+    constructor(table, itable_args) {
+        const { data, data_json, filtered_row_count, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
+        if (data !== undefined) {
+            throw new Error("The 'data' property is not allowed in dt_args.");
+        }
+        if (data_json !== undefined) {
+            dt_args.data = parseJSON(data_json);
+        }
+
+        this.filtered_row_count = filtered_row_count;
+
+        if (text_in_header_can_be_selected === true) {
+            if (initComplete === undefined) {
+                dt_args.initComplete = textInHeaderCanBeSelected;
+            } else {
+                dt_args.initComplete = function (settings, json) {
+                    textInHeaderCanBeSelected(settings, json);
+                    initComplete(settings, json);
+                };
+            }
+        }
+
+        if (downsampling_warning !== undefined) {
+            dt_args["fnInfoCallback"] = function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {
+              return sPre + ' (' + downsampling_warning + ')';
+            }
+          }
+
+        this.table = table;
+        this.dt = new DataTable(table, dt_args);
+    }
+
+    destroy() {
+        if (this.dt) {
+            this.dt.destroy();
+            jQuery(this.table).empty();
+            this.dt = null;
+        }
+    }
+
+    set selected_rows(selected_rows) {
+        let data_row_count = this.dt.rows().count();
+        let bottom_half = data_row_count / 2;
+        let top_half = bottom_half + this.filtered_row_count;
+        let full_row_count = data_row_count + this.filtered_row_count;
+        selected_rows = Array.from(selected_rows.filter(i => i >= 0 && i < full_row_count && (i < bottom_half || i >= top_half)).map(
+            i => (i < bottom_half) ? i : i - this.filtered_row_count));
+        this.dt.rows().deselect();
+        this.dt.rows(selected_rows).select();
+    }
+
+    get selected_rows() {
+        // Here the selected rows are for the datatable.
+        // We convert them back to the full table
+        let data_row_count = this.dt.rows().count();
+        let bottom_half = data_row_count / 2;
+        return Array.from(this.dt.rows({ selected: true }).indexes().map(
+            i => (i < bottom_half ? i : i + this.filtered_row_count)));
     }
 }
-delete dt_args['text_in_header_can_be_selected'];
-};
 
-DataTable.adjust_theme = function () {
+function set_or_remove_dark_class() {
     let is_dark_theme = function () {
         // Jupyter Lab
         if ('jpThemeLight' in document.body.dataset)
@@ -138,6 +165,6 @@ DataTable.adjust_theme = function () {
     }
 }
 
-export { DataTable, DateTime, jQuery };
+export { ITable, DateTime, jQuery, set_or_remove_dark_class };
 
 export default DataTable;
