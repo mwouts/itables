@@ -54,11 +54,11 @@ DataTable.set_selected_rows = function (dt, filtered_row_count, selected_rows) {
     dt.rows(selected_rows).select();
 }
 
-DataTable.parseJSON = function(jsonString) {
+DataTable.parseJSON = function (jsonString) {
     return JSON.parse(jsonString, (key, value, context) => {
         // At this stage, BigInts have been parsed as numbers already. Consequently, if the value appears
         // to be a number that should be a BigInt, we re-evaluate it from the original string.
-        if (typeof value === 'number' &&!Number.isSafeInteger(value) && /^-?\d+$/.test(context.source)) {
+        if (typeof value === 'number' && !Number.isSafeInteger(value) && /^-?\d+$/.test(context.source)) {
             return BigInt(context.source);
         }
         if (value === "___NaN___") return NaN;
@@ -67,6 +67,50 @@ DataTable.parseJSON = function(jsonString) {
         return value;
     });
 }
+
+function textInHeaderCanBeSelected(settings, json) {
+    // Get the Datables API
+    let api = this.api();
+
+    // Iterate over all the thead > th elements
+    jQuery('thead th', api.table().container()).each(function () {
+        if (jQuery(this).attr("colSpan") > 1) {
+            // No sorting on complex headers
+            // (but keep the icon for alignment)
+            jQuery(this).attr('data-dt-order', 'disable');
+        }
+        else if (jQuery(this).text().trim() === '') {
+            // Remove the sorting icon on empty cells
+            jQuery(this).empty();
+            jQuery(this).attr('data-dt-order', 'disable');
+        }
+        else {
+            // Apply the icon-only data-dt-order attribute
+            jQuery(this).attr('data-dt-order', 'icon-only');
+
+            // get the current column index
+            let colIndex = api.column(this).index('visible');
+
+            // Apply the order listener to the order icon
+            api.order.listener(jQuery('span.dt-column-order', this), colIndex);
+        }
+    });
+};
+
+DataTable.updateInitComplete = function (dt_args) {
+if (dt_args['text_in_header_can_be_selected'] === true) {
+    if (dt_args['initComplete'] === undefined) {
+        dt_args['initComplete'] = textInHeaderCanBeSelected;
+    } else {
+        const oldInitComplete = dt_args['initComplete'];
+        dt_args['initComplete'] = function(settings, json) {
+            textInHeaderCanBeSelected(settings, json);
+            oldInitComplete(settings, json);
+        };
+    }
+}
+delete dt_args['text_in_header_can_be_selected'];
+};
 
 DataTable.adjust_theme = function () {
     let is_dark_theme = function () {

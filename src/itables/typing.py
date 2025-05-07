@@ -49,10 +49,11 @@ class DataTableOptions(TypedDict):
     searchCols: NotRequired[list[Any]]
     initComplete: NotRequired[JavascriptFunction]
     fnInfoCallback: NotRequired[JavascriptFunction]
+    saveState: NotRequired[bool]
 
     # DataTable options provided by its extensions
     buttons: NotRequired[list[Union[str, Mapping[str, Any]]]]
-    fixedColumns: NotRequired[Mapping[Literal["left", "right"], int]]
+    fixedColumns: NotRequired[Mapping[Literal["left", "right", "start", "end"], int]]
     searchPanes: NotRequired[Mapping[str, Any]]
     searchBuilder: NotRequired[Mapping[str, Any]]
     rowGroup: NotRequired[Mapping[str, Any]]
@@ -61,6 +62,7 @@ class DataTableOptions(TypedDict):
 
     # Add addition of the dt_for_itables package
     filtered_row_count: NotRequired[int]
+    text_in_header_can_be_selected: NotRequired[bool]
 
 
 class ITableOptions(DataTableOptions):

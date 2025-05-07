@@ -16,6 +16,8 @@
         let dt_args = {};
         dt_args["data"] = data;
 
+        DataTable.updateInitComplete(dt_args);
+
         // [pre-dt-code]
         new DataTable(table, dt_args);
     });
