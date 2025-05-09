@@ -49,7 +49,8 @@ class DataTableOptions(TypedDict):
     searchCols: NotRequired[list[Any]]
     initComplete: NotRequired[JavascriptFunction]
     fnInfoCallback: NotRequired[JavascriptFunction]
-    saveState: NotRequired[bool]
+    stateSave: NotRequired[bool]
+    stateDuration: NotRequired[int]
 
     # DataTable options provided by its extensions
     buttons: NotRequired[list[Union[str, Mapping[str, Any]]]]
