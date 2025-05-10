@@ -1,6 +1,6 @@
 {
   "name": "itables_for_dash",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "ITables for Dash",
   "main": "build/index.js",
   "scripts": {

@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import jQuery from 'jquery';
+
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 
@@ -48,14 +49,35 @@ function parseJSON(jsonString) {
     });
 }
 
+// The global eval in evalNestedKeys might need jQuery
+window.$ = jQuery;
+
+function evalNestedKeys(obj, keys, context) {
+    const [first, ...rest] = keys;
+    if (rest.length === 0) {
+        try {
+            obj[first] = window.eval(obj[first]);
+        }
+        catch (e) {
+            console.error(`Error evaluating ${context}='${obj[first]}'": ${e.message}`);
+        }
+    }
+    else {
+        evalNestedKeys(obj[first], rest, context);
+    }
+}
+
 class ITable {
     constructor(table, itable_args) {
-        const { data, caption, classes, style, data_json, table_html, selected_rows, filtered_row_count, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
+        const { data, caption, classes, style, data_json, table_html, selected_rows, filtered_row_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
         if (data !== undefined) {
             throw new Error("The 'data' property is not allowed in dt_args.");
         }
         if (data_json) {
             dt_args.data = parseJSON(data_json);
+        }
+        if (keys_to_be_evaluated) {
+            keys_to_be_evaluated.forEach(keys => evalNestedKeys(dt_args, keys, keys.join('.')));
         }
 
         this.filtered_row_count = filtered_row_count;
@@ -131,8 +153,7 @@ class ITable {
             this.table.html(table_html);
         }
         if (classes) {
-            (typeof classes === "string" ? classes.split(/\s+/) :
-                classes).forEach(element => {
+            classes.forEach(element => {
                     this.table.addClass(element);
                 });
         }

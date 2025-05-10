@@ -62,9 +62,9 @@ def test_get_indicators(connected, use_to_html):
     pd_style is None,
     reason="Missing optional dependency 'Jinja2'. DataFrame.style requires jinja2.",
 )
-def test_get_pandas_styler(connected, use_to_html):
+def test_get_pandas_styler(connected):
     styler = get_pandas_styler()
-    show(styler, connected=connected, use_to_html=use_to_html)
+    show(styler, connected=connected)
 
 
 def kwargs_remove_none(**kwargs):

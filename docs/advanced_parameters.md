@@ -85,8 +85,7 @@ itables.options.layout =  {
 
 ```{tip}
 The `layout` option was introduced with `itables==2.0` and `DataTables==2.0`
-and deprecates the former [`dom` option](https://datatables.net/reference/option/dom).
-If you wish to continue using the `dom` option, set `itables.options.warn_on_dom = False`.
+and replaced the former [`dom` option](https://datatables.net/reference/option/dom).
 ```
 
 ## Search

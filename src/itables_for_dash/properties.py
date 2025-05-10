@@ -14,7 +14,7 @@ from typing import Optional
 
 from typing_extensions import Unpack
 
-from itables.javascript import get_itables_extension_arguments
+from itables.javascript import get_expanded_style, get_itables_extension_arguments
 from itables.typing import DataTableOptions, ITableOptions
 
 ITABLE_PROPERTIES = (
@@ -33,10 +33,7 @@ def get_itable_component_kwargs(
 ):
     dt_args, other_args = get_itables_extension_arguments(df=df, *args, **kwargs)
 
-    style = {
-        key: value
-        for key, value in [x.split(":") for x in other_args.pop("style").split(";")]
-    }
+    style = get_expanded_style(other_args.pop("style"))
     for key in style:
         # transform caption-side to captionSide
         words = key.split("-")

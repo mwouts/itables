@@ -81,6 +81,7 @@ class DTForITablesOptions(DataTableOptions):
     text_in_header_can_be_selected: NotRequired[bool]
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
+    keys_to_be_evaluated: NotRequired[list[list[Union[int, str]]]]
 
 
 class ITableOptions(DTForITablesOptions):
@@ -103,12 +104,10 @@ class ITableOptions(DTForITablesOptions):
     footer: NotRequired[bool]
 
     warn_on_unexpected_types: NotRequired[bool]
-    warn_on_dom: NotRequired[bool]
     warn_on_selected_rows_not_rendered: NotRequired[bool]
     warn_on_undocumented_option: NotRequired[bool]
 
     use_to_html: NotRequired[bool]
-    eval_functions: NotRequired[bool]
 
 
 def is_typeguard_available():
@@ -144,7 +143,7 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     undocumented_options = set(kwargs.keys()) - documented_options
     if undocumented_options:
         warnings.warn(
-            f"These arguments are not documented in ITableOptions: {undocumented_options}. "
+            f"These arguments are not documented in {typed_dict.__name__}: {undocumented_options}. "
             + silence_msg,
             category=SyntaxWarning,
         )

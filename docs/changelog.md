@@ -6,10 +6,12 @@ ITables ChangeLog
 
 **Added**
 - We have added type hints for the `show` function and for the various app components. A SyntaxWarning is issued if either the argument name or type does not match when `warn_on_undocumented_option=True` (the default when `typeguard>=4.4.1` is installed)
+- The ITable widget, and the ITable components for Dash and Streamlit now have the same functionality as the `show` function
 
 **Changed**
 - ITable now requires Python 3.9, due to the addition of type hints
 - We have updated DataTables to its latest release 2.3.0
+- The formerly deprecated `dom` argument has been removeds
 
 **Fixed**
 - Non-finite floats are supported in the ITable widget and in the Streamlit and Dash components ([#374](https://github.com/mwouts/itables/issues/374))
