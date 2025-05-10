@@ -82,9 +82,9 @@ class ITable(anywidget.AnyWidget):
 
         if df is None:
             del dt_args["data_json"]
-            del dt_args["columns"]
             del dt_args["filtered_row_count"]
             del dt_args["downsampling_warning"]
+            dt_args.pop("table_html", None)
         else:
             self._df = df
             dt_args_changed = True

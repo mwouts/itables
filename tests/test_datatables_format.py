@@ -101,9 +101,10 @@ def test_datatables_rows(df, expected):
         show_index=False,
         footer=False,
         column_filters=False,
+        escape_html=True,
     )
     column_count = _column_count_in_header(table_header)
-    actual = datatables_rows(df, count=column_count)
+    actual = datatables_rows(df, column_count=column_count)
     if isinstance(expected, str):
         assert actual == expected
     else:

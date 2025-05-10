@@ -11,16 +11,22 @@ except ImportError:
     pl = None
 
 
-def _format_column(x):
+def _format_column(x, escape_html: bool):
     dtype_kind = x.dtype.kind
-    if dtype_kind in ["b", "i", "s"]:
+    if dtype_kind in ["b", "i"]:
         return x
+
+    if dtype_kind == "s":
+        if escape_html:
+            return x
+        return [escape_html_chars(i) for i in x]
 
     try:
         x = fmt.format_array(x._values, None, justify="all", leading_space=False)  # type: ignore
     except TypeError:
         # Older versions of Pandas don't have 'leading_space'
         x = fmt.format_array(x._values, None, justify="all")  # type: ignore
+
     if dtype_kind == "f":
         try:
             x = np.array(x).astype(float)
@@ -28,6 +34,9 @@ def _format_column(x):
             pass
 
         x = [escape_non_finite_float(f) for f in x]
+
+    if escape_html:
+        return [escape_html_chars(i) for i in x]
 
     return x
 
@@ -42,6 +51,17 @@ def escape_non_finite_float(value):
         return "___Infinity___"
     if value == -np.inf:
         return "___-Infinity___"
+    return value
+
+
+def escape_html_chars(value):
+    """Escape HTML special characters"""
+    if isinstance(value, str):
+        from pandas.io.formats.printing import pprint_thing  # type: ignore
+
+        return pprint_thing(
+            value, escape_chars={"&": r"&amp;", "<": r"&lt;", ">": r"&gt;"}
+        ).strip()
     return value
 
 
@@ -83,21 +103,33 @@ def _isetitem(df, i, value):
         df.iloc[:, i] = value
 
 
-def datatables_rows(df, count=None, warn_on_unexpected_types=False):
+def datatables_rows(
+    df,
+    column_count: int | None = None,
+    warn_on_unexpected_types: bool = False,
+    escape_html: bool = True,
+):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    if count is None or len(df.columns) == count:
+    if column_count is None or len(df.columns) == column_count:
         empty_columns = []
     else:
         # When the header requires more columns (#141), we append empty columns on the left
-        missing_columns = count - len(df.columns)
+        missing_columns = column_count - len(df.columns)
         assert missing_columns > 0
         empty_columns = [[None] * len(df)] * missing_columns
 
     try:
         # Pandas DataFrame
-        data = list(zip(*(empty_columns + [_format_column(x) for _, x in df.items()])))
+        data = list(
+            zip(
+                *(
+                    empty_columns
+                    + [_format_column(x, escape_html) for _, x in df.items()]
+                )
+            )
+        )
         return json.dumps(
             data,
             cls=generate_encoder(warn_on_unexpected_types),
@@ -107,5 +139,8 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False):
         # Polars DataFrame
         data = df.rows()
         data = [[escape_non_finite_float(f) for f in row] for row in data]
+
+        if escape_html:
+            data = [[escape_html_chars(i) for i in row] for row in data]
 
         return json.dumps(data, cls=generate_encoder(False), allow_nan=False)

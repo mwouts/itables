@@ -7,7 +7,7 @@ import warnings
 from base64 import b64encode
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Mapping, Optional, Sequence, Union
+from typing import Any, Mapping, Optional, Sequence, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -213,12 +213,13 @@ def _table_header(
     show_index,
     footer,
     column_filters,
+    escape_html: bool,
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
     try:
-        html_header = df.head(0).to_html(escape=False)
+        html_header = df.head(0).to_html(escape=escape_html)
     except AttributeError:
         # Polars DataFrames
         html_header = pd.DataFrame(data=[], columns=df.columns, dtype=float).to_html()
@@ -334,7 +335,7 @@ def to_html_datatable(
     connected = kwargs.pop("connected")
     display_logo_when_loading = kwargs.pop("display_logo_when_loading", False)
 
-    check_itable_arguments(kwargs, DTForITablesOptions)
+    check_itable_arguments(cast(dict[str, Any], kwargs), DTForITablesOptions)
     return html_table_from_template(
         table_id=table_id,
         dt_url=dt_url,
@@ -389,22 +390,24 @@ def get_itable_arguments(
     maxRows = kwargs.pop("maxRows", 0)
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
+    allow_html = kwargs.pop("allow_html")
 
     if not showIndex:
         if isinstance(df, pd.DataFrame):
             df = df.set_index(pd.RangeIndex(len(df.index)))
 
+    footer = kwargs.pop("footer", False)
+    warn_on_selected_rows_not_rendered = kwargs.pop(
+        "warn_on_selected_rows_not_rendered", False
+    )
     if df is None:
         pass
     elif not use_to_html:
-        full_row_count = len(df)
+        full_row_count = len(df)  # type: ignore
         df, downsampling_warning = downsample(
             df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
         )
 
-        warn_on_selected_rows_not_rendered = kwargs.pop(
-            "warn_on_selected_rows_not_rendered"
-        )
         if "selected_rows" in kwargs:
             kwargs["selected_rows"] = warn_if_selected_rows_are_not_visible(
                 kwargs["selected_rows"],
@@ -417,12 +420,15 @@ def get_itable_arguments(
             kwargs["downsampling_warning"] = downsampling_warning
         kwargs["filtered_row_count"] = full_row_count - len(df)
 
-        footer = kwargs.pop("footer", False)
         if kwargs.get("column_filters", False) == "footer":
             footer = True
 
         table_header = _table_header(
-            df, showIndex, footer, kwargs.get("column_filters", False)
+            df,
+            showIndex,
+            footer,
+            kwargs.get("column_filters", False),
+            escape_html=allow_html is not True,
         )
 
         # Export the table data to JSON and include this in the HTML
@@ -437,6 +443,7 @@ def get_itable_arguments(
             df,
             column_count,
             warn_on_unexpected_types=warn_on_unexpected_types,
+            escape_html=allow_html is not True,
         )
     else:
         if pd_style is not None and isinstance(df, pd_style.Styler):
@@ -452,7 +459,7 @@ def get_itable_arguments(
                 kwargs["table_html"] = df.to_html()
         else:
             # NB: style is not available either
-            kwargs["table_html"] = df.to_html()
+            kwargs["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
 
     _adjust_layout(df, kwargs)
 
@@ -487,7 +494,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
     parameters to be used outside of the constructor.
     """
     dt_args = get_itable_arguments(df, *args, **kwargs, app_mode=True)
-    check_itable_arguments(dt_args, DTForITablesOptions)
+    check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
     other_args = {
         "classes": get_compact_classes(dt_args.pop("classes")),
         "style": get_compact_style(dt_args.pop("style")),
@@ -539,7 +546,7 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: Optional[str], kwargs: ITableOptions) -> Optional[str]:
+def check_table_id(table_id: Optional[str], kwargs: ITableOptions) -> str:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
@@ -566,7 +573,7 @@ def set_default_options(kwargs: ITableOptions, *, use_to_html: bool, app_mode: b
         kwargs["connected"] = kwargs.get(
             "connected", ("dt_url" in kwargs) or _CONNECTED
         )
-    not_available = set()
+    not_available = {"dt_bundle"}  # this one is for init_notebook_mode
     if use_to_html:
         not_available = not_available.union(_OPTIONS_NOT_AVAILABLE_WITH_TO_HTML)
     if app_mode:
@@ -583,14 +590,13 @@ def set_default_options(kwargs: ITableOptions, *, use_to_html: bool, app_mode: b
     kwargs["layout"] = {**getattr(opt, "layout"), **kwargs.get("layout", {})}
 
     # Default options
-    for option in dir(opt):
-        if (
-            not option.startswith("_")
-            and option not in not_available
-            and option not in kwargs
-            and option != "dt_bundle"  # this one is for init_notebook_mode
-        ):
-            kwargs[option] = getattr(opt, option)
+    for option in (
+        set(dir(opt))
+        .difference(opt.__non_options)
+        .difference(not_available)
+        .difference(kwargs)
+    ):
+        kwargs[option] = getattr(opt, option)
 
     if "classes" in kwargs and isinstance(kwargs["classes"], list):
         kwargs["classes"] = " ".join(kwargs["classes"])
@@ -600,6 +606,8 @@ def set_default_options(kwargs: ITableOptions, *, use_to_html: bool, app_mode: b
 
     if kwargs.get("scrollX", False):
         # column headers are misaligned if we have margin:auto
+        assert "style" in kwargs
+        assert isinstance(kwargs["style"], str)
         kwargs["style"] = kwargs["style"].replace("margin:auto", "margin:0")
 
     for name, value in kwargs.items():
@@ -678,7 +686,9 @@ def html_table_from_template(
     check_table_id(table_id, kwargs)
     output = replace_value(output, "#table_id", f"#{table_id}")
 
+    assert "classes" in kwargs
     kwargs["classes"] = get_expanded_classes(kwargs["classes"])
+    assert "style" in kwargs
     kwargs["style"] = get_expanded_style(kwargs["style"])
 
     # Export the DT args to JSON

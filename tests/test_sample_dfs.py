@@ -97,7 +97,7 @@ def test_ordered_categories():
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_format_column(series_name, series):
-    values = list(_format_column(series))
+    values = list(_format_column(series, escape_html=True))
     json.dumps(values, cls=generate_encoder())
 
 

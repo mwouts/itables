@@ -96,6 +96,8 @@ class ITableOptions(DTForITablesOptions):
     maxRows: NotRequired[int]
     maxColumns: NotRequired[int]
 
+    allow_html: NotRequired[bool]
+
     dt_url: NotRequired[str]
     dt_bundle: NotRequired[Union[str, Path]]
     connected: NotRequired[bool]

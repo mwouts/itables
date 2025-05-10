@@ -19,8 +19,8 @@ def test_get_itables_extension_arguments(df):
         "filtered_row_count",
         "downsampling_warning",
     }, set(dt_args)
-    assert isinstance(dt_args["data_json"], str)
-    assert isinstance(dt_args["table_html"], str)
+    assert isinstance(dt_args["data_json"], str)  # type: ignore
+    assert isinstance(dt_args["table_html"], str)  # type: ignore
 
     assert set(other_args) <= {
         "classes",

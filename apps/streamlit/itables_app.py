@@ -8,6 +8,7 @@ from st_aggrid import AgGrid
 from streamlit.components.v1.components import MarshallComponentException
 
 import itables.options as it_opt
+from itables.javascript import get_compact_style, get_expanded_classes
 from itables.sample_dfs import get_countries, get_dict_of_test_dfs
 from itables.streamlit import interactive_table
 
@@ -34,7 +35,7 @@ select = st.sidebar.toggle("Row selection", value=True)
 classes = st.sidebar.multiselect(
     "Classes",
     options=["display", "nowrap", "compact", "cell-border", "stripe"],
-    default=it_opt.classes.split(" "),
+    default=get_expanded_classes(it_opt.classes),
 )
 buttons = st.sidebar.multiselect(
     "Buttons",
@@ -42,7 +43,7 @@ buttons = st.sidebar.multiselect(
     default=["copyHtml5", "csvHtml5", "excelHtml5", "colvis"],
 )
 
-style = st.sidebar.text_input("Style", value=it_opt.style)
+style = st.sidebar.text_input("Style", value=get_compact_style(it_opt.style))
 
 render_with = st.sidebar.selectbox(
     "Render with", ["st.dataframe", "streamlit-aggrid", "itables"], index=2
@@ -55,7 +56,7 @@ it_args = {}
 if select:
     it_args["select"] = True
     it_args["selected_rows"] = [0, 1, 2, 100, 207]
-if classes != it_opt.classes.split(" "):
+if classes != get_expanded_classes(it_opt.classes):
     it_args["classes"] = classes
 if style != it_opt.style:
     it_args["style"] = style
