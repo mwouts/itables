@@ -14,7 +14,7 @@ import pandas as pd
 from typing_extensions import Unpack
 
 from .typing import (
-    DataTableOptions,
+    DTForITablesOptions,
     ITableOptions,
     JavascriptCode,
     JavascriptFunction,
@@ -46,7 +46,6 @@ DATATABLES_SRC_FOR_ITABLES = (
     f"_datatables_src_for_itables_{itables_version.replace('.','_').replace('-','_')}"
 )
 _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
-    "tags",
     "footer",
     "column_filters",
     "maxBytes",
@@ -161,11 +160,7 @@ This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}
 
 def _table_header(
     df,
-    table_id,
     show_index,
-    classes,
-    style,
-    tags,
     footer,
     column_filters,
     connected,
@@ -196,11 +191,6 @@ Loading ITables v{itables_version} from {itables_source}...
 (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
 </tr>"""
 
-    if style:
-        style = 'style="{}"'.format(style)
-    else:
-        style = ""
-
     header = "<thead>{}</thead>".format(
         _flat_header(df, show_index) if column_filters == "header" else thead
     )
@@ -212,17 +202,7 @@ Loading ITables v{itables_version} from {itables_source}...
     else:
         footer = ""
 
-    return """<table id="{table_id}" class="{classes}" data-quarto-disable-processing="true" {style}>
-{tags}{header}{footer}<tbody>{tbody}</tbody>
-</table>""".format(
-        table_id=table_id,
-        classes=classes,
-        style=style,
-        tags=tags,
-        header=header,
-        tbody=tbody,
-        footer=footer,
-    )
+    return f"""<table">{header}{footer}<tbody>{tbody}</tbody></table>"""
 
 
 def _flat_header(df, show_index):
@@ -344,13 +324,6 @@ def to_html_datatable(
     # These options are used here, not in DataTable
     classes = kwargs.pop("classes")
     style = kwargs.pop("style")
-    tags = kwargs.pop("tags")
-
-    if "caption" in kwargs:
-        tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
-            tags, kwargs.pop("caption")
-        )
-
     showIndex = kwargs.pop("showIndex")
 
     if isinstance(df, (np.ndarray, np.generic)):
@@ -415,6 +388,8 @@ def to_html_datatable(
     table_id = table_id or "itables_" + str(uuid.uuid4()).replace("-", "_")
     if isinstance(classes, list):
         classes = " ".join(classes)
+    kwargs["classes"] = classes
+    kwargs["style"] = style
 
     if not showIndex:
         if isinstance(df, pd.DataFrame):
@@ -422,11 +397,7 @@ def to_html_datatable(
 
     table_header = _table_header(
         df,
-        table_id,
         showIndex,
-        classes,
-        style,
-        tags,
         footer,
         column_filters,
         connected=kwargs.get("connected"),
@@ -498,7 +469,6 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
             "tags",
             "dt_url",
             "connected",
-            "pre_dt_code",
             "use_to_html",
             "footer",
             "column_filters",
@@ -546,9 +516,6 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
         warn_on_dom=kwargs.pop("warn_on_dom"),
     )
 
-    if isinstance(classes, list):
-        classes = " ".join(classes)
-
     if not showIndex:
         if isinstance(df, pd.DataFrame):
             df = df.set_index(pd.RangeIndex(len(df.index)))
@@ -588,7 +555,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
         kwargs.pop("warn_on_selected_rows_not_rendered"),
     )
 
-    check_itable_arguments(cast(dict[str, Any], kwargs), DataTableOptions)
+    check_itable_arguments(cast(dict[str, Any], kwargs), DTForITablesOptions)
 
     other_args = {
         "classes": classes,
@@ -650,7 +617,7 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: Optional[str], kwargs: DataTableOptions) -> Optional[str]:
+def check_table_id(table_id: Optional[str], kwargs: ITableOptions) -> Optional[str]:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
@@ -712,6 +679,12 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
         ):
             kwargs[option] = getattr(opt, option)
 
+    if "classes" in kwargs and isinstance(kwargs["classes"], list):
+        kwargs["classes"] = " ".join(kwargs["classes"])
+
+    if "style" in kwargs and isinstance(kwargs["style"], dict):
+        kwargs["style"] = ";".join(f"{k}:{v}" for k, v in kwargs["style"].items())
+
     if kwargs.get("scrollX", False):
         # column headers are misaligned if we have margin:auto
         kwargs["style"] = kwargs["style"].replace("margin:auto", "margin:0")
@@ -724,11 +697,14 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
                 )
             )
 
-    dt_args = set(ITableOptions.__optional_keys__) - set(
-        DataTableOptions.__optional_keys__
-    )
+    # The options for ITable in dt_for_itables will be checked later on
     check_itable_arguments(
-        {k: v for k, v in kwargs.items() if k not in dt_args}, ITableOptions
+        {
+            k: v
+            for k, v in kwargs.items()
+            if k not in DTForITablesOptions.__optional_keys__
+        },
+        ITableOptions,
     )
 
 
@@ -835,7 +811,6 @@ def html_table_from_template(html_table, table_id, data_json, kwargs, column_fil
             "approach at https://mwouts.github.io/itables/custom_css.html."
         )
     eval_functions = kwargs.pop("eval_functions", None)
-    pre_dt_code = kwargs.pop("pre_dt_code")
     dt_url = kwargs.pop("dt_url")
 
     # Load the HTML template
@@ -866,11 +841,10 @@ def html_table_from_template(html_table, table_id, data_json, kwargs, column_fil
         output = replace_value(output, connected_import, local_import)
 
     output = replace_value(
-        output,
-        '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
-        html_table,
+        output, '<table id="table_id"></table>', f'<table id="{table_id}"></table>'
     )
-    output = replace_value(output, "#table_id", "#{}".format(table_id))
+    output = replace_value(output, "#table_id", f"#{table_id}")
+    kwargs["table_html"] = html_table
 
     if "selected_rows" in kwargs:
         output = replace_value(
@@ -882,41 +856,16 @@ def html_table_from_template(html_table, table_id, data_json, kwargs, column_fil
         )
 
     if column_filters:
-        # If the below was false, we would need to concatenate the JS code
-        # which might not be trivial...
-        assert pre_dt_code == ""
-        assert "initComplete" not in kwargs
-
-        pre_dt_code = replace_value(
-            read_package_file("html/column_filters/pre_dt_code.js"),
-            "thead_or_tfoot",
-            "thead" if column_filters == "header" else "tfoot",
-        )
-        kwargs["initComplete"] = JavascriptFunction(
-            replace_value(
-                replace_value(
-                    read_package_file("html/column_filters/initComplete.js"),
-                    "const initComplete = ",
-                    "",
-                ),
-                "header",
-                column_filters,
-            )
-        )
+        kwargs["column_filters"] = column_filters
 
     # Export the DT args to JSON
-    check_itable_arguments(kwargs, DataTableOptions)
+    check_itable_arguments(kwargs, DTForITablesOptions)
     if data_json is not None:
         kwargs["data_json"] = data_json
     dt_args = json_dumps(kwargs, eval_functions)
 
     output = replace_value(
         output, "let dt_args = {};", "let dt_args = {};".format(dt_args)
-    )
-    output = replace_value(
-        output,
-        "// [pre-dt-code]",
-        pre_dt_code.replace("#table_id", "#{}".format(table_id)),
     )
 
     return output

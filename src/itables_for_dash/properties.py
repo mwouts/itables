@@ -33,10 +33,16 @@ def get_itable_component_kwargs(
 ):
     dt_args, other_args = get_itables_extension_arguments(df=df, *args, **kwargs)
 
-    style = other_args.pop("style")
-    style = {key: value for key, value in [x.split(":") for x in style.split(";")]}
-    style["captionSide"] = style.pop("caption-side")
-    style["tableLayout"] = style.pop("table-layout")
+    style = {
+        key: value
+        for key, value in [x.split(":") for x in other_args.pop("style").split(";")]
+    }
+    for key in style:
+        # transform caption-side to captionSide
+        words = key.split("-")
+        if len(words) > 1:
+            new_key = words[0] + "".join(word.capitalize() for word in words[1:])
+            style[new_key] = style.pop(key)
 
     return {
         "dt_args": dt_args,

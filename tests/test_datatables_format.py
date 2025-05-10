@@ -98,11 +98,7 @@ from itables.sample_dfs import PANDAS_VERSION_MAJOR
 def test_datatables_rows(df, expected):
     table_header = _table_header(
         df,
-        table_id="",
         show_index=False,
-        classes="",
-        style="",
-        tags="",
         footer=False,
         column_filters=False,
         connected=False,

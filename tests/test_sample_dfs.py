@@ -81,16 +81,12 @@ def test_show_test_dfs(df, connected, use_to_html, lengthMenu, monkeypatch):
 
 
 def test_to_html_datatable(df, connected, use_to_html, lengthMenu, monkeypatch):
-    html = to_html_datatable(
+    to_html_datatable(
         df,
         connected=connected,
         use_to_html=use_to_html,
         **kwargs_remove_none(lengthMenu=lengthMenu),
     )
-    if use_to_html:
-        assert "quarto" not in html
-    else:
-        assert 'data-quarto-disable-processing="true"' in html
 
 
 def test_ordered_categories():

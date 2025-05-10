@@ -34,9 +34,6 @@ to avoid an issue with misaligned headers
 """
 style = "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
 
-"""Additional tags like e.g. caption"""
-tags = ""
-
 """Maximum bytes before downsampling a table"""
 maxBytes = "64KB"
 
@@ -46,9 +43,6 @@ maxColumns = 200
 
 """By default we don't sort the table"""
 order = []
-
-"""Pre dt code"""
-pre_dt_code = ""
 
 """Optional table footer"""
 footer = False

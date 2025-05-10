@@ -48,72 +48,121 @@ function parseJSON(jsonString) {
     });
 }
 
-function textInHeaderCanBeSelected(settings, json) {
-    // Get the Datables API
-    let api = this.api();
-
-    // Iterate over all the thead > th elements
-    jQuery('thead th', api.table().container()).each(function () {
-        if (jQuery(this).attr("colSpan") > 1) {
-            // No sorting on complex headers
-            // (but keep the icon for alignment)
-            jQuery(this).attr('data-dt-order', 'disable');
-        }
-        else if (jQuery(this).text().trim() === '') {
-            // Remove the sorting icon on empty cells
-            jQuery(this).empty();
-            jQuery(this).attr('data-dt-order', 'disable');
-        }
-        else {
-            // Apply the icon-only data-dt-order attribute
-            jQuery(this).attr('data-dt-order', 'icon-only');
-
-            // get the current column index
-            let colIndex = api.column(this).index('visible');
-
-            // Apply the order listener to the order icon
-            api.order.listener(jQuery('span.dt-column-order', this), colIndex);
-        }
-    });
-};
-
 class ITable {
     constructor(table, itable_args) {
-        const { data, data_json, filtered_row_count, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
+        const { data, caption, classes, style, data_json, table_html, selected_rows, filtered_row_count, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
         if (data !== undefined) {
             throw new Error("The 'data' property is not allowed in dt_args.");
         }
-        if (data_json !== undefined) {
+        if (data_json) {
             dt_args.data = parseJSON(data_json);
         }
 
         this.filtered_row_count = filtered_row_count;
 
-        if (text_in_header_can_be_selected === true) {
-            if (initComplete === undefined) {
-                dt_args.initComplete = textInHeaderCanBeSelected;
-            } else {
-                dt_args.initComplete = function (settings, json) {
-                    textInHeaderCanBeSelected(settings, json);
+        if (text_in_header_can_be_selected || column_filters) {
+            dt_args.initComplete = function (settings, json) {
+                if (column_filters == 'header') {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            const that = this;
+
+                            jQuery('input', this.header()).on('keyup change clear', function () {
+                                if (that.search() !== this.value) {
+                                    that.search(this.value).draw();
+                                }
+                            });
+                        });
+                } else if (column_filters == 'footer') {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            const that = this;
+
+                            jQuery('input', this.footer()).on('keyup change clear', function () {
+                                if (that.search() !== this.value) {
+                                    that.search(this.value).draw();
+                                }
+                            });
+                        });
+                }
+                if (text_in_header_can_be_selected) {
+                    // Get the Datables API
+                    let api = this.api();
+
+                    // Iterate over all the thead > th elements
+                    jQuery('thead th', api.table().container()).each(function () {
+                        if (jQuery(this).attr("colSpan") > 1) {
+                            // No sorting on complex headers
+                            // (but keep the icon for alignment)
+                            jQuery(this).attr('data-dt-order', 'disable');
+                        }
+                        else if (jQuery(this).html().trim() === '') {
+                            // Remove the sorting icon on empty cells
+                            jQuery(this).empty();
+                            jQuery(this).attr('data-dt-order', 'disable');
+                        }
+                        else {
+                            // Apply the icon-only data-dt-order attribute
+                            jQuery(this).attr('data-dt-order', 'icon-only');
+
+                            // get the current column index
+                            let colIndex = api.column(this).index('visible');
+
+                            // Apply the order listener to the order icon
+                            api.order.listener(jQuery('span.dt-column-order', this), colIndex);
+                        }
+                    });
+                }
+                if (initComplete !== undefined)
                     initComplete(settings, json);
-                };
             }
         }
 
-        if (downsampling_warning !== undefined) {
+        if (downsampling_warning) {
             dt_args["fnInfoCallback"] = function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {
-              return sPre + ' (' + downsampling_warning + ')';
+                return sPre + ' (' + downsampling_warning + ')';
             }
-          }
+        }
 
-        this.table = table;
+        this.table = jQuery(table);
+        if (table_html) {
+            this.table.html(table_html);
+        }
+        if (classes) {
+            (typeof classes === "string" ? classes.split(/\s+/) :
+                classes).forEach(element => {
+                    this.table.addClass(element);
+                });
+        }
+        if (style) {
+            this.table.css(style);
+        }
+        if (column_filters === "header" || column_filters === "footer") {
+            let thead_or_tfoot = (column_filters === "header") ? "thead" : "tfoot";
+            this.table.find(thead_or_tfoot + ' th').each(function () {
+                let input = document.createElement("input");
+                input.type = "text";
+                input.placeholder = jQuery(this).text();
+
+                jQuery(this).html(input);
+            });
+        }
+        this.table.data("quarto-disable-processing", true);
         this.dt = new DataTable(table, dt_args);
+        if (caption !== undefined) {
+            this.dt.caption(caption);
+        }
+        if (selected_rows !== undefined) {
+            this.selected_rows = selected_rows;
+        }
     }
 
     destroy() {
         if (this.dt) {
             this.dt.destroy();
-            jQuery(this.table).empty();
+            this.table.empty();
             this.dt = null;
         }
     }
