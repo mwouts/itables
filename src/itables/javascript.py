@@ -322,14 +322,15 @@ def set_caption_from_positional_args(args: tuple, kwargs: ITableOptions):
 def to_html_datatable(
     df,
     *args,
-    table_id: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ):
     """
     Return the HTML representation of the given
     dataframe as an interactive datatable
     """
-    table_id = check_table_id(table_id, kwargs)
+    kwargs["table_id"] = table_id = check_table_id(
+        kwargs.pop("table_id", None), kwargs, df=df
+    )
     kwargs = get_itable_arguments(df, *args, **kwargs)
     dt_url = kwargs.pop("dt_url")
     connected = kwargs.pop("connected")
@@ -396,6 +397,7 @@ def get_itable_arguments(
         if isinstance(df, pd.DataFrame):
             df = df.set_index(pd.RangeIndex(len(df.index)))
 
+    table_id = kwargs.pop("table_id", None)
     footer = kwargs.pop("footer", False)
     warn_on_selected_rows_not_rendered = kwargs.pop(
         "warn_on_selected_rows_not_rendered", False
@@ -453,10 +455,20 @@ def get_itable_arguments(
                 except AttributeError:
                     pass
 
+            assert isinstance(table_id, str)
+            assert table_id.startswith("T_")
+            table_id = table_id[2:]
             try:
-                kwargs["table_html"] = df.to_html(sparse_index=False)
+                table_html = df.to_html(sparse_index=False, table_uuid=table_id)
             except TypeError:
-                kwargs["table_html"] = df.to_html()
+                table_html = df.to_html(table_uuid=table_id)
+
+            # We need to extract the style from the table
+            table_style, table_html = table_html.split("</style>", 1)
+            style_prefix = '<style type="text/css">'
+            assert table_style.startswith(style_prefix)
+            kwargs["table_style"] = table_style.removeprefix(style_prefix)
+            kwargs["table_html"] = table_html
         else:
             # NB: style is not available either
             kwargs["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
@@ -493,6 +505,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
     DataTable constructor, while the second one contains other
     parameters to be used outside of the constructor.
     """
+    kwargs["table_id"] = check_table_id(kwargs.get("table_id", None), kwargs, df=df)
     dt_args = get_itable_arguments(df, *args, **kwargs, app_mode=True)
     check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
     other_args = {
@@ -546,7 +559,7 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: Optional[str], kwargs: ITableOptions) -> str:
+def check_table_id(table_id: Optional[str], kwargs: ITableOptions, df=None) -> str:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
@@ -557,6 +570,9 @@ def check_table_id(table_id: Optional[str], kwargs: ITableOptions) -> str:
         )
 
     if table_id is None:
+        if pd_style is not None and isinstance(df, pd_style.Styler):
+            return "T_" + str(uuid.uuid4())[:5]
+
         return "itables_" + str(uuid.uuid4()).replace("-", "_")
 
     if not re.match(r"[A-Za-z][-A-Za-z0-9_.]*", table_id):
@@ -678,12 +694,12 @@ def html_table_from_template(
     Loading ITables v{itables_version} from {itables_source}...
     (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
     </tr></tbody>"""
+    check_table_id(table_id, kwargs)
     output = replace_value(
         output,
         '<table id="table_id"></table>',
         f'<table id="{table_id}">{table_body}</table>',
     )
-    check_table_id(table_id, kwargs)
     output = replace_value(output, "#table_id", f"#{table_id}")
 
     assert "classes" in kwargs

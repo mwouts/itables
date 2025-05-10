@@ -71,8 +71,9 @@ class DTForITablesOptions(DataTableOptions):
     classes: NotRequired[Union[str, list[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
 
-    table_html: NotRequired[str]
     data_json: NotRequired[str]
+    table_html: NotRequired[str]
+    table_style: NotRequired[str]
 
     selected_rows: NotRequired[list[int]]
     filtered_row_count: NotRequired[int]
@@ -98,6 +99,7 @@ class ITableOptions(DTForITablesOptions):
 
     allow_html: NotRequired[bool]
 
+    table_id: NotRequired[str]
     dt_url: NotRequired[str]
     dt_bundle: NotRequired[Union[str, Path]]
     connected: NotRequired[bool]

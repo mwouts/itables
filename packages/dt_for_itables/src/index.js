@@ -69,7 +69,7 @@ function evalNestedKeys(obj, keys, context) {
 
 class ITable {
     constructor(table, itable_args) {
-        const { data, caption, classes, style, data_json, table_html, selected_rows, filtered_row_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
+        const { data, caption, classes, style, data_json, table_html, table_style, selected_rows, filtered_row_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
         if (data !== undefined) {
             throw new Error("The 'data' property is not allowed in dt_args.");
         }
@@ -159,6 +159,11 @@ class ITable {
         }
         if (style) {
             this.table.css(style);
+        }
+        if (table_style) {
+            $('<style id="' + this.table.attr('id') + '-style">')
+  .text(table_style)
+  .appendTo(this.table);
         }
         if (column_filters === "header" || column_filters === "footer") {
             let thead_or_tfoot = (column_filters === "header") ? "thead" : "tfoot";

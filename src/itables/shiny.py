@@ -35,19 +35,18 @@ def init_itables(
     return html
 
 
-def DT(df, *args, table_id=None, **kwargs: Unpack[ITableOptions]):
+def DT(df, *args, **kwargs: Unpack[ITableOptions]):
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
     kwargs["connected"] = kwargs.get("connected", _CONNECTED)
     set_caption_from_positional_args(args, kwargs)
     html = to_html_datatable(
         df,
-        table_id=table_id,
         **kwargs,
     )
 
     html = html.replace("<code>init_notebook_mode</code>", "<code>init_itables</code>")
 
-    if table_id is None:
+    if "table_id" not in kwargs:
         return html
 
     script_end = "\n    });\n</script>\n"
@@ -56,7 +55,7 @@ def DT(df, *args, table_id=None, **kwargs: Unpack[ITableOptions]):
 
     selected_rows_code = f"""
         function set_selected_rows_in_shiny(...args) {{
-            Shiny.setInputValue('{table_id}_selected_rows', dt.selected_rows);
+            Shiny.setInputValue('{kwargs["table_id"]}_selected_rows', dt.selected_rows);
         }};
 
         set_selected_rows_in_shiny();
