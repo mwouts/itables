@@ -1,17 +1,41 @@
 import json
 from pathlib import Path
 
+import pandas as pd
 import pytest
 import requests
 
+import itables.options as opt
 from itables.javascript import (
     _df_fits_in_one_page,
     _tfoot_from_thead,
     check_table_id,
+    get_compact_classes,
+    get_compact_style,
+    get_itable_arguments,
     replace_value,
     to_html_datatable,
 )
 from itables.utils import UNPKG_DT_BUNDLE_CSS, UNPKG_DT_BUNDLE_URL
+
+
+def test_get_itable_arguments():
+    """
+    As much as possible we want few arguments for the ITable class
+    """
+    dt_args = get_itable_arguments(df=pd.DataFrame({"x": [1, 2]}))
+    del dt_args["table_html"]
+    del dt_args["connected"]
+    assert dt_args == {
+        "classes": get_compact_classes(opt.classes),
+        "style": get_compact_style(opt.style),
+        "data_json": "[[1], [2]]",
+        "order": [],
+        "display_logo_when_loading": opt.display_logo_when_loading,
+        "warn_on_undocumented_option": opt.warn_on_undocumented_option,
+        "dt_url": opt.dt_url,
+        "layout": {k: None for k in opt.layout},
+    }
 
 
 def test_replace_value(

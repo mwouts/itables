@@ -420,7 +420,7 @@ def get_itable_arguments(
 
         if downsampling_warning:
             kwargs["downsampling_warning"] = downsampling_warning
-        kwargs["filtered_row_count"] = full_row_count - len(df)
+            kwargs["filtered_row_count"] = full_row_count - len(df)
 
         if kwargs.get("column_filters", False) == "footer":
             footer = True
@@ -474,6 +474,11 @@ def get_itable_arguments(
             kwargs["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
 
     _adjust_layout(df, kwargs)
+
+    if kwargs.get("column_filters") is False:
+        kwargs.pop("column_filters")
+    if kwargs.get("text_in_header_can_be_selected") is False:
+        kwargs.pop("text_in_header_can_be_selected")
 
     keys_to_be_evaluated = get_keys_to_be_evaluated(kwargs)
     if keys_to_be_evaluated:
