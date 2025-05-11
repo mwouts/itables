@@ -1,5 +1,6 @@
 import json
 import warnings
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -105,7 +106,7 @@ def _isetitem(df, i, value):
 
 def datatables_rows(
     df,
-    column_count: int | None = None,
+    column_count: Optional[int] = None,
     warn_on_unexpected_types: bool = False,
     escape_html: bool = True,
 ):

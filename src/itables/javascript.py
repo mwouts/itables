@@ -331,24 +331,24 @@ def to_html_datatable(
     kwargs["table_id"] = table_id = check_table_id(
         kwargs.pop("table_id", None), kwargs, df=df
     )
-    kwargs = get_itable_arguments(df, *args, **kwargs)
-    dt_url = kwargs.pop("dt_url")
-    connected = kwargs.pop("connected")
-    display_logo_when_loading = kwargs.pop("display_logo_when_loading", False)
+    dt_args = get_itable_arguments(df, *args, **kwargs)
+    dt_url = dt_args.pop("dt_url")
+    connected = dt_args.pop("connected")
+    display_logo_when_loading = dt_args.pop("display_logo_when_loading", False)
 
-    check_itable_arguments(cast(dict[str, Any], kwargs), DTForITablesOptions)
+    check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
     return html_table_from_template(
         table_id=table_id,
         dt_url=dt_url,
         connected=connected,
         display_logo_when_loading=display_logo_when_loading,
-        kwargs=kwargs,
+        kwargs=dt_args,
     )
 
 
 def get_itable_arguments(
     df, *args, app_mode: bool = False, **kwargs: Unpack[ITableOptions]
-) -> ITableOptions:
+) -> DTForITablesOptions:
     """
     Return the arguments to be passed to the ITable class
     """
@@ -402,6 +402,9 @@ def get_itable_arguments(
     warn_on_selected_rows_not_rendered = kwargs.pop(
         "warn_on_selected_rows_not_rendered", False
     )
+    dt_args = cast(DTForITablesOptions, kwargs)
+    del kwargs
+
     if df is None:
         pass
     elif not use_to_html:
@@ -410,26 +413,26 @@ def get_itable_arguments(
             df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
         )
 
-        if "selected_rows" in kwargs:
-            kwargs["selected_rows"] = warn_if_selected_rows_are_not_visible(
-                kwargs["selected_rows"],
+        if "selected_rows" in dt_args:
+            dt_args["selected_rows"] = warn_if_selected_rows_are_not_visible(
+                dt_args["selected_rows"],
                 full_row_count,
                 len(df),
                 warn_on_selected_rows_not_rendered,
             )
 
         if downsampling_warning:
-            kwargs["downsampling_warning"] = downsampling_warning
-            kwargs["filtered_row_count"] = full_row_count - len(df)
+            dt_args["downsampling_warning"] = downsampling_warning
+            dt_args["filtered_row_count"] = full_row_count - len(df)
 
-        if kwargs.get("column_filters", False) == "footer":
+        if dt_args.get("column_filters", False) == "footer":
             footer = True
 
         table_header = _table_header(
             df,
             showIndex,
             footer,
-            kwargs.get("column_filters", False),
+            dt_args.get("column_filters", False),
             escape_html=allow_html is not True,
         )
 
@@ -440,8 +443,8 @@ def get_itable_arguments(
         # When the header has an extra column, we add
         # an extra empty column in the table data #141
         column_count = _column_count_in_header(table_header)
-        kwargs["table_html"] = table_header
-        kwargs["data_json"] = datatables_rows(
+        dt_args["table_html"] = table_header
+        dt_args["data_json"] = datatables_rows(
             df,
             column_count,
             warn_on_unexpected_types=warn_on_unexpected_types,
@@ -472,24 +475,24 @@ def get_itable_arguments(
             table_style, table_html = table_html.split("</style>", 1)
             style_prefix = '<style type="text/css">'
             assert table_style.startswith(style_prefix)
-            kwargs["table_style"] = table_style.removeprefix(style_prefix)
-            kwargs["table_html"] = table_html
+            dt_args["table_style"] = table_style.removeprefix(style_prefix)
+            dt_args["table_html"] = table_html
         else:
             # NB: style is not available either
-            kwargs["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
+            dt_args["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
 
-    _adjust_layout(df, kwargs)
+    _adjust_layout(df, dt_args)
 
-    if kwargs.get("column_filters") is False:
-        kwargs.pop("column_filters")
-    if kwargs.get("text_in_header_can_be_selected") is False:
-        kwargs.pop("text_in_header_can_be_selected")
+    if dt_args.get("column_filters") is False:
+        dt_args.pop("column_filters")
+    if dt_args.get("text_in_header_can_be_selected") is False:
+        dt_args.pop("text_in_header_can_be_selected")
 
-    keys_to_be_evaluated = get_keys_to_be_evaluated(kwargs)
+    keys_to_be_evaluated = get_keys_to_be_evaluated(dt_args)
     if keys_to_be_evaluated:
-        kwargs["keys_to_be_evaluated"] = keys_to_be_evaluated
+        dt_args["keys_to_be_evaluated"] = keys_to_be_evaluated
 
-    return kwargs
+    return dt_args
 
 
 def _raise_if_javascript_code(values, context=""):
@@ -569,7 +572,7 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: Optional[str], kwargs: ITableOptions, df=None) -> str:
+def check_table_id(table_id: Optional[str], kwargs, df=None) -> str:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
@@ -660,7 +663,7 @@ def html_table_from_template(
     dt_url: str,
     connected: bool,
     display_logo_when_loading: bool,
-    kwargs: ITableOptions,
+    kwargs: DTForITablesOptions,
 ):
     if "css" in kwargs:
         TypeError(

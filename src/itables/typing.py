@@ -70,6 +70,7 @@ class ITableOptions(DataTableOptions):
 
     classes: NotRequired[Union[str, list[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
+    selected_rows: NotRequired[list[int]]
 
     showIndex: NotRequired[Union[bool, str]]
 
@@ -118,6 +119,12 @@ class DTForITablesOptions(DataTableOptions):
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
     keys_to_be_evaluated: NotRequired[list[list[Union[int, str]]]]
+
+    # These options are used in the HTML template
+    # and don't reach the ITable JavaScript class
+    connected: NotRequired[bool]
+    dt_url: NotRequired[str]
+    display_logo_when_loading: NotRequired[bool]
 
 
 def is_typeguard_available():
