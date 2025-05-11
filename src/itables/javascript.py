@@ -241,7 +241,7 @@ def _table_header(
     else:
         footer = ""
 
-    return f"""<table">{header}{footer}</table>"""
+    return f"<table>{header}{footer}</table>"
 
 
 def _flat_header(df, show_index):
