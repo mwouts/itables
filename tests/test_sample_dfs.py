@@ -62,9 +62,9 @@ def test_get_indicators(connected, use_to_html):
     pd_style is None,
     reason="Missing optional dependency 'Jinja2'. DataFrame.style requires jinja2.",
 )
-def test_get_pandas_styler(connected, use_to_html):
+def test_get_pandas_styler(connected):
     styler = get_pandas_styler()
-    show(styler, connected=connected, use_to_html=use_to_html)
+    show(styler, connected=connected, allow_html=True)
 
 
 def kwargs_remove_none(**kwargs):
@@ -81,16 +81,12 @@ def test_show_test_dfs(df, connected, use_to_html, lengthMenu, monkeypatch):
 
 
 def test_to_html_datatable(df, connected, use_to_html, lengthMenu, monkeypatch):
-    html = to_html_datatable(
+    to_html_datatable(
         df,
         connected=connected,
         use_to_html=use_to_html,
         **kwargs_remove_none(lengthMenu=lengthMenu),
     )
-    if use_to_html:
-        assert "quarto" not in html
-    else:
-        assert 'data-quarto-disable-processing="true"' in html
 
 
 def test_ordered_categories():
@@ -101,7 +97,7 @@ def test_ordered_categories():
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_format_column(series_name, series):
-    values = list(_format_column(series))
+    values = list(_format_column(series, escape_html=True))
     json.dumps(values, cls=generate_encoder())
 
 

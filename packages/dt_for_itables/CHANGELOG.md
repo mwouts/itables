@@ -1,3 +1,9 @@
+# 2.3.0 (2025-05-11)
+
+- This version uses `datatables.net-dt=2.3.0`. The extensions have been updated, too.
+- We have added a new class `ITable` that processes some of the arguments on the Javascript side.
+- The table data is now passed as JSON through `data_json`, with support for BigInts and non finite float values.
+
 # 2.2.0 (2025-03-15)
 
 - We have upgraded `datatables.net-dt==2.2.2` and `datatables.net-select-dt==3.0.0`

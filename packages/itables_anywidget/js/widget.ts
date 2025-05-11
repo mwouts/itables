@@ -1,7 +1,7 @@
 import type { RenderContext } from "@anywidget/types";
 
 // DataTable and its css
-import { DataTable, jQuery } from 'dt_for_itables';
+import { ITable, set_or_remove_dark_class } from 'dt_for_itables';
 import 'dt_for_itables/dt_bundle.css';
 
 /* Specifies attributes defined with traitlets in ../src/itables_anywidget/__init__.py */
@@ -10,17 +10,16 @@ interface WidgetModel {
 	caption: string;
 	classes: string;
 	style: string;
-	downsampling_warning: string;
-	selected_rows: Array<number>;
 }
 
 function render({ model, el }: RenderContext<WidgetModel>) {
+	set_or_remove_dark_class();
 	let table = document.createElement("table");
 	el.classList.add("itables_anywidget");
 	el.appendChild(table);
 
 	function update_classes() {
-		table.setAttribute('class', model.get("classes"));
+		table.className = model.get("classes");
 	}
 	function update_style() {
 		table.setAttribute('style', model.get("style"));
@@ -52,33 +51,23 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 	function set_selected_rows_from_model() {
 		// We use this variable to avoid triggering model updates!
 		setting_selected_rows_from_model = true;
-		DataTable.set_selected_rows(dt, model.get('_filtered_row_count'), model.get('selected_rows'));
+		dt.selected_rows = model.get('selected_rows');
 		setting_selected_rows_from_model = false;
 	};
 
-	function create_table(destroy = false) {
-		if (destroy) {
+	function update_table() {
+		if (dt) {
 			dt.destroy();
-			jQuery(table).empty();
 		}
 
 		let dt_args = model.get('_dt_args');
-		dt_args['data'] = model.get('_data');
-		dt_args['columns'] = model.get('_columns');
-		dt_args["fnInfoCallback"] = function (oSettings: any, iStart: number, iEnd: number, iMax: number, iTotal: number, sPre: string) {
-			let msg = model.get("_downsampling_warning");
-			if (msg)
-				return sPre + ' (' + msg + ')';
-			else
-				return sPre;
-		}
-		dt = new DataTable(table, dt_args);
+		dt = new ITable(table, dt_args);
 		set_selected_rows_from_model();
 	}
-	create_table();
+	update_table();
 
-	model.on('change:_destroy_and_recreate', () => {
-		create_table(true);
+	model.on('change:_dt_args', () => {
+		update_table();
 	});
 
 	model.on("change:selected_rows", set_selected_rows_from_model);
@@ -87,15 +76,15 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		if (setting_selected_rows_from_model)
 			return;
 
-		model.set('selected_rows', DataTable.get_selected_rows(dt, model.get('_filtered_row_count')));
+		model.set('selected_rows', dt.selected_rows);
 		model.save_changes();
 	};
 
-	dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
+	dt.dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
 		export_selected_rows();
 	});
 
-	dt.on('deselect', function (e: any, dt: any, type: any, indexes: any) {
+	dt.dt.on('deselect', function (e: any, dt: any, type: any, indexes: any) {
 		export_selected_rows();
 	});
 }

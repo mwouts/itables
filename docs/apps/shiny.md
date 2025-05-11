@@ -96,13 +96,9 @@ is at [`app.py`](https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/it
 style="height: 800px; width: 100%;"></iframe>
 ```
 
-## Limitations
+## DT
 
-Compared to `show`, the `ITable` widget has the same limitations as the [Streamlit component](streamlit.md#limitations),
-e.g. structured headers are not available, you can't pass JavaScript callback, etc.
-
-The good news is that if you only want to _display_ the table, you do not need
-the `ITable` widget. You can render the table using `HTML(DT(...))` as here:
+Before ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget should now be up to par with the HTML version, however you can still use `HTML(DT(...))` if you only want to _display_ the table:
 
 ```python
 from shiny import ui

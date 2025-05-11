@@ -49,28 +49,28 @@ class DataTableOptions(TypedDict):
     searchCols: NotRequired[list[Any]]
     initComplete: NotRequired[JavascriptFunction]
     fnInfoCallback: NotRequired[JavascriptFunction]
+    stateSave: NotRequired[bool]
+    stateDuration: NotRequired[int]
 
     # DataTable options provided by its extensions
     buttons: NotRequired[list[Union[str, Mapping[str, Any]]]]
-    fixedColumns: NotRequired[Mapping[Literal["left", "right"], int]]
+    fixedColumns: NotRequired[Mapping[Literal["left", "right", "start", "end"], int]]
     searchPanes: NotRequired[Mapping[str, Any]]
     searchBuilder: NotRequired[Mapping[str, Any]]
     rowGroup: NotRequired[Mapping[str, Any]]
     select: NotRequired[Union[bool, str, Mapping[str, str]]]
     keys: NotRequired[bool]
 
-    # Add addition of the dt_for_itables package
-    filtered_row_count: NotRequired[int]
-
 
 class ITableOptions(DataTableOptions):
     """
     A non-exhaustive list of options that can be passed
-    to the ITable constructors
+    to the show function and to the ITable Python classes.
     """
 
-    classes: NotRequired[str]
-    style: NotRequired[str]
+    classes: NotRequired[Union[str, list[str]]]
+    style: NotRequired[Union[str, dict[str, str]]]
+    selected_rows: NotRequired[list[int]]
 
     showIndex: NotRequired[Union[bool, str]]
 
@@ -78,26 +78,53 @@ class ITableOptions(DataTableOptions):
     maxRows: NotRequired[int]
     maxColumns: NotRequired[int]
 
+    allow_html: NotRequired[bool]
+
+    table_id: NotRequired[str]
     dt_url: NotRequired[str]
     dt_bundle: NotRequired[Union[str, Path]]
     connected: NotRequired[bool]
     display_logo_when_loading: NotRequired[bool]
 
-    column_filters: NotRequired[Literal[False, "header", "footer"]]
     footer: NotRequired[bool]
 
-    selected_rows: NotRequired[list[int]]
-
-    pre_dt_code: NotRequired[str]
-    tags: NotRequired[str]
-
     warn_on_unexpected_types: NotRequired[bool]
-    warn_on_dom: NotRequired[bool]
     warn_on_selected_rows_not_rendered: NotRequired[bool]
     warn_on_undocumented_option: NotRequired[bool]
+    text_in_header_can_be_selected: NotRequired[bool]
+
+    column_filters: NotRequired[Literal[False, "header", "footer"]]
 
     use_to_html: NotRequired[bool]
-    eval_functions: NotRequired[bool]
+
+
+class DTForITablesOptions(DataTableOptions):
+    """
+    The options that can be passed to the ITable constructor
+    in the dt_for_itables package.
+    """
+
+    classes: NotRequired[Union[str, list[str]]]
+    style: NotRequired[Union[str, dict[str, str]]]
+
+    data_json: NotRequired[str]
+    table_html: NotRequired[str]
+    table_style: NotRequired[str]
+
+    selected_rows: NotRequired[list[int]]
+    filtered_row_count: NotRequired[int]
+
+    downsampling_warning: NotRequired[str]
+    text_in_header_can_be_selected: NotRequired[bool]
+
+    column_filters: NotRequired[Literal[False, "header", "footer"]]
+    keys_to_be_evaluated: NotRequired[list[list[Union[int, str]]]]
+
+    # These options are used in the HTML template
+    # and don't reach the ITable JavaScript class
+    connected: NotRequired[bool]
+    dt_url: NotRequired[str]
+    display_logo_when_loading: NotRequired[bool]
 
 
 def is_typeguard_available():
@@ -116,7 +143,7 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     """
 
     warn_on_undocumented_option = (
-        kwargs.pop if typed_dict is DataTableOptions else kwargs.get
+        kwargs.get if typed_dict is ITableOptions else kwargs.pop
     )("warn_on_undocumented_option", False)
     if not warn_on_undocumented_option:
         return
@@ -124,7 +151,7 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     silence_msg = (
         "You can silence this warning by setting "
         "`itables.options.warn_on_undocumented_option=False`. If you believe ITableOptions "
-        " needs to be updated, please open an issue at https://github.com/mwouts/itables"
+        "should be updated, please make a PR or open an issue at https://github.com/mwouts/itables"
     )
 
     documented_options = set(typed_dict.__required_keys__).union(
@@ -133,7 +160,7 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     undocumented_options = set(kwargs.keys()) - documented_options
     if undocumented_options:
         warnings.warn(
-            f"These arguments are not documented in ITableOptions: {undocumented_options}. "
+            f"These arguments are not documented in {typed_dict.__name__}: {undocumented_options}. "
             + silence_msg,
             category=SyntaxWarning,
         )

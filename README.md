@@ -7,8 +7,8 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://mwouts.github.io/itables/widget.html)
-[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://mwouts.github.io/itables/dash.html)
+[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://mwouts.github.io/itables/apps/widget.html)
+[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://mwouts.github.io/itables/apps/dash.html)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 
 This packages changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
@@ -51,14 +51,8 @@ and then render any DataFrame as an interactive table that you can sort, search 
 If you prefer to render only selected DataFrames as interactive tables, call `itables.init_notebook_mode(all_interactive=False)`, then use `itables.show` to show just one Series or DataFrame as an interactive table:
 ![show](docs/show_df.png)
 
-Since ITables v1.0, the [jQuery](https://jquery.com/) and [DataTables](https://datatables.net/) libraries and CSS
-are injected in the notebook when you execute `init_notebook_mode` with its default argument `connected=False`.
-Thanks to this the interactive tables will work even without a connection to the internet.
 
-If you prefer to load the libraries dynamically (and keep the notebook lighter), use `connected=True` when you
-execute `init_notebook_mode`.
-
-## Supported notebook environments
+## ITables in Notebooks
 
 ITables works in all the usual Jupyter Notebook environments, including Jupyter Notebook, Jupyter Lab, Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook), Jupyter Book, Google Colab and Kaggle.
 
@@ -68,7 +62,7 @@ ITables works well in VS Code, both in Jupyter Notebooks and in interactive Pyth
 
 ## ITables in Python applications
 
-Last but not least, ITables is also available as
+ITables is also available as
 - a [Jupyter Widget](https://mwouts.github.io/itables/widget.html)
 - a [Dash](https://mwouts.github.io/itables/dash.html) component
 - a [Streamlit](https://mwouts.github.io/itables/streamlit.html) component,

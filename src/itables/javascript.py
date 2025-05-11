@@ -7,14 +7,14 @@ import warnings
 from base64 import b64encode
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any, Optional, Union, cast
+from typing import Any, Mapping, Optional, Sequence, Union, cast
 
 import numpy as np
 import pandas as pd
 from typing_extensions import Unpack
 
 from .typing import (
-    DataTableOptions,
+    DTForITablesOptions,
     ITableOptions,
     JavascriptCode,
     JavascriptFunction,
@@ -45,14 +45,20 @@ from .utils import read_package_file
 DATATABLES_SRC_FOR_ITABLES = (
     f"_datatables_src_for_itables_{itables_version.replace('.','_').replace('-','_')}"
 )
+_OPTIONS_NOT_AVAILABLE_IN_APP_MODE = {
+    "connected",
+    "dt_url",
+    "display_logo_when_loading",
+}
 _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
-    "tags",
     "footer",
     "column_filters",
     "maxBytes",
     "maxRows",
     "maxColumns",
     "warn_on_unexpected_types",
+    "warn_on_selected_rows_not_rendered",
+    "display_logo_when_loading",
 }
 _ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_  # type: ignore
 _ORIGINAL_DATAFRAME_STYLE_REPR_HTML = (
@@ -72,6 +78,49 @@ DEFAULT_LAYOUT_CONTROLS = set(DEFAULT_LAYOUT.values())
 GOOGLE_COLAB = (find_spec("google") is not None) and (
     find_spec("google.colab") is not None
 )
+
+
+def get_compact_classes(classes: Union[str, list[str]]) -> str:
+    """Convert a list of classes to a compact string"""
+    if isinstance(classes, str):
+        return classes
+    elif isinstance(classes, list):
+        return " ".join(classes)
+    else:
+        raise TypeError(f"classes must be a string or a list, not {type(classes)}")
+
+
+def get_expanded_classes(classes: Union[str, list[str]]) -> list[str]:
+    """Convert a class string to a list"""
+    if isinstance(classes, str):
+        return classes.split()
+    elif isinstance(classes, list):
+        return classes
+    else:
+        raise TypeError(f"classes must be a string or a list, not {type(classes)}")
+
+
+def get_compact_style(style: Union[str, dict[str, str]]) -> str:
+    """Convert a style to a compact string"""
+    if isinstance(style, str):
+        return style
+    elif isinstance(style, dict):
+        return ";".join(f"{k}:{v}" for k, v in style.items())
+    else:
+        raise TypeError(f"style must be a string or a dict, not {type(style)}")
+
+
+def get_expanded_style(style: Union[str, dict[str, str]]) -> dict[str, str]:
+    """Convert a style to a dict"""
+    if isinstance(style, dict):
+        return style
+    elif isinstance(style, str):
+        return {
+            k.strip(): v.strip()
+            for k, v in (item.split(":") for item in style.split(";"))
+        }
+    else:
+        raise TypeError(f"style must be a string or a dict, not {type(style)}")
 
 
 def init_notebook_mode(
@@ -113,7 +162,20 @@ def init_notebook_mode(
         if hasattr(pl.Series, "_repr_html_"):
             del pl.Series._repr_html_  # type: ignore
 
-    display(HTML(read_package_file("html/init_datatables.html")))
+    init_datatables = read_package_file("html/init_datatables.html")
+    if not connected:
+        connected_import = (
+            "import { set_or_remove_dark_class } from '"
+            + UNPKG_DT_BUNDLE_URL_NO_VERSION
+            + "';"
+        )
+        local_import = (
+            "const { set_or_remove_dark_class } = await import(window."
+            + DATATABLES_SRC_FOR_ITABLES
+            + ");"
+        )
+        init_datatables = replace_value(init_datatables, connected_import, local_import)
+    display(HTML(init_datatables))
 
     if not connected:
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
@@ -148,21 +210,16 @@ This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}
 
 def _table_header(
     df,
-    table_id,
     show_index,
-    classes,
-    style,
-    tags,
     footer,
     column_filters,
-    connected,
-    display_logo_when_loading,
+    escape_html: bool,
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
     try:
-        html_header = df.head(0).to_html(escape=False)
+        html_header = df.head(0).to_html(escape=escape_html)
     except AttributeError:
         # Polars DataFrames
         html_header = pd.DataFrame(data=[], columns=df.columns, dtype=float).to_html()
@@ -172,21 +229,6 @@ def _table_header(
     # Don't remove the index header for empty dfs
     if not show_index and len(df.columns):
         thead = thead.replace("<th></th>", "", 1)
-
-    itables_source = (
-        "the internet" if connected else "the <code>init_notebook_mode</code> cell"
-    )
-    tbody = f"""<tr>
-<td style="vertical-align:middle; text-align:left">
-{get_animated_logo(display_logo_when_loading)}
-Loading ITables v{itables_version} from {itables_source}...
-(need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
-</tr>"""
-
-    if style:
-        style = 'style="{}"'.format(style)
-    else:
-        style = ""
 
     header = "<thead>{}</thead>".format(
         _flat_header(df, show_index) if column_filters == "header" else thead
@@ -199,17 +241,7 @@ Loading ITables v{itables_version} from {itables_source}...
     else:
         footer = ""
 
-    return """<table id="{table_id}" class="{classes}" data-quarto-disable-processing="true" {style}>
-{tags}{header}{footer}<tbody>{tbody}</tbody>
-</table>""".format(
-        table_id=table_id,
-        classes=classes,
-        style=style,
-        tags=tags,
-        header=header,
-        tbody=tbody,
-        footer=footer,
-    )
+    return f"<table>{header}{footer}</table>"
 
 
 def _flat_header(df, show_index):
@@ -233,39 +265,27 @@ def _tfoot_from_thead(thead):
     return "".join(row + "</tr>" for row in header_rows[::-1] if "<tr" in row) + "\n"
 
 
-def json_dumps(obj, eval_functions):
+def get_keys_to_be_evaluated(data) -> list[list[Union[int, str]]]:
     """
-    This is a replacement for json.dumps that
-    does not quote strings that start with 'function', so that
-    these functions are evaluated in the HTML code.
+    This function returns the keys that need to be evaluated
+    in the ITable arguments
     """
-    if isinstance(obj, JavascriptFunction):
-        assert obj.lstrip().startswith("function")
-        return obj
-    if isinstance(obj, JavascriptCode):
-        return obj
-    if isinstance(obj, str) and obj.lstrip().startswith("function"):
-        if eval_functions is True:
-            return obj
-        if eval_functions is None and obj.lstrip().startswith("function"):
-            warnings.warn(
-                "One of the arguments passed to DataTable starts with 'function'. "
-                "To evaluate this function, change it into a 'JavascriptFunction' object "
-                "or use the option 'eval_functions=True'. "
-                "To silence this warning, use 'eval_functions=False'."
-            )
-    if isinstance(obj, list):
-        return "[" + ", ".join(json_dumps(i, eval_functions) for i in obj) + "]"
-    if isinstance(obj, dict):
-        return (
-            "{"
-            + ", ".join(
-                '"{}": {}'.format(key, json_dumps(value, eval_functions))
-                for key, value in obj.items()
-            )
-            + "}"
-        )
-    return json.dumps(obj)
+    if isinstance(data, str):
+        return []
+    keys_to_be_evaluated = []
+    if isinstance(data, Sequence):
+        data = dict(enumerate(data))
+    if isinstance(data, Mapping):
+        for key, value in data.items():
+            if isinstance(value, (JavascriptCode, JavascriptFunction)):
+                keys_to_be_evaluated.append([key])
+            else:
+                nested_keys = get_keys_to_be_evaluated(value)
+                if nested_keys:
+                    for nested_key in nested_keys:
+                        keys_to_be_evaluated.append([key] + nested_key)
+
+    return keys_to_be_evaluated
 
 
 def replace_value(template, pattern, value):
@@ -302,16 +322,38 @@ def set_caption_from_positional_args(args: tuple, kwargs: ITableOptions):
 def to_html_datatable(
     df,
     *args,
-    table_id: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ):
     """
     Return the HTML representation of the given
     dataframe as an interactive datatable
     """
+    kwargs["table_id"] = table_id = check_table_id(
+        kwargs.pop("table_id", None), kwargs, df=df
+    )
+    dt_args = get_itable_arguments(df, *args, **kwargs)
+    dt_url = dt_args.pop("dt_url")
+    connected = dt_args.pop("connected")
+    display_logo_when_loading = dt_args.pop("display_logo_when_loading", False)
+
+    check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
+    return html_table_from_template(
+        table_id=table_id,
+        dt_url=dt_url,
+        connected=connected,
+        display_logo_when_loading=display_logo_when_loading,
+        kwargs=dt_args,
+    )
+
+
+def get_itable_arguments(
+    df, *args, app_mode: bool = False, **kwargs: Unpack[ITableOptions]
+) -> DTForITablesOptions:
+    """
+    Return the arguments to be passed to the ITable class
+    """
+
     set_caption_from_positional_args(args, kwargs)
-    table_id = check_table_id(table_id, kwargs)
-    use_to_html = kwargs.pop("use_to_html", False)
 
     if "import_jquery" in kwargs:
         raise TypeError(
@@ -319,24 +361,14 @@ def to_html_datatable(
             "Please pass a custom 'dt_url' instead."
         )
 
-    if use_to_html or (pd_style is not None and isinstance(df, pd_style.Styler)):
-        return to_html_datatable_using_to_html(
-            df=df,
-            table_id=table_id,
-            **kwargs,
-        )
+    if pd_style is not None and isinstance(df, pd_style.Styler):
+        use_to_html = kwargs.pop("use_to_html", True)
+        if not use_to_html:
+            raise ValueError("We have to use df.to_html() for Pandas Styler objects")
+    else:
+        use_to_html = kwargs.pop("use_to_html", False)
 
-    set_default_options(kwargs, use_to_html=False)
-
-    # These options are used here, not in DataTable
-    classes = kwargs.pop("classes")
-    style = kwargs.pop("style")
-    tags = kwargs.pop("tags")
-
-    if "caption" in kwargs:
-        tags = '{}<caption style="white-space: nowrap; overflow: hidden">{}</caption>'.format(
-            tags, kwargs.pop("caption")
-        )
+    set_default_options(kwargs, use_to_html=use_to_html, app_mode=app_mode)
 
     showIndex = kwargs.pop("showIndex")
 
@@ -359,92 +391,108 @@ def to_html_datatable(
     maxRows = kwargs.pop("maxRows", 0)
     maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
-
-    full_row_count = len(df)
-    df, downsampling_warning = downsample(
-        df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
-    )
-
-    warn_on_selected_rows_not_rendered = kwargs.pop(
-        "warn_on_selected_rows_not_rendered"
-    )
-    if "selected_rows" in kwargs:
-        kwargs["selected_rows"] = warn_if_selected_rows_are_not_visible(
-            kwargs["selected_rows"],
-            full_row_count,
-            len(df),
-            warn_on_selected_rows_not_rendered,
-        )
-
-    if len(df) < full_row_count:
-        kwargs["filtered_row_count"] = full_row_count - len(df)
-        if "fnInfoCallback" not in kwargs:
-            kwargs["fnInfoCallback"] = JavascriptFunction(
-                "function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {{ return sPre + ' ({warning})'; }}".format(
-                    warning=downsampling_warning
-                )
-            )
-
-    _adjust_layout(
-        df,
-        kwargs,
-        downsampling_warning=downsampling_warning,
-        warn_on_dom=kwargs.pop("warn_on_dom"),
-    )
-
-    footer = kwargs.pop("footer")
-    column_filters = kwargs.pop("column_filters")
-    if column_filters == "header":
-        pass
-    elif column_filters == "footer":
-        footer = True
-    elif column_filters is not False:
-        raise ValueError(
-            "column_filters should be either "
-            "'header', 'footer' or False, not {}".format(column_filters)
-        )
-
-    table_id = table_id or "itables_" + str(uuid.uuid4()).replace("-", "_")
-    if isinstance(classes, list):
-        classes = " ".join(classes)
+    allow_html = kwargs.pop("allow_html")
 
     if not showIndex:
         if isinstance(df, pd.DataFrame):
             df = df.set_index(pd.RangeIndex(len(df.index)))
 
-    table_header = _table_header(
-        df,
-        table_id,
-        showIndex,
-        classes,
-        style,
-        tags,
-        footer,
-        column_filters,
-        connected=kwargs.get("connected"),
-        display_logo_when_loading=kwargs.pop("display_logo_when_loading"),
+    table_id = kwargs.pop("table_id", None)
+    footer = kwargs.pop("footer", False)
+    warn_on_selected_rows_not_rendered = kwargs.pop(
+        "warn_on_selected_rows_not_rendered", False
     )
+    dt_args = cast(DTForITablesOptions, kwargs)
+    del kwargs
 
-    # Export the table data to JSON and include this in the HTML
-    if showIndex:
-        df = safe_reset_index(df)
+    if df is None:
+        pass
+    elif not use_to_html:
+        full_row_count = len(df)  # type: ignore
+        df, downsampling_warning = downsample(
+            df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
+        )
 
-    # When the header has an extra column, we add
-    # an extra empty column in the table data #141
-    column_count = _column_count_in_header(table_header)
-    dt_data = datatables_rows(
-        df,
-        column_count,
-        warn_on_unexpected_types=warn_on_unexpected_types,
-    )
+        if "selected_rows" in dt_args:
+            dt_args["selected_rows"] = warn_if_selected_rows_are_not_visible(
+                dt_args["selected_rows"],
+                full_row_count,
+                len(df),
+                warn_on_selected_rows_not_rendered,
+            )
 
-    return html_table_from_template(
-        table_header,
-        table_id=table_id,
-        data=dt_data,
-        kwargs=kwargs,
-        column_filters=column_filters,
-    )
+        if downsampling_warning:
+            dt_args["downsampling_warning"] = downsampling_warning
+            dt_args["filtered_row_count"] = full_row_count - len(df)
+
+        if dt_args.get("column_filters", False) == "footer":
+            footer = True
+
+        table_header = _table_header(
+            df,
+            showIndex,
+            footer,
+            dt_args.get("column_filters", False),
+            escape_html=allow_html is not True,
+        )
+
+        # Export the table data to JSON and include this in the HTML
+        if showIndex:
+            df = safe_reset_index(df)
+
+        # When the header has an extra column, we add
+        # an extra empty column in the table data #141
+        column_count = _column_count_in_header(table_header)
+        dt_args["table_html"] = table_header
+        dt_args["data_json"] = datatables_rows(
+            df,
+            column_count,
+            warn_on_unexpected_types=warn_on_unexpected_types,
+            escape_html=allow_html is not True,
+        )
+    else:
+        if pd_style is not None and isinstance(df, pd_style.Styler):
+            if not allow_html:
+                raise ValueError(
+                    "Pandas Styler objects always use HTML. If you trust the "
+                    "content of that table, please render it with allow_html=True."
+                )
+            if not showIndex:
+                try:
+                    df = df.hide()
+                except AttributeError:
+                    pass
+
+            assert isinstance(table_id, str)
+            assert table_id.startswith("T_")
+            table_id = table_id[2:]
+            try:
+                table_html = df.to_html(sparse_index=False, table_uuid=table_id)
+            except TypeError:
+                table_html = df.to_html(table_uuid=table_id)
+
+            # We need to extract the style from the table
+            table_style, table_html = table_html.split("</style>", 1)
+            style_prefix = '<style type="text/css">'
+            assert table_style.startswith(style_prefix)
+            dt_args["table_style"] = table_style.removeprefix(style_prefix)
+            dt_args["table_html"] = table_html
+        else:
+            # NB: style is not available either
+            dt_args["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
+
+    _adjust_layout(df, dt_args)
+
+    if dt_args.get("column_filters") is False:
+        dt_args.pop("column_filters")
+    if dt_args.get("text_in_header_can_be_selected") is False:
+        dt_args.pop("text_in_header_can_be_selected")
+
+    keys_to_be_evaluated = get_keys_to_be_evaluated(dt_args)
+    if keys_to_be_evaluated:
+        dt_args["keys_to_be_evaluated"] = keys_to_be_evaluated
+
+    return dt_args
 
 
 def _raise_if_javascript_code(values, context=""):
@@ -465,131 +513,21 @@ def _raise_if_javascript_code(values, context=""):
 def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
     """
     This function returns two dictionaries that are JSON
-    serializable and can be passed to the itables extensions.
+    serializable and can be passed to the ITable extensions.
     The first dict contains the arguments to be passed to the
     DataTable constructor, while the second one contains other
     parameters to be used outside of the constructor.
     """
-    # Pandas style objects are not supported
-    if pd_style is not None and isinstance(df, pd_style.Styler):
-        raise NotImplementedError(
-            "Pandas style objects can't be used with the extension"
-        )
-
-    set_caption_from_positional_args(args, kwargs)
-
-    if df is None:
-        df = pd.DataFrame()
-
-    set_default_options(
-        kwargs,
-        use_to_html=False,
-        context="the itable widget or streamlit extension",
-        not_available=[
-            "columns",
-            "tags",
-            "dt_url",
-            "connected",
-            "pre_dt_code",
-            "use_to_html",
-            "footer",
-            "column_filters",
-            "display_logo_when_loading",
-        ],
-    )
-
-    # Javascript code is not supported in the extension
-    _raise_if_javascript_code(kwargs)
-
-    # These options are used here, not in DataTable
-    classes = kwargs.pop("classes")
-    style = kwargs.pop("style")
-    showIndex = kwargs.pop("showIndex")
-
-    if isinstance(df, (np.ndarray, np.generic)):
-        df = pd.DataFrame(df)  # type: ignore
-
-    if isinstance(df, (pd.Series, pl.Series)):
-        df = df.to_frame()  # type: ignore
-
-    if showIndex == "auto":
-        if isinstance(df, pd.DataFrame):
-            showIndex = df.index.name is not None or not isinstance(
-                df.index, pd.RangeIndex
-            )
-        else:
-            # Polars DataFrame
-            showIndex = False
-
-    maxBytes = kwargs.pop("maxBytes", 0)
-    maxRows = kwargs.pop("maxRows", 0)
-    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
-    warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
-
-    full_row_count = len(df)
-    df, downsampling_warning = downsample(
-        df, max_rows=maxRows, max_columns=maxColumns, max_bytes=maxBytes
-    )
-
-    _adjust_layout(
-        df,
-        kwargs,
-        downsampling_warning=downsampling_warning,
-        warn_on_dom=kwargs.pop("warn_on_dom"),
-    )
-
-    if isinstance(classes, list):
-        classes = " ".join(classes)
-
-    if not showIndex:
-        if isinstance(df, pd.DataFrame):
-            df = df.set_index(pd.RangeIndex(len(df.index)))
-
-    if showIndex:
-        df = safe_reset_index(df)
-
-    if isinstance(df.columns, pd.MultiIndex):
-        columns = [
-            {"title": "<br>".join(str(level) or "&nbsp" for level in col)}
-            for col in df.columns
-        ]
-    else:
-        columns = [{"title": str(col)} for col in df.columns]
-
-    data_json = ""
-    try:
-        data_json = datatables_rows(df, None, warn_on_unexpected_types, pure_json=True)
-    except ValueError as e:
-        raise NotImplementedError(
-            f"This dataframe can't be serialized to JSON:\n{e}\n{df}"
-        )
-
-    try:
-        data = json.loads(data_json)
-    except (ValueError, json.JSONDecodeError) as e:
-        raise NotImplementedError(
-            f"This dataframe can't be serialized to JSON:\n{e}\n{data_json}"
-        )
-
-    assert len(data) <= full_row_count
-
-    selected_rows = warn_if_selected_rows_are_not_visible(
-        kwargs.pop("selected_rows", None),
-        full_row_count,
-        len(data),
-        kwargs.pop("warn_on_selected_rows_not_rendered"),
-    )
-
-    check_itable_arguments(cast(dict[str, Any], kwargs), DataTableOptions)
-
-    return {"columns": columns, "data": data, **kwargs}, {
-        "classes": classes,
-        "style": style,
-        "caption": kwargs.pop("caption", None),
-        "downsampling_warning": downsampling_warning,
-        "filtered_row_count": full_row_count - len(data),
-        "selected_rows": selected_rows,
+    kwargs["table_id"] = check_table_id(kwargs.get("table_id", None), kwargs, df=df)
+    dt_args = get_itable_arguments(df, *args, **kwargs, app_mode=True)
+    check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
+    other_args = {
+        "classes": get_compact_classes(dt_args.pop("classes")),
+        "style": get_compact_style(dt_args.pop("style")),
+        "caption": dt_args.pop("caption", None),
+        "selected_rows": dt_args.pop("selected_rows", []),
     }
+    return dt_args, other_args
 
 
 def warn_if_selected_rows_are_not_visible(
@@ -634,71 +572,71 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: Optional[str], kwargs: DataTableOptions) -> Optional[str]:
+def check_table_id(table_id: Optional[str], kwargs, df=None) -> str:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
     """
     if "tableId" in kwargs:
-        warnings.warn(
+        TypeError(
             "tableId has been deprecated, please use table_id instead",
-            DeprecationWarning,
         )
-        assert table_id is None
-        table_id = kwargs.pop("tableId")
 
-    if table_id is not None:
-        if not re.match(r"[A-Za-z][-A-Za-z0-9_.]*", table_id):
-            raise ValueError(
-                "The id name must contain at least one character, "
-                f"cannot start with a number, and must not contain whitespaces ({table_id})"
-            )
+    if table_id is None:
+        if pd_style is not None and isinstance(df, pd_style.Styler):
+            return "T_" + str(uuid.uuid4())[:5]
+
+        return "itables_" + str(uuid.uuid4()).replace("-", "_")
+
+    if not re.match(r"[A-Za-z][-A-Za-z0-9_.]*", table_id):
+        raise ValueError(
+            "The id name must contain at least one character, "
+            f"cannot start with a number, and must not contain whitespaces ({table_id})"
+        )
 
     return table_id
 
 
-def set_default_options(kwargs, use_to_html, context=None, not_available=()):
-    if "connected" not in not_available:
+def set_default_options(kwargs: ITableOptions, *, use_to_html: bool, app_mode: bool):
+    if not app_mode:
         kwargs["connected"] = kwargs.get(
             "connected", ("dt_url" in kwargs) or _CONNECTED
         )
-    args_not_available = set(kwargs).intersection(not_available)
-    if args_not_available:
-        raise TypeError(
-            f"In the context of {context}, "
-            f"these options are not available: {args_not_available}"
-        )
+    not_available = {"dt_bundle"}  # this one is for init_notebook_mode
     if use_to_html:
-        options_not_available = set(kwargs).intersection(
-            _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML
+        not_available = not_available.union(_OPTIONS_NOT_AVAILABLE_WITH_TO_HTML)
+    if app_mode:
+        not_available = not_available.union(_OPTIONS_NOT_AVAILABLE_IN_APP_MODE)
+
+    options_not_available = set(kwargs).intersection(not_available)
+    if options_not_available:
+        raise TypeError(
+            f"These options are not available with {use_to_html=} {app_mode=}: "
+            f"{set(kwargs).intersection(options_not_available)}"
         )
-        if options_not_available:
-            raise TypeError(
-                "These options are not available when using df.to_html: {}".format(
-                    set(kwargs).intersection(options_not_available)
-                )
-            )
 
     # layout is updated using the arguments passed on to show
     kwargs["layout"] = {**getattr(opt, "layout"), **kwargs.get("layout", {})}
 
     # Default options
-    for option in dir(opt):
-        if (
-            option not in not_available
-            and (not use_to_html or (option not in _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML))
-            and option not in kwargs
-            and not option.startswith("_")
-            and option
-            not in {
-                # this one is for init_notebook_mode
-                "dt_bundle"
-            }
-        ):
-            kwargs[option] = getattr(opt, option)
+    for option in (
+        set(dir(opt))
+        .difference(opt.__non_options)
+        .difference(not_available)
+        .difference(kwargs)
+    ):
+        kwargs[option] = getattr(opt, option)
+
+    if "classes" in kwargs and isinstance(kwargs["classes"], list):
+        kwargs["classes"] = " ".join(kwargs["classes"])
+
+    if "style" in kwargs and isinstance(kwargs["style"], dict):
+        kwargs["style"] = ";".join(f"{k}:{v}" for k, v in kwargs["style"].items())
 
     if kwargs.get("scrollX", False):
         # column headers are misaligned if we have margin:auto
+        assert "style" in kwargs
+        assert isinstance(kwargs["style"], str)
         kwargs["style"] = kwargs["style"].replace("margin:auto", "margin:0")
 
     for name, value in kwargs.items():
@@ -709,123 +647,33 @@ def set_default_options(kwargs, use_to_html, context=None, not_available=()):
                 )
             )
 
-    dt_args = set(ITableOptions.__optional_keys__) - set(
-        DataTableOptions.__optional_keys__
-    )
+    # The options for ITable in dt_for_itables will be checked later on
     check_itable_arguments(
-        {k: v for k, v in kwargs.items() if k not in dt_args}, ITableOptions
+        {
+            k: v
+            for k, v in kwargs.items()
+            if k not in DTForITablesOptions.__optional_keys__
+        },
+        ITableOptions,
     )
 
 
-def to_html_datatable_using_to_html(
-    df, *args, table_id: Optional[str] = None, **kwargs: Unpack[ITableOptions]
+def html_table_from_template(
+    table_id: str,
+    dt_url: str,
+    connected: bool,
+    display_logo_when_loading: bool,
+    kwargs: DTForITablesOptions,
 ):
-    """Return the HTML representation of the given dataframe as an interactive datatable,
-    using df.to_html() rather than the underlying dataframe data."""
-    set_caption_from_positional_args(args, kwargs)
-    table_id = check_table_id(table_id, kwargs)
-    set_default_options(
-        kwargs,
-        use_to_html=True,
-        not_available=(
-            "warn_on_selected_rows_not_rendered",
-            "display_logo_when_loading",
-        ),
-    )
-
-    # These options are used here, not in DataTable
-    classes = kwargs.pop("classes")
-    style = kwargs.pop("style")
-
-    showIndex = kwargs.pop("showIndex")
-
-    if isinstance(df, (np.ndarray, np.generic)):
-        df = pd.DataFrame(df)  # type: ignore[assignment]
-
-    if isinstance(df, (pd.Series, pl.Series)):
-        df = df.to_frame()
-
-    if showIndex == "auto":
-        if isinstance(df, pd.DataFrame):
-            showIndex = df.index.name is not None or not isinstance(
-                df.index, pd.RangeIndex
-            )
-        else:
-            # Polars DataFrame
-            showIndex = False
-
-    _adjust_layout(
-        df, kwargs, downsampling_warning="", warn_on_dom=kwargs.pop("warn_on_dom")
-    )
-
-    table_id = (
-        table_id
-        # default UUID in Pandas styler objects has uuid_len=5
-        or str(uuid.uuid4())[:5]
-    )
-    if pd_style is not None and isinstance(df, pd_style.Styler):
-        if not showIndex:
-            try:
-                df = df.hide()
-            except AttributeError:
-                pass
-
-        if style:
-            style = 'style="{}"'.format(style)
-        else:
-            style = ""
-
-        table_attributes = """class="{classes}"{style}""".format(
-            classes=classes, style=style
-        )
-
-        try:
-            html_table = df.to_html(
-                table_uuid=table_id,
-                table_attributes=table_attributes,
-                caption=kwargs.get("caption"),
-                sparse_index=False,
-            )
-        except TypeError:
-            if "caption" in kwargs:
-                warnings.warn(
-                    "caption is not supported by Styler.to_html in your version of Pandas"
-                )
-            html_table = df.to_html(
-                table_uuid=table_id, table_attributes=table_attributes
-            )
-        table_id = "T_" + table_id
-    else:
-        if "caption" in kwargs:
-            raise NotImplementedError(
-                "caption is not supported when using df.to_html. "
-                "Use either Pandas Style, or set use_to_html=False."
-            )
-        # NB: style is not available either
-        html_table = df.to_html(table_id=table_id, classes=classes)  # type: ignore
-
-    return html_table_from_template(
-        html_table,
-        table_id=table_id,
-        data=None,
-        kwargs=kwargs,
-        column_filters=None,
-    )
-
-
-def html_table_from_template(html_table, table_id, data, kwargs, column_filters):
     if "css" in kwargs:
         TypeError(
             "The 'css' argument has been deprecated, see the new "
-            "approach at https://mwouts.github.io/itables/custom_css.html."
+            "approach at https://mwouts.github.io/itables/css.html."
         )
-    eval_functions = kwargs.pop("eval_functions", None)
-    pre_dt_code = kwargs.pop("pre_dt_code")
-    dt_url = kwargs.pop("dt_url")
 
     # Load the HTML template
     output = read_package_file("html/datatables_template.html")
-    if kwargs.pop("connected"):
+    if connected:
         assert dt_url.endswith(".js")
         output = replace_value(output, UNPKG_DT_BUNDLE_URL_NO_VERSION, dt_url)
         output = replace_value(
@@ -839,77 +687,44 @@ def html_table_from_template(html_table, table_id, data, kwargs, column_filters)
         )
         output = replace_value(output, connected_style, "")
         connected_import = (
-            "import {DataTable, jQuery as $} from '"
+            "import { ITable, jQuery as $ } from '"
             + UNPKG_DT_BUNDLE_URL_NO_VERSION
             + "';"
         )
         local_import = (
-            "const { DataTable, jQuery: $ } = await import(window."
+            "const { ITable, jQuery: $ } = await import(window."
             + DATATABLES_SRC_FOR_ITABLES
             + ");"
         )
         output = replace_value(output, connected_import, local_import)
 
+    itables_source = (
+        "the internet" if connected else "the <code>init_notebook_mode</code> cell"
+    )
+    table_body = f"""<tbody><tr>
+    <td style="vertical-align:middle; text-align:left">
+    {get_animated_logo(display_logo_when_loading)}
+    Loading ITables v{itables_version} from {itables_source}...
+    (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
+    </tr></tbody>"""
+    check_table_id(table_id, kwargs)
     output = replace_value(
         output,
-        '<table id="table_id"><thead><tr><th>A</th></tr></thead></table>',
-        html_table,
+        '<table id="table_id"></table>',
+        f'<table id="{table_id}">{table_body}</table>',
     )
-    output = replace_value(output, "#table_id", "#{}".format(table_id))
+    output = replace_value(output, "#table_id", f"#{table_id}")
 
-    if "selected_rows" in kwargs:
-        output = replace_value(
-            output,
-            "new DataTable(table, dt_args);",
-            f"""let dt = new DataTable(table, dt_args);
-        let filtered_row_count = {kwargs.pop("filtered_row_count", 0)};
-        DataTable.set_selected_rows(dt, filtered_row_count, {kwargs.pop("selected_rows")});""",
-        )
-
-    if column_filters:
-        # If the below was false, we would need to concatenate the JS code
-        # which might not be trivial...
-        assert pre_dt_code == ""
-        assert "initComplete" not in kwargs
-
-        pre_dt_code = replace_value(
-            read_package_file("html/column_filters/pre_dt_code.js"),
-            "thead_or_tfoot",
-            "thead" if column_filters == "header" else "tfoot",
-        )
-        kwargs["initComplete"] = JavascriptFunction(
-            replace_value(
-                replace_value(
-                    read_package_file("html/column_filters/initComplete.js"),
-                    "const initComplete = ",
-                    "",
-                ),
-                "header",
-                column_filters,
-            )
-        )
+    assert "classes" in kwargs
+    kwargs["classes"] = get_expanded_classes(kwargs["classes"])
+    assert "style" in kwargs
+    kwargs["style"] = get_expanded_style(kwargs["style"])
 
     # Export the DT args to JSON
-    check_itable_arguments(kwargs, DataTableOptions)
-    dt_args = json_dumps(kwargs, eval_functions)
-
+    dt_args = json.dumps(kwargs)
     output = replace_value(
         output, "let dt_args = {};", "let dt_args = {};".format(dt_args)
     )
-    output = replace_value(
-        output,
-        "// [pre-dt-code]",
-        pre_dt_code.replace("#table_id", "#{}".format(table_id)),
-    )
-
-    if data is not None:
-        output = replace_value(
-            output, "const data = [];", "const data = {};".format(data)
-        )
-    else:
-        # No data since we pass the html table
-        output = replace_value(output, 'dt_args["data"] = data;', "")
-        output = replace_value(output, "const data = [];", "")
 
     return output
 
@@ -931,23 +746,12 @@ def _min_rows(kwargs):
     return min_rows[0]
 
 
-def _adjust_layout(df, kwargs, *, downsampling_warning, warn_on_dom):
+def _adjust_layout(df, kwargs):
     has_default_layout = kwargs["layout"] == DEFAULT_LAYOUT
-
-    if "dom" in kwargs:
-        if warn_on_dom:
-            warnings.warn(
-                "The 'dom' argument has been deprecated in DataTables==2.0.",
-                DeprecationWarning,
-            )
-        if not has_default_layout:
-            raise ValueError("You cannot pass both 'dom' and 'layout'")
-        del kwargs["layout"]
-        has_default_layout = False
 
     if has_default_layout and _df_fits_in_one_page(df, kwargs):
         kwargs["layout"] = {
-            key: _filter_control(control, downsampling_warning)
+            key: _filter_control(control, kwargs.get("downsampling_warning", ""))
             for key, control in kwargs["layout"].items()
         }
 
@@ -961,6 +765,8 @@ def _adjust_layout(df, kwargs, *, downsampling_warning, warn_on_dom):
 
 def _df_fits_in_one_page(df, kwargs):
     """Display just the table (not the search box, etc...) if the rows fit on one 'page'"""
+    if df is None:
+        return True
     try:
         # Pandas DF or Style
         return len(df.index) <= _min_rows(kwargs)

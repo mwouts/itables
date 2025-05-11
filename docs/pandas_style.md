@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Using Pandas Style
+# Pandas Style
 
 Starting with `itables>=1.6.0`, ITables provides support for
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html).
@@ -29,7 +29,8 @@ corresponding DataFrame. In particular,
 ```
 
 ```{warning}
-Pandas Style objects can't be used with the [Streamlit extension](streamlit.md) for ITables.
+Pandas Style object use HTML. Please make sure that you trust the content of your tables before
+you set [`allow_html=True`](options/allow_html.md).
 ```
 
 ```{code-cell} ipython3
@@ -39,6 +40,9 @@ import pandas as pd
 import itables
 
 itables.init_notebook_mode()
+
+# Before you do this, make sure that you trust the content of your tables
+itables.options.allow_html = True
 ```
 
 ```{code-cell} ipython3
@@ -95,4 +99,11 @@ ttips = pd.DataFrame(
     index=df.index,
 )
 s.set_tooltips(ttips).set_caption("With tooltips")
+```
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# Revert back to the default to avoid interactions with the tests
+itables.options.allow_html = False
 ```

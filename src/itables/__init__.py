@@ -1,4 +1,4 @@
-from itables import downsample, options, sample_dfs
+from itables import downsample, options, sample_dfs, widget
 
 from .javascript import init_notebook_mode, show, to_html_datatable
 from .typing import JavascriptCode, JavascriptFunction
@@ -14,4 +14,5 @@ __all__ = [
     "options",
     "downsample",
     "sample_dfs",
+    "widget",
 ]

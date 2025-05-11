@@ -1,6 +1,6 @@
 {
   "name": "dt_for_itables",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "DataTables bundle for itables",
   "main": "src/index.js",
   "typings": "src/index.d.js",
@@ -24,12 +24,12 @@
   "license": "MIT",
   "dependencies": {
     "datatables.net-buttons": "^3.0.1",
-    "datatables.net-buttons-dt": "^3.2.2",
+    "datatables.net-buttons-dt": "^3.2.3",
     "datatables.net-datetime": "^1.5.5",
-    "datatables.net-dt": "^2.2.2",
+    "datatables.net-dt": "^2.3.0",
     "datatables.net-fixedcolumns-dt": "^5.0.4",
     "datatables.net-keytable-dt": "^2.12.1",
-    "datatables.net-plugins": "^2.2.1",
+    "datatables.net-plugins": "^2.3.0",
     "datatables.net-rowgroup-dt": "^1.5.1",
     "datatables.net-searchbuilder-dt": "^1.8.2",
     "datatables.net-searchpanes-dt": "^2.3.3",
@@ -38,7 +38,7 @@
     "jszip": "^3.10.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.1"
+    "esbuild": "^0.25.3"
   },
   "homepage": "https://mwouts.github.io/itables",
   "repository": {

@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Sample dataframes
+# Pandas dataframes
 
 In this notebook we make sure that our test dataframes are displayed nicely with the default `itables` settings.
 

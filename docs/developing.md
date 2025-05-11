@@ -53,7 +53,7 @@ python -m ipykernel install --name itables --user
 ```
 Then you can build the documentation with
 ```
-jupyter-book build docs
+jupyter book build docs
 ```
 
 This will give you a link to a local version of the documentation.
@@ -82,9 +82,7 @@ itables.sample_dfs.get_countries()
 You can do this using for instance the notebook at `tests/test_notebook.ipynb`.
 
 Note that you can also open the documentation in Jupyter:
-go to the `docs` folder and open e.g.
-[`advanced_parameters.md`](advanced_parameters.md)
-_as a notebook_ (using a right click).
+go to the `docs` folder and open any `.md` file _as a notebook_ (using a right click).
 
 ## Other notebook editors
 

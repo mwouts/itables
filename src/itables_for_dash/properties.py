@@ -14,19 +14,15 @@ from typing import Optional
 
 from typing_extensions import Unpack
 
-from itables.javascript import get_itables_extension_arguments
+from itables.javascript import get_expanded_style, get_itables_extension_arguments
 from itables.typing import DataTableOptions, ITableOptions
 
 ITABLE_PROPERTIES = (
-    "data",
-    "columns",
     "caption",
-    "selected_rows",
     "style",
     "classes",
     "dt_args",
-    "filtered_row_count",
-    "downsampling_warning",
+    "selected_rows",
 )
 
 
@@ -37,14 +33,15 @@ def get_itable_component_kwargs(
 ):
     dt_args, other_args = get_itables_extension_arguments(df=df, *args, **kwargs)
 
-    style = other_args.pop("style")
-    style = {key: value for key, value in [x.split(":") for x in style.split(";")]}
-    style["captionSide"] = style.pop("caption-side")
-    style["tableLayout"] = style.pop("table-layout")
+    style = get_expanded_style(other_args.pop("style"))
+    for key in style:
+        # transform caption-side to captionSide
+        words = key.split("-")
+        if len(words) > 1:
+            new_key = words[0] + "".join(word.capitalize() for word in words[1:])
+            style[new_key] = style.pop(key)
 
     return {
-        "data": dt_args.pop("data"),
-        "columns": dt_args.pop("columns"),
         "dt_args": dt_args,
         "style": style,
         **other_args,
@@ -62,14 +59,17 @@ def updated_itable_outputs(
 ):
     updated_properties = get_itable_component_kwargs(df, **kwargs)
 
-    if df is None:
-        updated_properties["data"] = no_update
-        updated_properties["columns"] = no_update
-        updated_properties["filtered_row_count"] = no_update
-        updated_properties["downsampling_warning"] = no_update
-        updated_properties["selected_rows"] = kwargs.get("selected_rows") or []
-
     if current_dt_args is not None:
+        if df is None:
+            for k in {
+                "columns",
+                "data_json",
+                "filtered_row_count",
+                "downsampling_warning",
+            }:
+                if k in current_dt_args:
+                    updated_properties["dt_args"][k] = current_dt_args[k]
+
         if current_dt_args == updated_properties["dt_args"]:
             updated_properties["dt_args"] = no_update
 

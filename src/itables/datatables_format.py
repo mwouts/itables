@@ -1,6 +1,6 @@
 import json
-import re
 import warnings
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -12,32 +12,58 @@ except ImportError:
     pl = None
 
 
-JS_MAX_SAFE_INTEGER = 2**53 - 1
-JS_MIN_SAFE_INTEGER = -(2**53 - 1)
-
-
-def _format_column(x, pure_json=False):
+def _format_column(x, escape_html: bool):
     dtype_kind = x.dtype.kind
-    if dtype_kind in ["b", "i", "s"]:
+    if dtype_kind in ["b", "i"]:
         return x
+
+    if dtype_kind == "s":
+        if escape_html:
+            return x
+        return [escape_html_chars(i) for i in x]
 
     try:
         x = fmt.format_array(x._values, None, justify="all", leading_space=False)  # type: ignore
     except TypeError:
         # Older versions of Pandas don't have 'leading_space'
         x = fmt.format_array(x._values, None, justify="all")  # type: ignore
+
     if dtype_kind == "f":
         try:
             x = np.array(x).astype(float)
         except ValueError:
             pass
-        if pure_json:
-            # While JavaScript accept these values,
-            # JSON (in the streamlit component)
-            # cannot encode non-finite float values
-            x = [f if np.isfinite(f) else str(f) for f in x]
+
+        x = [escape_non_finite_float(f) for f in x]
+
+    if escape_html:
+        return [escape_html_chars(i) for i in x]
 
     return x
+
+
+def escape_non_finite_float(value):
+    """Encode non-finite float values to strings that will be parsed by parseJSON"""
+    if not isinstance(value, float):
+        return value
+    if np.isnan(value):
+        return "___NaN___"
+    if value == np.inf:
+        return "___Infinity___"
+    if value == -np.inf:
+        return "___-Infinity___"
+    return value
+
+
+def escape_html_chars(value):
+    """Escape HTML special characters"""
+    if isinstance(value, str):
+        from pandas.io.formats.printing import pprint_thing  # type: ignore
+
+        return pprint_thing(
+            value, escape_chars={"&": r"&amp;", "<": r"&lt;", ">": r"&gt;"}
+        ).strip()
+    return value
 
 
 def generate_encoder(warn_on_unexpected_types=True):
@@ -78,15 +104,20 @@ def _isetitem(df, i, value):
         df.iloc[:, i] = value
 
 
-def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=False):
+def datatables_rows(
+    df,
+    column_count: Optional[int] = None,
+    warn_on_unexpected_types: bool = False,
+    escape_html: bool = True,
+):
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89
-    if count is None or len(df.columns) == count:
+    if column_count is None or len(df.columns) == column_count:
         empty_columns = []
     else:
         # When the header requires more columns (#141), we append empty columns on the left
-        missing_columns = count - len(df.columns)
+        missing_columns = column_count - len(df.columns)
         assert missing_columns > 0
         empty_columns = [[None] * len(df)] * missing_columns
 
@@ -94,52 +125,23 @@ def datatables_rows(df, count=None, warn_on_unexpected_types=False, pure_json=Fa
         # Pandas DataFrame
         data = list(
             zip(
-                *(empty_columns + [_format_column(x, pure_json) for _, x in df.items()])
+                *(
+                    empty_columns
+                    + [_format_column(x, escape_html) for _, x in df.items()]
+                )
             )
         )
-        has_bigints = any(
-            x.dtype.kind == "i"
-            and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
-            for _, x in df.items()
-        )
-        js = json.dumps(
+        return json.dumps(
             data,
             cls=generate_encoder(warn_on_unexpected_types),
-            allow_nan=not pure_json,
+            allow_nan=False,
         )
     except AttributeError:
         # Polars DataFrame
         data = df.rows()
-        import polars as pl
+        data = [[escape_non_finite_float(f) for f in row] for row in data]
 
-        has_bigints = any(
-            (
-                x.dtype == pl.Int64
-                and ((x > JS_MAX_SAFE_INTEGER).any() or (x < JS_MIN_SAFE_INTEGER).any())
-            )
-            or (x.dtype == pl.UInt64 and (x > JS_MAX_SAFE_INTEGER).any())
-            for x in (df[col] for col in df.columns)
-        )
-        js = json.dumps(data, cls=generate_encoder(False), allow_nan=not pure_json)
+        if escape_html:
+            data = [[escape_html_chars(i) for i in row] for row in data]
 
-    if has_bigints:
-        js = n_suffix_for_bigints(js, pure_json=pure_json)
-
-    return js
-
-
-def n_suffix_for_bigints(js, pure_json=False):
-    def n_suffix(matchobj):
-        if pure_json:
-            return matchobj.group(1) + '"' + matchobj.group(2) + '"' + matchobj.group(3)
-        return (
-            matchobj.group(1)
-            + 'BigInt("'
-            + matchobj.group(2)
-            + '")'
-            + matchobj.group(3)
-        )
-
-    big_int_re = re.compile(r"^([\[\s]+)(-?\d{16,})(\]*)$")
-    parts = js.split(",")
-    return ",".join(re.sub(big_int_re, n_suffix, part) for part in parts)
+        return json.dumps(data, cls=generate_encoder(False), allow_nan=False)
