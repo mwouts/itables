@@ -45,6 +45,6 @@ because otherwise the notebooks do not display the interactive tables when they 
 
 ## Quarto
 
-ITables works well with Quarto - check out our `html` and `revealjs` [examples](quarto.md).
+ITables works well with Quarto - check out our `html` and `revealjs` [examples](apps/quarto.md).
 
 <iframe src=quarto_revealjs.html width="750px" height="500px"></iframe>

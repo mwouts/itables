@@ -62,7 +62,7 @@ itables.sample_dfs.get_countries(html=False)
 ## How to make your table smaller
 
 - display only a few rows with `lengthMenu`,
-- adjust the [style or font](https://mwouts.github.io/itables/custom_css.html) with a custom `css`
+- adjust the [style or font](https://mwouts.github.io/itables/css.html) with a custom `css`
 :::
 
 ::: {.callout-note}
