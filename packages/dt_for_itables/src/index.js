@@ -54,6 +54,9 @@ window.$ = jQuery;
 
 function evalNestedKeys(obj, keys, context) {
     const [first, ...rest] = keys;
+    if (['__proto__', 'constructor', 'prototype'].includes(first)) {
+        throw new Error(`Invalid key '${first}' in context '${context}'. Prototype pollution attempt detected.`);
+    }
     if (rest.length === 0) {
         try {
             obj[first] = window.eval(obj[first]);
