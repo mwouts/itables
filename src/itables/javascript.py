@@ -7,7 +7,7 @@ import warnings
 from base64 import b64encode
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence, Union, cast
+from typing import Any, Optional, Sequence, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -275,8 +275,13 @@ def get_keys_to_be_evaluated(data) -> list[list[Union[int, str]]]:
     keys_to_be_evaluated = []
     if isinstance(data, Sequence):
         data = dict(enumerate(data))
-    if isinstance(data, Mapping):
+    if isinstance(data, dict):
         for key, value in data.items():
+            if isinstance(value, JavascriptFunction):
+                # eval can't evaluate a function,
+                # but it can evaluate an expression that contains a function
+                # e.g. eval('(function() {return 5;})') does returns the function
+                data[key] = f"({value})"
             if isinstance(value, (JavascriptCode, JavascriptFunction)):
                 keys_to_be_evaluated.append([key])
             else:
