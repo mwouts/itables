@@ -42,7 +42,7 @@ jobs:
 
     - name: Render the quarto examples
       run: |
-        for qmd_file in `ls docs/apps/quarto/*.qmd`; do quarto render ${qmd_file}; done
+        for qmd_file in `ls docs/quarto/*.qmd`; do quarto render ${qmd_file}; done
 
     # Build the book
     - name: Build the book
