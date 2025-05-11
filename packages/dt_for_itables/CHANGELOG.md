@@ -1,4 +1,4 @@
-# 2.3.0-dev
+# 2.3.0 (2025-05-11)
 
 - This version uses `datatables.net-dt=2.3.0`. The extensions have been updated, too.
 - We have added a new class `ITable` that processes some of the arguments on the Javascript side.

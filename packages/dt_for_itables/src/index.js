@@ -120,7 +120,7 @@ class ITable {
                             // (but keep the icon for alignment)
                             jQuery(this).attr('data-dt-order', 'disable');
                         }
-                        else if (jQuery(this).html().trim() === '') {
+                        else if (jQuery(this).text().trim() === '') {
                             // Remove the sorting icon on empty cells
                             jQuery(this).empty();
                             jQuery(this).attr('data-dt-order', 'disable');
@@ -175,7 +175,6 @@ class ITable {
                 jQuery(this).html(input);
             });
         }
-        this.table.data("quarto-disable-processing", true);
         this.dt = new DataTable(table, dt_args);
         if (caption !== undefined) {
             this.dt.caption(caption);
