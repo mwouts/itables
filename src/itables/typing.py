@@ -62,6 +62,41 @@ class DataTableOptions(TypedDict):
     keys: NotRequired[bool]
 
 
+class ITableOptions(DataTableOptions):
+    """
+    A non-exhaustive list of options that can be passed
+    to the show function and to the ITable Python classes.
+    """
+
+    classes: NotRequired[Union[str, list[str]]]
+    style: NotRequired[Union[str, dict[str, str]]]
+
+    showIndex: NotRequired[Union[bool, str]]
+
+    maxBytes: NotRequired[Union[int, str]]
+    maxRows: NotRequired[int]
+    maxColumns: NotRequired[int]
+
+    allow_html: NotRequired[bool]
+
+    table_id: NotRequired[str]
+    dt_url: NotRequired[str]
+    dt_bundle: NotRequired[Union[str, Path]]
+    connected: NotRequired[bool]
+    display_logo_when_loading: NotRequired[bool]
+
+    footer: NotRequired[bool]
+
+    warn_on_unexpected_types: NotRequired[bool]
+    warn_on_selected_rows_not_rendered: NotRequired[bool]
+    warn_on_undocumented_option: NotRequired[bool]
+    text_in_header_can_be_selected: NotRequired[bool]
+
+    column_filters: NotRequired[Literal[False, "header", "footer"]]
+
+    use_to_html: NotRequired[bool]
+
+
 class DTForITablesOptions(DataTableOptions):
     """
     The options that can be passed to the ITable constructor
@@ -83,35 +118,6 @@ class DTForITablesOptions(DataTableOptions):
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
     keys_to_be_evaluated: NotRequired[list[list[Union[int, str]]]]
-
-
-class ITableOptions(DTForITablesOptions):
-    """
-    A non-exhaustive list of options that can be passed
-    to the ITable constructors
-    """
-
-    showIndex: NotRequired[Union[bool, str]]
-
-    maxBytes: NotRequired[Union[int, str]]
-    maxRows: NotRequired[int]
-    maxColumns: NotRequired[int]
-
-    allow_html: NotRequired[bool]
-
-    table_id: NotRequired[str]
-    dt_url: NotRequired[str]
-    dt_bundle: NotRequired[Union[str, Path]]
-    connected: NotRequired[bool]
-    display_logo_when_loading: NotRequired[bool]
-
-    footer: NotRequired[bool]
-
-    warn_on_unexpected_types: NotRequired[bool]
-    warn_on_selected_rows_not_rendered: NotRequired[bool]
-    warn_on_undocumented_option: NotRequired[bool]
-
-    use_to_html: NotRequired[bool]
 
 
 def is_typeguard_available():

@@ -53,4 +53,4 @@ itables.show(
 
 ## HTML
 
-The `show` function simply displays the HTML snippet for the table, which is obtained with `to_html_datatable`. See more in the section on [HTML export](apps/html.md).
+The `show` function simply displays the HTML snippet for the table, which is obtained with `to_html_datatable`. See more in the section on [HTML export](html.md).

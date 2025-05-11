@@ -41,7 +41,7 @@ display(HTML(html))
 
 ~~~{admonition} The `connected` argument
 :class: tip
-The `to_html_datatable` function has a `connected` argument which defaults to what you set in `init_notebook_mode` (`True` if you didn't call it).
+The `to_html_datatable` function has a `connected` argument which defaults to what you set in `init_notebook_mode` (it's `True` if you didn't call it).
 
 - With `connected=True` you get an autonomous HTML fragment that loads `dt_for_itables` from the Internet
 - With `connected=False`, the HTML snippet works only after you add the output of `generate_init_offline_itables_html()` to your HTML document

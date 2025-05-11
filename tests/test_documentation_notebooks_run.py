@@ -15,9 +15,15 @@ except ImportError:
 
 def list_doc_notebooks():
     documentation_folder = Path(__file__).parent / ".." / "docs"
-    for file in documentation_folder.iterdir():
-        if file.suffix == ".md":
-            yield file
+    for path in documentation_folder.iterdir():
+        if path.suffix == ".md":
+            yield path
+        if path.is_dir():
+            if path.name == ".ipynb_checkpoints":
+                continue
+            for file in path.iterdir():
+                if file.suffix == ".md":
+                    yield file
 
 
 @pytest.mark.parametrize(

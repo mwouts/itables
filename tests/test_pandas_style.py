@@ -15,7 +15,9 @@ pytest.importorskip("jinja2")
 def test_buttons_are_shown_on_pd_style_objects():
     df = pd.DataFrame({"A": ["a"]}).style
     html = to_html_datatable(
-        df, buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"]
+        df,
+        buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"],
+        allow_html=True,
     )
 
     # Extract the dt_args passed to datatables

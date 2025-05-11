@@ -88,7 +88,7 @@ display_logo_when_loading: bool = True
 
 """Make the text in the table header selectable. When False, clicking
 on the column header will sort the table. See #227"""
-text_in_header_can_be_selected: bool = False
+text_in_header_can_be_selected: bool = True
 
 """Check that all options passed to ITable are valid and have the expected type."""
 warn_on_undocumented_option: bool = typing.is_typeguard_available()

@@ -20,7 +20,7 @@ select rows when the table is first displayed. Add `select=True` to let the user
 
 ## Using HTML
 
-Until ITables v2.4.0, the streamlit component was missing a few options compared to the HTML implementation. A possible fallback was to use `to_html_datatable` in combination with Streamlit's `html` function - but you should not need that anymore with the latest version of ITables.
+Before ITables v2.4.0, the streamlit component was missing a few options compared to the HTML implementation. A possible fallback was to use `to_html_datatable` in combination with Streamlit's `html` function - but you should not need that anymore with the latest version of ITables.
 
 Please note that:
 - you will have to specify the table height manually,

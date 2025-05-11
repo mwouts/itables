@@ -9,18 +9,41 @@ parts:
       - file: apps/dash
       - file: apps/streamlit
       - file: apps/shiny
+      - file: apps/quarto
   - caption: Options
     chapters:
-    - file: advanced_parameters
-    - file: select
-    - file: extensions
-    - file: custom_extensions
-    - file: custom_css
-    - file: formatting
-    - file: pandas_style
-    - file: dark_mode
-    - file: quarto
+      - file: options/options
+      - file: options/classes
+      - file: options/style
+      - file: options/caption
+      - file: options/layout
+      - file: options/column_defs
+      - file: options/search
+      - file: options/length_menu
+      - file: options/paging
+      - file: options/scroll_y
+      - file: options/scroll_x
+      - file: options/footer
+      - file: options/column_filters
+      - file: options/order
+      - file: options/state_save
+      - file: options/select
+      - file: options/buttons
+      - file: options/colvis
+      - file: options/search_panes
+      - file: options/search_builder
+      - file: options/fixed_columns
+      - file: options/row_group
+      - file: options/keys
+      - file: options/allow_html
+      - file: options/show_index
+  - caption: More about ITables
+    chapters:
     - file: downsampling
+    - file: formatting
+    - file: dark_mode
+    - file: css
+    - file: custom_extensions
     - file: references
     - file: supported_editors
   - caption: Contributing to ITables
@@ -29,7 +52,8 @@ parts:
       - file: developing
       - file: troubleshooting
       - file: changelog
-  - caption: Example DataFrames
+  - caption: Examples
     chapters:
-    - file: sample_dataframes
+    - file: pandas_dataframes
+    - file: pandas_style
     - file: polars_dataframes

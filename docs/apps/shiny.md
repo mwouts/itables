@@ -98,7 +98,7 @@ style="height: 800px; width: 100%;"></iframe>
 
 ## DT
 
-Until ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget should now be up to par with the HTML version, however you can still use `HTML(DT(...))` if you only want to _display_ the table:
+Before ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget should now be up to par with the HTML version, however you can still use `HTML(DT(...))` if you only want to _display_ the table:
 
 ```python
 from shiny import ui

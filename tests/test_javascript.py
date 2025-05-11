@@ -35,6 +35,7 @@ def test_get_itable_arguments():
         "warn_on_undocumented_option": opt.warn_on_undocumented_option,
         "dt_url": opt.dt_url,
         "layout": {k: None for k in opt.layout},
+        "text_in_header_can_be_selected": True,
     }
 
 

@@ -1,8 +1,8 @@
 ITables ChangeLog
 =================
 
-2.4.0-dev
----------
+2.4.0rc0 (2025-05-11)
+---------------------
 
 **Added**
 - The ITable widget, and the ITable components for Dash and Streamlit have the same features as the `show` function. They can show non-finite floats, bigints, Pandas Style objects and use custom JavaScript formatters ([#374](https://github.com/mwouts/itables/issues/374))
@@ -11,8 +11,8 @@ ITables ChangeLog
 **Changed**
 - By default, the HTML content in Pandas and Polars dataframes is now escaped. Use `allow_html=True` to display HTML content (use this option only if you trust the content of the table!) ([#346](https://github.com/mwouts/itables/issues/346))
 - Consistently with Pandas Style, the HTML content in Styler objects is not escaped - make sure you trust the content of the corresponding tables.
-- ITable now requires Python 3.9, due to the addition of type hints
 - We have updated DataTables to its latest release 2.3.0
+- ITable now requires Python 3.9, due to the addition of type hints
 - The `dom` argument (deprecated in v2.0) has been removed.
 
 

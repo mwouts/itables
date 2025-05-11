@@ -6,7 +6,7 @@ ITables is a wrapper for the [datatables-net](https://datatables.net) Javascript
 
 ### Jupyter Widgets
 
-In Jupyter or VS Code, ITables can render your dataframes using either HTML (with either `init_notebook_mode()`, or `init_notebook_mode(all_interactive=False)` and `show`) or the [`ITable` widget](widget.md).
+In Jupyter or VS Code, ITables can render your dataframes using either HTML (with either `init_notebook_mode()`, or `init_notebook_mode(all_interactive=False)` and `show`) or the [`ITable` widget](apps/widget.md).
 
 Other Jupyter widgets that let you render a dataframe in Jupyter are
 - [QGrid](https://github.com/quantopian/qgrid) by Quantopian
@@ -15,7 +15,7 @@ Other Jupyter widgets that let you render a dataframe in Jupyter are
 
 ### Dash component
 
-Since ITables v2.3.0 you can use our [`ITable` component](dash.md) in Dash applications.
+Since ITables v2.3.0 you can use our [`ITable` component](apps/dash.md) in Dash applications.
 
 Alternatives for rendering DataFrames in Dash are
 - [Dash DataTable](https://dash.plotly.com/datatable)
@@ -23,7 +23,7 @@ Alternatives for rendering DataFrames in Dash are
 
 ### Streamlit
 
-In ITables v2.1.0 we added the [`interactive_table` component](streamlit.md) that can be used in Streamlit applications.
+In ITables v2.1.0 we added the [`interactive_table` component](apps/streamlit.md) that can be used in Streamlit applications.
 
 Alternative for rendering DataFrames in Streamlit are
 - [`st.dataframe`](https://docs.streamlit.io/develop/api-reference/data/st.dataframe)

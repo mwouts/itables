@@ -38,7 +38,7 @@ if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "timedelta"]
 
 
-def get_countries(html=True):
+def get_countries(html: bool = True, climate_zone: bool = False):
     """A Pandas DataFrame with the world countries (from the world bank data)
     Flags are loaded from https://flagpedia.net/"""
     df = pd.read_csv(find_package_file("samples/countries.csv"))
@@ -49,25 +49,38 @@ def get_countries(html=True):
     ].dropna()
     df.index.name = "code"
 
-    if not html:
-        return df
+    if html:
+        df["flag"] = [
+            '<a href="https://flagpedia.net/{code}">'
+            '<img src="https://flagpedia.net/data/flags/h80/{code}.webp" '
+            'alt="Flag of {country}"></a>'.format(
+                code=cast(str, code).lower(), country=country
+            )
+            for code, country in zip(df.index, df["country"])
+        ]
+        df["country"] = [
+            '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(country, country)
+            for country in df["country"]
+        ]
+        df["capital"] = [
+            '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(capital, capital)
+            for capital in df["capital"]
+        ]
 
-    df["flag"] = [
-        '<a href="https://flagpedia.net/{code}">'
-        '<img src="https://flagpedia.net/data/flags/h80/{code}.webp" '
-        'alt="Flag of {country}"></a>'.format(
-            code=cast(str, code).lower(), country=country
+    # Add columns for the searchPanes demo
+    if climate_zone:
+        df["climate_zone"] = np.where(
+            df["latitude"].abs() < 23.43615,
+            "Tropical",
+            np.where(
+                df["latitude"].abs() < 35,
+                "Sub-tropical",
+                # Artic circle is 66.563861 but there is no capital there => using 64
+                np.where(df["latitude"].abs() < 64, "Temperate", "Frigid"),
+            ),
         )
-        for code, country in zip(df.index, df["country"])
-    ]
-    df["country"] = [
-        '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(country, country)
-        for country in df["country"]
-    ]
-    df["capital"] = [
-        '<a href="https://en.wikipedia.org/wiki/{}">{}</a>'.format(capital, capital)
-        for capital in df["capital"]
-    ]
+        df["hemisphere"] = np.where(df["latitude"] > 0, "North", "South")
+
     return df
 
 

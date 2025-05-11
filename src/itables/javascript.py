@@ -449,6 +449,11 @@ def get_itable_arguments(
         )
     else:
         if pd_style is not None and isinstance(df, pd_style.Styler):
+            if not allow_html:
+                raise ValueError(
+                    "Pandas Styler objects always use HTML. If you trust the "
+                    "content of that table, please render it with allow_html=True."
+                )
             if not showIndex:
                 try:
                     df = df.hide()
@@ -660,7 +665,7 @@ def html_table_from_template(
     if "css" in kwargs:
         TypeError(
             "The 'css' argument has been deprecated, see the new "
-            "approach at https://mwouts.github.io/itables/custom_css.html."
+            "approach at https://mwouts.github.io/itables/css.html."
         )
 
     # Load the HTML template

@@ -15,12 +15,12 @@ kernelspec:
 # Widget
 
 The `ITable` widget depends on [AnyWidget](https://anywidget.dev) -
-a great widget development framework - that you can install with
+a great widget development framework! You can install it with
 ```bash
 pip install itables[widget]
 ```
 
-The `ITable` class accepts the same arguments as the `show` method, but
+The `ITable` class accepts the same [options](../options/options.md) as the `show` method, but
 the `df` argument is optional.
 
 ```{code-cell} ipython3
@@ -42,8 +42,7 @@ more row selection commands, see below.
 ## The `selected_rows` traits
 
 The `selected_rows` attribute of the `ITable` object provides a view on the
-rows that have been selected in the table (remember to pass [`select=True`](select.md)
-to activate the row selection). You can use it to either retrieve
+rows that have been selected in the table (remember to pass [`select=True`](../options/select.md) to activate the row selection). You can use it to either retrieve
 or change the current row selection:
 
 ```{code-cell} ipython3

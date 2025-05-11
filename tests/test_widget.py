@@ -10,6 +10,7 @@ def test_create_widget_with_no_df():
     assert itable.style == opt.style
     assert itable.selected_rows == []
     assert itable._dt_args == {
+        "text_in_header_can_be_selected": True,
         "order": [],
         "layout": {k: None for k in opt.layout},
     }
@@ -35,5 +36,6 @@ def test_create_widget_with_df(df):
         ]
     }
     assert selected_dt_args == {
+        "text_in_header_can_be_selected": True,
         "order": [],
     }

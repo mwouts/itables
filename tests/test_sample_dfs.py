@@ -64,7 +64,7 @@ def test_get_indicators(connected, use_to_html):
 )
 def test_get_pandas_styler(connected):
     styler = get_pandas_styler()
-    show(styler, connected=connected)
+    show(styler, connected=connected, allow_html=True)
 
 
 def kwargs_remove_none(**kwargs):
