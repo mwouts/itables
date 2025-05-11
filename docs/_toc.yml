@@ -1,7 +1,15 @@
 format: jb-book
 root: quick_start
 parts:
-  - caption: ITables in Notebooks
+  - caption: Using ITables
+    chapters:
+      - file: apps/notebook
+      - file: apps/html
+      - file: apps/widget
+      - file: apps/dash
+      - file: apps/streamlit
+      - file: apps/shiny
+  - caption: Options
     chapters:
     - file: advanced_parameters
     - file: select
@@ -15,13 +23,6 @@ parts:
     - file: downsampling
     - file: references
     - file: supported_editors
-  - caption: ITables in Applications
-    chapters:
-      - file: widget
-      - file: streamlit
-      - file: shiny
-      - file: dash
-      - file: html_export
   - caption: Contributing to ITables
     chapters:
       - file: contributing

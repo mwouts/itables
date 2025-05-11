@@ -53,7 +53,7 @@ or
 conda install itables -c conda-forge
 ```
 
-## Activate ITables in a Notebook
+## Activate ITables
 
 Activate the interactive mode in notebook-like environment with `init_notebook_mode`:
 
@@ -72,34 +72,7 @@ df = itables.sample_dfs.get_countries(html=False)
 df
 ```
 
-:::{tip}
-The arguments to `init_notebook_mode` are:
-- `all_interactive`, which defaults to `True` since v2.3.0
-- `connected`, which defaults to `False` (except in Colab)
-:::
-
-If you prefer to render only certain tables using `itables`, or want
-to pass [advanced parameters](advanced_parameters.md) along with the
-DataFrame, use `show`:
-
-```{code-cell} ipython3
-itables.show(df, lengthMenu=[2, 5, 10, 25, 50, 100, 250])
-```
-
-## Offline mode versus connected mode
-
-ITables use two Javascript libraries:
-[jQuery](https://jquery.com/) and [DataTables](https://datatables.net/).
-
-By default `itables` works offline. No internet connection is required
-as the two libraries are embedded into the notebook itself
-when you execute `init_notebook_mode`.
-
-In some contexts (Jupyter Book, Jupyter Colab, etc...) you might
-prefer to load the libraries dynamically from the internet.
-To do so, add the argument `connected=True` when you
-execute `init_notebook_mode`. This will also make your notebook lighter by
-about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py).
+Read more about the different context where you can use ITables.
 
 ## Try ITables on Binder
 
