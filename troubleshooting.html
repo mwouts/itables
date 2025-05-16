@@ -540,8 +540,14 @@ document.write(`
 </div>
 </details>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/itables/typing.py:162: SyntaxWarning: These arguments are not documented in ITableOptions: {&#39;tags&#39;}. You can silence this warning by setting `itables.options.warn_on_undocumented_option=False`. If you believe ITableOptions should be updated, please make a PR or open an issue at https://github.com/mwouts/itables
+  warnings.warn(
+/opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages/itables/typing.py:162: SyntaxWarning: These arguments are not documented in DTForITablesOptions: {&#39;tags&#39;}. You can silence this warning by setting `itables.options.warn_on_undocumented_option=False`. If you believe ITableOptions should be updated, please make a PR or open an issue at https://github.com/mwouts/itables
+  warnings.warn(
+</pre></div>
+</div>
 <div class="output text_html"><!--| quarto-html-table-processing: none -->
-<table id="itables_d479c89e_aedf_43be_a34f_5c3f4f04f01d"><tbody><tr>
+<table id="itables_d46bbe63_8597_4f28_8c92_9e8170849b76"><tbody><tr>
     <td style="vertical-align:middle; text-align:left">
     <a href=https://mwouts.github.io/itables/><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
@@ -639,11 +645,11 @@ width="64" viewBox="0 0 500 400" style="font-family: 'Droid Sans', sans-serif;">
 <script type="module">
     const { ITable, jQuery: $ } = await import(window._datatables_src_for_itables_2_4_0rc1);
 
-    document.querySelectorAll("#itables_d479c89e_aedf_43be_a34f_5c3f4f04f01d:not(.dataTable)").forEach(table => {
+    document.querySelectorAll("#itables_d46bbe63_8597_4f28_8c92_9e8170849b76:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
-        let dt_args = {"tags": "<caption style=\"caption-side: bottom\">A table that does not load, due to <code>init_notebook_mode</code><br>not being called in this document</caption>", "layout": {"topStart": null, "topEnd": null, "bottomStart": null, "bottomEnd": null}, "style": {"table-layout": "auto", "width": "auto", "margin": "auto", "caption-side": "bottom"}, "text_in_header_can_be_selected": true, "order": [], "classes": ["display", "nowrap"], "table_html": "<table><thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n    </tr>\n  </thead></table>", "data_json": "[]"};
+        let dt_args = {"tags": "<caption style=\"caption-side: bottom\">A table that does not load, due to <code>init_notebook_mode</code><br>not being called in this document</caption>", "layout": {"topStart": null, "topEnd": null, "bottomStart": null, "bottomEnd": null}, "classes": ["display", "nowrap"], "text_in_header_can_be_selected": true, "style": {"table-layout": "auto", "width": "auto", "margin": "auto", "caption-side": "bottom"}, "order": [], "table_html": "<table><thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n    </tr>\n  </thead></table>", "data_json": "[]"};
         new ITable(table, dt_args);
     });
 </script>
