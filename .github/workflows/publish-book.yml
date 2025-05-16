@@ -27,10 +27,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install jupyter-book
+        pip install jupyter-book sphinxext-rediraffe
         pip install matplotlib  # Pandas style
-        pip install .[polars]
-        pip install .[widget]
+        pip install .[all]
 
     - name: Create a kernel
       run: |
