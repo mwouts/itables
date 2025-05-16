@@ -7,6 +7,21 @@ execute:
 sphinx:
   config:
     html_extra_path: ['quarto']
+    rediraffe_branch: main
+    rediraffe_redirects:
+      advanced_parameters.md: options/options.md
+      extensions.md: options/buttons.md
+      select.md: options/select.md
+      custom_css.md: css.md
+      dash.md: apps/dash.md
+      html_export.md: apps/html.md
+      shiny.md: apps/shiny.md
+      quarto.md: apps/quarto.md
+      streamlit.md: apps/streamlit.md
+      widget.md: apps/widget.md
+      sample_dataframes.md: pandas_dataframes.md
+  extra_extensions:
+    - sphinxext.rediraffe
 repository:
   url: https://github.com/mwouts/itables
   path_to_book: docs
