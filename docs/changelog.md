@@ -1,8 +1,8 @@
 ITables ChangeLog
 =================
 
-2.4.0-dev
----------------------
+2.4.0 (2025-05-17)
+------------------
 
 **Added**
 - The ITable widget, and the ITable components for Dash and Streamlit have the same features as the `show` function. They can show non-finite floats, bigints, Pandas Style objects and use custom JavaScript formatters ([#374](https://github.com/mwouts/itables/issues/374))
@@ -18,6 +18,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have added a new option `text_in_header_can_be_selected` (defaults to `True`). With that option the text in headers can be selected, giving you the option to select and copy the column names back to your Python code.
+- We have fixed the rendering of Polars Struct columns ([#290](https://github.com/mwouts/itables/issues/290))
 
 
 2.3.0 (2025-04-05)
