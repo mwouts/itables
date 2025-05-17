@@ -1,7 +1,7 @@
 ITables ChangeLog
 =================
 
-2.4.0rc1 (2025-05-11)
+2.4.0-dev
 ---------------------
 
 **Added**
@@ -14,6 +14,9 @@ ITables ChangeLog
 - We have updated DataTables to its latest release 2.3.0
 - ITable now requires Python 3.9, due to the addition of type hints
 - The `dom` argument (deprecated in v2.0) has been removed.
+
+**Fixed**
+- We have added a new option `text_in_header_can_be_selected` (defaults to `True`). With that option the text in headers can be selected, giving you the option to select and copy the column names back to your Python code.
 
 
 2.3.0 (2025-04-05)
