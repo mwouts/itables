@@ -126,10 +126,7 @@ class ITable {
                         else if (jQuery(this).find('span.dt-column-title').text() === '' && jQuery(this).find('span.dt-column-title').children().length === 0) {
                             // Remove the sorting icon on empty headers
                             jQuery(this).attr('data-dt-order', 'disable');
-                            // Remove any children with the 'dt-column-order' class
-                            jQuery(this).children('.dt-column-order').remove();
-                            // Remove the dt-orderable-asc and dt-orderable-desc classes
-                            jQuery(this).removeClass('dt-orderable-asc dt-orderable-desc');
+                            jQuery(this).empty();
                         }
                         else {
                             // Apply the icon-only data-dt-order attribute

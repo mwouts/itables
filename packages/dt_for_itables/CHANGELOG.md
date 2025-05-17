@@ -1,3 +1,7 @@
+# 2.3.2+dev
+
+- We have made sure that the ordering icons on empty headers do not reappear when ordering a column
+
 # 2.3.2 (2025-05-17)
 
 - We have fixed an issue with `selected_rows` when `filtered_row_count` was not explicitly set.
