@@ -216,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="options/keys.html">Keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="options/allow_html.html">Allow HTML</a></li>
 <li class="toctree-l1"><a class="reference internal" href="options/show_index.html">Show Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="options/text_in_header_can_be_selected.html">Select Text in Header</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More about ITables</span></p>
 <ul class="nav bd-sidenav">
@@ -451,7 +452,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc1-2025-05-11">2.4.0rc1 (2025-05-11)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev">2.4.0-dev</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.3.0 (2025-04-05)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.2.5 (2025-02-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.2.4 (2024-12-07)</a></li>
@@ -525,8 +526,8 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="itables-changelog">
 <h1>ITables ChangeLog<a class="headerlink" href="#itables-changelog" title="Link to this heading">#</a></h1>
-<section id="rc1-2025-05-11">
-<h2>2.4.0rc1 (2025-05-11)<a class="headerlink" href="#rc1-2025-05-11" title="Link to this heading">#</a></h2>
+<section id="dev">
+<h2>2.4.0-dev<a class="headerlink" href="#dev" title="Link to this heading">#</a></h2>
 <p><strong>Added</strong></p>
 <ul class="simple">
 <li><p>The ITable widget, and the ITable components for Dash and Streamlit have the same features as the <code class="docutils literal notranslate"><span class="pre">show</span></code> function. They can show non-finite floats, bigints, Pandas Style objects and use custom JavaScript formatters (<a class="reference external" href="https://github.com/mwouts/itables/issues/374">#374</a>)</p></li>
@@ -539,6 +540,10 @@ document.write(`
 <li><p>We have updated DataTables to its latest release 2.3.0</p></li>
 <li><p>ITable now requires Python 3.9, due to the addition of type hints</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">dom</span></code> argument (deprecated in v2.0) has been removed.</p></li>
+</ul>
+<p><strong>Fixed</strong></p>
+<ul class="simple">
+<li><p>We have added a new option <code class="docutils literal notranslate"><span class="pre">text_in_header_can_be_selected</span></code> (defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>). With that option the text in headers can be selected, giving you the option to select and copy the column names back to your Python code.</p></li>
 </ul>
 </section>
 <section id="id1">
@@ -1233,7 +1238,7 @@ and <a class="reference external" href="https://github.com/fwouts">François Wou
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc1-2025-05-11">2.4.0rc1 (2025-05-11)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dev">2.4.0-dev</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.3.0 (2025-04-05)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.2.5 (2025-02-22)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.2.4 (2024-12-07)</a></li>
