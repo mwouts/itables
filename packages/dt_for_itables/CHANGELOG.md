@@ -1,3 +1,7 @@
+# 2.3.2 (2025-05-17)
+
+- We have fixed an issue with `selected_rows` when `filtered_row_count` was not explicitly set.
+
 # 2.3.1 (2025-05-17)
 
 - We have improved the implementation of `text_in_header_can_be_selected`.
