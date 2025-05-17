@@ -14,10 +14,14 @@ kernelspec:
 
 # Allow HTML
 
-By default, the HTML content in your tables is escaped. You can change this by setting `allow_html=True`.
+Since v2.4.0, the HTML content in your tables is escaped by default. You can change this by passing `allow_html=True`.
 
 ```{warning}
-Please make sure that you trust the content of your tables before allowing HTML content. See also this datatable page on [security](https://datatables.net/manual/security).
+Please make sure that you trust the content of your tables before allowing HTML content. When `allow_html=True`, ITables passes the table content verbatim to datatables.net, and the HTML will be executed.
+
+If you did not produce the non-numeric content yourself, you should sanitize it using e.g. `rh3` or `bleach`.
+
+See also this datatable page on [security](https://datatables.net/manual/security).
 ```
 
 ## Text formatting
