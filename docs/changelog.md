@@ -7,6 +7,7 @@ ITables ChangeLog
 **Added**
 - The ITable widget, and the ITable components for Dash and Streamlit have the same features as the `show` function. They can show non-finite floats, bigints, Pandas Style objects and use custom JavaScript formatters ([#374](https://github.com/mwouts/itables/issues/374))
 - We have added type hints for the `show` function and for the various app components. A SyntaxWarning is issued if either the argument name or type does not match when `warn_on_undocumented_option=True` (the default when `typeguard>=4.4.1` is installed)
+- We have added more application examples, and documented how to use ITables in Marimo ([#348](https://github.com/mwouts/itables/issues/348))
 
 **Changed**
 - By default, the HTML content in Pandas and Polars dataframes is now escaped. Use `allow_html=True` to display HTML content (use this option only if you trust the content of the table!) ([#346](https://github.com/mwouts/itables/issues/346))
