@@ -138,6 +138,19 @@ def datatables_rows(
         )
     except AttributeError:
         # Polars DataFrame
+        assert pl is not None
+
+        # Convert Polars Struct to string #290
+        if any(isinstance(df[col].dtype, pl.Struct) for col in df.columns):
+            columns = {col: df[col] for col in df.columns}
+            for col in df.columns:
+                if isinstance(df[col].dtype, pl.Struct):
+                    try:
+                        columns[col] = df[col].cast(str)
+                    except pl.exceptions.InvalidOperationError:
+                        columns[col] = [str(x) for x in df[col]]
+            df = pl.DataFrame(columns)
+
         data = df.rows()
         data = [[escape_non_finite_float(f) for f in row] for row in data]
 
