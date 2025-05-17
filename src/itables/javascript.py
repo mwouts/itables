@@ -459,8 +459,9 @@ def get_itable_arguments(
         if pd_style is not None and isinstance(df, pd_style.Styler):
             if not allow_html:
                 raise ValueError(
-                    "Pandas Styler objects always use HTML. If you trust the "
-                    "content of that table, please render it with allow_html=True."
+                    "Pandas Styler objects always use HTML. Please make sure that you trust the "
+                    "content of that table. If so, please render it with allow_html=True, cf. "
+                    "https://mwouts.github.io/itables/options/allow_html.html."
                 )
             if not showIndex:
                 try:

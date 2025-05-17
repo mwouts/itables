@@ -14,7 +14,11 @@ kernelspec:
 
 # Horizontal Scroll
 
-Since ITables 2.1.2, the `.dt-layout-table` div has a default overflow equal to `auto`, so in most cases you don't need to use the [`scrollX`](https://datatables.net/reference/option/scrollX) option of datatables.
+DataTables has a [`scrollX`](https://datatables.net/reference/option/scrollX) option that might be helpful for wide tables.
+
+```{tip}
+Since ITables v2.1.2, the `.dt-layout-table` div has a default overflow equal to `auto`, so in most cases you don't need to use `scrollX`.
+```
 
 ```{code-cell} ipython3
 :tags: [full-width]
@@ -23,6 +27,10 @@ import itables
 
 itables.init_notebook_mode()
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_dict_of_test_dfs()["wide"]
 itables.show(df, scrollX=True)
+```
+
+```{warning}
+Using `scrollX` on a table that is not wide enough can lead to an issue where the table headers are not aligned with the table content.
 ```

@@ -14,7 +14,7 @@ kernelspec:
 
 # Vertical Scroll
 
-You can replace the pagination with a [vertical scroll](https://datatables.net/examples/basic_init/scroll_y.html):
+The [`scrollY`](https://datatables.net/examples/basic_init/scroll_y.html) parameter is an interesting alternative to the pagination:
 
 ```{code-cell} ipython3
 :tags: [full-width]
@@ -24,5 +24,5 @@ import itables
 itables.init_notebook_mode()
 
 df = itables.sample_dfs.get_countries(html=False)
-itables.show(df, scrollY="200px", scrollCollapse=True, paging=False)
+itables.show(df, scrollY="350px", scrollCollapse=True, paging=False)
 ```
