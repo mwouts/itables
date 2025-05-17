@@ -8,7 +8,13 @@ from typing_extensions import NotRequired
 
 
 class JavascriptFunction(str):
-    """A class that explicitly states that a string is a Javascript function"""
+    """
+    A class that explicitly states that a string is
+    a Javascript function. It will be converted to a
+    real Javascript function using indirect evaluation.
+
+    Please use this only for code that you trust.
+    """
 
     def __init__(self, value):
         assert value.lstrip().startswith(
@@ -17,7 +23,13 @@ class JavascriptFunction(str):
 
 
 class JavascriptCode(str):
-    """A class that explicitly states that a string is a Javascript code"""
+    """
+    A class that explicitly states that a string is
+    a Javascript code snippet. It will be converted to
+    real Javascript code using indirect evaluation.
+
+    Please use this only for code that you trust.
+    """
 
     pass
 
