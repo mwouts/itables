@@ -1,7 +1,13 @@
+# 2.3.1 (2025-05-17)
+
+- We have improved the implementation of `text_in_header_can_be_selected`.
+- The indirect evaluation of `JavascriptCode` and `JavascriptFunction` will not proceed when prototype pollution attempts are detected.
+
 # 2.3.0 (2025-05-11)
 
 - This version uses `datatables.net-dt=2.3.0`. The extensions have been updated, too.
 - We have added a new class `ITable` that processes some of the arguments on the Javascript side.
+- We use an indirect eval to parse the `JavascriptCode` and `JavascriptFunction` passed from Python.
 - The table data is now passed as JSON through `data_json`, with support for BigInts and non finite float values.
 
 # 2.2.0 (2025-03-15)

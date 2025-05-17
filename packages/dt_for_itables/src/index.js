@@ -123,18 +123,19 @@ class ITable {
                             // (but keep the icon for alignment)
                             jQuery(this).attr('data-dt-order', 'disable');
                         }
-                        else if (jQuery(this).text().trim() === '') {
-                            // Remove the sorting icon on empty cells
-                            jQuery(this).empty();
+                        else if (jQuery(this).find('span.dt-column-title').text() === '' && jQuery(this).find('span.dt-column-title').children().length === 0) {
+                            // Remove the sorting icon on empty headers
                             jQuery(this).attr('data-dt-order', 'disable');
+                            // Remove any children with the 'dt-column-order' class
+                            jQuery(this).children('.dt-column-order').remove();
+                            // Remove the dt-orderable-asc and dt-orderable-desc classes
+                            jQuery(this).removeClass('dt-orderable-asc dt-orderable-desc');
                         }
                         else {
                             // Apply the icon-only data-dt-order attribute
                             jQuery(this).attr('data-dt-order', 'icon-only');
-
                             // get the current column index
                             let colIndex = api.column(this).index('visible');
-
                             // Apply the order listener to the order icon
                             api.order.listener(jQuery('span.dt-column-order', this), colIndex);
                         }
@@ -157,16 +158,16 @@ class ITable {
         }
         if (classes) {
             classes.forEach(element => {
-                    this.table.addClass(element);
-                });
+                this.table.addClass(element);
+            });
         }
         if (style) {
             this.table.css(style);
         }
         if (table_style) {
             $('<style id="' + this.table.attr('id') + '-style">')
-  .text(table_style)
-  .appendTo(this.table);
+                .text(table_style)
+                .appendTo(this.table);
         }
         if (column_filters === "header" || column_filters === "footer") {
             let thead_or_tfoot = (column_filters === "header") ? "thead" : "tfoot";
