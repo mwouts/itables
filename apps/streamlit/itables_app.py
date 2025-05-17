@@ -4,7 +4,17 @@ from typing import Sequence, cast
 
 import pyarrow
 import streamlit as st
-from st_aggrid import AgGrid  # type: ignore
+
+try:
+    from st_aggrid import AgGrid  # type: ignore
+except ImportError as e:
+    import_error = e
+
+    class AgGrid:
+        def __init__(self, *args, **kwargs):
+            raise import_error
+
+
 from streamlit.components.v1.components import MarshallComponentException
 
 import itables.options as it_opt

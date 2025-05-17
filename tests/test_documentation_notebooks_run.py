@@ -36,6 +36,8 @@ def test_run_documentation_notebooks(notebook):
         pytest.skip("Pandas Style is not available")
     if "shiny" in notebook.stem:
         pytest.skip("shinywidgets makes the widget.md notebook fail")
+    if "marimo" in notebook.stem or "widget" in notebook.stem:
+        pytest.importorskip("anywidget")
 
     org_options = dir(opt)
 

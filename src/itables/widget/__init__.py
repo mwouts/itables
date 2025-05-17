@@ -22,7 +22,7 @@ class ITable(anywidget.AnyWidget):
     caption = traitlets.Unicode().tag(sync=True)
     classes = traitlets.Unicode().tag(sync=True)
     style = traitlets.Unicode().tag(sync=True)
-    selected_rows = traitlets.List(traitlets.Int).tag(sync=True)  # type: ignore
+    selected_rows = traitlets.List(traitlets.Int()).tag(sync=True)
 
     # private traits that relate to df or to the DataTable arguments
     # (use .update() to update them)
