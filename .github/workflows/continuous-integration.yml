@@ -35,7 +35,6 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install pandas-stubs
-          pip install streamlit
           pip install -e .[test]
       - run: echo "$PWD/.venv/bin" >> $GITHUB_PATH
       - name: Run Pyright
@@ -73,7 +72,7 @@ jobs:
             pandas-version: pre
             polars: true
           - python-version: "3.13"
-            uninstall_jinja2_and_dash: true
+            uninstall_non_essential_dependencies: true
           - python-version: "3.10"
             typeguard-version: "<4.4.1"
           - python-version: "3.10"
@@ -115,11 +114,11 @@ jobs:
         run: pip install -e .[polars]
 
       - name: Install shiny
-        run: pip install "shiny>=1.0"
+        run: pip install "shiny>=1.0" shinywidgets
 
-      - name: Uninstall jinja2 and dash
-        if: matrix.uninstall_jinja2_and_dash
-        run: pip uninstall jinja2 dash -y
+      - name: Uninstall non-essential dependencies
+        if: matrix.uninstall_non_essential_dependencies
+        run: pip uninstall jinja2 dash anywidget streamlit shiny shinywidgets -y
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user

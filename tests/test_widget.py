@@ -1,8 +1,13 @@
+import pytest
+
 import itables.options as opt
-from itables.widget import ITable
+
+pytest.importorskip("anywidget")
 
 
 def test_create_widget_with_no_df():
+    from itables.widget import ITable
+
     itable = ITable()
     assert itable._df is None
     assert itable.caption == ""
@@ -17,6 +22,8 @@ def test_create_widget_with_no_df():
 
 
 def test_create_widget_with_df(df):
+    from itables.widget import ITable
+
     itable = ITable(df)
     assert itable.df is df
     assert itable.caption == ""

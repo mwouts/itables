@@ -34,7 +34,10 @@ check_type = ["typeguard>=4.4.1"]
 style = ["matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]
-all = ["itables[polars,style,samples,widget,check_type]"]
+streamlit = ["streamlit"]
+dash = ["dash"]
+shiny = ["shiny", "shinywidgets"]
+all = ["itables[polars,style,samples,widget,dash,shiny,streamlit,check_type]"]
 test = [
   "itables[all]",
   # Pytest
@@ -44,10 +47,8 @@ test = [
   "ipykernel",
   "nbconvert",
   "jupytext",
-  # Python apps
-  "dash",
-  "shiny",
-  # "shinywidgets",
+  # Marimo app
+  "marimo",
   # Test urls
   "requests",
 ]
