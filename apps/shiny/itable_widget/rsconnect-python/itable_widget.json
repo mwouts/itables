@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "/home/marc/GitHub/itables/apps/shiny/itable_widget",
+        "app_url": "https://itables.shinyapps.io/itable_widget/",
+        "app_id": 12865888,
+        "app_guid": null,
+        "title": "itable_widget",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}
