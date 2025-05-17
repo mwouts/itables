@@ -83,7 +83,7 @@ class ITable {
             keys_to_be_evaluated.forEach(keys => evalNestedKeys(dt_args, keys, keys.join('.')));
         }
 
-        this.filtered_row_count = filtered_row_count;
+        this.filtered_row_count = filtered_row_count || 0;
 
         if (text_in_header_can_be_selected || column_filters) {
             dt_args.initComplete = function (settings, json) {
