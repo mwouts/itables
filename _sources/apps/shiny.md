@@ -83,12 +83,12 @@ def selected_rows():
 
 ## An example application
 
-This [repository](https://github.com/mwouts/demo_itables_in_shiny-py/) contains a simple
+The ITable [repository](https://github.com/mwouts/itables/tree/main/apps/shiny) contains a simple
 example of a Shiny application that uses the `ITable` widget.
 
 The source code of the application
-is at [`app.py`](https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itable_widget/app.py)
-(Shiny Express) or [`app-core.py`](https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itable_widget/app-core.py)
+is at [`app.py`](https://github.com/mwouts/itables/tree/main/apps/shiny/itable_widget/app.py)
+(Shiny Express) or [`app-core.py`](https://github.com/mwouts/itables/tree/main/apps/shiny/itable_widget/app-core.py)
 (Shiny Core).
 
 ```{div}
@@ -98,7 +98,7 @@ style="height: 800px; width: 100%;"></iframe>
 
 ## DT
 
-Before ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget should now be up to par with the HTML version, however you can still use `HTML(DT(...))` if you only want to _display_ the table:
+Before ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget is now on par with the HTML version, however you can still use `HTML(DT(...))` if you only want to _display_ the table:
 
 ```python
 from shiny import ui
@@ -114,8 +114,8 @@ ui.HTML(init_itables())
 ui.HTML(DT(get_countries(html=False)))
 ```
 
-An example for an application that uses `DT` is available at [`app.py`](https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itables_DT/app.py)
-(Shiny Express) or [`app-core.py`](https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itables_DT/app-core.py)
+An example for an application that uses `DT` is available at [`app.py`](https://github.com/mwouts/itables/tree/main/apps/shiny/itables_DT/app.py)
+(Shiny Express) or [`app-core.py`](https://github.com/mwouts/itables/tree/main/apps/shiny/itables_DT/app-core.py)
 (Shiny Core).
 
 ```{div}

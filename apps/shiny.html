@@ -184,6 +184,7 @@
 <li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook Mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="html.html">HTML export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widget.html">Widget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="marimo.html">Marimo</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dash.html">Dash</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streamlit.html">Streamlit</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Shiny</a></li>
@@ -548,11 +549,11 @@ of the <code class="docutils literal notranslate"><span class="pre">ITable</span
 </section>
 <section id="an-example-application">
 <h2>An example application<a class="headerlink" href="#an-example-application" title="Link to this heading">#</a></h2>
-<p>This <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/">repository</a> contains a simple
+<p>The ITable <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/shiny">repository</a> contains a simple
 example of a Shiny application that uses the <code class="docutils literal notranslate"><span class="pre">ITable</span></code> widget.</p>
 <p>The source code of the application
-is at <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itable_widget/app.py"><code class="docutils literal notranslate"><span class="pre">app.py</span></code></a>
-(Shiny Express) or <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itable_widget/app-core.py"><code class="docutils literal notranslate"><span class="pre">app-core.py</span></code></a>
+is at <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/shiny/itable_widget/app.py"><code class="docutils literal notranslate"><span class="pre">app.py</span></code></a>
+(Shiny Express) or <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/shiny/itable_widget/app-core.py"><code class="docutils literal notranslate"><span class="pre">app-core.py</span></code></a>
 (Shiny Core).</p>
 <div class="docutils">
 <iframe src="https://itables.shinyapps.io/itable_widget?embed=true"
@@ -561,7 +562,7 @@ style="height: 800px; width: 100%;"></iframe>
 </section>
 <section id="dt">
 <h2>DT<a class="headerlink" href="#dt" title="Link to this heading">#</a></h2>
-<p>Before ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget should now be up to par with the HTML version, however you can still use <code class="docutils literal notranslate"><span class="pre">HTML(DT(...))</span></code> if you only want to <em>display</em> the table:</p>
+<p>Before ITables v2.4.0, the Jupyter Widget had some limitations compared to the direct HTML implementation. The widget is now on par with the HTML version, however you can still use <code class="docutils literal notranslate"><span class="pre">HTML(DT(...))</span></code> if you only want to <em>display</em> the table:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shiny</span><span class="w"> </span><span class="kn">import</span> <span class="n">ui</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">itables.sample_dfs</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_countries</span>
@@ -575,8 +576,8 @@ style="height: 800px; width: 100%;"></iframe>
 <span class="n">ui</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">DT</span><span class="p">(</span><span class="n">get_countries</span><span class="p">(</span><span class="n">html</span><span class="o">=</span><span class="kc">False</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p>An example for an application that uses <code class="docutils literal notranslate"><span class="pre">DT</span></code> is available at <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itables_DT/app.py"><code class="docutils literal notranslate"><span class="pre">app.py</span></code></a>
-(Shiny Express) or <a class="reference external" href="https://github.com/mwouts/demo_itables_in_shiny-py/blob/main/itables_DT/app-core.py"><code class="docutils literal notranslate"><span class="pre">app-core.py</span></code></a>
+<p>An example for an application that uses <code class="docutils literal notranslate"><span class="pre">DT</span></code> is available at <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/shiny/itables_DT/app.py"><code class="docutils literal notranslate"><span class="pre">app.py</span></code></a>
+(Shiny Express) or <a class="reference external" href="https://github.com/mwouts/itables/tree/main/apps/shiny/itables_DT/app-core.py"><code class="docutils literal notranslate"><span class="pre">app-core.py</span></code></a>
 (Shiny Core).</p>
 <div class="docutils">
 <iframe src="https://itables.shinyapps.io/itables_DT?embed=true"
