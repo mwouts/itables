@@ -20,7 +20,11 @@ ITables is a wrapper for the Javascript DataTables library, which means that you
 
 Since ITables just maps these options to DataTables, you are invited to have a look at DataTable's great [documentation](https://datatables.net/), and to its huge collection of [examples](https://datatables.net/examples/index). The DataTable [forum](https://datatables.net/forums/) can be quite useful as well.
 
-A non-exhaustive list of the DataTable options, together with their expected types, is available at [`itables.typing.DataTableOptions`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py). If you see an option that you find useful, please make a PR (and add an example to the documentation, too).
+A non-exhaustive list of the DataTable options, together with their expected types, is available at [`itables.typing.DataTableOptions`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py).
+
+Option names and types are checked by default at run time when `typeguard>=4.4.1` is installed - you can deactivate this by setting `warn_on_undocumented_option=False`.
+
+If you see an option that you find useful and is not documented, or a type hint that is incorrect, please make a PR (and add an example to the documentation, too).
 
 ```{code-cell} ipython3
 :tags: [scroll-output]

@@ -17,6 +17,11 @@ kernelspec:
 Starting with `itables>=1.6.0`, ITables provides support for
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html).
 
+```{warning}
+Pandas Style object use HTML. Please make sure that you trust the content of your table before
+passing [`allow_html=True`](options/allow_html.md).
+```
+
 ```{note}
 Unlike Pandas or Polar DataFrames, `Styler` objects are rendered directly using their
 `to_html` method, rather than passing the underlying table data to the DataTables
@@ -26,11 +31,6 @@ Because of this, the rendering of the table might differ slightly from the rende
 corresponding DataFrame. In particular,
 - The downsampling is not available - please pay attention to the size of the table being rendered
 - Sorting of numbers will not work if the column contains NaNs.
-```
-
-```{warning}
-Pandas Style object use HTML. Please make sure that you trust the content of your tables before
-you set [`allow_html=True`](options/allow_html.md).
 ```
 
 ```{code-cell} ipython3
