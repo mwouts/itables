@@ -24,12 +24,13 @@ dependencies:
   - setuptools
   - twine
   - ghp-import
+  - anywidget
+  - dash
+  - marimo
   - shiny
   - shinywidgets
   - streamlit
-  - anywidget
   - hatch
-  - dash
   - pip:
     - world_bank_data
     - sphinxext-rediraffe

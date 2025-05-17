@@ -6,6 +6,7 @@ parts:
       - file: apps/notebook
       - file: apps/html
       - file: apps/widget
+      - file: apps/marimo
       - file: apps/dash
       - file: apps/streamlit
       - file: apps/shiny
