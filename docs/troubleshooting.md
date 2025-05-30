@@ -12,6 +12,13 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# ruff: noqa: E402
+# pyright: reportUnusedExpression=false
+```
+
 # Troubleshooting
 
 ## Loading takes forever?
@@ -24,12 +31,8 @@ import pandas as pd
 import itables
 
 df = pd.DataFrame()
-tags = (
-    '<caption style="caption-side: bottom">A table that does not load, due '
-    "to <code>init_notebook_mode</code><br>not being called in this document</caption>"
-)
 
-itables.show(df, connected=False, tags=tags)
+itables.show(df, connected=False)
 ```
 
 If a table says "Loading..." forever, then maybe
@@ -57,8 +60,9 @@ If the above does not help, please check out the [ChangeLog](changelog.md)
 and decide whether you should upgrade `itables`. You can tell the version
 of ITables that you are using by looking at the loading message (from ITables v2.0.1 on)
 or by running this code snippet:
-```python
-import itables as it
 
-it.__version__
+```{code-cell} ipython3
+import itables
+
+itables.__version__
 ```
