@@ -7,7 +7,7 @@ import warnings
 from base64 import b64encode
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any, Optional, Sequence, Union, cast
+from typing import Any, Mapping, Optional, Sequence, Union, cast
 
 import numpy as np
 import pandas as pd
@@ -80,7 +80,7 @@ GOOGLE_COLAB = (find_spec("google") is not None) and (
 )
 
 
-def get_compact_classes(classes: Union[str, list[str]]) -> str:
+def get_compact_classes(classes: Union[str, Sequence[str]]) -> str:
     """Convert a list of classes to a compact string"""
     if isinstance(classes, str):
         return classes
@@ -90,7 +90,7 @@ def get_compact_classes(classes: Union[str, list[str]]) -> str:
         raise TypeError(f"classes must be a string or a list, not {type(classes)}")
 
 
-def get_expanded_classes(classes: Union[str, list[str]]) -> list[str]:
+def get_expanded_classes(classes: Union[str, Sequence[str]]) -> Sequence[str]:
     """Convert a class string to a list"""
     if isinstance(classes, str):
         return classes.split()
@@ -100,20 +100,20 @@ def get_expanded_classes(classes: Union[str, list[str]]) -> list[str]:
         raise TypeError(f"classes must be a string or a list, not {type(classes)}")
 
 
-def get_compact_style(style: Union[str, dict[str, str]]) -> str:
+def get_compact_style(style: Union[str, Mapping[str, str]]) -> str:
     """Convert a style to a compact string"""
     if isinstance(style, str):
         return style
-    elif isinstance(style, dict):
+    elif isinstance(style, Mapping):
         return ";".join(f"{k}:{v}" for k, v in style.items())
     else:
         raise TypeError(f"style must be a string or a dict, not {type(style)}")
 
 
-def get_expanded_style(style: Union[str, dict[str, str]]) -> dict[str, str]:
+def get_expanded_style(style: Union[str, Mapping[str, str]]) -> dict[str, str]:
     """Convert a style to a dict"""
-    if isinstance(style, dict):
-        return style
+    if isinstance(style, Mapping):
+        return dict(**style)
     elif isinstance(style, str):
         return {
             k.strip(): v.strip()

@@ -1,7 +1,7 @@
 import warnings
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Literal, Mapping, TypedDict, Union
+from typing import Any, Literal, Mapping, Sequence, TypedDict, Union
 
 from packaging.version import Version
 from typing_extensions import NotRequired
@@ -44,13 +44,16 @@ class DataTableOptions(TypedDict):
     # DataTable options
     caption: NotRequired[str]
     lengthMenu: NotRequired[
-        Union[list[Union[int, str, Mapping[str, Any]]], list[list[Union[int, str]]]]
+        Union[
+            Sequence[Union[int, str, Mapping[str, Any]]],
+            Sequence[Sequence[Union[int, str]]],
+        ]
     ]
     order: NotRequired[
-        Union[list[list[Union[int, str]]], Mapping[str, Union[int, str]]]
+        Union[Sequence[Sequence[Union[int, str]]], Mapping[str, Union[int, str]]]
     ]
     layout: NotRequired[Mapping[str, Union[None, str, Mapping[str, Any]]]]
-    columnDefs: NotRequired[list[Mapping[str, Any]]]
+    columnDefs: NotRequired[Sequence[Mapping[str, Any]]]
     paging: NotRequired[bool]
     autoWidth: NotRequired[bool]
     scrollX: NotRequired[bool]
@@ -58,14 +61,14 @@ class DataTableOptions(TypedDict):
     scrollCollapse: NotRequired[bool]
     language: NotRequired[Mapping[str, str]]
     search: NotRequired[Mapping[str, Any]]
-    searchCols: NotRequired[list[Any]]
+    searchCols: NotRequired[Sequence[Any]]
     initComplete: NotRequired[JavascriptFunction]
     fnInfoCallback: NotRequired[JavascriptFunction]
     stateSave: NotRequired[bool]
     stateDuration: NotRequired[int]
 
     # DataTable options provided by its extensions
-    buttons: NotRequired[list[Union[str, Mapping[str, Any]]]]
+    buttons: NotRequired[Sequence[Union[str, Mapping[str, Any]]]]
     fixedColumns: NotRequired[Mapping[Literal["left", "right", "start", "end"], int]]
     searchPanes: NotRequired[Mapping[str, Any]]
     searchBuilder: NotRequired[Mapping[str, Any]]
@@ -80,9 +83,9 @@ class ITableOptions(DataTableOptions):
     to the show function and to the ITable Python classes.
     """
 
-    classes: NotRequired[Union[str, list[str]]]
+    classes: NotRequired[Union[str, Sequence[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
-    selected_rows: NotRequired[list[int]]
+    selected_rows: NotRequired[Sequence[int]]
 
     showIndex: NotRequired[Union[bool, str]]
 
@@ -117,21 +120,21 @@ class DTForITablesOptions(DataTableOptions):
     in the dt_for_itables package.
     """
 
-    classes: NotRequired[Union[str, list[str]]]
+    classes: NotRequired[Union[str, Sequence[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
 
     data_json: NotRequired[str]
     table_html: NotRequired[str]
     table_style: NotRequired[str]
 
-    selected_rows: NotRequired[list[int]]
+    selected_rows: NotRequired[Sequence[int]]
     filtered_row_count: NotRequired[int]
 
     downsampling_warning: NotRequired[str]
     text_in_header_can_be_selected: NotRequired[bool]
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
-    keys_to_be_evaluated: NotRequired[list[list[Union[int, str]]]]
+    keys_to_be_evaluated: NotRequired[Sequence[Sequence[Union[int, str]]]]
 
     # These options are used in the HTML template
     # and don't reach the ITable JavaScript class

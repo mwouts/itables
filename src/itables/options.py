@@ -6,7 +6,7 @@ https://mwouts.github.io/itables/options/options.html
 """
 
 from pathlib import Path
-from typing import Any, Literal, Mapping, Optional, Union
+from typing import Any, Literal, Mapping, Optional, Sequence, Union
 
 import itables.typing as typing
 import itables.utils as utils
@@ -33,7 +33,7 @@ showIndex: Literal[True, False, "auto"] = "auto"
 The default classes.
 See https://mwouts.github.io/itables/options/classes.html
 """
-classes: Union[str, list[str]] = "display nowrap"
+classes: Union[str, Sequence[str]] = "display nowrap"
 
 """
 The default table style.
@@ -60,7 +60,9 @@ maxRows: int = 0
 maxColumns: int = 200
 
 """By default we don't sort the table"""
-order: Optional[Union[list[list[Union[int, str]]], Mapping[str, Union[int, str]]]] = []
+order: Optional[
+    Union[Sequence[Sequence[Union[int, str]]], Mapping[str, Union[int, str]]]
+] = []
 
 """Authorize, or not, the use of HTML in the table content.
 
@@ -100,9 +102,12 @@ text_in_header_can_be_selected: bool = True
 # to document the corresponding types, see e.g. #224
 caption: Optional[str]
 lengthMenu: Optional[
-    Union[list[Union[int, str, Mapping[str, Any]]], list[list[Union[int, str]]]]
+    Union[
+        Sequence[Union[int, str, Mapping[str, Any]]],
+        Sequence[Sequence[Union[int, str]]],
+    ]
 ]
-columnDefs: Optional[list[Mapping[str, Any]]]
+columnDefs: Optional[Sequence[Mapping[str, Any]]]
 paging: Optional[bool]
 autoWidth: Optional[bool]
 scrollX: Optional[bool]
@@ -110,12 +115,12 @@ scrollY: Optional[str]
 scrollCollapse: Optional[bool]
 language: Optional[Mapping[str, str]]
 search: Optional[Mapping[str, Any]]
-searchCols: Optional[list[Any]]
+searchCols: Optional[Sequence[Any]]
 initComplete: Optional[typing.JavascriptFunction]
 fnInfoCallback: Optional[typing.JavascriptFunction]
 stateSave: Optional[bool]
 stateDuration: Optional[int]
-buttons: Optional[list[Union[str, Mapping[str, Any]]]]
+buttons: Optional[Sequence[Union[str, Mapping[str, Any]]]]
 fixedColumns: Optional[Mapping[Literal["left", "right", "start", "end"], int]]
 searchPanes: Optional[Mapping[str, Any]]
 searchBuilder: Optional[Mapping[str, Any]]
