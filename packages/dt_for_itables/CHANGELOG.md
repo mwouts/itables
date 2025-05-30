@@ -2,6 +2,8 @@
 
 - We have made sure that the ordering icons on empty headers do not reappear when ordering a column
 - Wrapping Javascript functions definitions within parentheses before evaluating is now done on the Javascript side.
+- The CSS imports have been moved to the `.css` files, and we extend the `:root` styles to `:host`
+
 
 # 2.3.2 (2025-05-17)
 

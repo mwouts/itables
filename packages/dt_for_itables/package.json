@@ -17,8 +17,11 @@
   ],
   "scripts": {
     "build:js": "esbuild src/index.js --format=esm --bundle --outfile=dt_bundle.js --minify",
-    "install:js": "cp dt_bundle.js dt_bundle.css  ../../src/itables/html",
-    "build": "npm run build:js && npm run install:js"
+    "build:css": "esbuild src/index.css  --bundle --outfile=dt_bundle.css --minify",
+    "add_host": "python add_host_to_root.py dt_bundle.css",
+    "build:all": "npm run build:js && npm run build:css && npm run add_host",
+    "install:all": "cp dt_bundle.js dt_bundle.css  ../../src/itables/html",
+    "build": "npm run build:all && npm run install:all"
   },
   "author": "Marc Wouts",
   "license": "MIT",
