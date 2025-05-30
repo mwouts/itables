@@ -12,6 +12,12 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnusedExpression=false
+```
+
 # Pandas Style
 
 Starting with `itables>=1.6.0`, ITables provides support for

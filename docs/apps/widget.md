@@ -12,6 +12,13 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# ruff: noqa: E402
+# pyright: reportUnusedExpression=false
+```
+
 # Widget
 
 The `ITable` widget depends on [AnyWidget](https://anywidget.dev) -

@@ -14,6 +14,10 @@
 #     name: itables
 # ---
 
+# %% tags=["remove-cell"]
+# ruff: noqa: E402
+# pyright: reportUnusedExpression=false
+
 # %% [markdown]
 # # Widget
 #

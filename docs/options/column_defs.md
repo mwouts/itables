@@ -12,6 +12,12 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnusedExpression=false
+```
+
 # Column Definitions
 
 The [`columnDefs.width`](https://datatables.net/reference/option/columns.width) argument let you adjust the column widths.
