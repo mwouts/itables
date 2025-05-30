@@ -1,8 +1,5 @@
 import type { RenderContext } from "@anywidget/types";
-
-// DataTable and its css
 import { ITable, set_or_remove_dark_class } from 'dt_for_itables';
-import 'dt_for_itables/dt_bundle.css';
 
 /* Specifies attributes defined with traitlets in ../src/itables_anywidget/__init__.py */
 interface WidgetModel {
