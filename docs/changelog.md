@@ -1,6 +1,17 @@
 ITables ChangeLog
 =================
 
+2.4.1-dev
+---------
+
+**Added**
+- We now enforce `pyright` on the ITables documentation
+
+**Changed**
+- The `warn_on_undocumented_option` option defaults to `True` and only check the option names
+- We have added a new option `warn_on_unexpected_option_type` that defaults to `warn_on_undocumented_option` when `typeguard>=4.4.1` is installed (`False` otherwise)
+
+
 2.4.0 (2025-05-17)
 ------------------
 

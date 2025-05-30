@@ -103,6 +103,7 @@ class ITableOptions(DataTableOptions):
     warn_on_unexpected_types: NotRequired[bool]
     warn_on_selected_rows_not_rendered: NotRequired[bool]
     warn_on_undocumented_option: NotRequired[bool]
+    warn_on_unexpected_option_type: NotRequired[bool]
     text_in_header_can_be_selected: NotRequired[bool]
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
@@ -153,47 +154,71 @@ def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
     """
     Check the arguments passed to the ITable constructor
     """
-
     warn_on_undocumented_option = (
         kwargs.get if typed_dict is ITableOptions else kwargs.pop
     )("warn_on_undocumented_option", False)
-    if not warn_on_undocumented_option:
-        return
 
-    silence_msg = (
+    warn_on_unexpected_option_type = (
+        kwargs.get if typed_dict is ITableOptions else kwargs.pop
+    )("warn_on_unexpected_option_type", False)
+
+    if warn_on_undocumented_option:
+        check_itable_argument_names(set(kwargs), typed_dict)
+
+    if warn_on_unexpected_option_type:
+        check_itable_argument_types(kwargs, typed_dict)
+
+
+def get_silence_msg(option_name: str) -> str:
+    return (
         "You can silence this warning by setting "
-        "`itables.options.warn_on_undocumented_option=False`. If you believe ITableOptions "
+        f"`itables.options.{option_name}=False`. If you believe ITableOptions "
         "should be updated, please make a PR or open an issue at https://github.com/mwouts/itables"
     )
 
+
+def check_itable_argument_names(names: set[str], typed_dict: type) -> None:
+    """
+    Check that the arguments passed to the ITable constructor
+    are documented in the given TypedDict.
+    """
     documented_options = set(typed_dict.__required_keys__).union(
         typed_dict.__optional_keys__
     )
-    undocumented_options = set(kwargs.keys()) - documented_options
+    undocumented_options = names - documented_options
     if undocumented_options:
         warnings.warn(
             f"These arguments are not documented in {typed_dict.__name__}: {undocumented_options}. "
-            + silence_msg,
+            + get_silence_msg("warn_on_undocumented_option"),
             category=SyntaxWarning,
         )
 
+
+def check_itable_argument_types(kwargs: dict[str, Any], typed_dict: type) -> None:
+    """
+    Check that the argments passed to the ITable constructor
+    match the types defined in the given TypedDict.
+    """
     try:
         from typeguard import TypeCheckError, check_type
     except ImportError as e:
         raise ImportError(
-            "The `warn_on_undocumented_option` option requires the 'typeguard' package. "
+            "The `warn_on_unexpected_option_type` option requires the 'typeguard' package. "
             "Please install it using 'pip install typeguard', "
-            "or deactivate the check by setting `itables.options.warn_on_undocumented_option=False`."
+            "or deactivate the check by setting `itables.options.warn_on_unexpected_option_type=False`."
         ) from e
 
     for key, value in kwargs.items():
-        if key in undocumented_options:
+        # Undocumented options are addressed through warn_on_undocumented_option
+        if key not in typed_dict.__annotations__:
             continue
+
         try:
             check_type({key: value}, typed_dict)
         except TypeCheckError as e:
             type_repr = str(typed_dict.__annotations__[key]).replace("typing.", "")
             warnings.warn(
-                f"{key}={value} does not match {type_repr}: {e}. " + silence_msg,
+                f"{key}={value} does not match {type_repr}: {e}. "
+                + get_silence_msg("warn_on_unexpected_option_type"),
                 category=SyntaxWarning,
             )

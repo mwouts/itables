@@ -90,10 +90,20 @@ display_logo_when_loading: bool = True
 on the column header will sort the table. See #227"""
 text_in_header_can_be_selected: bool = True
 
-"""Check that all options passed to ITable are valid and have the expected type."""
-warn_on_undocumented_option: bool = typing.is_typeguard_available()
+"""Check that options have correct names"""
+warn_on_undocumented_option: bool = True
 if warn_on_undocumented_option:
-    typing.check_itable_arguments(
+    typing.check_itable_argument_names(
+        set(locals()).difference(__non_options),
+        typing.ITableOptions,
+    )
+
+"""Check that options have correct types"""
+warn_on_unexpected_option_type = (
+    warn_on_undocumented_option and typing.is_typeguard_available()
+)
+if warn_on_unexpected_option_type:
+    typing.check_itable_argument_types(
         {k: v for k, v in locals().items() if k not in __non_options},
         typing.ITableOptions,
     )

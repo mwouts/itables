@@ -33,6 +33,7 @@ def test_get_itable_arguments():
         "order": [],
         "display_logo_when_loading": opt.display_logo_when_loading,
         "warn_on_undocumented_option": opt.warn_on_undocumented_option,
+        "warn_on_unexpected_option_type": opt.warn_on_unexpected_option_type,
         "dt_url": opt.dt_url,
         "layout": {k: None for k in opt.layout},
         "text_in_header_can_be_selected": True,
