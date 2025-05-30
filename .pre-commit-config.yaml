@@ -33,10 +33,5 @@ repos:
     rev: v1.17.1
     hooks:
     - id: jupytext
-      exclude: packages/
-      types: ["markdown"]
-      args: ["--pipe", "isort {} --treat-comment-as-code '# %%' --profile black", "--pipe", "black", "--check", "ruff check {} --ignore E402"]
-      additional_dependencies:
-        - black==24.4.2 # Matches hook
-        - ruff==0.4.3
-        - isort==5.13.2
+      types: ["python"]
+      args: ["--sync", "--quiet"]
