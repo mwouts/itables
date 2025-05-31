@@ -71,6 +71,9 @@ setting this option to True.
 """
 allow_html: bool = False
 
+"""Render LaTeX expressions using MathJax."""
+render_math: bool = False
+
 """Optional table footer"""
 footer: bool = False
 
