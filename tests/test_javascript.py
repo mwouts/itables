@@ -12,6 +12,7 @@ from itables.javascript import (
     check_table_id,
     get_compact_classes,
     get_compact_style,
+    get_expanded_style,
     get_itable_arguments,
     replace_value,
     to_html_datatable,
@@ -153,3 +154,16 @@ def test_unpkg_urls_are_up_to_date():
         UNPKG_DT_BUNDLE_CSS
         == f"https://www.unpkg.com/dt_for_itables@{bundle_version}/dt_bundle.css"
     )
+
+
+@pytest.mark.parametrize(
+    "style",
+    [
+        "width: fit-content; float: left;",
+        "width: fit-content; float: left; overflow: auto; max-height: 500px",
+    ],
+)
+def test_get_expanded_style(style: str):
+    exp_style = get_expanded_style(style)
+    compact_style = get_compact_style(exp_style)
+    assert compact_style == style.replace(" ", "").removesuffix(";")

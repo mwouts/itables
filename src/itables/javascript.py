@@ -117,7 +117,7 @@ def get_expanded_style(style: Union[str, Mapping[str, str]]) -> dict[str, str]:
     elif isinstance(style, str):
         return {
             k.strip(): v.strip()
-            for k, v in (item.split(":") for item in style.split(";"))
+            for k, v in (item.split(":") for item in style.split(";") if item.strip())
         }
     else:
         raise TypeError(f"style must be a string or a dict, not {type(style)}")
