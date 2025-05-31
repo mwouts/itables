@@ -15,7 +15,7 @@ app_ui = ui.page_sidebar(
             selected="int_float_str",
         )
     ),
-    output_widget("my_table"),
+    output_widget("my_table", fillable=False),
     ui.markdown("Selected rows"),
     ui.output_code("selected_rows"),
     title="Using the ITable Widget in a Shiny App",
