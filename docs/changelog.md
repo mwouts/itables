@@ -1,8 +1,8 @@
 ITables ChangeLog
 =================
 
-2.4.1-dev
----------
+2.4.1-dev (2025-06-??)
+----------------------
 
 **Added**
 - We now enforce `pyright` on the ITables documentation
