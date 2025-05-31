@@ -277,11 +277,6 @@ def get_keys_to_be_evaluated(data) -> list[list[Union[int, str]]]:
         data = dict(enumerate(data))
     if isinstance(data, dict):
         for key, value in data.items():
-            if isinstance(value, JavascriptFunction):
-                # eval can't evaluate a function,
-                # but it can evaluate an expression that contains a function
-                # e.g. eval('(function() {return 5;})') does returns the function
-                data[key] = f"({value})"
             if isinstance(value, (JavascriptCode, JavascriptFunction)):
                 keys_to_be_evaluated.append([key])
             else:

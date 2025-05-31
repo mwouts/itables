@@ -59,7 +59,17 @@ function evalNestedKeys(obj, keys, context) {
     }
     if (rest.length === 0) {
         try {
-            obj[first] = window.eval(obj[first]);
+            let code = obj[first];
+            if (typeof code !== 'string') {
+                throw new Error(`Expected a string to evaluate in context '${context}', but got ${typeof code}.`);
+            }
+            if (/^\s*function\s*\(/.test(code)) {
+                // If the code matches the regular expression for a function definition,
+                // we wrap it in parentheses to proceed with the evaluation.
+                code = `(${code})`;
+            }
+
+            obj[first] = window.eval(code);
         }
         catch (e) {
             console.error(`Error evaluating ${context}='${obj[first]}'": ${e.message}`);
