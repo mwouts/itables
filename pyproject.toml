@@ -107,7 +107,9 @@ artifacts = [
     "src/itables/html/dt_bundle.css",
     "src/itables_for_dash/*",
     "src/itables/itables_for_streamlit/*",
-    "src/itables/widget/static/*"
+    "src/itables/widget/static/*",
+    "src/itables/py.typed",
+    "src/itables_for_dash/py.typed",
     ]
 
 [tool.hatch.build.targets.wheel]
@@ -117,5 +119,10 @@ artifacts = [
     "src/itables/html/dt_bundle.css",
     "src/itables_for_dash/*",
     "src/itables/itables_for_streamlit/*",
-    "src/itables/widget/static/*"
+    "src/itables/widget/static/*",
+    "src/itables/py.typed",
+    "src/itables_for_dash/py.typed",
     ]
+
+[tool.pyright]
+typeCheckingMode = "standard"

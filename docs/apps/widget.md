@@ -1,6 +1,6 @@
 ---
 jupytext:
-  formats: md:myst
+  formats: docs///md:myst,docs/py///py:percent
   notebook_metadata_filter: -jupytext.text_representation.jupytext_version
   text_representation:
     extension: .md
@@ -11,6 +11,13 @@ kernelspec:
   language: python
   name: itables
 ---
+
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# ruff: noqa: E402
+# pyright: reportUnusedExpression=false
+```
 
 # Widget
 
