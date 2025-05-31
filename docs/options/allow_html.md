@@ -12,6 +12,14 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false
+```
+
 # Allow HTML
 
 Since v2.4.0, the HTML content in your tables is escaped by default. You can change this by passing `allow_html=True`.

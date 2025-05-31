@@ -16,6 +16,7 @@
 
 # %% tags=["remove-cell"]
 # pyright: reportUnusedExpression=false
+# pyright: reportUnknownMemberType=false
 
 # %% [markdown]
 # # Pandas Style

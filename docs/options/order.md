@@ -25,6 +25,6 @@ import itables
 
 itables.init_notebook_mode()
 
-sorted_df = pd.DataFrame({"i": [1, 2], "a": [2, 1]}).set_index(["i"])
+sorted_df = pd.DataFrame({"a": [2, 1]}, index=pd.Index([1, 2], name="i"))
 itables.show(sorted_df, order=[[1, "asc"]])
 ```

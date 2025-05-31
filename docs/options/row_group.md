@@ -12,6 +12,12 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnknownMemberType=false
+```
+
 # RowGroup
 
 Use the [RowGroup](https://datatables.net/extensions/rowgroup/) extension to group

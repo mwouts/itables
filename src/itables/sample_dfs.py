@@ -3,7 +3,7 @@ import string
 from datetime import datetime, timedelta
 from functools import lru_cache
 from itertools import cycle
-from typing import cast
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
@@ -38,7 +38,7 @@ if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "timedelta"]
 
 
-def get_countries(html: bool = True, climate_zone: bool = False):
+def get_countries(html: bool = True, climate_zone: bool = False) -> pd.DataFrame:
     """A Pandas DataFrame with the world countries (from the world bank data)
     Flags are loaded from https://flagpedia.net/"""
     df = pd.read_csv(find_package_file("samples/countries.csv"))
@@ -116,10 +116,10 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100, polars=False):
+def get_dict_of_test_dfs(N=100, M=100) -> dict[str, pd.DataFrame]:
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
-    test_dfs = {
+    return {
         "empty": pd.DataFrame(dtype=float),
         "no_rows": pd.DataFrame(dtype=float, columns=["a"]),
         "no_columns": pd.DataFrame(dtype=float, index=["a"]),
@@ -280,28 +280,27 @@ def get_dict_of_test_dfs(N=100, M=100, polars=False):
         ),
     }
 
-    if polars:
-        import polars as pl
-        import pyarrow as pa
 
-        polars_dfs = {}
-        for key, df in test_dfs.items():
-            if key == "multiindex":
-                # Since Polars 1.2, pl.from_pandas fails with this error:
-                # ValueError: Pandas dataframe contains non-unique indices and/or column names.
-                # Polars dataframes require unique string names for columns.
-                # See https://github.com/pola-rs/polars/issues/18130
-                df.index = df.index.tolist()  # type: ignore
-            try:
-                polars_dfs[key] = pl.from_pandas(df)
-            except (pa.ArrowInvalid, ValueError):
-                pass
-        return polars_dfs
+def get_dict_of_polars_test_dfs(N=100, M=100) -> dict[str, Any]:
+    import polars as pl
+    import pyarrow as pa
 
-    return test_dfs
+    polars_dfs = {}
+    for key, df in get_dict_of_test_dfs(N=100, M=100).items():
+        if key == "multiindex":
+            # Since Polars 1.2, pl.from_pandas fails with this error:
+            # ValueError: Pandas dataframe contains non-unique indices and/or column names.
+            # Polars dataframes require unique string names for columns.
+            # See https://github.com/pola-rs/polars/issues/18130
+            df.index = df.index.tolist()  # type: ignore
+        try:
+            polars_dfs[key] = pl.from_pandas(df)
+        except (pa.ArrowInvalid, ValueError):
+            pass
+    return polars_dfs
 
 
-def get_dict_of_test_series(polars=False):
+def get_dict_of_test_series():
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -311,27 +310,28 @@ def get_dict_of_test_series(polars=False):
             if not isinstance(df[col], pd.Series):
                 continue
             series["{}.{}".format(df_name, col)] = df[col]
-
-    if polars:
-        import polars as pl
-        import pyarrow as pa
-
-        polars_series = {}
-        for key in series:
-            try:
-                polars_series[key] = pl.from_pandas(series[key])
-            except (pa.ArrowInvalid, ValueError):
-                pass
-
-        # Add a Polar table with unsigned integers
-        # https://github.com/mwouts/itables/issues/192
-        # https://github.com/mwouts/itables/issues/299
-        polars_series["u32"] = pl.Series([1, 2, 5]).cast(pl.UInt32)
-        polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
-
-        return polars_series
-
     return series
+
+
+def get_dict_of_polars_test_series():
+    import polars as pl
+    import pyarrow as pa
+
+    polars_series = {}
+    series = get_dict_of_test_series()
+    for key in series:
+        try:
+            polars_series[key] = pl.from_pandas(series[key])
+        except (pa.ArrowInvalid, ValueError):
+            pass
+
+    # Add a Polar table with unsigned integers
+    # https://github.com/mwouts/itables/issues/192
+    # https://github.com/mwouts/itables/issues/299
+    polars_series["u32"] = pl.Series([1, 2, 5]).cast(pl.UInt32)
+    polars_series["u64"] = pl.Series([1, 2, 2**40]).cast(pl.UInt64)
+
+    return polars_series
 
 
 @lru_cache()

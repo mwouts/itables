@@ -12,6 +12,12 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnknownVariableType=false
+```
+
 # HTML export
 
 To get the HTML representation of a Pandas DataFrame `df` as an interactive [DataTable](https://datatables.net/), you can use `to_html_datatable` as below:

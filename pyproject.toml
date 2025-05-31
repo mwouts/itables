@@ -126,3 +126,4 @@ artifacts = [
 
 [tool.pyright]
 typeCheckingMode = "standard"
+strict = ["docs"]

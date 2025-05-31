@@ -17,6 +17,7 @@
 # %% tags=["remove-cell"]
 # ruff: noqa: E402
 # pyright: reportUnusedExpression=false
+# pyright: reportDuplicateImport=false
 
 # %% [markdown]
 # # Troubleshooting

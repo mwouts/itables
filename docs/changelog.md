@@ -5,7 +5,7 @@ ITables ChangeLog
 ----------------------
 
 **Added**
-- We now enforce `pyright` on the ITables documentation
+- We now enforce `pyright` on the ITables documentation ([#395](https://github.com/mwouts/itables/issues/395))
 
 **Changed**
 - The `warn_on_undocumented_option` option now defaults to `True` and only check the option names

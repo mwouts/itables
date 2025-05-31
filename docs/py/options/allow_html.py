@@ -14,6 +14,11 @@
 #     name: itables
 # ---
 
+# %% tags=["remove-cell"]
+# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false
+
 # %% [markdown]
 # # Allow HTML
 #

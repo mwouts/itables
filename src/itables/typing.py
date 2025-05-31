@@ -69,6 +69,7 @@ class DataTableOptions(TypedDict):
     searchCols: NotRequired[Sequence[Any]]
     initComplete: NotRequired[JavascriptFunction]
     fnInfoCallback: NotRequired[JavascriptFunction]
+    drawCallback: NotRequired[JavascriptFunction]
     stateSave: NotRequired[bool]
     stateDuration: NotRequired[int]
 
