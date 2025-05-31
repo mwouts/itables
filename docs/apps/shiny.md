@@ -29,7 +29,7 @@ from shinywidgets import output_widget
 
 app_ui = ui.page_fluid(
     # ...
-    output_widget("my_table"),
+    output_widget("my_table", fillable=False),
     # ...
 )
 ```
