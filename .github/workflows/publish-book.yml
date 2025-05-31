@@ -48,9 +48,13 @@ jobs:
       run: |
         jupyter-book build docs
 
-    # Push the book's HTML to github-pages
-    - name: GitHub Pages action
-      uses: peaceiris/actions-gh-pages@v3
+    # Upload the book's HTML as an artifact
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: docs/_build/html
+        path: "docs/_build/html"
+
+    # Deploy the book's HTML to GitHub Pages
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
