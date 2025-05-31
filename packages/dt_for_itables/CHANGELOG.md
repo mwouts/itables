@@ -1,6 +1,7 @@
 # 2.3.2+dev
 
 - We have made sure that the ordering icons on empty headers do not reappear when ordering a column
+- Wrapping Javascript functions definitions within parentheses before evaluating is now done on the Javascript side.
 
 # 2.3.2 (2025-05-17)
 

@@ -1,3 +1,4 @@
+import re
 import warnings
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
@@ -17,9 +18,9 @@ class JavascriptFunction(str):
     """
 
     def __init__(self, value):
-        assert value.lstrip().startswith(
-            "function"
-        ), "A Javascript function is expected to start with 'function'"
+        assert re.compile(r"^\s*function\s*\(").match(
+            value
+        ), "A Javascript function is expected to start with 'function('"
 
 
 class JavascriptCode(str):
