@@ -17,6 +17,7 @@ ITables ChangeLog
 - The optional final semicolon in `style` argument is now supported again ([#386](https://github.com/mwouts/itables/issues/386))
 - The index of Pandas Style object is now rendered when non-trivial ([#393](https://github.com/mwouts/itables/issues/393))
 - We have made the CSS files compatible with the shadow dom used by Marimo ([#383](https://github.com/mwouts/itables/issues/383))
+- A workaround for the incorrect widget weight in Shiny is to use `fillable=False` in the `output_widget` ([#360](https://github.com/mwouts/itables/issues/360))
 
 
 2.4.0 (2025-05-17)
