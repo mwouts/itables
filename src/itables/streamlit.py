@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 from typing_extensions import Unpack
 
 from .javascript import get_itables_extension_arguments
-from .typing import ITableOptions
+from .typing import DataFrameOrSeries, ITableOptions
 from .utils import find_package_file
 
 _streamlit_component_func = components.declare_component(
@@ -13,8 +13,11 @@ _streamlit_component_func = components.declare_component(
 
 
 def interactive_table(
-    df, key: Optional[str] = None, *args, **kwargs: Unpack[ITableOptions]
+    df: Optional[DataFrameOrSeries],
+    key: Optional[str] = None,
+    caption: Optional[str] = None,
+    **kwargs: Unpack[ITableOptions],
 ):
     """Render the DataFrame as an interactive datatable in Streamlit applications"""
-    dt_args, other_args = get_itables_extension_arguments(df, *args, **kwargs)
+    dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
     return _streamlit_component_func(key=key, dt_args=dt_args, other_args=other_args)

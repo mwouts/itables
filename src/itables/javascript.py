@@ -7,13 +7,21 @@ import warnings
 from base64 import b64encode
 from importlib.util import find_spec
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence, Union, cast
+from typing import (
+    Any,
+    Mapping,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
 
 import numpy as np
 import pandas as pd
 from typing_extensions import Unpack
 
 from .typing import (
+    DataFrameOrSeries,
     DTForITablesOptions,
     ITableOptions,
     JavascriptCode,
@@ -307,21 +315,9 @@ def _datatables_repr_(df):
     return to_html_datatable(df, connected=_CONNECTED)
 
 
-def set_caption_from_positional_args(args: tuple, kwargs: ITableOptions):
-    """Set the caption from the positional arguments"""
-    if len(args):
-        if len(args) != 1 or "caption" in kwargs:
-            raise TypeError(
-                "ITable functions or classes take at most 1 positional argument: 'caption'"
-            )
-        (caption,) = args
-        assert isinstance(caption, str), caption
-        kwargs["caption"] = caption
-
-
 def to_html_datatable(
-    df,
-    *args,
+    df: DataFrameOrSeries,
+    caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ):
     """
@@ -331,7 +327,7 @@ def to_html_datatable(
     kwargs["table_id"] = table_id = check_table_id(
         kwargs.pop("table_id", None), kwargs, df=df
     )
-    dt_args = get_itable_arguments(df, *args, **kwargs)
+    dt_args = get_itable_arguments(df, caption, **kwargs)
     dt_url = dt_args.pop("dt_url")
     connected = dt_args.pop("connected")
     display_logo_when_loading = dt_args.pop("display_logo_when_loading", False)
@@ -367,14 +363,14 @@ def _evaluate_show_index(df, showIndex) -> bool:
 
 
 def get_itable_arguments(
-    df, *args, app_mode: bool = False, **kwargs: Unpack[ITableOptions]
+    df: DataFrameOrSeries,
+    caption: Optional[str] = None,
+    app_mode: bool = False,
+    **kwargs: Unpack[ITableOptions],
 ) -> DTForITablesOptions:
     """
     Return the arguments to be passed to the ITable class
     """
-
-    set_caption_from_positional_args(args, kwargs)
-
     if "import_jquery" in kwargs:
         raise TypeError(
             "The argument 'import_jquery' was removed in ITables v2.0. "
@@ -416,6 +412,8 @@ def get_itable_arguments(
         "warn_on_selected_rows_not_rendered", False
     )
     dt_args = cast(DTForITablesOptions, kwargs)
+    if caption is not None:
+        dt_args["caption"] = caption
     del kwargs
 
     if df is None:
@@ -480,6 +478,7 @@ def get_itable_arguments(
             assert isinstance(table_id, str)
             assert table_id.startswith("T_")
             table_id = table_id[2:]
+            assert isinstance(df, pd_style.Styler)
             try:
                 table_html = df.to_html(sparse_index=False, table_uuid=table_id)
             except TypeError:
@@ -524,7 +523,11 @@ def _raise_if_javascript_code(values, context=""):
         return
 
 
-def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
+def get_itables_extension_arguments(
+    df: Optional[DataFrameOrSeries],
+    caption: Optional[str] = None,
+    **kwargs: Unpack[ITableOptions],
+):
     """
     This function returns two dictionaries that are JSON
     serializable and can be passed to the ITable extensions.
@@ -533,7 +536,7 @@ def get_itables_extension_arguments(df, *args, **kwargs: Unpack[ITableOptions]):
     parameters to be used outside of the constructor.
     """
     kwargs["table_id"] = check_table_id(kwargs.get("table_id", None), kwargs, df=df)
-    dt_args = get_itable_arguments(df, *args, **kwargs, app_mode=True)
+    dt_args = get_itable_arguments(df, caption, **kwargs, app_mode=True)
     check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
     other_args = {
         "classes": get_compact_classes(dt_args.pop("classes")),
@@ -818,6 +821,10 @@ def safe_reset_index(df):
         return pd.concat(index_levels + [df.reset_index(drop=True)], axis=1)
 
 
-def show(df=None, *args, **kwargs: Unpack[ITableOptions]):
+def show(
+    df: DataFrameOrSeries,
+    caption: Optional[str] = None,
+    **kwargs: Unpack[ITableOptions],
+):
     """Render the given dataframe as an interactive datatable"""
-    display(HTML(to_html_datatable(df, *args, **kwargs)))
+    display(HTML(to_html_datatable(df, caption, **kwargs)))

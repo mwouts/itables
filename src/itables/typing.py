@@ -5,7 +5,12 @@ from pathlib import Path
 from typing import Any, Literal, Mapping, Sequence, TypedDict, Union
 
 from packaging.version import Version
-from typing_extensions import NotRequired
+from typing_extensions import NotRequired, TypeAlias
+
+"""
+A Pandas or Polars DataFrame or Series, a numpy array, or a Pandas Style object.
+"""
+DataFrameOrSeries: TypeAlias = Any
 
 
 class JavascriptFunction(str):
@@ -43,7 +48,6 @@ class DataTableOptions(TypedDict):
     """
 
     # DataTable options
-    caption: NotRequired[str]
     lengthMenu: NotRequired[
         Union[
             Sequence[Union[int, str, Mapping[str, Any]]],
@@ -121,6 +125,7 @@ class DTForITablesOptions(DataTableOptions):
     in the dt_for_itables package.
     """
 
+    caption: NotRequired[str]
     classes: NotRequired[Union[str, Sequence[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
 

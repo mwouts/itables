@@ -1,4 +1,4 @@
-from typing_extensions import Unpack
+from typing_extensions import Optional, Unpack
 
 from itables import __version__
 from itables.typing import ITableOptions
@@ -31,7 +31,13 @@ ITableComponent._css_dist = _css_dist  # type: ignore
 class ITable(ITableComponent):
     """An ITable component for Dash"""
 
-    def __init__(self, id, df=None, **kwargs: Unpack[ITableOptions]):
+    def __init__(
+        self,
+        id,
+        df=None,
+        caption: Optional[str] = None,
+        **kwargs: Unpack[ITableOptions],
+    ):
         """
         Initialize the ITable component.
 
@@ -47,7 +53,9 @@ class ITable(ITableComponent):
         if not id:
             raise ValueError("The id cannot be an empty string.")
 
-        return super().__init__(id=id, **get_itable_component_kwargs(df=df, **kwargs))
+        return super().__init__(
+            id=id, **get_itable_component_kwargs(df, caption, **kwargs)
+        )
 
 
 __all__ = [
