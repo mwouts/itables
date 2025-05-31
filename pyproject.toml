@@ -123,3 +123,6 @@ artifacts = [
     "src/itables/py.typed",
     "src/itables_for_dash/py.typed",
     ]
+
+[tool.pyright]
+typeCheckingMode = "standard"
