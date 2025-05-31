@@ -3,8 +3,10 @@ from typing import Union
 
 import pandas as pd
 
+from itables.typing import DataFrameOrSeries
 
-def nbytes(df):
+
+def nbytes(df: DataFrameOrSeries) -> int:
     try:
         return sum(x.values.nbytes for _, x in df.items())
     except AttributeError:
@@ -12,7 +14,7 @@ def nbytes(df):
         return df.estimated_size()
 
 
-def as_nbytes(mem):
+def as_nbytes(mem: Union[int, float, str]) -> int:
     if isinstance(mem, (int, float)):
         return int(mem)
     assert isinstance(mem, str), mem

@@ -16,6 +16,7 @@ kernelspec:
 :tags: [remove-cell]
 
 # ruff: noqa: E402
+# pyright: reportUnknownVariableType=false
 ```
 
 # CSS

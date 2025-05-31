@@ -12,6 +12,12 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnknownVariableType=false
+```
+
 # Contributing
 
 Thanks for considering making a contribution to ITables. There are

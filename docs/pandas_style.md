@@ -16,6 +16,7 @@ kernelspec:
 :tags: [remove-cell]
 
 # pyright: reportUnusedExpression=false
+# pyright: reportUnknownMemberType=false
 ```
 
 # Pandas Style

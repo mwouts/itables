@@ -23,7 +23,7 @@
 # %%
 import itables
 
-dict_of_test_dfs = itables.sample_dfs.get_dict_of_test_dfs(polars=True)
+dict_of_test_dfs = itables.sample_dfs.get_dict_of_polars_test_dfs()
 itables.init_notebook_mode()
 
 # %% [markdown]
