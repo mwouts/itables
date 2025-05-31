@@ -13,6 +13,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have added type hints to `itable.options` even for the options that don't have a default value ([#224](https://github.com/mwouts/itables/issues/224))
+- The optional final semicolon in `style` argument is now supported again ([#386](https://github.com/mwouts/itables/issues/386))
 
 
 2.4.0 (2025-05-17)
