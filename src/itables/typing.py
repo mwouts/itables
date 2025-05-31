@@ -43,7 +43,6 @@ class DataTableOptions(TypedDict):
     """
 
     # DataTable options
-    caption: NotRequired[str]
     lengthMenu: NotRequired[
         Union[
             Sequence[Union[int, str, Mapping[str, Any]]],
@@ -121,6 +120,7 @@ class DTForITablesOptions(DataTableOptions):
     in the dt_for_itables package.
     """
 
+    caption: NotRequired[str]
     classes: NotRequired[Union[str, Sequence[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
 

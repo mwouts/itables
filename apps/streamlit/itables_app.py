@@ -11,7 +11,7 @@ except ImportError as e:
     import_error = e
 
     class AgGrid:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, caption, **kwargs):
             raise import_error
 
 

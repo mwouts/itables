@@ -14,7 +14,11 @@ from typing import Optional
 
 from typing_extensions import Unpack
 
-from itables.javascript import get_expanded_style, get_itables_extension_arguments
+from itables.javascript import (
+    DataFrameOrSeries,
+    get_expanded_style,
+    get_itables_extension_arguments,
+)
 from itables.typing import DataTableOptions, ITableOptions
 
 ITABLE_PROPERTIES = (
@@ -27,11 +31,11 @@ ITABLE_PROPERTIES = (
 
 
 def get_itable_component_kwargs(
-    df=None,
-    *args,
+    df: Optional[DataFrameOrSeries] = None,
+    caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ):
-    dt_args, other_args = get_itables_extension_arguments(df=df, *args, **kwargs)
+    dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
 
     style = get_expanded_style(other_args.pop("style"))
     for key in style:
@@ -53,11 +57,12 @@ def ITableOutputs(id):
 
 
 def updated_itable_outputs(
-    df=None,
+    df: Optional[DataFrameOrSeries] = None,
+    caption: Optional[str] = None,
     current_dt_args: Optional[DataTableOptions] = None,
     **kwargs: Unpack[ITableOptions],
 ):
-    updated_properties = get_itable_component_kwargs(df, **kwargs)
+    updated_properties = get_itable_component_kwargs(df, caption, **kwargs)
 
     if current_dt_args is not None:
         if df is None:

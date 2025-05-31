@@ -96,14 +96,6 @@ def generate_encoder(warn_on_unexpected_types=True):
     return TableValuesEncoder
 
 
-def _isetitem(df, i, value):
-    """Older versions of Pandas don't have df.isetitem"""
-    try:
-        df.isetitem(i, value)
-    except AttributeError:
-        df.iloc[:, i] = value
-
-
 def datatables_rows(
     df,
     column_count: Optional[int] = None,
