@@ -579,7 +579,7 @@ def check_table_id(table_id: Optional[str], kwargs, df=None) -> str:
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
     """
     if "tableId" in kwargs:
-        TypeError(
+        raise TypeError(
             "tableId has been deprecated, please use table_id instead",
         )
 
@@ -667,7 +667,7 @@ def html_table_from_template(
     kwargs: DTForITablesOptions,
 ):
     if "css" in kwargs:
-        TypeError(
+        raise TypeError(
             "The 'css' argument has been deprecated, see the new "
             "approach at https://mwouts.github.io/itables/css.html."
         )
