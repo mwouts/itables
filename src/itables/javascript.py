@@ -346,6 +346,26 @@ def to_html_datatable(
     )
 
 
+def _evaluate_show_index(df, showIndex) -> bool:
+    """
+    We don't want to show trivial indices (RangeIndex with no name) on Pandas DataFrames.
+    """
+    if showIndex != "auto":
+        return showIndex
+    if df is None:
+        return False
+    if pl is not None and isinstance(df, pl.DataFrame):
+        return False
+    if isinstance(df, pd.DataFrame):
+        return df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
+    if pd_style is not None and isinstance(df, pd_style.Styler):
+        return _evaluate_show_index(
+            df.data,  # pyright: ignore[reportAttributeAccessIssue]
+            showIndex,
+        )
+    raise NotImplementedError(type(df))
+
+
 def get_itable_arguments(
     df, *args, app_mode: bool = False, **kwargs: Unpack[ITableOptions]
 ) -> DTForITablesOptions:
@@ -378,14 +398,7 @@ def get_itable_arguments(
     if isinstance(df, (pd.Series, pl.Series)):
         df = df.to_frame()
 
-    if showIndex == "auto":
-        if isinstance(df, pd.DataFrame):
-            showIndex = df.index.name is not None or not isinstance(
-                df.index, pd.RangeIndex
-            )
-        else:
-            # Polars DataFrame
-            showIndex = False
+    showIndex = _evaluate_show_index(df, showIndex)
 
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
