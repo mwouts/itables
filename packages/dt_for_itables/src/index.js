@@ -1,14 +1,6 @@
 import JSZip from 'jszip';
 import jQuery from 'jquery';
 
-// Add MathJax dependency
-import { mathjax } from 'mathjax-full/js/mathjax.js';
-import { TeX } from 'mathjax-full/js/input/tex.js';
-import { SVG } from 'mathjax-full/js/output/svg.js';
-import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
-import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html.js';
-import { AllPackages } from 'mathjax-full/js/input/tex/AllPackages.js';
-
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 
@@ -88,45 +80,6 @@ function evalNestedKeys(obj, keys, context) {
     }
 }
 
-class MathJaxProcessor {
-    constructor() {
-        this.adaptor = liteAdaptor();
-        RegisterHTMLHandler(this.adaptor);
-
-        this.tex = new TeX({
-            packages: AllPackages,
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true
-        });
-
-        this.svg = new SVG({ fontCache: 'none' });
-        this.html = mathjax.document('', { InputJax: this.tex, OutputJax: this.svg });
-    }
-
-    convertLateXtoHTML(cellContent) {
-        if (!cellContent || typeof cellContent !== 'string') {
-            return cellContent;
-        }
-
-        // Process inline math: $...$
-        cellContent = cellContent.replace(/\$([^\$]+)\$/g, (match, latex) => {
-            const node = this.html.convert(latex, { display: false });
-            return this.adaptor.outerHTML(node);
-        });
-
-        // Process display math: $$...$$
-        cellContent = cellContent.replace(/\$\$([\s\S]+?)\$\$/g, (match, latex) => {
-            const node = this.html.convert(latex, { display: true });
-            return this.adaptor.outerHTML(node);
-        });
-
-        return cellContent;
-    }
-}
-
-const mathProcessor = new MathJaxProcessor();
-
 class ITable {
     constructor(table, itable_args) {
         const { data, caption, classes, style, data_json, table_html, table_style, selected_rows, filtered_row_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, render_math = false, ...dt_args } = itable_args;
@@ -142,36 +95,53 @@ class ITable {
 
         this.filtered_row_count = filtered_row_count || 0;
 
-        // Store render_math flag for later use in drawCallback
-        this.render_math = render_math;
+        if (render_math) {
+            // Add drawCallback for math rendering
+            const originalDrawCallback = dt_args.drawCallback;
+            dt_args.drawCallback = (settings) => {
+                // Call original drawCallback if it exists
+                if (originalDrawCallback) {
+                    originalDrawCallback.call(this.dt, settings);
+                }
 
-        // Add drawCallback for math rendering
-        const originalDrawCallback = dt_args.drawCallback;
-        dt_args.drawCallback = (settings) => {
-            // Call original drawCallback if it exists
-            if (originalDrawCallback) {
-                originalDrawCallback.call(this.dt, settings);
-            }
+                console.log("Processing math in visible cells...");
+                let MathJax = window.MathJax;
+                // Ensure MathJax is loaded
+                if (typeof MathJax === 'undefined') {
+                    console.error("MathJax is not loaded. Please ensure MathJax is included in your project.");
+                    return;
+                }
 
-            // Process math in visible cells
-            if (this.render_math) {
+                // Process math in the visible cells
                 jQuery(settings.nTable).find('tbody td').each((i, cell) => {
-                    const $cell = jQuery(cell);
-                    const cellText = $cell.text();
+                    const content = jQuery(cell).html();
+                    if (content && content.includes('$')) {
 
-                    // Only process cells that appear to contain LaTeX
-                    if (cellText.includes('$')) {
-                        // Store original HTML to avoid reprocessing
-                        if (!$cell.data('original-content')) {
-                            $cell.data('original-content', $cell.html());
+                        // Check which version of MathJax is available
+                        if (typeof MathJax !== 'undefined') {
+                            if (MathJax.version && MathJax.version[0] === '3') {
+                                // MathJax v3 API
+                                try {
+                                    console.log("Starting MathJax typesetting for cell...");
+                                    MathJax.typesetPromise([cell])
+                                        .then(() => console.log("MathJax typesetting completed for cell", cell))
+                                        .catch(err => console.error("MathJax typesetting failed:", err));
+                                } catch (e) {
+                                    console.error("Error using MathJax v3:", e);
+                                }
+                            }
+                        } else {
+                            // MathJax v2 API
+                            try {
+                                MathJax.Hub.Queue(["Typeset", MathJax.Hub, cell]);
+                            } catch (e) {
+                                console.error("Error using MathJax v2:", e);
+                            }
                         }
-
-                        // Replace with rendered math
-                        $cell.html(mathProcessor.convertLateXtoHTML($cell.data('original-content')));
                     }
                 });
             }
-        };
+        }
 
         if (text_in_header_can_be_selected || column_filters) {
             dt_args.initComplete = function (settings, json) {
@@ -239,7 +209,7 @@ class ITable {
 
         this.table = jQuery(table);
         if (table_html) {
-            this.table.html(render_math ? mathProcessor.convertLateXtoHTML(table_html) : table_html);
+            this.table.html(table_html);
         }
         if (classes) {
             classes.forEach(element => {
