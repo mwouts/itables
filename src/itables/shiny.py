@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Union
+
 from typing_extensions import Optional, Unpack
 
 import itables.options as opt
@@ -6,16 +9,16 @@ from .javascript import (
     generate_init_offline_itables_html,
     to_html_datatable,
 )
-from .typing import ITableOptions
+from .typing import DataFrameOrSeries, ITableOptions
 from .utils import read_package_file
 
 _CONNECTED = True
 
 
 def init_itables(
-    connected=False,
-    dt_bundle=None,
-):
+    connected: bool = False,
+    dt_bundle: Optional[Union[Path, str]] = None,
+) -> str:
     """Load the DataTables library and the corresponding css (if connected=False).
 
     Warning: make sure you keep the output of this cell when 'connected=False',
@@ -34,7 +37,11 @@ def init_itables(
     return html
 
 
-def DT(df, caption: Optional[str] = None, **kwargs: Unpack[ITableOptions]):
+def DT(
+    df: DataFrameOrSeries,
+    caption: Optional[str] = None,
+    **kwargs: Unpack[ITableOptions],
+):
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
     kwargs["connected"] = kwargs.get("connected", _CONNECTED)
     html = to_html_datatable(

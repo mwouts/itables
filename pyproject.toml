@@ -126,4 +126,5 @@ artifacts = [
 
 [tool.pyright]
 typeCheckingMode = "standard"
-strict = ["docs"]
+ignore = ["apps/marimo"]
+strict = ["docs", "apps"]
