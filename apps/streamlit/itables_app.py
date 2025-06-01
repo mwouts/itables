@@ -1,9 +1,10 @@
 """Run this app with: streamlit run apps/streamlit/itables_app.py"""
 
-from typing import Sequence, cast
+from typing import Optional, Sequence, cast
 
-import pyarrow
+import pyarrow  # type: ignore
 import streamlit as st
+from typing_extensions import Unpack
 
 try:
     from st_aggrid import AgGrid  # type: ignore
@@ -11,15 +12,13 @@ except ImportError as e:
     import_error = e
 
     class AgGrid:
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs):  # type: ignore
             raise import_error
 
 
 from streamlit.components.v1.components import MarshallComponentException
 
-import itables.options as it_opt
-from itables.javascript import get_compact_style, get_expanded_classes
-from itables.sample_dfs import get_countries, get_dict_of_test_dfs
+import itables
 from itables.streamlit import interactive_table
 
 st.set_page_config(
@@ -45,7 +44,7 @@ select = st.sidebar.toggle("Row selection", value=True)
 classes = st.sidebar.multiselect(
     "Classes",
     options=["display", "nowrap", "compact", "cell-border", "stripe"],
-    default=get_expanded_classes(it_opt.classes),
+    default=itables.javascript.get_expanded_classes(itables.options.classes),
 )
 buttons = st.sidebar.multiselect(
     "Buttons",
@@ -53,43 +52,41 @@ buttons = st.sidebar.multiselect(
     default=["copyHtml5", "csvHtml5", "excelHtml5", "colvis"],
 )
 
-style = st.sidebar.text_input("Style", value=get_compact_style(it_opt.style))
+style = st.sidebar.text_input(
+    "Style", value=itables.javascript.get_compact_style(itables.options.style)
+)
 
 render_with = st.sidebar.selectbox(
     "Render with", ["st.dataframe", "streamlit-aggrid", "itables"], index=2
 )
 
 include_html = st.sidebar.checkbox("Include HTML")
-df = get_countries(html=include_html)
+df = itables.sample_dfs.get_countries(html=include_html)
 
-it_args = {}
+it_args: itables.ITableOptions = {}
 if select:
     it_args["select"] = True
     it_args["selected_rows"] = [0, 1, 2, 100, 207]
-if classes != get_expanded_classes(it_opt.classes):
+if classes != itables.javascript.get_expanded_classes(itables.options.classes):
     it_args["classes"] = classes
-if style != it_opt.style:
+if style != itables.options.style:
     it_args["style"] = style
 
 if buttons:
     it_args["buttons"] = buttons
 
-
-if caption:
-    it_args = {"caption": caption, **it_args}
-
 if render_with == "st.dataframe":
 
-    def render_table(df, key: str, **not_used):  # type: ignore
-        return st.dataframe(df, key=key)
+    def render_table(df, key: str, caption: Optional[str], **not_used):  # type: ignore
+        return st.dataframe(df, key=key)  # type: ignore
 
     snippet = """st.dataframe(df)
 """
 
 elif render_with == "streamlit-aggrid":
 
-    def render_table(df, key: str, **not_used):  # type: ignore
-        return AgGrid(df, key=key)
+    def render_table(df, key: str, caption: Optional[str], **not_used):  # type: ignore
+        return AgGrid(df, key=key)  # type: ignore
 
     snippet = """from st_aggrid import AgGrid
 
@@ -102,12 +99,17 @@ else:
     ]
     formatted_args = ",\n                  ".join(formatted_args)
 
-    def render_table(df, key, **it_args):
-        return interactive_table(df, key=key, **it_args)
+    def render_table(
+        df: itables.DataFrameOrSeries,
+        key: str,
+        caption: Optional[str],
+        **it_args: Unpack[itables.ITableOptions],
+    ):
+        return interactive_table(df, key=key, caption=caption, **it_args)
 
     snippet = f"""from itables.streamlit import interactive_table
 
-interactive_table({formatted_args})
+interactive_table(df, caption='{caption}', {formatted_args})
 """
 
 st.markdown(
@@ -117,17 +119,17 @@ st.markdown(
 """
 )
 
-t = render_table(df, "my_table", **it_args)
+t = render_table(df, caption=caption, key="my_table", **it_args)
 
 st.header("Table state")
 st.markdown(
     """The value returned by `interactive_table` is
 a dict that contains the index of the selected rows:"""
 )
-st.write(t)
+st.write(t)  # type: ignore
 
 st.header("More sample dataframes")
-test_dfs = get_dict_of_test_dfs()
+test_dfs = itables.sample_dfs.get_dict_of_test_dfs()
 tabs = st.tabs(cast(Sequence[str], test_dfs.keys()))
 
 for (name, df), tab in zip(test_dfs.items(), tabs):
@@ -140,7 +142,7 @@ for (name, df), tab in zip(test_dfs.items(), tabs):
             # st.dataframe
             ValueError,
             # streamlit-aggrid
-            pyarrow.lib.ArrowInvalid,  # type: ignore
+            pyarrow.lib.ArrowInvalid,  # pyright: ignore[reportUnknownMemberType,reportAttributeAccessIssue]
             MarshallComponentException,
-        ) as e:
-            st.warning(e)
+        ) as e:  # pyright: ignore[reportUnknownVariableType]
+            st.warning(e)  # pyright: ignore[reportUnknownArgumentType]

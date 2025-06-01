@@ -1,7 +1,7 @@
 from typing_extensions import Optional, Unpack
 
 from itables import __version__
-from itables.typing import ITableOptions
+from itables.typing import DataFrameOrSeries, ITableOptions
 
 from .ITable import ITable as ITableComponent
 from .properties import (
@@ -33,8 +33,8 @@ class ITable(ITableComponent):
 
     def __init__(
         self,
-        id,
-        df=None,
+        id: str,
+        df: Optional[DataFrameOrSeries] = None,
         caption: Optional[str] = None,
         **kwargs: Unpack[ITableOptions],
     ):

@@ -23,15 +23,15 @@ app_ui = ui.page_sidebar(
 )
 
 
-def server(input, output, session):
+def server(input, output, session):  # type: ignore
     @render.ui
-    def my_table():
+    def my_table():  # pyright: ignore[reportUnusedFunction]
         """
         This function renders the table using "DT".
         """
-        df = dfs[input.table_selector()]
+        df = dfs[input.table_selector()]  # pyright: ignore[reportUnknownMemberType]
 
         return ui.HTML(DT(df))
 
 
-app = App(app_ui, server)
+app = App(app_ui, server)  # pyright: ignore[reportUnknownArgumentType]

@@ -5,10 +5,17 @@ Launch the app by running `python 3_update_table.py`.
 """
 
 import logging
+from typing import Any, Optional
 
-from dash import Dash, Input, Output, State, callback, callback_context, dcc, html
+from dash import callback  # pyright: ignore[reportUnknownVariableType]
+from dash import Dash, Input, Output, State, callback_context, dcc, html
 
-from itables.dash import ITable, ITableOutputs, updated_itable_outputs
+from itables import DTForITablesOptions, ITableOptions
+from itables.dash import (
+    ITable,
+    ITableOutputs,
+    updated_itable_outputs,
+)
 from itables.sample_dfs import get_countries
 
 logging.basicConfig(level=logging.INFO)
@@ -69,22 +76,34 @@ app.layout = html.Div(
         State("my_dataframe", "dt_args"),
     ],
 )
-def update_table(checklist, caption, selected_rows, dt_args):
+def update_table(
+    checklist: Optional[list[str]],
+    caption: Optional[str],
+    selected_rows: Optional[list[int]],
+    dt_args: Optional[DTForITablesOptions],
+) -> list[Any]:
     if checklist is None:
         checklist = []
 
-    kwargs = {}
+    kwargs: ITableOptions = {}
 
     # When df=None and when the dt_args don't change, the table is not updated
-    if callback_context.triggered_id in {None, "checklist"}:
-        kwargs["df"] = get_countries(html="HTML" in checklist)
+    df = None
+    if callback_context.triggered_id in {  # pyright: ignore[reportUnknownMemberType]
+        None,
+        "checklist",
+    }:
+        df = get_countries(html="HTML" in checklist)
 
     kwargs["select"] = "Select" in checklist
     if "Buttons" in checklist:
         kwargs["buttons"] = ["copyHtml5", "csvHtml5", "excelHtml5"]
 
+    if selected_rows is not None:
+        kwargs["selected_rows"] = selected_rows
+
     return updated_itable_outputs(
-        caption=caption, selected_rows=selected_rows, current_dt_args=dt_args, **kwargs
+        df, caption=caption, current_dt_args=dt_args, **kwargs
     )
 
 
@@ -92,9 +111,9 @@ def update_table(checklist, caption, selected_rows, dt_args):
     Output("output", "children"),
     Input("my_dataframe", "selected_rows"),
 )
-def show_selection(selected_rows):
+def show_selection(selected_rows: list[int]):
     return f"Selected rows: {selected_rows}"
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)  # pyright: ignore[reportUnknownMemberType]

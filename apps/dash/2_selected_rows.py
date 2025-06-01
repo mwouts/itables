@@ -1,4 +1,7 @@
-from dash import Dash, Input, Output, callback, html
+from typing import Optional
+
+from dash import callback  # pyright: ignore[reportUnknownVariableType]
+from dash import Dash, Input, Output, html
 
 from itables.dash import ITable
 from itables.sample_dfs import get_countries
@@ -25,9 +28,9 @@ app.layout = html.Div(
     Output("output", "children"),
     Input("my_dataframe", "selected_rows"),
 )
-def show_selection(selected_rows):
+def show_selection(selected_rows: Optional[list[int]]) -> str:
     return f"Selected rows: {selected_rows}"
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)  # pyright: ignore[reportUnknownMemberType]

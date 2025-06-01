@@ -23,7 +23,7 @@ app_ui = ui.page_sidebar(
 )
 
 
-def server(input, output, session):
+def server(input, output, session):  # type: ignore
     @render_widget
     def my_table():
         """
@@ -40,7 +40,7 @@ def server(input, output, session):
         to update the widget with the new inputs.
         """
         # Get the new inputs
-        df = dfs[input.table_selector()]
+        df = dfs[input.table_selector()]  # pyright: ignore[reportUnknownMemberType]
         selected_rows = list(range(0, len(df), 3))
 
         # Update the widget
@@ -52,7 +52,7 @@ def server(input, output, session):
     ui.markdown("Selected rows")
 
     @render.code
-    def selected_rows():
+    def selected_rows():  # pyright: ignore[reportUnusedFunction]
         """
         Here we read the "selected_rows" attribute of the ITable widget
         """
@@ -62,4 +62,4 @@ def server(input, output, session):
         return str(reactive_read(my_table.widget, "selected_rows"))
 
 
-app = App(app_ui, server)
+app = App(app_ui, server)  # type: ignore

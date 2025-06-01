@@ -527,7 +527,7 @@ def get_itables_extension_arguments(
     df: Optional[DataFrameOrSeries],
     caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
-):
+) -> tuple[DTForITablesOptions, dict[str, Any]]:
     """
     This function returns two dictionaries that are JSON
     serializable and can be passed to the ITable extensions.

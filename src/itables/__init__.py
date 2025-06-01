@@ -1,7 +1,13 @@
 from itables import downsample, options, sample_dfs
 
 from .javascript import init_notebook_mode, show, to_html_datatable
-from .typing import DataFrameOrSeries, ITableOptions, JavascriptCode, JavascriptFunction
+from .typing import (
+    DataFrameOrSeries,
+    DTForITablesOptions,
+    ITableOptions,
+    JavascriptCode,
+    JavascriptFunction,
+)
 from .version import __version__
 
 __all__ = [
@@ -13,6 +19,7 @@ __all__ = [
     "JavascriptFunction",
     "DataFrameOrSeries",
     "ITableOptions",
+    "DTForITablesOptions",
     "options",
     "downsample",
     "sample_dfs",
