@@ -100,6 +100,7 @@ class ITableOptions(DataTableOptions):
     maxColumns: NotRequired[int]
 
     allow_html: NotRequired[bool]
+    render_math: NotRequired[bool]
 
     table_id: NotRequired[str]
     dt_url: NotRequired[str]
@@ -142,6 +143,7 @@ class DTForITablesOptions(DataTableOptions):
 
     column_filters: NotRequired[Literal[False, "header", "footer"]]
     keys_to_be_evaluated: NotRequired[Sequence[Sequence[Union[int, str]]]]
+    render_math: NotRequired[bool]
 
     # These options are used in the HTML template
     # and don't reach the ITable JavaScript class

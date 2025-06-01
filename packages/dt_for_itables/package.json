@@ -35,7 +35,8 @@
     "datatables.net-searchpanes-dt": "^2.3.3",
     "datatables.net-select-dt": "^3.0.0",
     "jquery": "^3.7.1",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "mathjax-full": "^3.2.2"
   },
   "devDependencies": {
     "esbuild": "^0.25.3"
