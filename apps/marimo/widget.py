@@ -42,15 +42,6 @@ def _(mo):
     💡 The table shown above does not reflect the initial row selection.
     This is because the `ITable` widget was updated with
     more row selection commands, see below.
-
-    ## The `selected_rows` traits
-
-    ⚠️ At the moment, the selected rows are not displayed properly in Marimo.
-    Please subscribe to https://github.com/mwouts/itables/issues/383 or reach out if you know how to fix this.
-
-    The `selected_rows` attribute of the `ITable` object provides a view on the
-    rows that have been selected in the table (remember to pass [`select=True`](../options/select.md) to activate the row selection). You can use it to either retrieve
-    or change the current row selection:
     """
     )
     return
