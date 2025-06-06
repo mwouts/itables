@@ -22,7 +22,24 @@ def _():
 
     df = pd.DataFrame({"x": [2, 1, 3], "y": list("cbc")})
 
+    # buttons that trigger a drop-down don't work in Marimo when using the widget
+    # see below for a workaround using mo.iframe
     ITable(df, buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5", "colvis"])
+    return (df,)
+
+
+@app.cell
+def _(df):
+    import marimo as mo
+
+    import itables
+
+    html = itables.to_html_datatable(
+        df,
+        buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5", "colvis"],
+        connected=True,
+    )
+    mo.iframe(html)
     return
 
 

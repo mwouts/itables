@@ -32,6 +32,7 @@ ITable(df)
 
 A Sample Marimo application is available at [`apps/marimo/widget.py`](https://github.com/mwouts/itables/tree/main/apps/marimo/widget.py).
 
+⚠️ Some datatables buttons don't work when using the ITable widget within Marimo, see [issue #387](https://github.com/mwouts/itables/issues/387). The next paragraph provides a workaround.
 
 ## Using HTML
 
