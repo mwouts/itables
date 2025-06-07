@@ -19,6 +19,8 @@ The DataTables [buttons](https://datatables.net/extensions/buttons/) let you cop
 To display the buttons, you need to pass a `buttons` argument to the `show` function:
 
 ```{code-cell} ipython3
+:tags: [full-width]
+
 import itables
 
 itables.init_notebook_mode()

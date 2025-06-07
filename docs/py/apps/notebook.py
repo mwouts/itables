@@ -14,6 +14,9 @@
 #     name: itables
 # ---
 
+# %% tags=["remove-cell"]
+# pyright: reportUnusedExpression=false
+
 # %% [markdown]
 # # Notebook Mode
 #
@@ -26,7 +29,12 @@ itables.init_notebook_mode()
 
 # %% [markdown]
 # You can go back to the standard HTML representation of Pandas DataFrames with `init_notebook_mode(all_interactive=False)`.
-#
+
+# %% tags=["full-width"]
+df = itables.sample_dfs.get_countries(html=False)
+df
+
+# %% [markdown]
 # Note that the `init_connected_mode` function also activates ITable's offline mode, unless you call it with a `connected=False` argument.
 #
 #
@@ -44,16 +52,5 @@ itables.init_notebook_mode()
 #
 # If you prefer to render only certain tables using `itables`, or want to set additional options, use `show`:
 
-# %%
-df = itables.sample_dfs.get_countries(html=False)
-
-itables.show(
-    df,
-    caption="A DataFrame rendered with ITables",
-    lengthMenu=[2, 5, 10, 25, 50, 100, 250],
-)
-
-# %% [markdown]
-# ## HTML
-#
-# The `show` function simply displays the HTML snippet for the table, which is obtained with `to_html_datatable`. See more in the section on [HTML export](html.md).
+# %% tags=["full-width"]
+itables.show(df, caption="A DataFrame rendered with ITables")

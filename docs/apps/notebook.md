@@ -12,6 +12,12 @@ kernelspec:
   name: itables
 ---
 
+```{code-cell} ipython3
+:tags: [remove-cell]
+
+# pyright: reportUnusedExpression=false
+```
+
 # Notebook Mode
 
 Activate ITables in a Jupyter environment for all your tables with `init_notebook_mode`:
@@ -23,6 +29,13 @@ itables.init_notebook_mode()
 ```
 
 You can go back to the standard HTML representation of Pandas DataFrames with `init_notebook_mode(all_interactive=False)`.
+
+```{code-cell} ipython3
+:tags: [full-width]
+
+df = itables.sample_dfs.get_countries(html=False)
+df
+```
 
 Note that the `init_connected_mode` function also activates ITable's offline mode, unless you call it with a `connected=False` argument.
 
@@ -42,15 +55,7 @@ about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_n
 If you prefer to render only certain tables using `itables`, or want to set additional options, use `show`:
 
 ```{code-cell} ipython3
-df = itables.sample_dfs.get_countries(html=False)
+:tags: [full-width]
 
-itables.show(
-    df,
-    caption="A DataFrame rendered with ITables",
-    lengthMenu=[2, 5, 10, 25, 50, 100, 250],
-)
+itables.show(df, caption="A DataFrame rendered with ITables")
 ```
-
-## HTML
-
-The `show` function simply displays the HTML snippet for the table, which is obtained with `to_html_datatable`. See more in the section on [HTML export](html.md).

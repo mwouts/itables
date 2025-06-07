@@ -20,22 +20,23 @@
 # %% [markdown]
 # # Downsampling
 #
-# When an interactive table is displayed by `itables`, the table data is embedded in the notebook output. As we don't want your notebook to become super heavy just because you displayed a large table, we have a downsampling mechanism in place.
+# When an interactive table is displayed by `itables`, the table data is embedded into the notebook itself. Large tables need to be downsampled, otherwise your notebook will become huge and irresponsive.
 #
-# When the data in a table is larger than `maxBytes`, which is equal to 64KB by default, `itables` will display only a subset of the table - one that fits into `maxBytes`, and display a warning that points to the `itables` documentation.
+# Downsampling occurs when the table data is larger than `maxBytes`, which is equal to 64KB by default. When downsampling occurs, a warning is displayed below the table, which points to the `itables` documentation.
 #
-# If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0`). Similarly, you can set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `200`).
+# If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0`) - but again, that will break your notebook when you display a large dataframe.
+#
+# Similarly, you can set a limit on the number of rows (`maxRows`, defaults to 0) or columns (`maxColumns`, defaults to `200`).
 
 # %%
 import itables
 
 itables.init_notebook_mode()
 
-# %%
-itables.options.lengthMenu = [2, 5, 10, 20, 50, 100, 200, 500]
+# %% tags=["full-width"]
 itables.options.maxBytes = "8KB"
 
-df = itables.sample_dfs.get_indicators()
+df = itables.sample_dfs.get_countries(html=False)
 itables.downsample.as_nbytes(itables.options.maxBytes), itables.downsample.nbytes(df)
 
 # %% tags=["full-width"]
@@ -45,7 +46,7 @@ df
 # To show the table in full, we can modify the value of `maxBytes` either locally:
 
 # %% tags=["full-width"]
-itables.show(df, maxBytes=0)
+itables.show(df, maxBytes=32768)
 
 # %% [markdown]
 # or globally:
