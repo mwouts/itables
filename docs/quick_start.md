@@ -61,7 +61,7 @@ conda install itables -c conda-forge
 
 ## Activate ITables
 
-Activate the interactive mode in notebook-like environment with `init_notebook_mode`:
+Activate the interactive mode in notebook-like environment with [`init_notebook_mode`](apps/notebook.md):
 
 ```{code-cell} ipython3
 import itables
@@ -74,6 +74,8 @@ is displayed as an interactive [DataTables](https://datatables.net/),
 which lets you explore, filter or sort your data.
 
 ```{code-cell} ipython3
+:tags: [full-width]
+
 df = itables.sample_dfs.get_countries(html=False)
 df
 ```

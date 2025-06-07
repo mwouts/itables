@@ -21,7 +21,7 @@
 #
 # To display the buttons, you need to pass a `buttons` argument to the `show` function:
 
-# %%
+# %% tags=["full-width"]
 import itables
 
 itables.init_notebook_mode()
