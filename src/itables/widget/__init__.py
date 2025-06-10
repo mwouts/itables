@@ -21,8 +21,11 @@ class ITable(anywidget.AnyWidget):
     # public traits
     caption = traitlets.Unicode().tag(sync=True)
     classes = traitlets.Unicode().tag(sync=True)
-    style = traitlets.Unicode().tag(sync=True)
     selected_rows = traitlets.List(traitlets.Int()).tag(sync=True)
+
+    # this trait is private - it was initially public but
+    # that was causing issue #407, so we now use a property and setter
+    _style = traitlets.Unicode().tag(sync=True)
 
     # private traits that relate to df or to the DataTable arguments
     # (use .update() to update them)
@@ -39,7 +42,7 @@ class ITable(anywidget.AnyWidget):
         self._df = df
         self.caption = other_args.pop("caption") or ""
         self.classes = other_args.pop("classes")
-        self.style = other_args.pop("style")
+        self._style = other_args.pop("style")
         self.selected_rows = other_args.pop("selected_rows")
 
         self._dt_args = dt_args
@@ -73,11 +76,12 @@ class ITable(anywidget.AnyWidget):
             kwargs["classes"] = self.classes
         if "style" not in kwargs:
             kwargs["style"] = self.style
+            pass
 
         dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
 
         self.classes = other_args.pop("classes")
-        self.style = other_args.pop("style")
+        self._style = other_args.pop("style")
         self.caption = other_args.pop("caption")
 
         if df is None:
@@ -106,3 +110,11 @@ class ITable(anywidget.AnyWidget):
     @df.setter
     def df(self, df: Optional[DataFrameOrSeries]):
         self.update(df)
+
+    @property
+    def style(self) -> str:
+        return self._style
+
+    @style.setter
+    def style(self, style: str):
+        self._style = style

@@ -3,10 +3,11 @@ import { ITable, set_or_remove_dark_class } from 'dt_for_itables';
 
 /* Specifies attributes defined with traitlets in ../src/itables_anywidget/__init__.py */
 interface WidgetModel {
-	dt_args: object;
+	_dt_args: object;
 	caption: string;
 	classes: string;
-	style: string;
+	_style: string;
+	selected_rows: Array<number>;
 }
 
 function render({ model, el }: RenderContext<WidgetModel>) {
@@ -19,7 +20,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		table.className = model.get("classes");
 	}
 	function update_style() {
-		table.setAttribute('style', model.get("style"));
+		table.setAttribute('style', model.get("_style"));
 	}
 	function update_caption() {
 		let caption_text = model.get('caption');
@@ -36,7 +37,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 
 	// Update the table when one of these change
 	model.on("change:classes", update_classes);
-	model.on("change:style", update_style);
+	model.on("change:_style", update_style);
 	model.on("change:caption", update_caption);
 
 	// This variable is a place holder from the
