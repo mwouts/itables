@@ -18,6 +18,7 @@ ITables ChangeLog
 - The index of Pandas Style object is now rendered when non-trivial ([#393](https://github.com/mwouts/itables/issues/393))
 - We have made the CSS files compatible with the shadow dom used by Marimo ([#383](https://github.com/mwouts/itables/issues/383))
 - A workaround for the incorrect widget weight in Shiny is to use `fillable=False` in the `output_widget` ([#360](https://github.com/mwouts/itables/issues/360))
+- We have fixed a Javascript error in the Jupyter widget ('t.state_change is undefined') ([#407](https://github.com/mwouts/itables/issues/407))
 
 
 2.4.0 (2025-05-17)
