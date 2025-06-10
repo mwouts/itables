@@ -22,7 +22,7 @@ class JavascriptFunction(str):
     Please use this only for code that you trust.
     """
 
-    def __init__(self, value):
+    def __init__(self, value: str):
         assert re.compile(r"^\s*function\s*\(").match(
             value
         ), "A Javascript function is expected to start with 'function('"
