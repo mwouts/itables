@@ -1,10 +1,12 @@
 import json
 import warnings
-from typing import Optional
+from typing import Any, Optional, Sequence, Union
 
 import numpy as np
 import pandas as pd
 import pandas.io.formats.format as fmt
+
+from .typing import DataFrameOrSeries
 
 try:
     import polars as pl
@@ -12,7 +14,9 @@ except ImportError:
     pl = None
 
 
-def _format_column(x, escape_html: bool):
+def _format_column(
+    x: "pd.Series[Any]", escape_html: bool
+) -> "Union[pd.Series[Any],Sequence[Any]]":
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
         return x
@@ -28,21 +32,23 @@ def _format_column(x, escape_html: bool):
         # Older versions of Pandas don't have 'leading_space'
         x = fmt.format_array(x._values, None, justify="all")  # type: ignore
 
+    y: "Union[pd.Series[Any], Sequence[Any]]" = x
     if dtype_kind == "f":
         try:
-            x = np.array(x).astype(float)
+            z = np.array(x).astype(float)
         except ValueError:
+            z = x
             pass
 
-        x = [escape_non_finite_float(f) for f in x]
+        y = [escape_non_finite_float(f) for f in z]
 
     if escape_html:
-        return [escape_html_chars(i) for i in x]
+        return [escape_html_chars(i) for i in y]
 
-    return x
+    return y
 
 
-def escape_non_finite_float(value):
+def escape_non_finite_float(value: Any) -> Any:
     """Encode non-finite float values to strings that will be parsed by parseJSON"""
     if not isinstance(value, float):
         return value
@@ -55,7 +61,7 @@ def escape_non_finite_float(value):
     return value
 
 
-def escape_html_chars(value):
+def escape_html_chars(value: Any) -> Any:
     """Escape HTML special characters"""
     if isinstance(value, str):
         from pandas.io.formats.printing import pprint_thing  # type: ignore
@@ -66,7 +72,9 @@ def escape_html_chars(value):
     return value
 
 
-def generate_encoder(warn_on_unexpected_types=True):
+def generate_encoder(warn_on_unexpected_types: bool = True) -> Any:
+    """Generate a JSON encoder that can handle special types like numpy"""
+
     class TableValuesEncoder(json.JSONEncoder):
         def default(self, o):
             if isinstance(o, (bool, int, float, str)):
@@ -97,11 +105,11 @@ def generate_encoder(warn_on_unexpected_types=True):
 
 
 def datatables_rows(
-    df,
+    df: DataFrameOrSeries,
     column_count: Optional[int] = None,
     warn_on_unexpected_types: bool = False,
     escape_html: bool = True,
-):
+) -> str:
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
     # to avoid an issue in case of duplicated column names #89

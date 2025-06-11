@@ -33,8 +33,11 @@ def as_nbytes(mem: Union[int, float, str]) -> int:
 
 
 def downsample(
-    df, max_rows: int = 0, max_columns: int = 0, max_bytes: Union[int, str] = 0
-):
+    df: DataFrameOrSeries,
+    max_rows: int = 0,
+    max_columns: int = 0,
+    max_bytes: Union[int, str] = 0,
+) -> tuple[DataFrameOrSeries, str]:
     """Return a subset of the dataframe that fits the limits"""
     org_rows, org_columns, org_bytes = len(df), len(df.columns), nbytes(df)
     max_bytes_numeric = as_nbytes(max_bytes)
@@ -67,8 +70,9 @@ def downsample(
 
 
 def shrink_towards_target_aspect_ratio(
-    rows, columns, shrink_factor, target_aspect_ratio
-):
+    rows: int, columns: int, shrink_factor: float, target_aspect_ratio: float
+) -> tuple[int, int]:
+    """Return the number of rows and columns of the shrinked dataframe"""
     # current and target aspect ratio
     aspect_ratio = rows / float(columns)
 

@@ -53,7 +53,7 @@ class ITable(anywidget.AnyWidget):
         df: Optional[DataFrameOrSeries] = None,
         caption: Optional[str] = None,
         **kwargs: Unpack[ITableOptions],
-    ):
+    ) -> None:
         """
         Update either the table data, attributes, or the arguments passed
         to DataTable. Arguments that are not mentioned
@@ -69,7 +69,7 @@ class ITable(anywidget.AnyWidget):
         if df is None:
             df = self._df
         if "selected_rows" not in kwargs:
-            kwargs["selected_rows"] = self.selected_rows
+            kwargs["selected_rows"] = self.selected_rows or []
         if caption is None and self.caption is not None:
             caption = self.caption
         if "classes" not in kwargs:
@@ -108,7 +108,7 @@ class ITable(anywidget.AnyWidget):
         return self._df
 
     @df.setter
-    def df(self, df: Optional[DataFrameOrSeries]):
+    def df(self, df: Optional[DataFrameOrSeries]) -> None:
         self.update(df)
 
     @property
