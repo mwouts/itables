@@ -139,7 +139,7 @@ if warn_on_undocumented_option:
     )
 
 """Check that options have correct types"""
-warn_on_unexpected_option_type = (
+warn_on_unexpected_option_type: bool = (
     warn_on_undocumented_option and typing.is_typeguard_available()
 )
 if warn_on_unexpected_option_type:

@@ -41,7 +41,7 @@ def DT(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
-):
+) -> str:
     """This is a version of 'to_html_datatable' that works in Shiny applications."""
     kwargs["connected"] = kwargs.get("connected", _CONNECTED)
     html = to_html_datatable(

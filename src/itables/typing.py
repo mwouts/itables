@@ -151,7 +151,7 @@ class DTForITablesOptions(DataTableOptions):
     display_logo_when_loading: NotRequired[bool]
 
 
-def is_typeguard_available():
+def is_typeguard_available() -> bool:
     """Check if typeguard is available"""
     try:
         typeguard_version = version("typeguard")

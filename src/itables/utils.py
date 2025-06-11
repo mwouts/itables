@@ -7,13 +7,13 @@ UNPKG_DT_BUNDLE_URL_NO_VERSION = "https://www.unpkg.com/dt_for_itables/dt_bundle
 UNPKG_DT_BUNDLE_CSS_NO_VERSION = "https://www.unpkg.com/dt_for_itables/dt_bundle.css"
 
 
-def find_package_file(*path):
+def find_package_file(*path: str) -> Path:
     """Return the full path to a file from the itables package"""
     current_path = Path(__file__).parent
     return Path(current_path, *path)
 
 
-def read_package_file(*path):
+def read_package_file(*path: str) -> str:
     """Return the content of a file from the itables package"""
     with open(find_package_file(*path), encoding="utf-8") as fp:
         return fp.read()

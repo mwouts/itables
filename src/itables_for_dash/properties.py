@@ -1,17 +1,6 @@
-try:
-    from dash import Output, no_update  # type: ignore
-except ImportError as e:  # type: ignore
-    import_error = e
-
-    def Output(*args, **kwargs):  # type: ignore
-        raise import_error
-
-    def no_update(*args, **kwargs):  # type: ignore
-        raise import_error
-
-
 from typing import Any, Optional, cast
 
+from dash import Output, no_update
 from typing_extensions import Unpack
 
 from itables.javascript import (
@@ -34,6 +23,9 @@ def get_itable_component_kwargs(
     caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ) -> dict[str, Any]:
+    """
+    A function that prepares the arguments for our Dash component.
+    """
     dt_args, other_args = get_itables_extension_arguments(df, caption, **kwargs)
 
     style = get_expanded_style(other_args.pop("style"))

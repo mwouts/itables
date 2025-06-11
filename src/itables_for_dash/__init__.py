@@ -48,12 +48,12 @@ class ITable(ITableComponent):
         **kwargs : dict
             Additional keyword arguments for the component.
         """
-        if not isinstance(id, str):
+        if not isinstance(id, str):  # pyright: ignore[reportUnnecessaryIsInstance]
             raise ValueError("The id must be a string.")
         if not id:
             raise ValueError("The id cannot be an empty string.")
 
-        return super().__init__(
+        return super().__init__(  # pyright: ignore[reportUnknownMemberType]
             id=id, **get_itable_component_kwargs(df, caption, **kwargs)
         )
 

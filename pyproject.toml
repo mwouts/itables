@@ -128,5 +128,15 @@ artifacts = [
 
 [tool.pyright]
 typeCheckingMode = "standard"
-ignore = ["apps/marimo"]
-strict = ["docs", "apps"]
+ignore = [
+    "apps/marimo",
+    "src/itables_for_dash/ITable.py",
+]
+strict = [
+    "docs",
+    "apps",
+    "src/itables_for_dash",
+    "src/itables/__init__.py",
+    "src/itables/dash.py",
+    "src/itables/streamlit.py",
+    ]

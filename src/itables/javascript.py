@@ -135,7 +135,7 @@ def init_notebook_mode(
     all_interactive: bool = True,
     connected: bool = GOOGLE_COLAB,
     dt_bundle: Optional[Union[Path, str]] = None,
-):
+) -> None:
     """Load the DataTables library and the corresponding css (if connected=False),
     and (if all_interactive=True), activate the DataTables representation for all the Pandas DataFrames and Series.
 
@@ -189,7 +189,8 @@ def init_notebook_mode(
         display(HTML(generate_init_offline_itables_html(dt_bundle)))
 
 
-def get_animated_logo(display_logo_when_loading):
+def get_animated_logo(display_logo_when_loading: bool) -> str:
+    """Return the HTML for the loading logo of ITables"""
     if not display_logo_when_loading:
         return ""
     return f"<a href=https://mwouts.github.io/itables/>{read_package_file('logo/loading.svg')}</a>"
@@ -265,7 +266,7 @@ def _flat_header(df, show_index):
     return header
 
 
-def _tfoot_from_thead(thead):
+def _tfoot_from_thead(thead: str) -> str:
     header_rows = thead.split("</tr>")
     last_row = header_rows[-1]
     assert not last_row.strip(), last_row
@@ -273,7 +274,7 @@ def _tfoot_from_thead(thead):
     return "".join(row + "</tr>" for row in header_rows[::-1] if "<tr" in row) + "\n"
 
 
-def get_keys_to_be_evaluated(data) -> list[list[Union[int, str]]]:
+def get_keys_to_be_evaluated(data: Any) -> list[list[Union[int, str]]]:
     """
     This function returns the keys that need to be evaluated
     in the ITable arguments
@@ -296,7 +297,7 @@ def get_keys_to_be_evaluated(data) -> list[list[Union[int, str]]]:
     return keys_to_be_evaluated
 
 
-def replace_value(template, pattern, value):
+def replace_value(template: str, pattern: str, value: str) -> str:
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
     count = template.count(pattern)
@@ -311,7 +312,7 @@ def replace_value(template, pattern, value):
     return template.replace(pattern, value)
 
 
-def _datatables_repr_(df):
+def _datatables_repr_(df: DataFrameOrSeries) -> str:
     return to_html_datatable(df, connected=_CONNECTED)
 
 
@@ -319,7 +320,7 @@ def to_html_datatable(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
-):
+) -> str:
     """
     Return the HTML representation of the given
     dataframe as an interactive datatable
@@ -548,8 +549,14 @@ def get_itables_extension_arguments(
 
 
 def warn_if_selected_rows_are_not_visible(
-    selected_rows, full_row_count, data_row_count, warn_on_selected_rows_not_rendered
-):
+    selected_rows: Optional[Sequence[int]],
+    full_row_count: int,
+    data_row_count: int,
+    warn_on_selected_rows_not_rendered: bool,
+) -> Sequence[int]:
+    """
+    Issue a warning if the selected rows are not within the range of rendered rows.
+    """
     if selected_rows is None:
         return []
 
@@ -589,7 +596,11 @@ def warn_if_selected_rows_are_not_visible(
     return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
-def check_table_id(table_id: Optional[str], kwargs, df=None) -> str:
+def check_table_id(
+    table_id: Optional[str],
+    kwargs: Union[ITableOptions, DTForITablesOptions],
+    df: Optional[DataFrameOrSeries] = None,
+) -> str:
     """Make sure that the table_id is a valid HTML id.
 
     See also https://stackoverflow.com/questions/70579/html-valid-id-attribute-values
@@ -614,7 +625,9 @@ def check_table_id(table_id: Optional[str], kwargs, df=None) -> str:
     return table_id
 
 
-def set_default_options(kwargs: ITableOptions, *, use_to_html: bool, app_mode: bool):
+def set_default_options(
+    kwargs: ITableOptions, *, use_to_html: bool, app_mode: bool
+) -> None:
     if not app_mode:
         kwargs["connected"] = kwargs.get(
             "connected", ("dt_url" in kwargs) or _CONNECTED
@@ -681,7 +694,7 @@ def html_table_from_template(
     connected: bool,
     display_logo_when_loading: bool,
     kwargs: DTForITablesOptions,
-):
+) -> str:
     if "css" in kwargs:
         raise TypeError(
             "The 'css' argument has been deprecated, see the new "
@@ -800,7 +813,7 @@ def _filter_control(control, downsampling_warning):
     return None
 
 
-def safe_reset_index(df):
+def safe_reset_index(df: pd.DataFrame) -> pd.DataFrame:
     try:
         return df.reset_index()
     except ValueError:
@@ -825,6 +838,6 @@ def show(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
-):
+) -> None:
     """Render the given dataframe as an interactive datatable"""
     display(HTML(to_html_datatable(df, caption, **kwargs)))

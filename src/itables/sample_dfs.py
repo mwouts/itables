@@ -3,7 +3,7 @@ import string
 from datetime import datetime, timedelta
 from functools import lru_cache
 from itertools import cycle
-from typing import Any, cast
+from typing import Any, Sequence, cast
 
 import numpy as np
 import pandas as pd
@@ -28,9 +28,9 @@ COLUMN_TYPES = [
     "timedelta",
 ]
 
-PANDAS_VERSION_MAJOR, PANDAS_VERSION_MINOR, _ = pd.__version__.split(".", 2)
-PANDAS_VERSION_MAJOR = int(PANDAS_VERSION_MAJOR)
-PANDAS_VERSION_MINOR = int(PANDAS_VERSION_MINOR)
+_pd_version_major, _pd_version_minor, _ = pd.__version__.split(".", 2)
+PANDAS_VERSION_MAJOR = int(_pd_version_major)
+PANDAS_VERSION_MINOR = int(_pd_version_minor)
 if PANDAS_VERSION_MAJOR == 0:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
 if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
@@ -84,19 +84,20 @@ def get_countries(html: bool = True, climate_zone: bool = False) -> pd.DataFrame
     return df
 
 
-def get_population():
+def get_population() -> "pd.Series[float]":
     """A Pandas Series with the world population (from the world bank data)"""
     return pd.read_csv(find_package_file("samples/population.csv")).set_index(
         "Country"
     )["SP.POP.TOTL"]
 
 
-def get_indicators():
+def get_indicators() -> pd.DataFrame:
     """A Pandas DataFrame with a subset of the world bank indicators"""
     return pd.read_csv(find_package_file("samples/indicators.csv"))
 
 
-def get_df_complex_index():
+def get_df_complex_index() -> pd.DataFrame:
+    """A Pandas DataFrame with a complex index"""
     df = get_countries()
     df = df.reset_index().set_index(["region", "country"])
     df.columns = pd.MultiIndex.from_arrays(
@@ -116,7 +117,7 @@ def get_df_complex_index():
     return df
 
 
-def get_dict_of_test_dfs(N=100, M=100) -> dict[str, pd.DataFrame]:
+def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> dict[str, pd.DataFrame]:
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     return {
@@ -281,7 +282,7 @@ def get_dict_of_test_dfs(N=100, M=100) -> dict[str, pd.DataFrame]:
     }
 
 
-def get_dict_of_polars_test_dfs(N=100, M=100) -> dict[str, Any]:
+def get_dict_of_polars_test_dfs(N: int = 100, M: int = 100) -> dict[str, Any]:
     import polars as pl
     import pyarrow as pa
 
@@ -300,7 +301,8 @@ def get_dict_of_polars_test_dfs(N=100, M=100) -> dict[str, Any]:
     return polars_dfs
 
 
-def get_dict_of_test_series():
+def get_dict_of_test_series() -> dict[str, Any]:
+    """A dictionary of Pandas Series"""
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -313,7 +315,8 @@ def get_dict_of_test_series():
     return series
 
 
-def get_dict_of_polars_test_series():
+def get_dict_of_polars_test_series() -> dict[str, Any]:
+    """A dictionary of Polars Series"""
     import polars as pl
     import pyarrow as pa
 
@@ -342,7 +345,8 @@ def generate_date_series():
     return pd.Series(pd.date_range("1677-09-23", "2262-04-10", freq="D"))
 
 
-def generate_random_series(rows, type):
+def generate_random_series(rows: int, type: str) -> Any:
+    """Generate a random Pandas Series of the given type and number of rows"""
     if type == "bool":
         return pd.Series(np.random.binomial(n=1, p=0.5, size=rows), dtype=bool)
     if type == "boolean":
@@ -382,15 +386,18 @@ def generate_random_series(rows, type):
     raise NotImplementedError(type)
 
 
-def generate_random_df(rows, columns, column_types=COLUMN_TYPES):
+def generate_random_df(
+    rows: int, columns: int, column_types: Sequence[str] = COLUMN_TYPES
+) -> pd.DataFrame:
     rows = int(rows)
     types = np.random.choice(column_types, size=columns)
-    columns = [
+    columns_names = [
         "Column{}OfType{}".format(col, type.title()) for col, type in enumerate(types)
     ]
 
     series = {
-        col: generate_random_series(rows, type) for col, type in zip(columns, types)
+        col: generate_random_series(rows, type)
+        for col, type in zip(columns_names, types)
     }
     index = pd.Index(range(rows))
     for x in series.values():
@@ -399,7 +406,7 @@ def generate_random_df(rows, columns, column_types=COLUMN_TYPES):
     return pd.DataFrame(series)
 
 
-def get_pandas_styler():
+def get_pandas_styler() -> Any:
     """This function returns a Pandas Styler object
 
     Cf. https://pandas.pydata.org/docs/user_guide/style.html
