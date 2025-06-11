@@ -26,6 +26,7 @@
 # [![Pypi](https://img.shields.io/pypi/v/itables.svg)](https://pypi.python.org/pypi/itables)
 # [![Conda Version](https://img.shields.io/conda/vn/conda-forge/itables.svg)](https://anaconda.org/conda-forge/itables)
 # [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
+#  ![PyPI - Types](https://img.shields.io/pypi/types/itables)
 # [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 # [![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](apps/widget.md)
 # [![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](apps/dash.md)
@@ -59,9 +60,9 @@
 # conda install itables -c conda-forge
 # ```
 #
-# ## Activate ITables
+# ## Notebook Mode
 #
-# Activate the interactive mode in notebook-like environment with [`init_notebook_mode`](apps/notebook.md):
+# In a Jupyter Notebook, activate the interactive mode for all your DataFrames with [`init_notebook_mode`](apps/notebook.md):
 
 # %%
 import itables
@@ -80,7 +81,7 @@ df
 # %% [markdown]
 # Read more about the different context where you can use ITables.
 #
-# ## Try ITables on Binder
+# ## Binder
 #
 # You can run the examples above (or any other documentation page) directly on ![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg), without having to install anything on your end - just click on the rocket icon at the top of the page.
 #

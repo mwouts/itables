@@ -1,8 +1,18 @@
 ITables ChangeLog
 =================
 
+2.4.2-dev (???)
+------------------
+
+**Added**
+- We have added a `Framework :: Dash` classifier to highlight the fact that ITables has a component for Dash.
+
+**Fixed**
+- We have added a `Typing :: Typed` classifier to the package as ITables now comes with type annotations ([#411](https://github.com/mwouts/itables/issues/411))
+
+
 2.4.1 (2025-06-10)
-----------------------
+------------------
 
 **Added**
 - We enforce strict `pyright` on the ITables documentation ([#395](https://github.com/mwouts/itables/issues/395)) and on the example apps ([#401](https://github.com/mwouts/itables/pull/401))
