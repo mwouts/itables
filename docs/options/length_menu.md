@@ -14,7 +14,7 @@ kernelspec:
 
 # LengthMenu
 
-Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`:
+Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`. Use `pageLength` to set the default page length:
 
 ```{code-cell} ipython3
 import itables
@@ -26,5 +26,5 @@ df = itables.sample_dfs.get_countries(html=False)
 ```{code-cell} ipython3
 :tags: [full-width]
 
-itables.show(df, lengthMenu=[2, 5, 10, 20, 50])
+itables.show(df, lengthMenu=[2, 5, 10, 20, 50], pageLength=5)
 ```

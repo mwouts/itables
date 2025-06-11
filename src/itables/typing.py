@@ -54,6 +54,7 @@ class DataTableOptions(TypedDict):
             Sequence[Sequence[Union[int, str]]],
         ]
     ]
+    pageLength: NotRequired[int]
     order: NotRequired[
         Union[Sequence[Sequence[Union[int, str]]], Mapping[str, Union[int, str]]]
     ]

@@ -9,6 +9,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have added a `Typing :: Typed` classifier to the package as ITables now comes with type annotations ([#411](https://github.com/mwouts/itables/issues/411))
+- Added type hints and an example for `pageLength` ([#410](https://github.com/mwouts/itables/issues/410))
 
 
 2.4.1 (2025-06-10)
