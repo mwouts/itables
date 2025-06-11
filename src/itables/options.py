@@ -107,6 +107,7 @@ lengthMenu: Optional[
         Sequence[Sequence[Union[int, str]]],
     ]
 ]
+pageLength: Optional[int]
 columnDefs: Optional[Sequence[Mapping[str, Any]]]
 paging: Optional[bool]
 autoWidth: Optional[bool]
