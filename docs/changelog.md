@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.4.3 (2025-07-01)
+------------------
+
+**Fixed**
+- We have fixed an issue with an index not shown when `polars` was not installed ([#415](https://github.com/mwouts/itables/issues/415))
+
+
 2.4.2 (2025-06-11)
 ------------------
 
