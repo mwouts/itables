@@ -351,7 +351,7 @@ def _evaluate_show_index(df, showIndex) -> bool:
         return showIndex
     if df is None:
         return False
-    if pl is not None and isinstance(df, pl.DataFrame):
+    if pl is not pd and isinstance(df, pl.DataFrame):
         return False
     if isinstance(df, pd.DataFrame):
         return df.index.name is not None or not isinstance(df.index, pd.RangeIndex)

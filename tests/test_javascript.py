@@ -41,6 +41,29 @@ def test_get_itable_arguments():
     }
 
 
+def test_get_itable_arguments_with_index():
+    """
+    As much as possible we want few arguments for the ITable class
+    """
+    dt_args = get_itable_arguments(
+        df=pd.DataFrame({"x": [1, 2]}, index=pd.Index(["a", "b"], name="index"))
+    )
+    del dt_args["table_html"]
+    del dt_args["connected"]
+    assert dt_args == {
+        "classes": get_compact_classes(opt.classes),
+        "style": get_compact_style(opt.style),
+        "data_json": '[["a", 1], ["b", 2]]',
+        "order": [],
+        "display_logo_when_loading": opt.display_logo_when_loading,
+        "warn_on_undocumented_option": opt.warn_on_undocumented_option,
+        "warn_on_unexpected_option_type": opt.warn_on_unexpected_option_type,
+        "dt_url": opt.dt_url,
+        "layout": {k: None for k in opt.layout},
+        "text_in_header_can_be_selected": True,
+    }
+
+
 def test_replace_value(
     template="line1\nline2\nline3\n", pattern="line2", value="new line2"
 ):
