@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.4.4 (2025-07-07)
+------------------
+
+**Fixed**
+- We have fixed an assertion when a `table_id` is passed to `DT` ([#414](https://github.com/mwouts/itables/issues/414))
+
+
 2.4.3 (2025-07-01)
 ------------------
 
