@@ -7,6 +7,7 @@ import itables.options as opt
 
 from .javascript import (
     generate_init_offline_itables_html,
+    replace_value,
     to_html_datatable,
 )
 from .typing import DataFrameOrSeries, ITableOptions
@@ -57,7 +58,11 @@ def DT(
 
     script_end = "\n    });\n</script>\n"
     assert html.endswith(script_end)
-    assert "let dt = new ITable" in html
+    html = replace_value(
+        html,
+        "new ITable(table, dt_args);",
+        "let dt = new ITable(table, dt_args);",
+    )
 
     selected_rows_code = f"""
         function set_selected_rows_in_shiny(...args) {{
