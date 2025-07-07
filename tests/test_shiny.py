@@ -75,3 +75,7 @@ def test_shiny_apps_are_valid_python_scripts(
         if error in result.stderr:
             pytest.xfail(error)
     assert result.returncode == 0, f"Process failed: {result.stderr}"
+
+
+def test_table_id_in_DT():
+    DT(df=None, table_id="my_table1")
