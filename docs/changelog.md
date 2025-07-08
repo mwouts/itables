@@ -5,7 +5,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
-- We have fixed an assertion when a `table_id` is passed to `DT` ([#414](https://github.com/mwouts/itables/issues/414))
+- We have fixed an assertion error when a `table_id` argument is passed to `DT` ([#417](https://github.com/mwouts/itables/issues/417))
 
 
 2.4.3 (2025-07-01)
