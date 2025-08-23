@@ -39,7 +39,7 @@ app.layout = html.Div(
                         html.H2("Controls"),
                         html.Label("Table Options:"),
                         dcc.Checklist(
-                            ["Select", "Buttons", "HTML"],
+                            ["Select", "Buttons", "HTML", "ColumnControl"],
                             ["Select"],
                             id="checklist",
                             style={"marginBottom": "20px"},
@@ -98,6 +98,13 @@ def update_table(
     kwargs["select"] = "Select" in checklist
     if "Buttons" in checklist:
         kwargs["buttons"] = ["copyHtml5", "csvHtml5", "excelHtml5"]
+
+    if "HTML" in checklist:
+        kwargs["allow_html"] = True
+
+    if "ColumnControl" in checklist:
+        kwargs["columnControl"] = ["order", "colVisDropdown", "searchDropdown"]
+        kwargs["ordering"] = {"indicators": False, "handler": False}
 
     if selected_rows is not None:
         kwargs["selected_rows"] = selected_rows

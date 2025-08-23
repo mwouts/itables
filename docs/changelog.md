@@ -7,6 +7,9 @@ ITables ChangeLog
 **Fixed**
 - The offline mode now allows the init cell to be rendered after the table cells. It should work more reliably in VS Code ([#424](https://github.com/mwouts/itables/issues/424))
 
+**Added**
+- We have added the `columnControl` extension that was recently added to DataTables ([blog post](https://datatables.net/blog/2025/columncontrol)) ([#403](https://github.com/mwouts/itables/issues/403))
+
 
 2.4.5 (2025-08-23)
 ------------------

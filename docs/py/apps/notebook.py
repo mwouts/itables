@@ -46,7 +46,7 @@ df
 # prefer to load the libraries dynamically from the internet.
 # To do so, add the argument `connected=True` when you
 # execute `init_notebook_mode`. This will also make your notebook lighter by
-# about [700kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py). Note that, in Google Colab, `connected=True` is the only working option.
+# about [900kB](https://github.com/mwouts/itables/blob/main/tests/test_connected_notebook_is_small.py). Note that, in Google Colab, `connected=True` is the only working option.
 #
 # ## Show
 #

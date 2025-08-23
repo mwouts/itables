@@ -1,3 +1,8 @@
+# 2.4.0 (2025-08-23)
+
+- We have added the ColumnControl extension of DataTables to the `dt_for_itables` package ([#403](https://github.com/mwouts/itables/issues/403))
+
+
 # 2.3.3 (2025-06-10)
 
 - We have made sure that the ordering icons on empty headers do not reappear when ordering a column

@@ -1,7 +1,7 @@
 from io import open
 from pathlib import Path
 
-UNPKG_DT_BUNDLE_URL = "https://www.unpkg.com/dt_for_itables@2.3.3/dt_bundle.js"
+UNPKG_DT_BUNDLE_URL = "https://www.unpkg.com/dt_for_itables@2.4.0/dt_bundle.js"
 UNPKG_DT_BUNDLE_CSS = UNPKG_DT_BUNDLE_URL.replace(".js", ".css")
 UNPKG_DT_BUNDLE_URL_NO_VERSION = "https://www.unpkg.com/dt_for_itables/dt_bundle.js"
 UNPKG_DT_BUNDLE_CSS_NO_VERSION = "https://www.unpkg.com/dt_for_itables/dt_bundle.css"

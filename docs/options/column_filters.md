@@ -14,6 +14,11 @@ kernelspec:
 
 # Column Filters
 
+```{tip}
+Since v2.5.0, ITables include the [ColumnControl](column_control.md) extension, which provide the same functionality as the column filters,
+and much more!
+```
+
 Use `column_filters = "header"` or `"footer"` if you wish to display individual column filters
 (remove the global search box with a [`layout`](layout) modifier if desired).
 

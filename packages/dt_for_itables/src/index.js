@@ -10,6 +10,7 @@ import 'datatables.net-buttons/js/buttons.colVis.min.mjs';
 
 DataTable.Buttons.jszip(JSZip);
 
+import 'datatables.net-columncontrol-dt';
 import 'datatables.net-fixedcolumns-dt';
 import 'datatables.net-keytable-dt';
 import 'datatables.net-rowgroup-dt';
