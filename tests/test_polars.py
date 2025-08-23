@@ -1,7 +1,7 @@
 import pytest
 
 from itables import to_html_datatable
-from itables.javascript import datatables_rows
+from itables.javascript import datatables_rows, get_itable_arguments
 from itables.sample_dfs import (
     get_dict_of_polars_test_dfs,
     get_dict_of_polars_test_series,
@@ -53,3 +53,16 @@ def test_render_polars_struct():
         datatables_rows(df.select(pl.col("X").value_counts(sort=True)))
         == '[["{\\"C\\",3}"], ["{\\"A\\",2}"], ["{\\"B\\",1}"]]'
     )
+
+
+@pytest.mark.parametrize("show_index", ["auto", False, True])
+def test_show_index_has_no_effect_on_polars_dataframes(show_index):
+    df = pl.DataFrame(
+        {
+            "A": [1, 2, 3],
+            "B": [4, 5, 6],
+        }
+    )
+    itable_args = get_itable_arguments(df, showIndex=show_index)
+    assert "data_json" in itable_args, set(itable_args)
+    assert itable_args["data_json"] == "[[1, 4], [2, 5], [3, 6]]"

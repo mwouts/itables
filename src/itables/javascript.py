@@ -347,12 +347,12 @@ def _evaluate_show_index(df, showIndex) -> bool:
     """
     We don't want to show trivial indices (RangeIndex with no name) on Pandas DataFrames.
     """
-    if showIndex != "auto":
-        return showIndex
     if df is None:
         return False
     if pl is not pd and isinstance(df, pl.DataFrame):
         return False
+    if showIndex != "auto":
+        return showIndex
     if isinstance(df, pd.DataFrame):
         return df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
     if pd_style is not None and isinstance(df, pd_style.Styler):

@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.4.5 (2025-08-23)
+------------------
+
+**Fixed**
+- The `showIndex` argument is now ignored when `df` is a Polars DataFrame ([#422](https://github.com/mwouts/itables/issues/422))
+- The dependencies of the streamlit component have been updated to address security issues ([#420](https://github.com/mwouts/itables/pull/420), [#421](https://github.com/mwouts/itables/pull/421), [#425](https://github.com/mwouts/itables/pull/425))
+
+
 2.4.4 (2025-07-07)
 ------------------
 
