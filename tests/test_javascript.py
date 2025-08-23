@@ -73,14 +73,23 @@ def test_replace_value(
 def test_replace_value_not_found(
     template="line1\nline2\nline3\n", pattern="line4", value="new line4"
 ):
-    with pytest.raises(ValueError, match="not found"):
+    with pytest.raises(ValueError, match="was found 0 times in template"):
         assert replace_value(template, pattern, value)
+
+
+def test_replace_value_multiple_expected(
+    template="line1\nline2\nline2\n", pattern="line2", value="new line2"
+):
+    assert (
+        replace_value(template, pattern, value, expected_count=2)
+        == "line1\nnew line2\nnew line2\n"
+    )
 
 
 def test_replace_value_multiple(
     template="line1\nline2\nline2\n", pattern="line2", value="new line2"
 ):
-    with pytest.raises(ValueError, match="found multiple times"):
+    with pytest.raises(ValueError, match="was found 2 times in template, expected 1."):
         assert replace_value(template, pattern, value)
 
 

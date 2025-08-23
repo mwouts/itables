@@ -1,0 +1,25 @@
+<!--| quarto-html-table-processing: none -->
+<table id="table_id"></table>
+<script type="module">
+    (async () => {
+        async function init() {
+            const { ITable, jQuery: $ } = await window._itables_underscore_version;
+
+            document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
+                if (!(table instanceof HTMLTableElement))
+                    return;
+
+                let dt_args = {};
+                new ITable(table, dt_args);
+            });
+        }
+
+        if (window._itables_underscore_version) {
+            init();
+        } else {
+            window.addEventListener("itables-version-ready", () => {
+                init();
+            });
+        }
+    })();
+</script>
