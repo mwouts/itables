@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.5.0-dev (unreleased)
+------------------
+
+**Fixed**
+- The offline mode now allows the init cell to be rendered after the table cells. It should work more reliably in VS Code ([#424](https://github.com/mwouts/itables/issues/424))
+
+
 2.4.5 (2025-08-23)
 ------------------
 

@@ -50,9 +50,10 @@ from .datatables_format import datatables_rows
 from .downsample import downsample
 from .utils import read_package_file
 
-DATATABLES_SRC_FOR_ITABLES = (
-    f"_datatables_src_for_itables_{itables_version.replace('.','_').replace('-','_')}"
+_ITABLES_UNDERSCORE_VERSION = (
+    f"_itables_{itables_version.replace('.','_').replace('-','_')}"
 )
+_ITABLES_READY_EVENT = f"itables-{itables_version}-ready"
 _OPTIONS_NOT_AVAILABLE_IN_APP_MODE = {
     "connected",
     "dt_url",
@@ -179,7 +180,7 @@ def init_notebook_mode(
         )
         local_import = (
             "const { set_or_remove_dark_class } = await import(window."
-            + DATATABLES_SRC_FOR_ITABLES
+            + _ITABLES_UNDERSCORE_VERSION
             + ");"
         )
         init_datatables = replace_value(init_datatables, connected_import, local_import)
@@ -201,13 +202,26 @@ def generate_init_offline_itables_html(dt_bundle: Union[Path, str]) -> str:
     assert dt_bundle.suffix == ".js"
     dt_src = dt_bundle.read_text(encoding="utf-8")
     dt_css = dt_bundle.with_suffix(".css").read_text(encoding="utf-8")
-    dt64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
+    dt_src_b64 = b64encode(dt_src.encode("utf-8")).decode("ascii")
+    dt_css_b64 = b64encode(dt_css.encode("utf-8")).decode("ascii")
 
-    return f"""<style>{dt_css}</style>
+    init_notebook_mode = read_package_file("html/init_notebook_offline.html")
+    init_notebook_mode = replace_value(
+        init_notebook_mode,
+        "_itables_underscore_version",
+        _ITABLES_UNDERSCORE_VERSION,
+        expected_count=3,
+    )
+    init_notebook_mode = replace_value(
+        init_notebook_mode, "itables-version-ready", _ITABLES_READY_EVENT
+    )
+    init_notebook_mode = replace_value(init_notebook_mode, "dt_src_b64", dt_src_b64)
+    init_notebook_mode = replace_value(init_notebook_mode, "dt_css_b64", dt_css_b64)
+
+    return (
+        init_notebook_mode
+        + f"""
 <div style="vertical-align:middle; text-align:left">
-<script>
-window.{DATATABLES_SRC_FOR_ITABLES} = "data:text/javascript;base64,{dt64}";
-</script>
 <noscript>
 {get_animated_logo(opt.display_logo_when_loading)}
 This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}<br>
@@ -215,6 +229,7 @@ This is the <code>init_notebook_mode</code> cell from ITables v{itables_version}
 </noscript>
 </div>
 """
+    )
 
 
 def _table_header(
@@ -297,17 +312,15 @@ def get_keys_to_be_evaluated(data: Any) -> list[list[Union[int, str]]]:
     return keys_to_be_evaluated
 
 
-def replace_value(template: str, pattern: str, value: str) -> str:
+def replace_value(
+    template: str, pattern: str, value: str, expected_count: int = 1
+) -> str:
     """Set the given pattern to the desired value in the template,
     after making sure that the pattern is found exactly once."""
     count = template.count(pattern)
-    if not count:
-        raise ValueError("pattern={} was not found in template".format(pattern))
-    elif count > 1:
+    if count != expected_count:
         raise ValueError(
-            "pattern={} was found multiple times ({}) in template".format(
-                pattern, count
-            )
+            f"{pattern=} was found {count} times in template, expected {expected_count}."
         )
     return template.replace(pattern, value)
 
@@ -702,8 +715,8 @@ def html_table_from_template(
         )
 
     # Load the HTML template
-    output = read_package_file("html/datatables_template.html")
     if connected:
+        output = read_package_file("html/datatables_template.html")
         assert dt_url.endswith(".js")
         output = replace_value(output, UNPKG_DT_BUNDLE_URL_NO_VERSION, dt_url)
         output = replace_value(
@@ -712,21 +725,14 @@ def html_table_from_template(
             dt_url[:-3] + ".css",
         )
     else:
-        connected_style = (
-            f'<link href="{UNPKG_DT_BUNDLE_CSS_NO_VERSION}" rel="stylesheet">\n'
+        output = read_package_file("html/datatables_template_offline.html")
+        output = replace_value(
+            output,
+            "_itables_underscore_version",
+            _ITABLES_UNDERSCORE_VERSION,
+            expected_count=2,
         )
-        output = replace_value(output, connected_style, "")
-        connected_import = (
-            "import { ITable, jQuery as $ } from '"
-            + UNPKG_DT_BUNDLE_URL_NO_VERSION
-            + "';"
-        )
-        local_import = (
-            "const { ITable, jQuery: $ } = await import(window."
-            + DATATABLES_SRC_FOR_ITABLES
-            + ");"
-        )
-        output = replace_value(output, connected_import, local_import)
+        output = replace_value(output, "itables-version-ready", _ITABLES_READY_EVENT)
 
     itables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"

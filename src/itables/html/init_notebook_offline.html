@@ -1,0 +1,25 @@
+<script>
+function injectCSS(base64CSS) {
+    const cssText = atob(base64CSS);
+    const style = document.createElement('style');
+    style.textContent = cssText;
+    document.head.appendChild(style);
+}
+
+async function injectModule(base64JS) {
+    const jsText = atob(base64JS);
+    const blob = new Blob([jsText], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    const module = await import(url);
+    URL.revokeObjectURL(url);
+    return module;
+}
+
+if (!window._itables_underscore_version) {
+    injectCSS("dt_css_b64");
+    window._itables_underscore_version = injectModule("dt_src_b64");
+    window._itables_underscore_version.then(() => {
+        window.dispatchEvent(new Event("itables-version-ready"));
+    });
+}
+</script>
