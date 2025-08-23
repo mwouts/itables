@@ -24,6 +24,7 @@ parts:
       - file: options/paging
       - file: options/scroll_y
       - file: options/scroll_x
+      - file: options/column_control
       - file: options/footer
       - file: options/column_filters
       - file: options/order

@@ -60,6 +60,7 @@ class DataTableOptions(TypedDict):
     ]
     layout: NotRequired[Mapping[str, Union[None, str, Mapping[str, Any]]]]
     columnDefs: NotRequired[Sequence[Mapping[str, Any]]]
+    ordering: NotRequired[Union[bool, Mapping[str, bool]]]
     paging: NotRequired[bool]
     autoWidth: NotRequired[bool]
     scrollX: NotRequired[bool]
@@ -76,6 +77,7 @@ class DataTableOptions(TypedDict):
 
     # DataTable options provided by its extensions
     buttons: NotRequired[Sequence[Union[str, Mapping[str, Any]]]]
+    columnControl: NotRequired[Any]
     fixedColumns: NotRequired[Mapping[Literal["left", "right", "start", "end"], int]]
     searchPanes: NotRequired[Mapping[str, Any]]
     searchBuilder: NotRequired[Mapping[str, Any]]

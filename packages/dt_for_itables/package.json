@@ -1,6 +1,6 @@
 {
   "name": "dt_for_itables",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "description": "DataTables bundle for itables",
   "main": "src/index.js",
   "typings": "src/index.d.js",
@@ -27,21 +27,23 @@
   "license": "MIT",
   "dependencies": {
     "datatables.net-buttons": "^3.0.1",
-    "datatables.net-buttons-dt": "^3.2.3",
-    "datatables.net-datetime": "^1.5.5",
-    "datatables.net-dt": "^2.3.0",
+    "datatables.net-buttons-dt": "^3.2.4",
+    "datatables.net-columncontrol": "^1.0.7",
+    "datatables.net-columncontrol-dt": "^1.0.7",
+    "datatables.net-datetime": "^1.5.6",
+    "datatables.net-dt": "^2.3.3",
     "datatables.net-fixedcolumns-dt": "^5.0.4",
     "datatables.net-keytable-dt": "^2.12.1",
-    "datatables.net-plugins": "^2.3.0",
-    "datatables.net-rowgroup-dt": "^1.5.1",
-    "datatables.net-searchbuilder-dt": "^1.8.2",
-    "datatables.net-searchpanes-dt": "^2.3.3",
-    "datatables.net-select-dt": "^3.0.0",
+    "datatables.net-plugins": "^2.3.2",
+    "datatables.net-rowgroup-dt": "^1.5.2",
+    "datatables.net-searchbuilder-dt": "^1.8.3",
+    "datatables.net-searchpanes-dt": "^2.3.5",
+    "datatables.net-select-dt": "^3.1.0",
     "jquery": "^3.7.1",
     "jszip": "^3.10.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.3"
+    "esbuild": "^0.25.9"
   },
   "homepage": "https://mwouts.github.io/itables",
   "repository": {

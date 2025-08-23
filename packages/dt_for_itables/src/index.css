@@ -1,5 +1,6 @@
 @import 'datatables.net-dt/css/dataTables.dataTables.min.css';
 @import 'datatables.net-buttons-dt/css/buttons.dataTables.min.css';
+@import 'datatables.net-columncontrol-dt/css/columnControl.dataTables.min.css';
 @import 'datatables.net-fixedcolumns-dt/css/fixedColumns.dataTables.min.css';
 @import 'datatables.net-keytable-dt/css/keyTable.dataTables.min.css';
 @import 'datatables.net-rowgroup-dt/css/rowGroup.dataTables.min.css';
