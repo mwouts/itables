@@ -10,6 +10,8 @@ ITables ChangeLog
 **Added**
 - We have added the `columnControl` extension that was recently added to DataTables ([blog post](https://datatables.net/blog/2025/columncontrol)) ([#403](https://github.com/mwouts/itables/issues/403))
 
+**Changed**
+- We have changed the default value of the `html` argument in `itables.sample_dfs.get_countries`. It now defaults to `False`, in which case the example dataframes contains no HTML code.
 
 2.4.5 (2025-08-23)
 ------------------

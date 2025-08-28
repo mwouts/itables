@@ -25,5 +25,5 @@ import itables
 itables.init_notebook_mode()
 
 # %% tags=["full-width"]
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 itables.show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})

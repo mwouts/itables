@@ -70,7 +70,7 @@ import itables
 
 itables.init_notebook_mode()
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 
 itables.show(df, classes="display nowrap table_with_monospace_font")
 ```

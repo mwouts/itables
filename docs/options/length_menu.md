@@ -20,7 +20,7 @@ Select [how many entries](https://datatables.net/examples/advanced_init/length_m
 import itables
 
 itables.init_notebook_mode()
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 ```
 
 ```{code-cell} ipython3

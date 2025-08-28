@@ -22,7 +22,7 @@ DataTables' [`layout` option](https://datatables.net/reference/option/layout) wi
 import itables
 
 itables.init_notebook_mode()
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 ```
 
 ```{code-cell} ipython3

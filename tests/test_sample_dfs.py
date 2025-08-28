@@ -34,7 +34,7 @@ if PANDAS_VERSION_MAJOR < 2:
 
 
 def test_get_countries(connected, use_to_html):
-    df = get_countries()
+    df = get_countries(html=True)
     assert len(df.columns) > 5
     assert len(df.index) > 100
     show(df, connected=connected, use_to_html=use_to_html)

@@ -33,7 +33,7 @@ You can go back to the standard HTML representation of Pandas DataFrames with `i
 ```{code-cell} ipython3
 :tags: [full-width]
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 df
 ```
 

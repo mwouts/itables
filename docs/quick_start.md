@@ -77,7 +77,7 @@ which lets you explore, filter or sort your data.
 ```{code-cell} ipython3
 :tags: [full-width]
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 df
 ```
 

@@ -31,7 +31,7 @@ itables.init_notebook_mode()
 # You can go back to the standard HTML representation of Pandas DataFrames with `init_notebook_mode(all_interactive=False)`.
 
 # %% tags=["full-width"]
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 df
 
 # %% [markdown]

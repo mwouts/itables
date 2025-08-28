@@ -75,7 +75,7 @@ itables.init_notebook_mode()
 # which lets you explore, filter or sort your data.
 
 # %% tags=["full-width"]
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 df
 
 # %% [markdown]

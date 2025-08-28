@@ -27,7 +27,7 @@ from IPython.display import HTML, display
 
 import itables
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 html = itables.to_html_datatable(df.head(3), display_logo_when_loading=False)
 
 # %% [markdown]

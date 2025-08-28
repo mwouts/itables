@@ -53,7 +53,7 @@ itables.init_notebook_mode(all_interactive=True)
 #| echo: true
 #| code-fold: true
 #| code-summary: "... and all DataFrames become interactive!"
-itables.sample_dfs.get_countries(html=False)
+itables.sample_dfs.get_countries()
 ```
 
 ## How to make my table fit in the report?

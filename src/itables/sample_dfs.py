@@ -38,7 +38,7 @@ if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
     COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "timedelta"]
 
 
-def get_countries(html: bool = True, climate_zone: bool = False) -> pd.DataFrame:
+def get_countries(html: bool = False, climate_zone: bool = False) -> pd.DataFrame:
     """A Pandas DataFrame with the world countries (from the world bank data)
     Flags are loaded from https://flagpedia.net/"""
     df = pd.read_csv(find_package_file("samples/countries.csv"))
