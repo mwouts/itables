@@ -25,7 +25,7 @@ import itables
 itables.init_notebook_mode()
 
 itables.show(
-    itables.sample_dfs.get_countries(html=False),
+    itables.sample_dfs.get_countries(),
     keys=True,
 )
 

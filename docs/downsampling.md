@@ -39,7 +39,7 @@ itables.init_notebook_mode()
 
 itables.options.maxBytes = "8KB"
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 itables.downsample.as_nbytes(itables.options.maxBytes), itables.downsample.nbytes(df)
 ```
 

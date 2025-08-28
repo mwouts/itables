@@ -26,7 +26,7 @@
 import itables
 
 itables.init_notebook_mode()
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 
 itables.show(df, "A table in which column headers can be selected")
 

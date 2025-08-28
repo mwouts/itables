@@ -111,7 +111,7 @@ from itables.shiny import DT, init_itables
 ui.HTML(init_itables())
 
 # Render the table with DT
-ui.HTML(DT(get_countries(html=False)))
+ui.HTML(DT(get_countries()))
 ```
 
 An example for an application that uses `DT` is available at [`app.py`](https://github.com/mwouts/itables/tree/main/apps/shiny/itables_DT/app.py)

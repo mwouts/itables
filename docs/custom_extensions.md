@@ -19,7 +19,7 @@ kernelspec:
 ```{code-cell} ipython3
 import itables
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 ```
 
 DataTables controls can use a different language than English. To

@@ -23,7 +23,7 @@ def server(
 ):
     @render_widget
     def my_table():  # pyright: ignore[reportUnusedFunction]
-        return ITable(df=get_countries(html=False))
+        return ITable(df=get_countries())
 
 
 # Create the Shiny app

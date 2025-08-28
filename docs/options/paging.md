@@ -20,7 +20,7 @@ Use [`paging=False`](https://datatables.net/reference/option/paging) to show the
 import itables
 
 itables.init_notebook_mode()
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 ```
 
 ```{code-cell} ipython3

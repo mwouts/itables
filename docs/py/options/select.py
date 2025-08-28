@@ -39,7 +39,7 @@ import itables
 itables.init_notebook_mode()
 
 itables.show(
-    itables.sample_dfs.get_countries(html=False),
+    itables.sample_dfs.get_countries(),
     select=True,
     selected_rows=[2, 4, 5],
     buttons=["copyHtml5", "csvHtml5", "excelHtml5"],

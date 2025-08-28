@@ -76,7 +76,7 @@ import itables
 # try both connected=False (the default) and connected=True
 itables.init_notebook_mode(connected=False)
 
-itables.sample_dfs.get_countries()
+itables.sample_dfs.get_countries(html=True)
 ```
 
 You can do this using for instance the notebook at `tests/test_notebook.ipynb`.

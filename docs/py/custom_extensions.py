@@ -22,7 +22,7 @@
 # %%
 import itables
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 
 # %% [markdown]
 # DataTables controls can use a different language than English. To

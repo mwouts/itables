@@ -5,7 +5,7 @@ from itables.sample_dfs import get_countries
 
 app = Dash(__name__)
 
-df = get_countries(html=False)
+df = get_countries()
 
 app.layout = html.Div(
     [

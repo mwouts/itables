@@ -60,7 +60,7 @@ itables.show(
 # ## Images in a table
 
 # %% tags=["full-width"]
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 
 df["flag"] = [
     '<a href="https://flagpedia.net/{code}">'

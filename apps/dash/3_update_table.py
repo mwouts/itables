@@ -24,7 +24,7 @@ logger.setLevel(logging.DEBUG)
 
 app = Dash(__name__)
 
-df = get_countries(html=False)
+df = get_countries()
 
 # Create the layout with sidebar
 app.layout = html.Div(

@@ -23,7 +23,7 @@
 import itables
 
 itables.init_notebook_mode()
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 
 # %% tags=["full-width"]
 itables.show(df.head(8), paging=False)

@@ -13,7 +13,7 @@ def _():
 
     mo.output.append(
         ITable(
-            get_countries(html=False, climate_zone=True).reset_index(),
+            get_countries(climate_zone=True).reset_index(),
             layout={"top1": "searchPanes"},
             searchPanes={
                 "layout": "columns-3",

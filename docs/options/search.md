@@ -25,6 +25,6 @@ itables.init_notebook_mode()
 ```{code-cell} ipython3
 :tags: [full-width]
 
-df = itables.sample_dfs.get_countries(html=False)
+df = itables.sample_dfs.get_countries()
 itables.show(df, search={"regex": True, "caseInsensitive": True, "search": "s.ain"})
 ```
