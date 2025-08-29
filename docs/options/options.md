@@ -16,41 +16,23 @@ kernelspec:
 
 ## DataTable Options
 
-ITables is a wrapper for the Javascript DataTables library, which means that you can use more or less directly the DataTables [options](https://datatables.net/options) from within Python.
+ITables is a wrapper for the JavaScript DataTables library, which means you can often use DataTables [options](https://datatables.net/options) directly within ITables.
 
-Since ITables just maps these options to DataTables, you are invited to have a look at DataTable's great [documentation](https://datatables.net/), and to its huge collection of [examples](https://datatables.net/examples/index). The DataTable [forum](https://datatables.net/forums/) can be quite useful as well.
+Since ITables simply maps these options to DataTables, we encourage you to consult DataTables’ excellent [documentation](https://datatables.net/) and its extensive collection of [examples](https://datatables.net/examples/index). The DataTables [forum](https://datatables.net/forums/) can also be quite helpful.
 
-A non-exhaustive list of the DataTable options, together with their expected types, is available at [`itables.typing.DataTableOptions`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py).
-
-Option names and types are checked by default at run time when `typeguard>=4.4.1` is installed - you can deactivate this by setting `warn_on_undocumented_option=False`.
-
-If you see an option that you find useful and is not documented, or a type hint that is incorrect, please make a PR (and add an example to the documentation, too).
-
-```{code-cell} ipython3
-:tags: [scroll-output]
-
-import inspect
-
-import itables
-
-print(inspect.getsource(itables.typing.DataTableOptions))
-```
+A non-exhaustive list of DataTables options, along with their expected types, is provided by `DataTableOptions` in [`itables.typing`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py).
 
 ## ITable Options
 
-ITables itself adds a few options like `connected`, `maxBytes`, `allow_html` etc.
+ITables adds a few options of its own, such as `connected`, `maxBytes`, `allow_html`, and others. An exhaustive list of these additional options is provided by `ITableOptions` in [`itables.typing`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py).
 
-The ITable options are documented at [`itables.typing.ITableOptions`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py):
+## Default Values
 
-```{code-cell} ipython3
-:tags: [scroll-output]
+The default values for these options are set in [`itables.options`](https://github.com/mwouts/itables/blob/main/src/itables/options.py). These defaults are used in each call to `to_html_datatable`, `show`, or `ITable`, unless a corresponding option is set locally—in which case, the local value takes precedence.
 
-print(inspect.getsource(itables.typing.ITableOptions))
-```
+## Changing the Defaults
 
-## Default values
-
-Some of the options have a default value set in [`itables.options`](https://github.com/mwouts/itables/blob/main/src/itables/options.py). You can change these defaults easily, and even set defauts for the options that don't have one yet with e.g.
+You can change the default options in your notebook or application with:
 
 ```python
 import itables
@@ -58,8 +40,37 @@ import itables
 itables.options.maxBytes = "128KB"
 ```
 
-```{code-cell} ipython3
-:tags: [scroll-output]
+## Configuration File
 
-print(inspect.getsource(itables.options))
+Since v2.5.0, ITable can load its default options from a configuration file. The configuration file is identified using `get_config_file` from [`itables.config`](https://github.com/mwouts/itables/blob/main/src/itables/config.py). It can be:
+
+- The file pointed to by the environment variable `ITABLES_CONFIG`, if set and non-empty (if the variable is an empty string, no configuration file is used)
+- An `itables.toml` file in the current or a parent directory
+- A `tool.itables` section in a `pyproject.toml` file in the current or a parent directory
+
+A sample configuration file could look like this:
 ```
+# itables.toml
+classes = ["display", "nowrap", "compact"]
+buttons = ["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"]
+```
+
+Add this to use the [column control](column_control.md) extension:
+```
+[[columnControl]]
+target = 0
+content = ["order"]
+[[columnControl]]
+target = "tfoot"
+content = ["search"]
+
+[ordering]
+indicators = false
+handler = false
+```
+
+## Option Names and Type Checks
+
+Option names and types are checked by default at runtime when `typeguard>=4.4.1` is installed. You can disable this by setting `warn_on_undocumented_option=False`.
+
+If you find an option that is useful but undocumented, or if you notice an incorrect type hint, please submit a PR (and consider adding an example to the documentation, too).

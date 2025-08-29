@@ -36,9 +36,15 @@ itables.show(df, buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"])
 #
 # As always, it is possible to set default values for these parameters by setting these on `itables.options`. For instance, set
 # ```python
-# itables.options.buttons = ["copyHtml5", "csvHtml5", "excelHtml5"]
+# itables.options.buttons = ["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"]
 # ```
 # to get the buttons for all your tables.
+#
+# You can also add
+# ```
+# buttons = ["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"]
+# ```
+# to your `itables.toml` configuration file.
 #
 #
 # By default, the exported file name is the name of the HTML page. To change it, set a

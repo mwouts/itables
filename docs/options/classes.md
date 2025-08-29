@@ -45,3 +45,10 @@ itables.show(df, classes="display")
 
 itables.show(df, classes="display nowrap cell-border")
 ```
+
+```tip
+You can change the default for all your notebooks and apps by creating an `itables.toml` file in the current or a parent directory, with e.g. this content:
+~~~
+classes = ["display", "nowrap", "compact"]
+~~~
+```
