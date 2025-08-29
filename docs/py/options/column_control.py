@@ -72,3 +72,18 @@ itables.show(
     ],
     ordering={"indicators": False, "handler": False},
 )
+
+# %% [markdown]
+# As usual, you can make this the default by either setting `itables.options.columnControl` in your notebook or application, or by adding this to your `itables.toml` configuration file:
+# ```
+# [[columnControl]]
+# target = 0
+# content = ["order"]
+# [[columnControl]]
+# target = "tfoot"
+# content = ["search"]
+#
+# [ordering]
+# indicators = false
+# handler = false
+# ```

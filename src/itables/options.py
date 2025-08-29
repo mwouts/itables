@@ -8,6 +8,7 @@ https://mwouts.github.io/itables/options/options.html
 from pathlib import Path
 from typing import Any, Literal, Mapping, Optional, Sequence, Union
 
+import itables.config as config
 import itables.typing as typing
 import itables.utils as utils
 
@@ -130,8 +131,15 @@ rowGroup: Optional[Mapping[str, Any]]
 select: Optional[Union[bool, str, Mapping[str, str]]]
 keys: Optional[bool]
 
-"""Check that options have correct names"""
 warn_on_undocumented_option: bool = True
+warn_on_unexpected_option_type: bool = (
+    warn_on_undocumented_option and typing.is_typeguard_available()
+)
+
+"""Load the config file, if any"""
+config.set_options_from_config_file(locals())
+
+"""Check that options have correct names"""
 if warn_on_undocumented_option:
     typing.check_itable_argument_names(
         set(locals()).difference(__non_options),
@@ -139,9 +147,6 @@ if warn_on_undocumented_option:
     )
 
 """Check that options have correct types"""
-warn_on_unexpected_option_type: bool = (
-    warn_on_undocumented_option and typing.is_typeguard_available()
-)
 if warn_on_unexpected_option_type:
     typing.check_itable_argument_types(
         {k: v for k, v in locals().items() if k not in __non_options},

@@ -27,7 +27,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.9"
-dependencies = ["IPython", "pandas", "numpy"]
+dependencies = ["IPython", "pandas", "numpy", "tomli;python_version<\"3.11\""]
 dynamic = ["version"]
 
 [project.optional-dependencies]
