@@ -152,3 +152,74 @@ jobs:
         run: unzip -l dist/*.whl | grep -q itables_for_dash/async-ITable.js.LICENSE.txt
       - name: Check LICENSE.txt in sdist
         run: tar -tvf dist/*.tar.gz | grep -q itables_for_dash/async-ITable.js.LICENSE.txt
+
+      # Upload the wheel as an artifact
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: itables-wheel
+          path: dist/*.whl
+
+      # Comment on PR with artifact link (only on PRs)
+      - name: Comment with direct artifact link
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr_number = context.payload.pull_request.number;
+            const run_id = context.runId;
+            const marker = '<!-- itables-artifact-link -->';
+
+            // List artifacts for this run
+            const { data: { artifacts } } = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run_id,
+            });
+
+            // Find the artifact named 'itables-wheel'
+            const artifact = artifacts.find(a => a.name === 'itables-wheel');
+            let artifact_url;
+            if (artifact) {
+              artifact_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}/artifacts/${artifact.id}`;
+            } else {
+              artifact_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}#artifacts`;
+            }
+
+            const body = `${marker}
+            Thank you for making this pull request.
+
+            Did you know? You can try it on Binder: [![Binder:lab](https://img.shields.io/badge/binder-jupyterlab-0172B2.svg)](https://mybinder.org/v2/gh/${{ github.event.pull_request.head.repo.full_name }}/${{ github.event.pull_request.head.ref }}?urlpath=lab/tree/docs/quick_start.md).
+
+            Also, the version of ITables developed in this PR is available as a wheel artifact :package: for easy installation.
+            Download it [here](${artifact_url}), unzip it and then run <code>pip install itables-xxx.whl</code> in the unzipped directory.`;
+
+            // List comments on the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr_number,
+            });
+
+            // Find existing comment by this workflow (by marker)
+            const existing = comments.find(
+              c => c.user.type === 'Bot' && c.body && c.body.includes(marker)
+            );
+
+            if (existing) {
+              // Update the existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              // Create a new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr_number,
+                body,
+              });
+            }
