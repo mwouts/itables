@@ -71,7 +71,6 @@ jobs:
             numpy-version: '<2.0'
           - python-version: "3.13"
             pandas-version: pre
-            polars: true
           - python-version: "3.13"
             uninstall_non_essential_dependencies: true
           - python-version: "3.10"
@@ -110,16 +109,12 @@ jobs:
         if: matrix.typeguard-version != 'latest'
         run: pip install 'typeguard${{ matrix.typeguard-version }}'
 
-      - name: Install polars
-        if: matrix.polars
-        run: pip install -e .[polars]
-
       - name: Install shiny
         run: pip install "shiny>=1.0" shinywidgets
 
       - name: Uninstall non-essential dependencies
         if: matrix.uninstall_non_essential_dependencies
-        run: pip uninstall jinja2 dash anywidget streamlit shiny shinywidgets -y
+        run: pip uninstall polars jinja2 dash anywidget streamlit shiny shinywidgets -y
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user

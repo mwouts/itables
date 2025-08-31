@@ -61,31 +61,21 @@ def add_host_to_root(css_content: str) -> str:
     return re.sub(pattern, process_rule, css_content)
 
 
+def main(argv):
+    parser = argparse.ArgumentParser(
+        description="Add :host to each :root selector in a CSS file."
+    )
+    parser.add_argument("css_file", help="Path to the CSS file to modify")
+    args = parser.parse_args(argv[1:])
+
+    with open(args.css_file, "r") as file:
+        css_content = file.read()
+
+    modified_content = add_host_to_root(css_content)
+
+    with open(args.css_file, "w") as file:
+        file.write(modified_content)
+
+
 if __name__ == "__main__":
-
-    def main():
-        parser = argparse.ArgumentParser(
-            description="Add :host to each :root selector in a CSS file."
-        )
-        parser.add_argument("css_file", help="Path to the CSS file to modify")
-        args = parser.parse_args()
-
-        try:
-            with open(args.css_file, "r") as file:
-                css_content = file.read()
-
-            modified_content = add_host_to_root(css_content)
-
-            with open(args.css_file, "w") as file:
-                file.write(modified_content)
-
-            print(f"Successfully updated {args.css_file}")
-            return 0
-        except FileNotFoundError:
-            print(f"Error: File {args.css_file} not found.")
-            return 1
-        except Exception as e:
-            print(f"Error processing file: {e}")
-            return 1
-
-    sys.exit(main())
+    sys.exit(main(sys.argv))
