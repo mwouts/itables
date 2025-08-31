@@ -16,7 +16,10 @@ from typing import Any, Optional, cast
 try:
     import tomllib
 except ImportError:
-    import tomli as tomllib  # pyright: ignore[reportMissingImports]
+    try:
+        import tomli as tomllib  # pyright: ignore[reportMissingImports]
+    except ImportError:
+        tomllib = None  # type: ignore[assignment]
 
 from platformdirs import user_config_path
 
@@ -50,6 +53,8 @@ def get_config_file(path: Path = Path.cwd()) -> Optional[Path]:
         config_file = parent / "pyproject.toml"
         if config_file.exists():
             with open(config_file, "rb") as fp:
+                if tomllib is None:
+                    continue
                 config = tomllib.load(fp)
                 if "tool" not in config or "itables" not in config["tool"]:
                     continue
@@ -65,6 +70,9 @@ def get_config_file(path: Path = Path.cwd()) -> Optional[Path]:
 
 
 def load_config_file(config_file: Path) -> ITableOptions:
+    if tomllib is None:
+        raise ImportError(f"Either tomllib or tomli is required to load {config_file}")
+
     with open(config_file, "rb") as fp:
         try:
             config = tomllib.load(fp)

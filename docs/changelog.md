@@ -1,6 +1,12 @@
 ITables ChangeLog
 =================
 
+2.5.1 (2025-08-31)
+------------------
+
+**Changed**
+- `tomli` is an optional dependency of ITables
+
 2.5.0 (2025-08-31)
 ------------------
 
