@@ -70,8 +70,10 @@ def get_config_file(path: Path = Path.cwd()) -> Optional[Path]:
 
 
 def load_config_file(config_file: Path) -> ITableOptions:
-    if tomllib is None:
-        raise ImportError(f"Either tomllib or tomli is required to load {config_file}")
+        raise ImportError(
+            f"Either tomllib or tomli is required to load {config_file}. "
+            "Install with 'pip install itables[config]' to enable TOML config support."
+        )
 
     with open(config_file, "rb") as fp:
         try:
