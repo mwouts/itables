@@ -5,7 +5,8 @@ ITables ChangeLog
 ------------------
 
 **Changed**
-- `tomli` is an optional dependency of ITables
+- `tomli` is an optional dependency of ITables ([#436](https://github.com/mwouts/itables/pull/436))
+
 
 2.5.0 (2025-08-31)
 ------------------
