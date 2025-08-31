@@ -1,4 +1,4 @@
-from itables import downsample, options, sample_dfs
+from itables import config, downsample, options, sample_dfs
 
 from .javascript import init_notebook_mode, show, to_html_datatable
 from .typing import (
@@ -20,6 +20,7 @@ __all__ = [
     "DataFrameOrSeries",
     "ITableOptions",
     "DTForITablesOptions",
+    "config",
     "options",
     "downsample",
     "sample_dfs",

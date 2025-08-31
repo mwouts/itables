@@ -66,7 +66,10 @@ def get_config_file(path: Path = Path.cwd()) -> Optional[Path]:
 
 def load_config_file(config_file: Path) -> ITableOptions:
     with open(config_file, "rb") as fp:
-        config = tomllib.load(fp)
+        try:
+            config = tomllib.load(fp)
+        except tomllib.TOMLDecodeError as e:
+            raise ValueError(f"Failed to load ITables config from {config_file}: {e}")
 
     if config_file.name == "pyproject.toml":
         if "tool" not in config or "itables" not in config["tool"]:
@@ -75,7 +78,10 @@ def load_config_file(config_file: Path) -> ITableOptions:
             )
         config = config["tool"]["itables"]
 
-    check_itable_arguments(config, ITableOptions)
+    try:
+        check_itable_arguments(config, ITableOptions)
+    except ValueError as e:
+        raise ValueError(f"Invalid ITables config in {config_file}: {e}")
     return cast(ITableOptions, config)
 
 

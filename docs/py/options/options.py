@@ -71,6 +71,14 @@
 # handler = false
 # ```
 #
+# The configuration file is loaded when `itables` is imported - you will need to restart Python and re-import ITables to get the latest configuration.
+#
+# You can confirm which configuration file is being used (in a given directory) by running
+# ```
+# python -m itables.show_config
+# ```
+#
+#
 # ## Option Names and Type Checks
 #
 # Option names and types are checked by default at runtime when `typeguard>=4.4.1` is installed. You can disable this by setting `warn_on_undocumented_option=False`.

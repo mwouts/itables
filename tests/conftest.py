@@ -29,3 +29,10 @@ def connected(request):
 @pytest.fixture(params=[False, True] if PANDAS_VERSION_MAJOR >= 1 else [False])
 def use_to_html(request):
     return request.param
+
+
+@pytest.fixture(autouse=True)
+def no_itables_config_env_variable(monkeypatch):
+    monkeypatch.delenv("ITABLES_CONFIG", raising=False)
+    yield
+    monkeypatch.undo()
