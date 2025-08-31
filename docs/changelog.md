@@ -1,7 +1,7 @@
 ITables ChangeLog
 =================
 
-2.5.0-dev (unreleased)
+2.5.0 (2025-08-31)
 ------------------
 
 **Fixed**
@@ -13,6 +13,7 @@ ITables ChangeLog
 
 **Changed**
 - We have changed the default value of the `html` argument in `itables.sample_dfs.get_countries`. It now defaults to `False`, in which case the example dataframes contains no HTML code.
+
 
 2.4.5 (2025-08-23)
 ------------------
