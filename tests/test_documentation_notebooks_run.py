@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from pathlib import Path
 
 import jupytext
@@ -34,15 +36,24 @@ def test_run_documentation_notebooks(notebook):
         pytest.skip("Polars is not available")
     if "pandas_style" in notebook.stem and pd_style is None:
         pytest.skip("Pandas Style is not available")
-    if "shiny" in notebook.stem:
-        pytest.skip("shinywidgets makes the widget.md notebook fail")
     if "marimo" in notebook.stem or "widget" in notebook.stem:
         pytest.importorskip("anywidget")
 
-    org_options = dir(opt)
-
     nb = jupytext.read(notebook)
     py_notebook = jupytext.writes(nb, "py:percent")
+    if "shiny" in notebook.stem:
+        # we can't use exec as shinywidgets makes the widget.md notebook fail
+        result = subprocess.run(
+            [sys.executable, "-c", py_notebook], capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            if "ModuleNotFoundError: No module named 'shinywidgets'" in result.stderr:
+                pytest.skip("shinywidgets is not available")
+            assert result.returncode == 0, result.stderr
+        return
+
+    org_options = dir(opt)
+
     exec(py_notebook, {})
 
     new_options = set(dir(opt)).difference(org_options)

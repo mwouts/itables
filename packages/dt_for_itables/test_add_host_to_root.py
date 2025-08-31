@@ -1,5 +1,5 @@
 import pytest
-from add_host_to_root import add_host_to_root
+from add_host_to_root import add_host_to_root, main
 
 
 def test_add_host_to_root_example():
@@ -66,3 +66,15 @@ html.dark, :root[data-bs-theme=dark] table.dataTable, :host[data-bs-theme=dark] 
 :root[data-theme="light"] .element, :host[data-theme="light"] .element { background-color: white; }
 """
     assert add_host_to_root(original_css) == expected_css
+
+
+def test_main_function(tmp_path):
+    """Test the main function modifies the file as expected."""
+    css_content = ":root { color: red; }"
+    expected_content = ":root, :host { color: red; }"
+    css_file = tmp_path / "test.css"
+    css_file.write_text(css_content)
+
+    main(["add_host_to_root.py", str(css_file)])
+    result = css_file.read_text()
+    assert result == expected_content
