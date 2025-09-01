@@ -42,7 +42,9 @@ itables.options.maxBytes = "128KB"
 
 ## Configuration File
 
-Since v2.5.0, ITable can load its default options from a configuration file. The configuration file is identified using `get_config_file` from [`itables.config`](https://github.com/mwouts/itables/blob/main/src/itables/config.py). It can be:
+Since v2.5.0, ITable can load its default options from a configuration file. This requires two dependencies: either `tomllib` or `tomli`, and `platformdirs`, which can be installed with `pip install itables[config]`.
+
+The configuration file is identified using `get_config_file` from [`itables.config`](https://github.com/mwouts/itables/blob/main/src/itables/config.py). It can be:
 
 - The file pointed to by the environment variable `ITABLES_CONFIG`, if set and non-empty (if the variable is an empty string, no configuration file is used)
 - An `itables.toml` file in the current or a parent directory

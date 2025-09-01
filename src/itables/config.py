@@ -21,7 +21,10 @@ except ImportError:
     except ImportError:
         tomllib = None  # type: ignore[assignment]
 
-from platformdirs import user_config_path
+try:
+    from platformdirs import user_config_path
+except ImportError:
+    user_config_path = None
 
 from itables.typing import ITableOptions, check_itable_arguments
 
@@ -62,9 +65,10 @@ def get_config_file(path: Path = Path.cwd()) -> Optional[Path]:
         if parent in ceiling_directories:
             break
 
-    config_file = user_config_path("itables") / "itables.toml"
-    if config_file.exists():
-        return config_file
+    if user_config_path is not None:
+        config_file = user_config_path("itables") / "itables.toml"
+        if config_file.exists():
+            return config_file
 
     return None
 

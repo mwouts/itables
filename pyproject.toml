@@ -31,7 +31,7 @@ dependencies = ["IPython", "pandas", "numpy"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
-config = ["tomli;python_version<\"3.11\""]
+config = ["tomli;python_version<\"3.11\"", "platformdirs"]
 polars = ["polars", "pyarrow"]
 check_type = ["typeguard>=4.4.1"]
 style = ["matplotlib"]
