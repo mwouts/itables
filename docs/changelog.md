@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.5.3-dev (unreleased)
+------------------
+
+**Added**
+- A conda package is built (and attached) to each PR.
+
+
 2.5.2 (2025-09-02)
 ------------------
 

@@ -9,6 +9,7 @@ repos:
     hooks:
     - id: check-json
     - id: check-yaml
+      exclude: ^conda\.recipe/meta\.yaml$
     - id: end-of-file-fixer
     - id: trailing-whitespace
 
