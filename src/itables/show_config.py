@@ -15,7 +15,7 @@ def show_config(path: Path):
     """
     if (tomllib is None) or (user_config_path is None):
         print(
-            "Missing itables[config] dependencies. Please install them with 'pip install itables[config]"
+            "Missing itables[config] dependencies. Please install them with 'pip install itables[config]'"
         )
         return
 
