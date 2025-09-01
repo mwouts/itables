@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.5.2-dev (2025-09-02)
+------------------
+
+**Fixed**
+- `platformdirs` is an optional dependency of ITables ([#437](https://github.com/mwouts/itables/issues/437))
+
+
 2.5.1 (2025-08-31)
 ------------------
 
