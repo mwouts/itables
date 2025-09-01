@@ -26,6 +26,8 @@ jobs:
           cache: true
       - name: Set up Python
         uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
       - uses: pre-commit/action@v3.0.1
 
   pyright:
@@ -207,14 +209,39 @@ jobs:
       - name: Check LICENSE.txt in sdist
         run: tar -tvf dist/*.tar.gz | grep -q itables_for_dash/async-ITable.js.LICENSE.txt
 
-      # Upload the wheel as an artifact
-      - name: Upload wheel artifact
+      # Build conda package
+      - name: Set up Mambaforge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          auto-update-conda: true
+          python-version: 3.11
+
+      - name: Install conda-build
+        run: mamba install conda-build -y
+
+      - name: Build conda package
+        run: |
+          conda config --set anaconda_upload no
+          # Not sure how to remove the 'defaults' channel ?
+          # conda config --set conda-remove-defaults true
+          # conda config --remove channels defaults
+          conda build conda.recipe --output-folder conda-dist
+
+      # Upload the wheel and conda package as artifacts
+      - name: Upload wheel
         uses: actions/upload-artifact@v4
         with:
           name: itables-wheel
-          path: dist/*.whl
+          path: dist/itables-*.whl
 
-      # Comment on PR with artifact link (only on PRs)
+      - name: Upload conda package
+        uses: actions/upload-artifact@v4
+        with:
+          name: itables-conda-package
+          path: conda-dist/**/itables-*.conda
+
+      # Comment on PR with artifact link
       - name: Comment with direct artifact link
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -232,13 +259,23 @@ jobs:
             });
 
             // Find the artifact named 'itables-wheel'
-            const artifact = artifacts.find(a => a.name === 'itables-wheel');
-            let artifact_url;
+            let artifact = artifacts.find(a => a.name === 'itables-wheel');
+            let wheel_url;
             if (artifact) {
-              artifact_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}/artifacts/${artifact.id}`;
+              wheel_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}/artifacts/${artifact.id}`;
             } else {
-              artifact_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}#artifacts`;
+              wheel_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}#artifacts`;
             }
+
+            // Find the artifact named 'itables-conda-package'
+            artifact = artifacts.find(a => a.name === 'itables-conda-package');
+            let conda_url;
+            if (artifact) {
+              conda_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}/artifacts/${artifact.id}`;
+            } else {
+              conda_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}#artifacts`;
+            }
+
 
             const body = `${marker}
             Thank you for making this pull request.
@@ -246,7 +283,11 @@ jobs:
             Did you know? You can try it on Binder: [![Binder:lab](https://img.shields.io/badge/binder-jupyterlab-0172B2.svg)](https://mybinder.org/v2/gh/${{ github.event.pull_request.head.repo.full_name }}/${{ github.event.pull_request.head.ref }}?urlpath=lab/tree/docs/quick_start.md).
 
             Also, the version of ITables developed in this PR is available as a wheel artifact :package: for easy installation.
-            Download it [here](${artifact_url}), unzip it and then run <code>pip install itables-xxx.whl</code> in the unzipped directory.`;
+            Download it [here](${wheel_url}), unzip it and then run <code>pip install itables-xxx.whl</code> in the unzipped directory.
+
+            A conda package is also available for easy installation:
+            Download it [here](${conda_url}), and then run <code>conda install itables-xxx.tar.bz2</code> in the directory where you downloaded the file.
+            `;
 
             // List comments on the PR
             const { data: comments } = await github.rest.issues.listComments({

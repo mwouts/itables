@@ -10,6 +10,9 @@ ITables ChangeLog
 **Changed**
 - The development environment for ITables is now controled with Pixi.
 
+**Added**
+- A conda package is built (and attached) to each PR.
+
 
 2.5.2 (2025-09-02)
 ------------------
