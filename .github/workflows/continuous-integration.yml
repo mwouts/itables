@@ -174,13 +174,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: itables-wheel
-          path: dist/*.whl
+          path: dist/itables-*.whl
 
       - name: Upload conda package
         uses: actions/upload-artifact@v4
         with:
           name: itables-conda-package
-          path: conda-dist/**/*.tar.bz2
+          path: conda-dist/**/itables-*.conda
 
       # Comment on PR with artifact link
       - name: Comment with direct artifact link
