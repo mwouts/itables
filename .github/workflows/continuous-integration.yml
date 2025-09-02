@@ -164,7 +164,9 @@ jobs:
       - name: Build conda package
         run: |
           conda config --set anaconda_upload no
-          conda config --set conda-remove-defaults true
+          # Not sure how to remove the 'defaults' channel ?
+          # conda config --set conda-remove-defaults true
+          # conda config --remove channels defaults
           conda build conda.recipe --output-folder conda-dist
 
       # Upload the wheel and conda package as artifacts
