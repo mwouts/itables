@@ -32,6 +32,9 @@ def test_connected_notebook_is_small(tmp_path, display_logo_when_loading):
         f"Notebook size is too large: {nb_ipynb.stat().st_size} bytes:\n"
         f"{nb_ipynb.read_text()}"
     )
+    assert (
+        "https://unpkg.com" in nb_ipynb.read_text()
+    ), "The connected notebook should import itables from unpkg.com"
 
 
 def test_offline_notebook_is_not_too_large(tmp_path):
@@ -43,3 +46,6 @@ def test_offline_notebook_is_not_too_large(tmp_path):
     size_in_kb = nb_ipynb.stat().st_size // 1024
 
     assert 850 < size_in_kb < 950
+    assert (
+        "https://unpkg.com" not in nb_ipynb.read_text()
+    ), "The connected notebook should import itables locally"
