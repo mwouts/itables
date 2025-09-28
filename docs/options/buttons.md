@@ -43,7 +43,7 @@ You can also add
 ```
 buttons = ["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"]
 ```
-to your `itables.toml` configuration file.
+to your `itables.toml` [configuration file](../configuration.md).
 
 
 By default, the exported file name is the name of the HTML page. To change it, set a

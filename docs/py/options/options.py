@@ -44,41 +44,7 @@
 #
 # ## Configuration File
 #
-# Since v2.5.0, ITable can load its default options from a configuration file. This requires two dependencies: either `tomllib` or `tomli`, and `platformdirs`, which can be installed with `pip install itables[config]`.
-#
-# The configuration file is identified using `get_config_file` from [`itables.config`](https://github.com/mwouts/itables/blob/main/src/itables/config.py). It can be:
-#
-# - The file pointed to by the environment variable `ITABLES_CONFIG`, if set and non-empty (if the variable is an empty string, no configuration file is used)
-# - An `itables.toml` file in the current or a parent directory
-# - A `tool.itables` section in a `pyproject.toml` file in the current or a parent directory
-#
-# A sample configuration file could look like this:
-# ```
-# # itables.toml
-# classes = ["display", "nowrap", "compact"]
-# buttons = ["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"]
-# ```
-#
-# Add this to use the [column control](column_control.md) extension:
-# ```
-# [[columnControl]]
-# target = 0
-# content = ["order"]
-# [[columnControl]]
-# target = "tfoot"
-# content = ["search"]
-#
-# [ordering]
-# indicators = false
-# handler = false
-# ```
-#
-# The configuration file is loaded when `itables` is imported - you will need to restart Python and re-import ITables to get the latest configuration.
-#
-# You can confirm which configuration file is being used (in a given directory) by running
-# ```
-# python -m itables.show_config
-# ```
+# You can also change the default options for all your notebooks and applications by creating an `itables.toml` [configuration file](../configuration.md).
 #
 #
 # ## Option Names and Type Checks

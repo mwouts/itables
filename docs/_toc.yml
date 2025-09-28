@@ -11,6 +11,9 @@ parts:
       - file: apps/streamlit
       - file: apps/shiny
       - file: apps/quarto
+  - caption: Configuration
+    chapters:
+      - file: configuration
   - caption: Options
     chapters:
       - file: options/options
