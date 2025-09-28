@@ -21,7 +21,7 @@
 #
 # The examples should give you a quick sense of how to use `columnControl`. You are invited to consult the datatables documentation for many more column control [examples](https://datatables.net/extensions/columncontrol/examples/) - see also Allan's [post](https://datatables.net/blog/2025/columncontrol) in which the extension was introduced.
 
-# %% tags=["full-width"]
+# %%
 import itables
 
 itables.init_notebook_mode()
@@ -33,7 +33,7 @@ df = itables.sample_dfs.get_countries()
 #
 # The `columnControl` option can take as value the list of controls that should be added to the table columns.
 
-# %%
+# %% tags=["full-width"]
 itables.show(
     df,
     columnControl=["order", "colVisDropdown", "searchDropdown"],
@@ -51,7 +51,7 @@ itables.show(
 #
 # Nested lists are mapped to dropdowns:
 
-# %%
+# %% tags=["full-width"]
 itables.show(
     df,
     columnControl=["order", ["orderAsc", "orderDesc", "search"]],
@@ -63,7 +63,7 @@ itables.show(
 #
 # The column controls can also be added to a table footer:
 
-# %%
+# %% tags=["full-width"]
 itables.show(
     df,
     columnControl=[
