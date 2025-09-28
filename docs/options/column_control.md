@@ -73,7 +73,7 @@ itables.show(
 )
 ```
 
-As usual, you can make this the default by either setting `itables.options.columnControl` in your notebook or application, or by adding this to your `itables.toml` configuration file:
+As usual, you can make this the default by either setting `itables.options.columnControl` in your notebook or application, or by adding this to your `itables.toml` [configuration file](../configuration.md):
 ```
 [[columnControl]]
 target = 0
