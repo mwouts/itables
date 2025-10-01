@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.5.3-dev (unreleased)
+------------------
+
+**Added**
+- Added a test to check that the offline mode does not load ITables from https://unpkg.com (the connected mode does) ([#441](https://github.com/mwouts/itables/issues/441))
+
+
 2.5.2 (2025-09-02)
 ------------------
 
