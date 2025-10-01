@@ -5,8 +5,11 @@
 # Python
 *.egg-info
 *.pyc
+
+# Build artifacts
 build
 dist
+conda-dist
 
 # Notebooks
 *.ipynb

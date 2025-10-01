@@ -1,0 +1,57 @@
+{% set version_match = load_file_regex(
+  load_file="src/itables/version.py",
+  regex_pattern='.*__version__ = "(.+)"') %}
+{% set version = version_match[1] %}
+
+package:
+  name: itables
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - nodejs
+    - python >=3.9
+    - python-build
+    - hatch-jupyter-builder
+    - dash
+    - pyyaml
+    - hatchling
+    - pip
+  run:
+    - ipython
+    - pandas
+    - numpy
+    - packaging
+    - typing-extensions
+    - python >=3.9
+
+test:
+  imports:
+    - itables
+  commands:
+    - pip check
+    - python -c "import itables; print(itables.__version__)"
+  requires:
+    - pip
+
+about:
+  home: https://github.com/mwouts/itables
+  dev_url: https://github.com/mwouts/itables
+  doc_url: https://mwouts.github.io/itables
+  summary: Pandas and Polars DataFrames as Interactive DataTables
+  license: MIT
+  license_file:
+    - LICENSE
+  description: |
+    Render Pandas and Polars DataFrames as interactive [DataTables](https://datatables.net/)
+    that you can sort, paginate, scroll or filter. ITables works in Jupyter,
+    VS Code, Google Colab, Quarto, Marimo, and in many application frameworks like
+    Dash, Panel, Shiny, or Streamlit.
