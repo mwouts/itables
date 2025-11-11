@@ -35,3 +35,12 @@ repos:
     - id: jupytext
       files: "^docs/"
       args: ["--sync"]
+
+  - repo: local
+    hooks:
+      - id: pixi-update-lock
+        name: Update pixi.lock file
+        entry: pixi lock
+        language: system
+        pass_filenames: false
+        files: ^(pyproject\.toml|pixi\.toml|pixi\.lock)$
