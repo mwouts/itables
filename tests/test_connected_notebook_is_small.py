@@ -1,4 +1,13 @@
 import pytest
+
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pytest.skip("Pandas is not available", allow_module_level=True)
+
 from jupytext.cli import jupytext
 
 

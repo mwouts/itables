@@ -1,7 +1,11 @@
 from pathlib import Path
 
 import pytest
-import world_bank_data as wb
+
+try:
+    import world_bank_data as wb
+except ImportError:
+    pytest.skip("world_bank_data is not available", allow_module_level=True)
 
 pytestmark = pytest.mark.xfail(
     reason="HTTPError: 502 Server Error: Bad Gateway for url: http://api.worldbank.org/v2..."

@@ -1,11 +1,19 @@
-import pandas as pd
 import pytest
 
-from itables.sample_dfs import get_dict_of_test_dfs
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+    from itables.sample_dfs import get_dict_of_test_dfs
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pd = None
 
 
-@pytest.fixture(params=list(get_dict_of_test_dfs()))
+@pytest.fixture(params=list(get_dict_of_test_dfs()) if PANDAS_AVAILABLE else [])
 def df(request):
+    if not PANDAS_AVAILABLE:
+        pytest.skip("Pandas is not available")
     name = request.param
     df = get_dict_of_test_dfs()[name]
     assert isinstance(df, pd.DataFrame)
@@ -32,7 +40,7 @@ def use_to_html(request):
         import pandas as pd
     except ImportError:
         pytest.skip("Pandas is not available")
-    if int((pd.__version__).split(".", 1)[0]) <1 and request.param:
+    if int((pd.__version__).split(".", 1)[0]) < 1 and request.param:
         pytest.skip("Pandas.to_html is not available in Pandas < 1.0")
 
     return request.param

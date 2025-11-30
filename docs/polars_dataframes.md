@@ -102,18 +102,6 @@ itables.show(dict_of_test_dfs["time"])
 itables.show(dict_of_test_dfs["ordered_categories"])
 ```
 
-## ordered_categories_in_multiindex
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["ordered_categories_in_multiindex"])
-```
-
-## multiindex
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["multiindex"])
-```
-
 ## countries
 
 ```{code-cell} ipython3
@@ -126,14 +114,6 @@ itables.show(dict_of_test_dfs["countries"])
 
 ```{code-cell} ipython3
 itables.show(dict_of_test_dfs["capital"])
-```
-
-## complex_index
-
-```{code-cell} ipython3
-:tags: [full-width]
-
-itables.show(dict_of_test_dfs["complex_index"])
 ```
 
 ## int_float_str

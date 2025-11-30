@@ -1,9 +1,16 @@
 import re
 
-import pandas as pd
 import pytest
 
 import itables
+
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pytest.skip("Pandas is not available", allow_module_level=True)
 
 if not itables.typing.is_typeguard_available():
     pytestmark = pytest.mark.skip(reason="Typeguard is not available")

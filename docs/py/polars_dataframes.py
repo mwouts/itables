@@ -105,18 +105,6 @@ itables.show(dict_of_test_dfs["time"])
 itables.show(dict_of_test_dfs["ordered_categories"])
 
 # %% [markdown]
-# ## ordered_categories_in_multiindex
-
-# %%
-itables.show(dict_of_test_dfs["ordered_categories_in_multiindex"])
-
-# %% [markdown]
-# ## multiindex
-
-# %%
-itables.show(dict_of_test_dfs["multiindex"])
-
-# %% [markdown]
 # ## countries
 
 # %% tags=["full-width"]
@@ -127,12 +115,6 @@ itables.show(dict_of_test_dfs["countries"])
 
 # %%
 itables.show(dict_of_test_dfs["capital"])
-
-# %% [markdown]
-# ## complex_index
-
-# %% tags=["full-width"]
-itables.show(dict_of_test_dfs["complex_index"])
 
 # %% [markdown]
 # ## int_float_str
