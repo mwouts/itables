@@ -4,17 +4,16 @@ ITables ChangeLog
 2.6.0 (2025-12-??)
 ------------------
 
+**Added**
+- ITables has minimal dependencies (only `typing-extensions`)! ([#457](https://github.com/mwouts/itables/issues/457))
+- ITables has a new option `show_dtypes` which defaults to `"auto"`, meaning that dtypes are shown for Polars Dataframes by default ([#449](https://github.com/mwouts/itables/issues/449))
+- When displaying Polars DataFrames, ITables will format floats using `float_precision`, if set on the `pl.Config` object ([#447](https://github.com/mwouts/itables/issues/447))
+- The development environment for ITables is now controlled with Pixi.
+- ITables works with Python 3.14
+- A conda package is built (and attached) to each PR.
+
 **Fixed**
 - We need to use `hatch<1.16.0` to build ITables ([jupyter-builder-#40](https://github.com/jupyterlab/jupyter-builder/issues/40))
-
-**Changed**
-- ITables has minimal dependencies (only `typing-extensions`)! ([#457](https://github.com/mwouts/itables/issues/457))
-- The development environment for ITables is now controlled with Pixi.
-- When displaying Polars DataFrames, ITables will format floats using `float_precision`, if set on the `pl.Config` object ([#447](https://github.com/mwouts/itables/issues/447))
-
-**Added**
-- A conda package is built (and attached) to each PR.
-- ITables has a new option `show_dtypes` which defaults to `"auto"`, meaning that dtypes are shown for Polars Dataframes by default ([#449](https://github.com/mwouts/itables/issues/449))
 
 
 2.5.2 (2025-09-02)
