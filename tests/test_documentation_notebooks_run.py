@@ -7,12 +7,6 @@ import pytest
 
 import itables.options as opt
 from itables import init_notebook_mode
-from itables.javascript import pd_style
-
-try:
-    import polars as pl
-except ImportError:
-    pl = None
 
 
 def list_doc_notebooks():
@@ -32,10 +26,10 @@ def list_doc_notebooks():
     "notebook", list_doc_notebooks(), ids=lambda notebook: notebook.stem
 )
 def test_run_documentation_notebooks(notebook):
-    if ("polars" in notebook.stem or "formatting" in notebook.stem) and pl is None:
-        pytest.skip("Polars is not available")
-    if "pandas_style" in notebook.stem and pd_style is None:
-        pytest.skip("Pandas Style is not available")
+    if ("polars" in notebook.stem or "formatting" in notebook.stem):
+        pytest.importorskip("polars")
+    if "pandas_style" in notebook.stem:
+        pytest.importorskip("pandas.io.formats.style")
     if "marimo" in notebook.stem or "widget" in notebook.stem:
         pytest.importorskip("anywidget")
 

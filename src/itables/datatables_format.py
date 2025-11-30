@@ -1,22 +1,17 @@
 import json
+import math
 import warnings
 from typing import Any, Optional, Sequence, Union
 
-import numpy as np
-import pandas as pd
-import pandas.io.formats.format as fmt
-
 from .typing import DataFrameOrSeries
 
-try:
-    import polars as pl
-except ImportError:
-    pl = None
 
 
 def _format_pandas_series(
     x: "pd.Series[Any]", escape_html: bool
 ) -> "Union[pd.Series[Any],Sequence[Any]]":
+    import pandas.io.formats.format as fmt
+
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
         return x
@@ -35,7 +30,7 @@ def _format_pandas_series(
     y: "Union[pd.Series[Any], Sequence[Any]]" = x
     if dtype_kind == "f":
         try:
-            z = np.array(x).astype(float)
+            z = [float(i) for i in x]
         except ValueError:
             z = x
             pass
@@ -50,7 +45,7 @@ def _format_pandas_series(
 
 def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
-    assert pl is not None
+    import polars as pl
     dtype = x.dtype
 
     # Boolean and integer types - return as-is
@@ -92,11 +87,11 @@ def escape_non_finite_float(value: Any) -> Any:
     """Encode non-finite float values to strings that will be parsed by parseJSON"""
     if not isinstance(value, float):
         return value
-    if np.isnan(value):
+    if math.isnan(value):
         return "___NaN___"
-    if value == np.inf:
+    if value == math.inf:
         return "___Infinity___"
-    if value == -np.inf:
+    if value == -math.inf:
         return "___-Infinity___"
     return value
 
@@ -115,21 +110,26 @@ def generate_encoder(warn_on_unexpected_types: bool = True) -> Any:
         def default(self, o):
             if isinstance(o, (bool, int, float, str)):
                 return json.JSONEncoder.default(self, o)
-            if isinstance(o, np.bool_):
-                return bool(o)
-            if isinstance(o, np.integer):
-                return int(o)
-            if isinstance(o, np.floating):
-                return float(o)
-            try:
-                if o is pd.NA:
-                    return str(o)
-            except AttributeError:
-                pass
+
+            type_module = type(o).__module__
+            type_name = type(o).__name__
+
+            if type_module == "numpy":
+                if type_name.startswith("bool"):
+                    return bool(o)
+                if type_name.startswith(
+                    "int"
+                ):  # Matches int8, int16, int32, int64, etc.
+                    return int(o)
+                if type_name.startswith("float"):  # Matches float16, float32, float64
+                    return float(o)
+
+            if type_name == "NAType":
+                return str(o)
 
             if warn_on_unexpected_types:
                 warnings.warn(
-                    f"Unexpected type '{type(o)}' for '{o}'.\n"
+                    f"Unexpected type '{type_module}.{type_name}' for '{o}'.\n"
                     "You can report this warning at https://github.com/mwouts/itables/issues\n"
                     "To silence this warning, please run:\n"
                     "    itables.options.warn_on_unexpected_types = False",

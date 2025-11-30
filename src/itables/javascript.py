@@ -16,10 +16,13 @@ from typing import (
     cast,
 )
 
-import numpy as np
-import pandas as pd
+from IPython.display import HTML, display
 from typing_extensions import Unpack
 
+import itables.options as opt
+
+from .datatables_format import datatables_rows, escape_html_chars
+from .downsample import downsample
 from .typing import (
     DataFrameOrSeries,
     DTForITablesOptions,
@@ -28,27 +31,12 @@ from .typing import (
     JavascriptFunction,
     check_itable_arguments,
 )
-from .utils import UNPKG_DT_BUNDLE_CSS_NO_VERSION, UNPKG_DT_BUNDLE_URL_NO_VERSION
+from .utils import (
+    UNPKG_DT_BUNDLE_CSS_NO_VERSION,
+    UNPKG_DT_BUNDLE_URL_NO_VERSION,
+    read_package_file,
+)
 from .version import __version__ as itables_version
-
-try:
-    import pandas.io.formats.style as pd_style
-except ImportError:
-    pd_style = None
-
-try:
-    import polars as pl
-except ImportError:
-    # Define pl.Series as pd.Series
-    import pandas as pl
-
-from IPython.display import HTML, display
-
-import itables.options as opt
-
-from .datatables_format import datatables_rows
-from .downsample import downsample
-from .utils import read_package_file
 
 _ITABLES_UNDERSCORE_VERSION = (
     f"_itables_{itables_version.replace('.','_').replace('-','_')}"
@@ -69,11 +57,7 @@ _OPTIONS_NOT_AVAILABLE_WITH_TO_HTML = {
     "warn_on_selected_rows_not_rendered",
     "display_logo_when_loading",
 }
-_ORIGINAL_DATAFRAME_REPR_HTML = pd.DataFrame._repr_html_  # type: ignore
-_ORIGINAL_DATAFRAME_STYLE_REPR_HTML = (
-    None if pd_style is None else pd_style.Styler._repr_html_  # type: ignore
-)
-_ORIGINAL_POLARS_DATAFRAME_REPR_HTML = pl.DataFrame._repr_html_  # type: ignore
+_ORIGINAL_REPR_HTML_METHODS = {}
 _CONNECTED = True
 DEFAULT_LAYOUT = {
     "topStart": "pageLength",
@@ -132,13 +116,45 @@ def get_expanded_style(style: Union[str, Mapping[str, str]]) -> dict[str, str]:
         raise TypeError(f"style must be a string or a dict, not {type(style)}")
 
 
+def save_original_repr_html_methods(modules: Sequence[str]) -> None:
+    """Save the original _repr_html_ methods of Pandas and Polars DataFrames and Series"""
+    global _ORIGINAL_REPR_HTML_METHODS
+
+    for module in modules:
+        if module in _ORIGINAL_REPR_HTML_METHODS:
+            continue
+        if module == "pandas":
+            try:
+                import pandas as pd
+            except ImportError:
+                continue
+            else:
+                _ORIGINAL_REPR_HTML_METHODS["pandas"] = pd.DataFrame._repr_html_  # type: ignore
+        elif module == "pd_style":
+            try:
+                import pandas.io.formats.style as pd_style_module
+            except ImportError:
+                continue
+            else:
+                _ORIGINAL_REPR_HTML_METHODS["pd_style"] = pd_style_module.Styler._repr_html_  # type: ignore
+        elif module == "polars":
+            try:
+                import polars as pl
+            except ImportError:
+                continue
+            else:
+                _ORIGINAL_REPR_HTML_METHODS["polars"] = pl.DataFrame._repr_html_  # type: ignore
+
+
 def init_notebook_mode(
     all_interactive: bool = True,
     connected: bool = GOOGLE_COLAB,
     dt_bundle: Optional[Union[Path, str]] = None,
+    modules: Optional[Sequence[str]] = None,
 ) -> None:
     """Load the DataTables library and the corresponding css (if connected=False),
-    and (if all_interactive=True), activate the DataTables representation for all the Pandas DataFrames and Series.
+    and (if all_interactive=True), activate the DataTables representation for
+    DataFrames and Series in the modules pointed out by opt.modules.
 
     Warning: make sure you keep the output of this cell when 'connected=False',
     otherwise the interactive tables will stop working.
@@ -153,23 +169,49 @@ def init_notebook_mode(
         )
 
     _CONNECTED = connected
+    if modules is None:
+        modules = opt.modules
+    save_original_repr_html_methods(modules)
 
-    if all_interactive:
-        pd.DataFrame._repr_html_ = _datatables_repr_  # type: ignore
-        pd.Series._repr_html_ = _datatables_repr_  # type: ignore
-        if pd_style is not None:
-            pd_style.Styler._repr_html_ = _datatables_repr_  # type: ignore
-        pl.DataFrame._repr_html_ = _datatables_repr_  # type: ignore
-        pl.Series._repr_html_ = _datatables_repr_  # type: ignore
-    else:
-        pd.DataFrame._repr_html_ = _ORIGINAL_DATAFRAME_REPR_HTML  # type: ignore
-        if pd_style is not None:
-            pd_style.Styler._repr_html_ = _ORIGINAL_DATAFRAME_STYLE_REPR_HTML  # type: ignore
-        pl.DataFrame._repr_html_ = _ORIGINAL_POLARS_DATAFRAME_REPR_HTML  # type: ignore
-        if hasattr(pd.Series, "_repr_html_"):
-            del pd.Series._repr_html_  # type: ignore
-        if hasattr(pl.Series, "_repr_html_"):
-            del pl.Series._repr_html_  # type: ignore
+    for module in modules:
+        if module == "pandas":
+            try:
+                import pandas as pd
+            except ImportError:
+                continue
+            else:
+                if all_interactive:
+                    pd.DataFrame._repr_html_ = _datatables_repr_  # type: ignore
+                    pd.Series._repr_html_ = _datatables_repr_  # type: ignore
+                else:
+                    pd.DataFrame._repr_html_ = _ORIGINAL_REPR_HTML_METHODS["pandas"]  # type: ignore
+                    if hasattr(pd.Series, "_repr_html_"):
+                        del pd.Series._repr_html_  # type: ignore
+        elif module == "pd_style":
+            try:
+                import pandas.io.formats.style as pd_style
+            except ImportError:
+                continue
+            else:
+                if all_interactive:
+                    pd_style.Styler._repr_html_ = _datatables_repr_  # type: ignore
+                else:
+                    pd_style.Styler._repr_html_ = _ORIGINAL_REPR_HTML_METHODS["pd_style"]  # type: ignore
+        elif module == "polars":
+            try:
+                import polars as pl
+            except ImportError:
+                continue
+            else:
+                if all_interactive:
+                    pl.DataFrame._repr_html_ = _datatables_repr_  # type: ignore
+                    pl.Series._repr_html_ = _datatables_repr_  # type: ignore
+                else:
+                    pl.DataFrame._repr_html_ = _ORIGINAL_REPR_HTML_METHODS["polars"]  # type: ignore
+                    if hasattr(pl.Series, "_repr_html_"):
+                        del pl.Series._repr_html_  # type: ignore
+        else:
+            raise NotImplementedError(f"Module {module} is not supported")
 
     init_datatables = read_package_file("html/init_datatables.html")
     if not connected:
@@ -242,11 +284,13 @@ def _table_header(
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    try:
+    if type(df).__module__.startswith("pandas"):
         html_header = df.head(0).to_html(escape=escape_html)
-    except AttributeError:
+    else:
         # Polars DataFrames
-        html_header = pd.DataFrame(data=[], columns=df.columns, dtype=float).to_html()
+        columns = [escape_html_chars(col) if escape_html else col for col in df.columns]
+        formatted_columns = "".join(f"<th>{col}</th>" for col in columns)
+        html_header = f'<table class="dataframe">\n<thead>\n<tr style="text-align: right;">\n<th></th>\n{formatted_columns}\n</tr>\n</thead>\n  <tbody>\n  </tbody>\n</table>'
     match = pattern.match(html_header)
     assert match is not None
     thead = match.groups()[0]
@@ -360,15 +404,19 @@ def _evaluate_show_index(df, showIndex) -> bool:
     """
     We don't want to show trivial indices (RangeIndex with no name) on Pandas DataFrames.
     """
+    type_module = type(df).__module__
+    type_name = type(df).__name__
     if df is None:
         return False
-    if pl is not pd and isinstance(df, pl.DataFrame):
+    if type_module.startswith("polars"):
         return False
     if showIndex != "auto":
         return showIndex
-    if isinstance(df, pd.DataFrame):
+    if type_module.startswith("pandas"):
+        import pandas as pd
+
         return df.index.name is not None or not isinstance(df.index, pd.RangeIndex)
-    if pd_style is not None and isinstance(df, pd_style.Styler):
+    if type_name == "Styler":
         return _evaluate_show_index(
             df.data,  # pyright: ignore[reportAttributeAccessIssue]
             showIndex,
@@ -391,7 +439,9 @@ def get_itable_arguments(
             "Please pass a custom 'dt_url' instead."
         )
 
-    if pd_style is not None and isinstance(df, pd_style.Styler):
+    type_module = type(df).__module__
+    type_name = type(df).__name__
+    if type_name == "Styler":
         use_to_html = kwargs.pop("use_to_html", True)
         if not use_to_html:
             raise ValueError("We have to use df.to_html() for Pandas Styler objects")
@@ -402,22 +452,50 @@ def get_itable_arguments(
 
     showIndex = kwargs.pop("showIndex")
 
-    if isinstance(df, (np.ndarray, np.generic)):
-        df = pd.DataFrame(df)  # type: ignore
+    if df is None:
+        pl = None
+        pd = None
+    elif type_module.startswith("pandas"):
+        import pandas as pd
 
-    if isinstance(df, (pd.Series, pl.Series)):
+        pl = None
+    elif type_module.startswith("numpy"):
+        import pandas as pd
+
+        pl = None
+        df = pd.DataFrame(df)  # type: ignore
+    elif type_module.startswith("polars"):
+        import polars as pl
+
+        pd = None
+    else:
+        raise TypeError(f"Unsupported DataFrame type: {type_module}.{type_name}")
+
+    if type_name == "Series":
         df = df.to_frame()
 
     showIndex = _evaluate_show_index(df, showIndex)
 
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
-    maxColumns = kwargs.pop("maxColumns", pd.get_option("display.max_columns") or 0)
+    maxColumns = kwargs.pop(
+        "maxColumns",
+        (
+            pl.Config().state()["POLARS_FMT_MAX_COLS"]
+            if type_module.startswith("polars")
+            else (
+                pd.get_option("display.max_columns")
+                if type_module.startswith("pandas")
+                else 0
+            )
+        )
+        or 0,
+    )
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
     allow_html = kwargs.pop("allow_html")
 
     if not showIndex:
-        if isinstance(df, pd.DataFrame):
+        if type_module.startswith("pandas") and type_name != "Styler":
             df = df.set_index(pd.RangeIndex(len(df.index)))
 
     table_id = kwargs.pop("table_id", None)
@@ -476,7 +554,7 @@ def get_itable_arguments(
             escape_html=allow_html is not True,
         )
     else:
-        if pd_style is not None and isinstance(df, pd_style.Styler):
+        if type_name == "Styler":
             if not allow_html:
                 raise ValueError(
                     "Pandas Styler objects always use HTML. Please make sure that you trust the "
@@ -492,7 +570,6 @@ def get_itable_arguments(
             assert isinstance(table_id, str)
             assert table_id.startswith("T_")
             table_id = table_id[2:]
-            assert isinstance(df, pd_style.Styler)
             try:
                 table_html = df.to_html(sparse_index=False, table_uuid=table_id)
             except TypeError:
@@ -624,7 +701,7 @@ def check_table_id(
         )
 
     if table_id is None:
-        if pd_style is not None and isinstance(df, pd_style.Styler):
+        if type(df).__name__ == "Styler":
             return "T_" + str(uuid.uuid4())[:5]
 
         return "itables_" + str(uuid.uuid4()).replace("-", "_")
@@ -645,7 +722,7 @@ def set_default_options(
         kwargs["connected"] = kwargs.get(
             "connected", ("dt_url" in kwargs) or _CONNECTED
         )
-    not_available = {"dt_bundle"}  # this one is for init_notebook_mode
+    not_available = {"dt_bundle", "modules"}  # this ones are for init_notebook_mode
     if use_to_html:
         not_available = not_available.union(_OPTIONS_NOT_AVAILABLE_WITH_TO_HTML)
     if app_mode:
@@ -819,10 +896,12 @@ def _filter_control(control, downsampling_warning):
     return None
 
 
-def safe_reset_index(df: pd.DataFrame) -> pd.DataFrame:
+def safe_reset_index(df: "pd.DataFrame") -> "pd.DataFrame":
     try:
         return df.reset_index()
     except ValueError:
+        import pandas as pd
+
         # Issue #134: the above might fail if the index has duplicated names or if one of the
         # index names is already a column, with e.g "ValueError: cannot insert A, already exists"
         index_levels = [

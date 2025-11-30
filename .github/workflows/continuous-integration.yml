@@ -69,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.9, "3.10", "3.11", "3.12", "3.13"]
+        python-version: [3.9, "3.10", "3.11", "3.12", "3.13", "3.14"]
         pandas-version: [latest]
         numpy-version: [latest]
         typeguard-version: [latest]
@@ -81,6 +81,9 @@ jobs:
             pandas-version: pre
           - python-version: "3.13"
             uninstall_non_essential_dependencies: true
+          - python-version: "3.13"
+            pandas-version: none
+            numpy-version: none
           - python-version: "3.10"
             typeguard-version: "<4.4.1"
           - python-version: "3.10"
@@ -108,10 +111,10 @@ jobs:
         if: matrix.pandas-version == 'pre'
         run: pip install pandas --pre
       - name: Install pandas ${{ matrix.pandas-version }}
-        if: matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
+        if: matrix.pandas-version != 'none' && matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
         run: pip install 'pandas${{ matrix.pandas-version }}'
       - name: Install numpy ${{ matrix.numpy-version }}
-        if: matrix.numpy-version != 'latest'
+        if: matrix.numpy-version != 'none' && matrix.numpy-version != 'latest'
         run: pip install 'numpy${{ matrix.numpy-version }}'
       - name: Install typeguard ${{ matrix.typeguard-version }}
         if: matrix.typeguard-version != 'latest'
@@ -123,6 +126,10 @@ jobs:
       - name: Uninstall non-essential dependencies
         if: matrix.uninstall_non_essential_dependencies
         run: pip uninstall polars jinja2 dash anywidget streamlit shiny shinywidgets -y
+
+      - name: Uninstall pandas and numpy
+        if: matrix.pandas-version == 'none'
+        run: pip uninstall pandas numpy -y
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user

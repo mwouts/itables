@@ -1,8 +1,6 @@
 import math
 from typing import Union
 
-import pandas as pd
-
 from itables.typing import DataFrameOrSeries
 
 
@@ -104,33 +102,23 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
         second_half = max_rows // 2
         first_half = max_rows - second_half
         assert first_half >= second_half
-        if second_half:
-            try:
-                df = pd.concat((df.iloc[:first_half], df.iloc[-second_half:]))
-            except AttributeError:
-                df = df.head(first_half).vstack(df.tail(second_half))
-        else:
-            try:
-                df = df.iloc[:first_half]
-            except AttributeError:
-                df = df.head(first_half)
+        rows = list(range(first_half)) + list(range(len(df) - second_half, len(df)))
+        try:
+            df = df.iloc[rows]
+        except AttributeError:
+            df = df[rows]
 
     if len(df.columns) > max_columns > 0:
         second_half = max_columns // 2
         first_half = max_columns - second_half
         assert first_half >= second_half
-        if second_half:
-            if isinstance(df, pd.DataFrame):
-                df = pd.concat(
-                    (df.iloc[:, :first_half], df.iloc[:, -second_half:]), axis=1
-                )
-            else:
-                df = df[df.columns[:first_half]].hstack(df[df.columns[-second_half:]])
-        else:
-            if isinstance(df, pd.DataFrame):
-                df = df.iloc[:, :first_half]
-            else:
-                df = df[df.columns[:first_half]]
+        columns = list(range(first_half)) + list(
+            range(len(df.columns) - second_half, len(df.columns))
+        )
+        try:
+            df = df.iloc[:, columns]
+        except AttributeError:
+            df = df.select([df.columns[i] for i in columns])
 
     df_nbytes = nbytes(df)
     if df_nbytes > max_bytes > 0:
@@ -153,15 +141,12 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
             )
 
         # max_bytes is smaller than the average size of one cell
-        if isinstance(df, pd.DataFrame):
-            return pd.DataFrame("...", index=df.index[:1], columns=df.columns[:1])
-
-        else:
-            import polars as pl  # noqa
-
-            assert isinstance(df, pl.DataFrame)
-
-            df = pl.DataFrame({df.columns[0]: ["..."]})
-        return df
+        # Create a 1x1 dataframe using the same class as df
+        try:
+            # Pandas
+            return type(df)("...", index=df.index[:1], columns=df.columns[:1])
+        except (TypeError, AttributeError):
+            # Polars
+            return type(df)({df.columns[0]: ["..."]})
 
     return df

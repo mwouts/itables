@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from itables.sample_dfs import PANDAS_VERSION_MAJOR, get_dict_of_test_dfs
+from itables.sample_dfs import get_dict_of_test_dfs
 
 
 @pytest.fixture(params=list(get_dict_of_test_dfs()))
@@ -26,8 +26,15 @@ def connected(request):
     return request.param
 
 
-@pytest.fixture(params=[False, True] if PANDAS_VERSION_MAJOR >= 1 else [False])
+@pytest.fixture(params=[False, True])
 def use_to_html(request):
+    try:
+        import pandas as pd
+    except ImportError:
+        pytest.skip("Pandas is not available")
+    if int((pd.__version__).split(".", 1)[0]) <1 and request.param:
+        pytest.skip("Pandas.to_html is not available in Pandas < 1.0")
+
     return request.param
 
 

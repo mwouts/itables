@@ -5,14 +5,18 @@ import pytest
 from packaging import version
 
 from itables import show, to_html_datatable
-from itables.datatables_format import _format_pandas_series, generate_encoder
-from itables.javascript import pd_style
+from itables.datatables_format import (
+    _format_pandas_series,
+    _format_polars_series,
+    generate_encoder,
+)
 from itables.sample_dfs import (
     COLUMN_TYPES,
     PANDAS_VERSION_MAJOR,
     generate_random_df,
     generate_random_series,
     get_countries,
+    get_dict_of_polars_test_series,
     get_dict_of_test_dfs,
     get_dict_of_test_series,
     get_indicators,
@@ -58,11 +62,11 @@ def test_get_indicators(connected, use_to_html):
     version.parse(pd.__version__) < version.parse("1.0"),
     reason="TypeError: Cannot interpret '<attribute 'dtype' of 'numpy.generic' objects>' as a data type",
 )
-@pytest.mark.skipif(
-    pd_style is None,
-    reason="Missing optional dependency 'Jinja2'. DataFrame.style requires jinja2.",
-)
 def test_get_pandas_styler(connected):
+    try:
+        import pandas.io.formats.style
+    except ImportError:
+        pytest.skip("Pandas Style is not available")
     styler = get_pandas_styler()
     show(styler, connected=connected, allow_html=True)
 
@@ -98,6 +102,12 @@ def test_ordered_categories():
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_format_pandas_series(series_name, series):
     values = list(_format_pandas_series(series, escape_html=True))
+    json.dumps(values, cls=generate_encoder())
+
+
+@pytest.mark.parametrize("series_name,series", get_dict_of_polars_test_series().items())
+def test_format_polars_series(series_name, series):
+    values = list(_format_polars_series(series, escape_html=True))
     json.dumps(values, cls=generate_encoder())
 
 
