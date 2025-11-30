@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.6.0 (2025-12-??)
+------------------
+
+**Fixed**
+- We need to use `hatch<1.16.0` to build ITables ([jupyter-builder-#40](https://github.com/jupyterlab/jupyter-builder/issues/40))
+
+
 2.5.2 (2025-09-02)
 ------------------
 
