@@ -12,7 +12,6 @@ import itables.config as config
 import itables.typing as typing
 import itables.utils as utils
 
-__non_options = set()
 __non_options = set(locals())
 
 """Table layout, see https://datatables.net/reference/option/layout
@@ -149,13 +148,17 @@ config.set_options_from_config_file(locals())
 """Check that options have correct names"""
 if warn_on_undocumented_option:
     typing.check_itable_argument_names(
-        set(locals()).difference(__non_options),
+        {k for k in set(locals()).difference(__non_options) if not k.startswith("_")},
         typing.ITableOptions,
     )
 
 """Check that options have correct types"""
 if warn_on_unexpected_option_type:
     typing.check_itable_argument_types(
-        {k: v for k, v in locals().items() if k not in __non_options},
+        {
+            k: v
+            for k, v in locals().items()
+            if k not in __non_options and not k.startswith("_")
+        },
         typing.ITableOptions,
     )
