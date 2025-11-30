@@ -6,7 +6,7 @@ import pytest
 
 def replace_issue_number_with_links(text):
     return re.sub(
-        r"([^\[])#([0-9]+)",
+        r"([^\[-])#([0-9]+)",
         r"\1[#\2](https://github.com/mwouts/itables/issues/\2)",
         text,
     )

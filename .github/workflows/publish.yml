@@ -23,7 +23,9 @@ jobs:
           python-version: 3.11
       - name: Build package
         run: |
-          python -m pip install hatch
+          # hatch==1.16.0 fails with
+          # hatchling.plugin.exceptions.UnknownPluginError: Unknown build hook: jupyter-builder
+          python -m pip install 'hatch<1.16'
           python -m hatch build
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
