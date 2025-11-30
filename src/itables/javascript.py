@@ -668,6 +668,8 @@ def set_default_options(
         .difference(not_available)
         .difference(kwargs)
     ):
+        if option.startswith("_"):
+            continue
         kwargs[option] = getattr(opt, option)
 
     if "classes" in kwargs and isinstance(kwargs["classes"], list):
