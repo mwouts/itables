@@ -27,20 +27,21 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.9"
-dependencies = ["IPython", "pandas", "numpy"]
+dependencies = ["IPython"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
-config = ["tomli;python_version<\"3.11\"", "platformdirs"]
+pandas = ["pandas", "numpy"]
 polars = ["polars", "pyarrow"]
+config = ["tomli;python_version<\"3.11\"", "platformdirs"]
 check_type = ["typeguard>=4.4.1"]
-style = ["matplotlib"]
+style = ["itables[pandas]", "matplotlib"]
 samples = ["pytz", "world_bank_data"]
 widget = ["anywidget", "traitlets"]
 streamlit = ["streamlit"]
 dash = ["dash"]
 shiny = ["shiny", "shinywidgets"]
-all = ["itables[config,polars,style,samples,widget,dash,shiny,streamlit,check_type]"]
+all = ["itables[config,pandas,polars,style,samples,widget,dash,shiny,streamlit,check_type]"]
 test = [
   "itables[all]",
   # Pytest

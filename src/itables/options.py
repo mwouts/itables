@@ -15,6 +15,9 @@ import itables.utils as utils
 __non_options = set()
 __non_options = set(locals())
 
+"""Modules for which init_notebook_mode will change the HTML representation"""
+modules: Sequence[str] = ["pandas", "polars", "pd_style"]
+
 """Table layout, see https://datatables.net/reference/option/layout
 NB: to remove a control, replace it by None"""
 layout: Mapping[str, Union[None, str, Mapping[str, Any]]] = {

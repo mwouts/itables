@@ -5,17 +5,15 @@ from functools import lru_cache
 from itertools import cycle
 from typing import Any, Sequence, cast
 
-import numpy as np
-import pandas as pd
-
-try:
-    import pytz
-except ImportError:
-    pytz = None
-
 from .utils import find_package_file
 
-COLUMN_TYPES = [
+
+
+def get_pandas_column_types() -> list[str]:
+    """Return the list of column types available in the current Pandas version"""
+    import pandas as pd
+
+    column_types = [
     "bool",
     "int",
     "float",
@@ -28,19 +26,22 @@ COLUMN_TYPES = [
     "timedelta",
 ]
 
-_pd_version_major, _pd_version_minor, _ = pd.__version__.split(".", 2)
-PANDAS_VERSION_MAJOR = int(_pd_version_major)
-PANDAS_VERSION_MINOR = int(_pd_version_minor)
-if PANDAS_VERSION_MAJOR == 0:
-    COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "boolean"]
-if PANDAS_VERSION_MAJOR == 2 and PANDAS_VERSION_MINOR == 1:
-    # https://github.com/pandas-dev/pandas/issues/55080
-    COLUMN_TYPES = [type for type in COLUMN_TYPES if type != "timedelta"]
+    pd_version_major_str, pd_version_minor_str, _ = pd.__version__.split(".", 2)
+    pandas_version_major = int(pd_version_major_str)
+    pandas_version_minor = int(pd_version_minor_str)
+    if pandas_version_minor == 0:
+        column_types = [type for type in column_types if type != "boolean"]
+    if pandas_version_major == 2 and pandas_version_minor == 1:
+        # https://github.com/pandas-dev/pandas/issues/55080
+        column_types = [type for type in column_types if type != "timedelta"]
+    return column_types
 
 
-def get_countries(html: bool = False, climate_zone: bool = False) -> pd.DataFrame:
+def get_countries(html: bool = False, climate_zone: bool = False) -> "pd.DataFrame":
     """A Pandas DataFrame with the world countries (from the world bank data)
     Flags are loaded from https://flagpedia.net/"""
+    import numpy as np
+    import pandas as pd
     df = pd.read_csv(find_package_file("samples/countries.csv"))
     df = df.rename(columns={"capitalCity": "capital", "name": "country"})
     df["iso2Code"] = df["iso2Code"].fillna("NA")  # Namibia
@@ -86,18 +87,21 @@ def get_countries(html: bool = False, climate_zone: bool = False) -> pd.DataFram
 
 def get_population() -> "pd.Series[float]":
     """A Pandas Series with the world population (from the world bank data)"""
+    import pandas as pd
     return pd.read_csv(find_package_file("samples/population.csv")).set_index(
         "Country"
     )["SP.POP.TOTL"]
 
 
-def get_indicators() -> pd.DataFrame:
+def get_indicators() -> "pd.DataFrame":
     """A Pandas DataFrame with a subset of the world bank indicators"""
+    import pandas as pd
     return pd.read_csv(find_package_file("samples/indicators.csv"))
 
 
-def get_df_complex_index() -> pd.DataFrame:
+def get_df_complex_index() -> "pd.DataFrame":
     """A Pandas DataFrame with a complex index"""
+    import pandas as pd
     df = get_countries()
     df = df.reset_index().set_index(["region", "country"])
     df.columns = pd.MultiIndex.from_arrays(
@@ -117,7 +121,15 @@ def get_df_complex_index() -> pd.DataFrame:
     return df
 
 
-def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> dict[str, pd.DataFrame]:
+def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> "dict[str, pd.DataFrame]":
+    """A dictionary of Pandas DataFrames with various characteristics"""
+    import numpy as np
+    import pandas as pd
+    try:
+        import pytz
+    except ImportError:
+        pytz = None
+
     NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
 
     return {
@@ -139,7 +151,7 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> dict[str, pd.DataFrame]:
                 [None, False, True, False],
             ],
             columns=list("abcd"),
-            dtype="bool" if PANDAS_VERSION_MAJOR == 0 else "boolean",
+            dtype="bool" if pd.__version__.split(".", 1)[0] == "0" else "boolean",
         ),
         "int": pd.DataFrame(
             [[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")
@@ -282,27 +294,10 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> dict[str, pd.DataFrame]:
     }
 
 
-def get_dict_of_polars_test_dfs(N: int = 100, M: int = 100) -> dict[str, Any]:
-    import polars as pl
-    import pyarrow as pa
-
-    polars_dfs = {}
-    for key, df in get_dict_of_test_dfs(N=100, M=100).items():
-        if key == "multiindex":
-            # Since Polars 1.2, pl.from_pandas fails with this error:
-            # ValueError: Pandas dataframe contains non-unique indices and/or column names.
-            # Polars dataframes require unique string names for columns.
-            # See https://github.com/pola-rs/polars/issues/18130
-            df.index = df.index.tolist()  # type: ignore
-        try:
-            polars_dfs[key] = pl.from_pandas(df)
-        except (pa.ArrowInvalid, ValueError):
-            pass
-    return polars_dfs
-
 
 def get_dict_of_test_series() -> dict[str, Any]:
     """A dictionary of Pandas Series"""
+    import pandas as pd
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -313,6 +308,92 @@ def get_dict_of_test_series() -> dict[str, Any]:
                 continue
             series["{}.{}".format(df_name, col)] = df[col]
     return series
+
+
+
+def get_dict_of_polars_test_dfs(N: int = 100, M: int = 100) -> dict[str, Any]:
+    import polars as pl
+    import numpy as np
+    from datetime import datetime, timedelta
+
+    NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
+
+    polars_dfs = {
+        "empty": pl.DataFrame(),
+        "no_rows": pl.DataFrame(schema={"a": pl.Float64}),
+        "bool": pl.DataFrame({
+            "a": [True, True],
+            "b": [True, False],
+            "c": [False, True],
+            "d": [False, False]
+        }),
+        "int": pl.DataFrame({
+            "a": [-1, 6],
+            "b": [2, -7],
+            "c": [-3, 8],
+            "d": [4, -9],
+            "e": [-5, 10]
+        }),
+        "nullable_int": pl.DataFrame({
+            "a": [-1, 4, None],
+            "b": [2, -5, 7],
+            "c": [-3, 6, None]
+        }, schema={"a": pl.Int64, "b": pl.Int64, "c": pl.Int64}),
+        "float": pl.DataFrame({
+            "int": [0.0, 1.0],
+            "inf": [float('inf'), float('-inf')],
+            "nan": [float('nan'), float('nan')],
+            "math": [np.pi, np.e]
+        }),
+        "str": pl.DataFrame({
+            "text_column": ["some", "text"],
+            "very_long_text_column": ["a " + "very " * 12 + "long text"] * 2
+        }),
+        "time": pl.DataFrame({
+            "datetime": [datetime(2000, 1, 1), datetime(2001, 1, 1), None],
+            "timestamp": [None, datetime(2000, 1, 1, 18, 55, 33), datetime(2001, 1, 1, 18, 55, 55, 456654)],
+            "timedelta": [timedelta(days=2), timedelta(seconds=50), None]
+        }),
+        "date_range": pl.DataFrame({
+            "timestamps": pl.datetime_range(datetime.now(), datetime.now() + timedelta(seconds=4), interval="1s", eager=True)
+        }),
+        "object": pl.DataFrame({
+            "dict": [{"a": 1}, {"b": 2, "c": 3}],
+            "list": [["a"], [1, 2]]
+        }),
+        "int_float_str": pl.DataFrame({
+            "int": range(N),
+            "float": np.linspace(5.0, 0.0, N),
+            "str": [letter for letter, _ in zip(cycle(string.ascii_lowercase), range(N))]
+        }),
+        "wide": pl.DataFrame(
+            {f"column_{j}": NM_values[:, j] for j in range(M)}
+        ),
+        "long_column_names": pl.DataFrame({
+            "short name": [0] * 5,
+            "very " * 5 + "long name": [0] * 5,
+            "very " * 10 + "long name": [1] * 5,
+            "very " * 20 + "long name": [2] * 5,
+            "nospacein" + "very" * 50 + "longname": [3] * 5,
+            "nospacein" + "very" * 100 + "longname": [3] * 5,
+        }),
+        "big_integers": pl.DataFrame({
+            "bigint": [
+                -1234567890123456789,
+                1234567890123456789,
+                2345678901234567890,
+                3456789012345678901,
+            ],
+            "expected": [
+                "-1234567890123456789",
+                "1234567890123456789",
+                "2345678901234567890",
+                "3456789012345678901",
+            ],
+        }),
+    }
+    
+    return polars_dfs
 
 
 def get_dict_of_polars_test_series() -> dict[str, Any]:
@@ -339,6 +420,7 @@ def get_dict_of_polars_test_series() -> dict[str, Any]:
 
 @lru_cache()
 def generate_date_series():
+    import pandas as pd
     if pd.__version__ >= "2.2.0":
         # https://github.com/pandas-dev/pandas/issues/55080 is back in 2.2.0?
         return pd.Series(pd.date_range("1970-01-01", "2099-12-31", freq="D"))
@@ -347,6 +429,8 @@ def generate_date_series():
 
 def generate_random_series(rows: int, type: str) -> Any:
     """Generate a random Pandas Series of the given type and number of rows"""
+    import numpy as np
+    import pandas as pd
     if type == "bool":
         return pd.Series(np.random.binomial(n=1, p=0.5, size=rows), dtype=bool)
     if type == "boolean":
@@ -357,7 +441,7 @@ def generate_random_series(rows: int, type: str) -> Any:
         return pd.Series(np.random.geometric(p=0.1, size=rows), dtype=int)
     if type == "Int64":
         x = generate_random_series(rows, "int").astype(type)
-        if int(PANDAS_VERSION_MAJOR) >= 1:
+        if int(pd.__version__.split(".", 1)[0]) >= 1:
             x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
         return x
     if type == "float":
@@ -387,8 +471,14 @@ def generate_random_series(rows: int, type: str) -> Any:
 
 
 def generate_random_df(
-    rows: int, columns: int, column_types: Sequence[str] = COLUMN_TYPES
-) -> pd.DataFrame:
+    rows: int, columns: int, column_types: Sequence[str] | None = None
+) -> "pd.DataFrame":
+    """Generate a random Pandas DataFrame with the given number of rows and columns
+    and the given column types (if None, all available types are used)"""
+    import numpy as np
+    import pandas as pd
+    if column_types is None:
+        column_types = get_pandas_column_types()
     rows = int(rows)
     types = np.random.choice(column_types, size=columns)
     columns_names = [
@@ -411,6 +501,8 @@ def get_pandas_styler() -> Any:
 
     Cf. https://pandas.pydata.org/docs/user_guide/style.html
     """
+    import numpy as np
+    import pandas as pd
     x = np.linspace(0, math.pi, 21)
     df = pd.DataFrame(
         {"sin": np.sin(x), "cos": np.cos(x)}, index=pd.Index(x, name="alpha")
