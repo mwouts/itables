@@ -1,7 +1,25 @@
 """Test that the code in all the test notebooks work, including README.md"""
 
-import pandas as pd
 import pytest
+
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pd = None
+
+try:
+    import polars as pl
+
+    POLARS_AVAILABLE = True
+except ImportError:
+    POLARS_AVAILABLE = False
+    pl = None
+
+if not PANDAS_AVAILABLE and not POLARS_AVAILABLE:
+    pytest.skip("Neither Pandas nor Polars is available", allow_module_level=True)
 
 from itables.downsample import (
     as_nbytes,
@@ -9,11 +27,6 @@ from itables.downsample import (
     nbytes,
     shrink_towards_target_aspect_ratio,
 )
-
-try:
-    import polars as pl
-except ImportError:
-    pl = None
 
 
 def test_as_nbytes():
@@ -25,13 +38,27 @@ def test_as_nbytes():
 
 
 def large_tables(N=1000, M=1000):
-    dfs = [
-        pd.DataFrame(5, columns=range(M), index=range(N)),
-        pd.DataFrame(3.14159, columns=range(M), index=range(N)),
-        pd.DataFrame("abcdefg", columns=range(M), index=range(N)),
-    ]
-    if pl is not None:
-        dfs.extend([pl.from_pandas(df) for df in dfs])  # type: ignore
+    dfs = []
+    if PANDAS_AVAILABLE:
+        dfs.extend(
+            [
+                pd.DataFrame(5, columns=range(M), index=range(N)),
+                pd.DataFrame(3.14159, columns=range(M), index=range(N)),
+                pd.DataFrame("abcdefg", columns=range(M), index=range(N)),
+            ]
+        )
+    if POLARS_AVAILABLE:
+        if PANDAS_AVAILABLE:
+            dfs.extend([pl.from_pandas(df) for df in dfs[:3]])  # type: ignore
+        else:
+
+            dfs.extend(
+                [
+                    pl.DataFrame({str(i): [5] * N for i in range(M)}),
+                    pl.DataFrame({str(i): [3.14159] * N for i in range(M)}),
+                    pl.DataFrame({str(i): ["abcdefg"] * N for i in range(M)}),
+                ]
+            )
     return dfs
 
 

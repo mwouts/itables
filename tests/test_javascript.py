@@ -1,9 +1,16 @@
 import json
 from pathlib import Path
 
-import pandas as pd
 import pytest
 import requests
+
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pytest.skip("Pandas is not available", allow_module_level=True)
 
 import itables.options as opt
 from itables.javascript import (

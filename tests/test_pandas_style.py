@@ -1,18 +1,21 @@
 import json
 
-import pandas as pd
 import pytest
+
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pytest.skip("Pandas is not available", allow_module_level=True)
+
+pytest.importorskip("jinja2")
 
 from itables import to_html_datatable
 from itables.javascript import get_itable_arguments
 
-pytest.importorskip("jinja2")
 
-
-@pytest.mark.skipif(
-    pd.__version__.startswith("0."),
-    reason="AttributeError: 'Styler' object has no attribute 'to_html'",
-)
 def test_buttons_are_shown_on_pd_style_objects():
     df = pd.DataFrame({"A": ["a"]}).style
     html = to_html_datatable(

@@ -28,6 +28,9 @@ def list_doc_notebooks():
 def test_run_documentation_notebooks(notebook):
     if ("polars" in notebook.stem or "formatting" in notebook.stem):
         pytest.importorskip("polars")
+    else:
+        # All the other notebooks use pandas
+        pytest.importorskip("pandas")
     if "pandas_style" in notebook.stem:
         pytest.importorskip("pandas.io.formats.style")
     if "marimo" in notebook.stem or "widget" in notebook.stem:

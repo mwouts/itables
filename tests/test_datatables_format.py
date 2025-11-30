@@ -3,98 +3,158 @@ import math
 import warnings
 from datetime import date, datetime
 
-import numpy as np
-import pandas as pd
 import pytest
 
 from itables.datatables_format import datatables_rows, generate_encoder
 from itables.javascript import _column_count_in_header, _table_header
 
+try:
+    import numpy as np
+    import pandas as pd
 
-@pytest.mark.skipif(
-    PANDAS_VERSION_MAJOR == 0, reason="pandas formats have changed in pandas==1.0"
+    PANDAS_AVAILABLE = True
+    PANDAS_VERSION_MAJOR = int(pd.__version__.split(".", 1)[0])
+except ImportError:
+    PANDAS_AVAILABLE = False
+    PANDAS_VERSION_MAJOR = 0
+
+
+@pytest.fixture(
+    params=[
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"x": [True, False]}),
+                [[True], [False]],
+            ),
+            id="bool",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame(
+                    {"x": [True, False, None]},
+                    dtype="boolean",
+                ),
+                [[True], [False], ["<NA>"]],
+            ),
+            id="nullable_bool",
+        ),
+        pytest.param(
+            (lambda: pd.DataFrame({"x": [0, 1]}), [[0], [1]]),
+            id="int",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"x": [0, 1, None]}, dtype="Int64"),
+                [[0], [1], ["<NA>"]],
+            ),
+            id="nullable_int",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"x": [0.2, math.pi, np.nan, -np.inf]}),
+                '[[0.2], [3.141593], ["___NaN___"], ["___-Infinity___"]]',
+            ),
+            id="float",
+        ),
+        pytest.param(
+            (lambda: pd.DataFrame({"s": ["hi", '"hi"']}), [["hi"], ['"hi"']]),
+            id="str",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"t": [date(2022, 1, 1), pd.NaT]}),
+                [["2022-01-01"], ["NaT"]],
+            ),
+            id="date",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"t": [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]}),
+                [["2022-01-01 18:05:27"], ["NaT"]],
+            ),
+            id="datetime",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame(
+                    {
+                        "t": pd.to_datetime(
+                            [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]  # type: ignore
+                        ).tz_localize("US/Eastern")
+                    }
+                ),
+                [["2022-01-01 18:05:27-05:00"], ["NaT"]],
+            ),
+            id="datetime_with_tz",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame(
+                    {"dt": [pd.Timedelta(1, unit="h"), pd.NaT - pd.NaT]}  # type: ignore
+                ),
+                [["0 days 01:00:00"], ["NaT"]],
+            ),
+            id="timedelta",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"list": [[1], [2, 3]]}),
+                [["[1]"], ["[2, 3]"]],
+            ),
+            id="object_list",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"dict": [{"a": 1}, {"b": [1, 2]}]}),
+                [["{'a': 1}"], ["{'b': [1, 2]}"]],
+            ),
+            id="object_dict",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1),
+                [[None, 1]],
+            ),
+            id="df_with_named_column_axis",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame(
+                    {"a": [1, 2]}, index=pd.Index([1, 2], name="index")
+                )
+                .rename_axis("columns", axis=1)
+                .T.reset_index(),
+                [[None, "a", 1, 2]],
+            ),
+            id="transposed_df",
+        ),
+        pytest.param(
+            (
+                lambda: pd.DataFrame(
+                    {
+                        "big_integers": [
+                            1234567890123456789,
+                            2345678901234567890,
+                            3456789012345678901,
+                        ]
+                    }
+                ),
+                "[[1234567890123456789], [2345678901234567890], [3456789012345678901]]",
+            ),
+            id="big_integers",
+        ),
+    ]
 )
-@pytest.mark.parametrize(
-    "df,expected",
-    [
-        (pd.DataFrame({"x": [True, False]}), [[True], [False]]),
-        (
-            pd.DataFrame(
-                {"x": [True, False, None]},
-                dtype="bool" if PANDAS_VERSION_MAJOR == 0 else "boolean",
-            ),
-            [[True], [False], ["<NA>"]],
-        ),
-        (pd.DataFrame({"x": [0, 1]}), [[0], [1]]),
-        (pd.DataFrame({"x": [0, 1, None]}, dtype="Int64"), [[0], [1], ["<NA>"]]),
-        (
-            pd.DataFrame({"x": [0.2, math.pi, np.nan, -np.inf]}),
-            '[[0.2], [3.141593], ["___NaN___"], ["___-Infinity___"]]',
-        ),
-        (pd.DataFrame({"s": ["hi", '"hi"']}), [["hi"], ['"hi"']]),
-        (pd.DataFrame({"t": [date(2022, 1, 1), pd.NaT]}), [["2022-01-01"], ["NaT"]]),
-        (
-            pd.DataFrame({"t": [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]}),
-            [["2022-01-01 18:05:27"], ["NaT"]],
-        ),
-        (
-            pd.DataFrame(
-                {
-                    "t": pd.to_datetime(
-                        [datetime(2022, 1, 1, 18, 5, 27), pd.NaT]  # type: ignore
-                    ).tz_localize("US/Eastern")
-                }
-            ),
-            [["2022-01-01 18:05:27-05:00"], ["NaT"]],
-        ),
-        (
-            pd.DataFrame({"dt": [pd.Timedelta(1, unit="h"), pd.NaT - pd.NaT]}),  # type: ignore
-            [["0 days 01:00:00"], ["NaT"]],
-        ),
-        (pd.DataFrame({"list": [[1], [2, 3]]}), [["[1]"], ["[2, 3]"]]),
-        (
-            pd.DataFrame({"dict": [{"a": 1}, {"b": [1, 2]}]}),
-            [["{'a': 1}"], ["{'b': [1, 2]}"]],
-        ),
-        (pd.DataFrame({"a": [1]}).rename_axis("columns", axis=1), [[None, 1]]),
-        (
-            pd.DataFrame({"a": [1, 2]}, index=pd.Index([1, 2], name="index"))
-            .rename_axis("columns", axis=1)
-            .T.reset_index(),
-            [[None, "a", 1, 2]],
-        ),
-        (
-            pd.DataFrame(
-                {
-                    "big_integers": [
-                        1234567890123456789,
-                        2345678901234567890,
-                        3456789012345678901,
-                    ]
-                }
-            ),
-            "[[1234567890123456789], [2345678901234567890], [3456789012345678901]]",
-        ),
-    ],
-    ids=[
-        "bool",
-        "nullable_bool",
-        "int",
-        "nullable_int",
-        "float",
-        "str",
-        "date",
-        "datetime",
-        "datetime_with_tz",
-        "timedelta",
-        "object_list",
-        "object_dict",
-        "df_with_named_column_axis",
-        "transposed_df",
-        "big_integers",
-    ],
-)
-def test_datatables_rows(df, expected):
+def pandas_test_data(request):
+    """Fixture providing test DataFrames and expected outputs for datatables_rows tests"""
+    if not PANDAS_AVAILABLE:
+        pytest.skip("Pandas is not available")
+    df_func, expected = request.param
+    return df_func(), expected
+
+
+def test_datatables_rows(pandas_test_data):
+    df, expected = pandas_test_data
     table_header = _table_header(
         df,
         show_index=False,
@@ -132,8 +192,11 @@ def test_encode_large_int(large=3456789012345678901):
     )
 
 
+@pytest.mark.skipif(not PANDAS_AVAILABLE, reason="Pandas is not available")
 def test_encode_mixed_contents():
     # Make sure that the bigint escape works for mixed content # 291
+    import pandas as pd
+
     df = pd.DataFrame(
         {
             "bigint": [1666767918216000000],

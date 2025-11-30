@@ -8,23 +8,22 @@ from typing import Any, Sequence, cast
 from .utils import find_package_file
 
 
-
 def get_pandas_column_types() -> list[str]:
     """Return the list of column types available in the current Pandas version"""
     import pandas as pd
 
     column_types = [
-    "bool",
-    "int",
-    "float",
-    "str",
-    "categories",
-    "boolean",
-    "Int64",
-    "date",
-    "datetime",
-    "timedelta",
-]
+        "bool",
+        "int",
+        "float",
+        "str",
+        "categories",
+        "boolean",
+        "Int64",
+        "date",
+        "datetime",
+        "timedelta",
+    ]
 
     pd_version_major_str, pd_version_minor_str, _ = pd.__version__.split(".", 2)
     pandas_version_major = int(pd_version_major_str)
@@ -42,6 +41,7 @@ def get_countries(html: bool = False, climate_zone: bool = False) -> "pd.DataFra
     Flags are loaded from https://flagpedia.net/"""
     import numpy as np
     import pandas as pd
+
     df = pd.read_csv(find_package_file("samples/countries.csv"))
     df = df.rename(columns={"capitalCity": "capital", "name": "country"})
     df["iso2Code"] = df["iso2Code"].fillna("NA")  # Namibia
@@ -88,6 +88,7 @@ def get_countries(html: bool = False, climate_zone: bool = False) -> "pd.DataFra
 def get_population() -> "pd.Series[float]":
     """A Pandas Series with the world population (from the world bank data)"""
     import pandas as pd
+
     return pd.read_csv(find_package_file("samples/population.csv")).set_index(
         "Country"
     )["SP.POP.TOTL"]
@@ -96,12 +97,14 @@ def get_population() -> "pd.Series[float]":
 def get_indicators() -> "pd.DataFrame":
     """A Pandas DataFrame with a subset of the world bank indicators"""
     import pandas as pd
+
     return pd.read_csv(find_package_file("samples/indicators.csv"))
 
 
 def get_df_complex_index() -> "pd.DataFrame":
     """A Pandas DataFrame with a complex index"""
     import pandas as pd
+
     df = get_countries()
     df = df.reset_index().set_index(["region", "country"])
     df.columns = pd.MultiIndex.from_arrays(
@@ -125,6 +128,7 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> "dict[str, pd.DataFrame]
     """A dictionary of Pandas DataFrames with various characteristics"""
     import numpy as np
     import pandas as pd
+
     try:
         import pytz
     except ImportError:
@@ -151,7 +155,7 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> "dict[str, pd.DataFrame]
                 [None, False, True, False],
             ],
             columns=list("abcd"),
-            dtype="bool" if pd.__version__.split(".", 1)[0] == "0" else "boolean",
+            dtype="boolean",
         ),
         "int": pd.DataFrame(
             [[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")
@@ -294,10 +298,10 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> "dict[str, pd.DataFrame]
     }
 
 
-
 def get_dict_of_test_series() -> dict[str, Any]:
     """A dictionary of Pandas Series"""
     import pandas as pd
+
     series = {}
     for df_name, df in get_dict_of_test_dfs().items():
         if len(df.columns) > 6:
@@ -310,89 +314,136 @@ def get_dict_of_test_series() -> dict[str, Any]:
     return series
 
 
-
 def get_dict_of_polars_test_dfs(N: int = 100, M: int = 100) -> dict[str, Any]:
-    import polars as pl
-    import numpy as np
     from datetime import datetime, timedelta
 
-    NM_values = np.reshape(np.linspace(start=0.0, stop=1.0, num=N * M), (N, M))
+    import polars as pl
+
+    # Create NM_values without numpy
+    total_points = N * M
+    NM_values = [[(i * N + j) / (total_points - 1) for j in range(M)] for i in range(N)]
 
     polars_dfs = {
         "empty": pl.DataFrame(),
         "no_rows": pl.DataFrame(schema={"a": pl.Float64}),
-        "bool": pl.DataFrame({
-            "a": [True, True],
-            "b": [True, False],
-            "c": [False, True],
-            "d": [False, False]
-        }),
-        "int": pl.DataFrame({
-            "a": [-1, 6],
-            "b": [2, -7],
-            "c": [-3, 8],
-            "d": [4, -9],
-            "e": [-5, 10]
-        }),
-        "nullable_int": pl.DataFrame({
-            "a": [-1, 4, None],
-            "b": [2, -5, 7],
-            "c": [-3, 6, None]
-        }, schema={"a": pl.Int64, "b": pl.Int64, "c": pl.Int64}),
-        "float": pl.DataFrame({
-            "int": [0.0, 1.0],
-            "inf": [float('inf'), float('-inf')],
-            "nan": [float('nan'), float('nan')],
-            "math": [np.pi, np.e]
-        }),
-        "str": pl.DataFrame({
-            "text_column": ["some", "text"],
-            "very_long_text_column": ["a " + "very " * 12 + "long text"] * 2
-        }),
-        "time": pl.DataFrame({
-            "datetime": [datetime(2000, 1, 1), datetime(2001, 1, 1), None],
-            "timestamp": [None, datetime(2000, 1, 1, 18, 55, 33), datetime(2001, 1, 1, 18, 55, 55, 456654)],
-            "timedelta": [timedelta(days=2), timedelta(seconds=50), None]
-        }),
-        "date_range": pl.DataFrame({
-            "timestamps": pl.datetime_range(datetime.now(), datetime.now() + timedelta(seconds=4), interval="1s", eager=True)
-        }),
-        "object": pl.DataFrame({
-            "dict": [{"a": 1}, {"b": 2, "c": 3}],
-            "list": [["a"], [1, 2]]
-        }),
-        "int_float_str": pl.DataFrame({
-            "int": range(N),
-            "float": np.linspace(5.0, 0.0, N),
-            "str": [letter for letter, _ in zip(cycle(string.ascii_lowercase), range(N))]
-        }),
-        "wide": pl.DataFrame(
-            {f"column_{j}": NM_values[:, j] for j in range(M)}
+        "no_columns": pl.DataFrame(),
+        "no_rows_one_column": pl.DataFrame([1.0], schema={"a": pl.Float64}).slice(0, 0),
+        "no_columns_one_row": pl.DataFrame([1.0], schema={"a": pl.Float64}).select([]),
+        "bool": pl.DataFrame(
+            {
+                "a": [True, True],
+                "b": [True, False],
+                "c": [False, True],
+                "d": [False, False],
+            }
         ),
-        "long_column_names": pl.DataFrame({
-            "short name": [0] * 5,
-            "very " * 5 + "long name": [0] * 5,
-            "very " * 10 + "long name": [1] * 5,
-            "very " * 20 + "long name": [2] * 5,
-            "nospacein" + "very" * 50 + "longname": [3] * 5,
-            "nospacein" + "very" * 100 + "longname": [3] * 5,
-        }),
-        "big_integers": pl.DataFrame({
-            "bigint": [
-                -1234567890123456789,
-                1234567890123456789,
-                2345678901234567890,
-                3456789012345678901,
-            ],
-            "expected": [
-                "-1234567890123456789",
-                "1234567890123456789",
-                "2345678901234567890",
-                "3456789012345678901",
-            ],
-        }),
+        "nullable_boolean": pl.DataFrame(
+            {
+                "a": [True, True, None],
+                "b": [True, False, False],
+                "c": [False, None, True],
+                "d": [None, False, False],
+            },
+            schema={"a": pl.Boolean, "b": pl.Boolean, "c": pl.Boolean, "d": pl.Boolean},
+        ),
+        "int": pl.DataFrame(
+            {"a": [-1, 6], "b": [2, -7], "c": [-3, 8], "d": [4, -9], "e": [-5, 10]}
+        ),
+        "nullable_int": pl.DataFrame(
+            {"a": [-1, 4, None], "b": [2, -5, 7], "c": [-3, 6, None]},
+            schema={"a": pl.Int64, "b": pl.Int64, "c": pl.Int64},
+        ),
+        "float": pl.DataFrame(
+            {
+                "int": [0.0, 1.0],
+                "inf": [float("inf"), float("-inf")],
+                "nan": [float("nan"), float("nan")],
+                "math": [math.pi, math.e],
+            }
+        ),
+        "str": pl.DataFrame(
+            {
+                "text_column": ["some", "text"],
+                "very_long_text_column": ["a " + "very " * 12 + "long text"] * 2,
+            }
+        ),
+        "time": pl.DataFrame(
+            {
+                "datetime": [datetime(2000, 1, 1), datetime(2001, 1, 1), None],
+                "timestamp": [
+                    None,
+                    datetime(2000, 1, 1, 18, 55, 33),
+                    datetime(2001, 1, 1, 18, 55, 55, 456654),
+                ],
+                "timedelta": [timedelta(days=2), timedelta(seconds=50), None],
+            }
+        ),
+        "date_range": pl.DataFrame(
+            {
+                "timestamps": pl.datetime_range(
+                    datetime.now(),
+                    datetime.now() + timedelta(seconds=4),
+                    interval="1s",
+                    eager=True,
+                )
+            }
+        ),
+        "ordered_categories": pl.DataFrame(
+            {
+                "int": range(4),
+                "categorical_index": pl.Series(
+                    ["first", "second", "third", "fourth"], dtype=pl.Categorical
+                ),
+            }
+        ),
+        "object": pl.DataFrame(
+            {"dict": [{"a": 1}, {"b": 2, "c": 3}], "list": [["a"], [1, 2]]}
+        ),
+        "int_float_str": pl.DataFrame(
+            {
+                "int": range(N),
+                "float": [5.0 - i * (5.0 / (N - 1)) for i in range(N)],
+                "str": [
+                    letter for letter, _ in zip(cycle(string.ascii_lowercase), range(N))
+                ],
+            }
+        ),
+        "wide": pl.DataFrame(
+            {f"column_{j}": [NM_values[i][j] for i in range(N)] for j in range(M)}
+        ),
+        "long_column_names": pl.DataFrame(
+            {
+                "short name": [0] * 5,
+                "very " * 5 + "long name": [0] * 5,
+                "very " * 10 + "long name": [1] * 5,
+                "very " * 20 + "long name": [2] * 5,
+                "nospacein" + "very" * 50 + "longname": [3] * 5,
+                "nospacein" + "very" * 100 + "longname": [3] * 5,
+            }
+        ),
+        "big_integers": pl.DataFrame(
+            {
+                "bigint": [
+                    -1234567890123456789,
+                    1234567890123456789,
+                    2345678901234567890,
+                    3456789012345678901,
+                ],
+                "expected": [
+                    "-1234567890123456789",
+                    "1234567890123456789",
+                    "2345678901234567890",
+                    "3456789012345678901",
+                ],
+            }
+        ),
+        "countries": pl.read_csv(find_package_file("samples/countries.csv")),
+        "population": pl.read_csv(find_package_file("samples/population.csv")),
+        "capital": pl.read_csv(find_package_file("samples/countries.csv")).select(
+            ["region", "country", "capital"]
+        ),
     }
-    
+
     return polars_dfs
 
 
@@ -421,6 +472,7 @@ def get_dict_of_polars_test_series() -> dict[str, Any]:
 @lru_cache()
 def generate_date_series():
     import pandas as pd
+
     if pd.__version__ >= "2.2.0":
         # https://github.com/pandas-dev/pandas/issues/55080 is back in 2.2.0?
         return pd.Series(pd.date_range("1970-01-01", "2099-12-31", freq="D"))
@@ -431,6 +483,7 @@ def generate_random_series(rows: int, type: str) -> Any:
     """Generate a random Pandas Series of the given type and number of rows"""
     import numpy as np
     import pandas as pd
+
     if type == "bool":
         return pd.Series(np.random.binomial(n=1, p=0.5, size=rows), dtype=bool)
     if type == "boolean":
@@ -441,8 +494,7 @@ def generate_random_series(rows: int, type: str) -> Any:
         return pd.Series(np.random.geometric(p=0.1, size=rows), dtype=int)
     if type == "Int64":
         x = generate_random_series(rows, "int").astype(type)
-        if int(pd.__version__.split(".", 1)[0]) >= 1:
-            x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
+        x.loc[np.random.binomial(n=1, p=0.1, size=rows) == 0] = pd.NA  # type: ignore
         return x
     if type == "float":
         x = pd.Series(np.random.normal(size=rows), dtype=float)
@@ -477,6 +529,7 @@ def generate_random_df(
     and the given column types (if None, all available types are used)"""
     import numpy as np
     import pandas as pd
+
     if column_types is None:
         column_types = get_pandas_column_types()
     rows = int(rows)
@@ -503,6 +556,7 @@ def get_pandas_styler() -> Any:
     """
     import numpy as np
     import pandas as pd
+
     x = np.linspace(0, math.pi, 21)
     df = pd.DataFrame(
         {"sin": np.sin(x), "cos": np.cos(x)}, index=pd.Index(x, name="alpha")

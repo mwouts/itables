@@ -107,6 +107,7 @@ class ITableOptions(DataTableOptions):
     table_id: NotRequired[str]
     dt_url: NotRequired[str]
     dt_bundle: NotRequired[Union[str, Path]]
+    modules: NotRequired[Sequence[str]]
     connected: NotRequired[bool]
     display_logo_when_loading: NotRequired[bool]
 

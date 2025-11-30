@@ -2,8 +2,15 @@ import subprocess
 import warnings
 from pathlib import Path
 
-import pandas as pd
 import pytest
+
+try:
+    import pandas as pd
+
+    PANDAS_AVAILABLE = True
+except ImportError:
+    PANDAS_AVAILABLE = False
+    pytest.skip("Pandas is not available", allow_module_level=True)
 
 from itables.downsample import downsample
 from itables.shiny import DT
