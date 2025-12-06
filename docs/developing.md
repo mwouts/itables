@@ -6,28 +6,16 @@ to test your changes.
 
 ## How to create a development environment
 
-Create a conda environment with
-```shell
-mamba env create --file environment.yml
-```
-(use `conda` if you don't have `mamba`) or update it with
-```shell
-mamba env update --file environment.yml
-```
+This project uses [pixi](https://pixi.sh) for dependency management. First, install `pixi>=0.60.0` by following the instructions at https://pixi.sh.
 
-Then, activate that environment with
+Then, activate ITables' development environment with:
 ```shell
-conda activate itables
+pixi shell
 ```
 
 Install the pre-commit hooks with
 ```shell
 pre-commit install
-```
-
-and finally, install the development version of `itables` with
-```shell
-pip install -e .
 ```
 
 ## How to run the Python test suite
@@ -53,7 +41,7 @@ python -m ipykernel install --name itables --user
 ```
 Then you can build the documentation with
 ```
-jupyter book build docs
+pixi run -e docs jupyter book build docs
 ```
 
 This will give you a link to a local version of the documentation.
@@ -64,7 +52,11 @@ still work properly.
 
 ## Jupyter Lab
 
-In the `itables` conda environment, you can start Jupyter with
+In the pixi environment, you can start Jupyter with
+```
+pixi run jupyter lab
+```
+or if you're already in a pixi shell:
 ```
 jupyter lab
 ```

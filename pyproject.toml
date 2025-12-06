@@ -45,6 +45,7 @@ test = [
   "itables[all]",
   # Pytest
   "pytest",
+  "pytest-xdist",
   "pytest-cov",
   # Test the documentation
   "ipykernel",
@@ -141,3 +142,22 @@ strict = [
     "src/itables/dash.py",
     "src/itables/streamlit.py",
     ]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[tool.pixi.dependencies]
+nodejs = ">=20"
+jupyterlab = ">=4"
+pre-commit = "*"
+
+[tool.pixi.feature.docs.dependencies]
+jupyter-book = "*"
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
+
+[tool.pixi.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["all", "test"]}

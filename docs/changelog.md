@@ -7,6 +7,9 @@ ITables ChangeLog
 **Fixed**
 - We need to use `hatch<1.16.0` to build ITables ([jupyter-builder-#40](https://github.com/jupyterlab/jupyter-builder/issues/40))
 
+**Changed**
+- The development environment for ITables is now controled with Pixi.
+
 
 2.5.2 (2025-09-02)
 ------------------

@@ -2,6 +2,9 @@
 .idea
 .vscode
 
+# Pixi
+.pixi/
+
 # Python
 *.egg-info
 *.pyc
