@@ -163,7 +163,7 @@ def datatables_rows(
             _format_pandas_series(x, escape_html) for _, x in df.items()
         ]
     elif df_module.startswith("polars"):
-        formatted_columns = empty_columns + [
+        formatted_columns = [
             _format_polars_series(df[col], escape_html) for col in df.columns
         ]
     else:
