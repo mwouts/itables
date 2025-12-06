@@ -32,7 +32,7 @@ def list_doc_notebooks():
     "notebook", list_doc_notebooks(), ids=lambda notebook: notebook.stem
 )
 def test_run_documentation_notebooks(notebook):
-    if "polars" in notebook.stem and pl is None:
+    if ("polars" in notebook.stem or "formatting" in notebook.stem) and pl is None:
         pytest.skip("Polars is not available")
     if "pandas_style" in notebook.stem and pd_style is None:
         pytest.skip("Pandas Style is not available")
