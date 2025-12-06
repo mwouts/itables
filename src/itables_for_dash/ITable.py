@@ -39,7 +39,7 @@ Keyword arguments:
 - selected_rows (list; required):
     The index of the selected rows (pass select=True to allow
     selection)."""
-    _children_props = []
+    _children_props: typing.List[str] = []
     _base_nodes = ['children']
     _namespace = 'itables_for_dash'
     _type = 'ITable'
