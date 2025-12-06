@@ -153,7 +153,10 @@ jupyterlab = ">=4"
 pre-commit = "*"
 
 [tool.pixi.feature.docs.dependencies]
-jupyter-book = "*"
+jupyter-book = ">=1,<2"
+
+[tool.pixi.feature.docs.pypi-dependencies]
+sphinxext-rediraffe = "*"
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
