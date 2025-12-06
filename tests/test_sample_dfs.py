@@ -5,7 +5,7 @@ import pytest
 from packaging import version
 
 from itables import show, to_html_datatable
-from itables.datatables_format import _format_column, generate_encoder
+from itables.datatables_format import _format_pandas_series, generate_encoder
 from itables.javascript import pd_style
 from itables.sample_dfs import (
     COLUMN_TYPES,
@@ -96,8 +96,8 @@ def test_ordered_categories():
 
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
-def test_format_column(series_name, series):
-    values = list(_format_column(series, escape_html=True))
+def test_format_pandas_series(series_name, series):
+    values = list(_format_pandas_series(series, escape_html=True))
     json.dumps(values, cls=generate_encoder())
 
 

@@ -9,6 +9,7 @@ ITables ChangeLog
 
 **Changed**
 - The development environment for ITables is now controled with Pixi.
+- When displaying Polars DataFrames, ITables will format floats using `float_precision`, if set on the `pl.Config` object ([#447](https://github.com/mwouts/itables/issues/447))
 
 **Added**
 - A conda package is built (and attached) to each PR.

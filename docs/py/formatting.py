@@ -27,13 +27,13 @@
 # For instance, you can change the precision used to display floating numbers:
 
 # %%
+import math
+
 import itables
 
 itables.init_notebook_mode()
 
 # %%
-import math
-
 import pandas as pd
 
 with pd.option_context("display.float_format", "{:,.2f}".format):
@@ -45,6 +45,17 @@ with pd.option_context("display.float_format", "{:,.2f}".format):
 # %%
 with pd.option_context("display.float_format", "${:,.2f}".format):
     itables.show(pd.Series([i * math.pi for i in range(1, 6)]))
+
+# %% [markdown]
+# ## Formatting with Polars
+#
+# Starting with v2.6.0, ITables will format floats in Polars DataFrames according to `float_precision` from the Polars configuration:
+
+# %%
+import polars as pl
+
+with pl.Config(float_precision=2):
+    itables.show(pl.Series([i * math.pi for i in range(1, 6)]))
 
 # %% [markdown]
 # ## Formatting with Javascript

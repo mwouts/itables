@@ -27,14 +27,14 @@ you can use [Pandas' formatting options](https://pandas.pydata.org/pandas-docs/s
 For instance, you can change the precision used to display floating numbers:
 
 ```{code-cell} ipython3
+import math
+
 import itables
 
 itables.init_notebook_mode()
 ```
 
 ```{code-cell} ipython3
-import math
-
 import pandas as pd
 
 with pd.option_context("display.float_format", "{:,.2f}".format):
@@ -46,6 +46,17 @@ Or you can use a custom formatter:
 ```{code-cell} ipython3
 with pd.option_context("display.float_format", "${:,.2f}".format):
     itables.show(pd.Series([i * math.pi for i in range(1, 6)]))
+```
+
+## Formatting with Polars
+
+Starting with v2.6.0, ITables will format floats in Polars DataFrames according to `float_precision` from the Polars configuration:
+
+```{code-cell} ipython3
+import polars as pl
+
+with pl.Config(float_precision=2):
+    itables.show(pl.Series([i * math.pi for i in range(1, 6)]))
 ```
 
 ## Formatting with Javascript
