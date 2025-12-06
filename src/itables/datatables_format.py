@@ -48,7 +48,7 @@ def _format_pandas_series(
     return y
 
 
-def _format_polars_series(x: "pl.Series", escape_html: bool) -> Sequence[Any]:
+def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
     assert pl is not None
     dtype = x.dtype
