@@ -142,11 +142,6 @@ def _downsample(df, max_rows=0, max_columns=0, max_bytes=0, target_aspect_ratio=
 
         # max_bytes is smaller than the average size of one cell
         # Create a 1x1 dataframe using the same class as df
-        try:
-            # Pandas
-            return type(df)("...", index=df.index[:1], columns=df.columns[:1])
-        except (TypeError, AttributeError):
-            # Polars
-            return type(df)({df.columns[0]: ["..."]})
+        return type(df)({df.columns[0]: ["..."]})
 
     return df

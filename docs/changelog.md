@@ -5,7 +5,9 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
+-
 - We need to use `hatch<1.16.0` to build ITables ([jupyter-builder-#40](https://github.com/jupyterlab/jupyter-builder/issues/40))
+- We have updated some dependencies of the streamlit component ([#450](https://github.com/mwouts/itables/pull/450), [#452](https://github.com/mwouts/itables/pull/452))
 
 **Changed**
 - The development environment for ITables is now controled with Pixi.

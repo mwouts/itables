@@ -19,9 +19,8 @@ that you can sort, paginate, scroll or filter.
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 with no other impact on your data workflow.
 
-The `itables` package only depends on `numpy`, `pandas` and `IPython`
-which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
-work with Polars DataFrames).
+The `itables` package only depends on `IPython`
+which you must already have if you work with Pandas in Jupyter (add `numpy`, `pandas` if you use Pandas DataFrames, or `polars`, `pyarrow` if you work with Polars DataFrames).
 
 ## Documentation
 
