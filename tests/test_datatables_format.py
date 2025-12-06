@@ -149,10 +149,12 @@ def test_encode_mixed_contents():
     )
 
 
-@pytest.mark.importorskip("polars")
 def test_polars_float_formatting():
     """Make sure that polars float formatting is compatible with datatables_rows"""
-    import polars as pl
+    try:
+        import polars as pl
+    except ImportError:
+        pytest.skip("polars is not installed")
 
     df = pl.DataFrame({"float": [math.pi, math.pi * 1e12]})
     assert datatables_rows(df) == "[[3.141592653589793], [3141592653589.793]]"
