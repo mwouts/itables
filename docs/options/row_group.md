@@ -30,7 +30,7 @@ import itables
 
 itables.init_notebook_mode()
 
-df = itables.sample_dfs.get_countries()
+df = itables.sample_pandas_dfs.get_countries()
 
 itables.show(
     df.sort_values("region"),

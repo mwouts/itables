@@ -1,7 +1,12 @@
 from pathlib import Path
 
 import pytest
-import world_bank_data as wb
+
+try:
+    import world_bank_data as wb
+except ImportError:
+    pytest.skip("world_bank_data is not installed", allow_module_level=True)
+    wb = None
 
 pytestmark = pytest.mark.xfail(
     reason="HTTPError: 502 Server Error: Bad Gateway for url: http://api.worldbank.org/v2..."
@@ -17,15 +22,18 @@ def create_csv_file_if_missing(df, csv_file):
 
 
 def test_update_countries(csv_file=SAMPLE_DIR / "countries.csv"):
+    assert wb is not None
     df = wb.get_countries()
     create_csv_file_if_missing(df, csv_file)
 
 
 def test_update_population(csv_file=SAMPLE_DIR / "population.csv"):
+    assert wb is not None
     x = wb.get_series("SP.POP.TOTL", mrv=1, simplify_index=True)
     create_csv_file_if_missing(x, csv_file)
 
 
 def test_update_indicators(csv_file=SAMPLE_DIR / "indicators.csv"):
+    assert wb is not None
     df = wb.get_indicators().sort_index().head(500)
     create_csv_file_if_missing(df, csv_file)

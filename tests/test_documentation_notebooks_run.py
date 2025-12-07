@@ -2,17 +2,16 @@ import subprocess
 import sys
 from pathlib import Path
 
-import jupytext
 import pytest
 
 import itables.options as opt
 from itables import init_notebook_mode
-from itables.javascript import pd_style
 
 try:
-    import polars as pl
+    import jupytext
 except ImportError:
-    pl = None
+    jupytext = None
+    pytest.skip("jupytext is not available", allow_module_level=True)
 
 
 def list_doc_notebooks():
@@ -32,13 +31,20 @@ def list_doc_notebooks():
     "notebook", list_doc_notebooks(), ids=lambda notebook: notebook.stem
 )
 def test_run_documentation_notebooks(notebook):
-    if ("polars" in notebook.stem or "formatting" in notebook.stem) and pl is None:
-        pytest.skip("Polars is not available")
-    if "pandas_style" in notebook.stem and pd_style is None:
-        pytest.skip("Pandas Style is not available")
+    if "pandas_style" in notebook.stem:
+        pytest.importorskip("pandas.io.formats.style")
     if "marimo" in notebook.stem or "widget" in notebook.stem:
         pytest.importorskip("anywidget")
 
+    notebook_text = notebook.read_text()
+    if "import pandas" in notebook_text or "sample_pandas_dfs" in notebook_text:
+        pytest.importorskip("pandas")
+    if "import polars" in notebook_text or "sample_polars_dfs" in notebook_text:
+        pytest.importorskip("polars")
+    if "import numpy" in notebook_text:
+        pytest.importorskip("numpy")
+
+    assert jupytext is not None
     nb = jupytext.read(notebook)
     py_notebook = jupytext.writes(nb, "py:percent")
     if "shiny" in notebook.stem:

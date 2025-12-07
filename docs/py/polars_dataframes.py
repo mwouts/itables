@@ -23,7 +23,7 @@
 # %%
 import itables
 
-dict_of_test_dfs = itables.sample_dfs.get_dict_of_polars_test_dfs()
+dict_of_test_dfs = itables.sample_polars_dfs.get_dict_of_test_dfs()
 itables.init_notebook_mode()
 
 # %% [markdown]
@@ -37,24 +37,6 @@ itables.show(dict_of_test_dfs["empty"])
 
 # %%
 itables.show(dict_of_test_dfs["no_rows"])
-
-# %% [markdown]
-# ## No rows one column
-
-# %%
-itables.show(dict_of_test_dfs["no_rows_one_column"])
-
-# %% [markdown]
-# ## No columns
-
-# %%
-itables.show(dict_of_test_dfs["no_columns"])
-
-# %% [markdown]
-# ## No columns one row
-
-# %%
-itables.show(dict_of_test_dfs["no_columns_one_row"])
 
 # %% [markdown]
 # ## bool
@@ -105,34 +87,10 @@ itables.show(dict_of_test_dfs["time"])
 itables.show(dict_of_test_dfs["ordered_categories"])
 
 # %% [markdown]
-# ## ordered_categories_in_multiindex
-
-# %%
-itables.show(dict_of_test_dfs["ordered_categories_in_multiindex"])
-
-# %% [markdown]
-# ## multiindex
-
-# %%
-itables.show(dict_of_test_dfs["multiindex"])
-
-# %% [markdown]
 # ## countries
 
 # %% tags=["full-width"]
 itables.show(dict_of_test_dfs["countries"])
-
-# %% [markdown]
-# ## capital
-
-# %%
-itables.show(dict_of_test_dfs["capital"])
-
-# %% [markdown]
-# ## complex_index
-
-# %% tags=["full-width"]
-itables.show(dict_of_test_dfs["complex_index"])
 
 # %% [markdown]
 # ## int_float_str
@@ -151,12 +109,6 @@ itables.show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
 
 # %% tags=["full-width"]
 itables.show(dict_of_test_dfs["long_column_names"])
-
-# %% [markdown]
-# ## named_column_index
-
-# %%
-itables.show(dict_of_test_dfs["named_column_index"])
 
 # %% [markdown]
 # ## big_integers

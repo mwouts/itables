@@ -1,6 +1,5 @@
 """Test that the code in all the test notebooks work, including README.md"""
 
-import pandas as pd
 import pytest
 
 from itables.downsample import (
@@ -9,6 +8,12 @@ from itables.downsample import (
     nbytes,
     shrink_towards_target_aspect_ratio,
 )
+
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
+    pytest.skip("Pandas is not available", allow_module_level=True)
 
 try:
     import polars as pl
@@ -25,6 +30,7 @@ def test_as_nbytes():
 
 
 def large_tables(N=1000, M=1000):
+    assert pd is not None
     dfs = [
         pd.DataFrame(5, columns=range(M), index=range(N)),
         pd.DataFrame(3.14159, columns=range(M), index=range(N)),
@@ -120,6 +126,7 @@ def test_df_with_many_columns_is_downsampled_preferentially_on_columns(df, max_b
 
 
 def test_downsample_to_odd_number_of_rows():
+    assert pd is not None
     df = pd.DataFrame({"x": range(17)})
     dn, _ = downsample(df, max_rows=3)
     assert len(dn) == 3

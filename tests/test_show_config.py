@@ -1,4 +1,12 @@
+import pytest
+
+from itables.config import tomllib, user_config_path
 from itables.show_config import show_config
+
+if (tomllib is None) or (user_config_path is None):
+    pytest.skip(
+        reason="itables[config] dependencies are not installed", allow_module_level=True
+    )
 
 
 def test_show_config_default(capsys, tmp_path):

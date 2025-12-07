@@ -1,5 +1,10 @@
-import pandas as pd
 import pytest
+
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
+    pytest.skip("Pandas is not available", allow_module_level=True)
 
 from itables import to_html_datatable
 

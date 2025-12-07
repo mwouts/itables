@@ -1,15 +1,47 @@
-import pandas as pd
+import itertools as it
+
 import pytest
 
-from itables.sample_dfs import PANDAS_VERSION_MAJOR, get_dict_of_test_dfs
+import itables
+
+try:
+    dict_of_test_pandas_dfs = itables.sample_pandas_dfs.get_dict_of_test_dfs()
+except AttributeError:
+    dict_of_test_pandas_dfs = {}
+
+try:
+    dict_of_test_polars_dfs = itables.sample_polars_dfs.get_dict_of_test_dfs()
+except AttributeError:
+    dict_of_test_polars_dfs = {}
 
 
-@pytest.fixture(params=list(get_dict_of_test_dfs()))
-def df(request):
+@pytest.fixture(params=list(dict_of_test_pandas_dfs.keys()))
+def pd_df(request):
     name = request.param
-    df = get_dict_of_test_dfs()[name]
-    assert isinstance(df, pd.DataFrame)
+    df = dict_of_test_pandas_dfs[name]
     return df
+
+
+@pytest.fixture(params=list(dict_of_test_polars_dfs.keys()))
+def pl_df(request):
+    name = request.param
+    df = dict_of_test_polars_dfs[name]
+    return df
+
+
+@pytest.fixture(
+    params=[
+        f"{name}_{lib}"
+        for lib, name in list(it.product(["pd"], dict_of_test_pandas_dfs.keys()))
+        + list(it.product(["pl"], dict_of_test_polars_dfs.keys()))
+    ]
+)
+def df(request):
+    name, lib = request.param.rsplit("_", 1)
+    if lib == "pd":
+        return dict_of_test_pandas_dfs[name]
+    else:
+        return dict_of_test_polars_dfs[name]
 
 
 @pytest.fixture(params=["None", "1D-array", "2D-array"])
@@ -26,7 +58,7 @@ def connected(request):
     return request.param
 
 
-@pytest.fixture(params=[False, True] if PANDAS_VERSION_MAJOR >= 1 else [False])
+@pytest.fixture(params=[False, True])
 def use_to_html(request):
     return request.param
 
