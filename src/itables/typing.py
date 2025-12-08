@@ -188,9 +188,11 @@ def is_typeguard_available() -> bool:
     else:
         major, minor, bugfix = typeguard_version.split(".", 2)
         bugfix_int = int(
-            re.match(r"(\d+)", bugfix).group(
+            re.match(
+                r"(\d+)", bugfix
+            ).group(  # pyright: ignore[reportOptionalMemberAccess]
                 1
-            )  # pyright: ignore[reportOptionalMemberAccess]
+            )
         )
         return (int(major), int(minor), bugfix_int) >= (4, 4, 1)
 
