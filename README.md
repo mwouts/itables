@@ -19,9 +19,9 @@ that you can sort, paginate, scroll or filter.
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 with no other impact on your data workflow.
 
-Since v2.6.0, ITables has minimal dependencies - just `typing_extensions`.
-It will work out of the box with your favorite subset of Pandas or Polars, Jupyter, Dash, Streamlit or Marimo.
-You only need to have these installed. The only exception is the Jupyter Widget, for which `anywidget` is required.
+Since v2.6.0, ITables has minimal dependencies: just `typing_extensions`.
+It works out of the box with your favorite subset of Pandas or Polars, Jupyter, Dash, Streamlit, or Marimo.
+You only need to have these installed. The only exception is the Jupyter Widget, which requires `anywidget`.
 
 ## Documentation
 
