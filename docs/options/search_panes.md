@@ -25,7 +25,7 @@ import itables
 
 itables.init_notebook_mode()
 
-df = itables.sample_dfs.get_countries(climate_zone=True)
+df = itables.sample_pandas_dfs.get_countries(climate_zone=True)
 
 itables.show(
     df.reset_index(),

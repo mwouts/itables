@@ -1,22 +1,13 @@
 import json
+import math
+import sys
 import warnings
-from typing import Any, Optional, Sequence, Union
-
-import numpy as np
-import pandas as pd
-import pandas.io.formats.format as fmt
+from typing import Any, Optional, Sequence
 
 from .typing import DataFrameOrSeries
 
-try:
-    import polars as pl
-except ImportError:
-    pl = None
 
-
-def _format_pandas_series(
-    x: "pd.Series[Any]", escape_html: bool
-) -> "Union[pd.Series[Any],Sequence[Any]]":
+def _format_pandas_series(x, escape_html: bool) -> Sequence[Any]:
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
         return x
@@ -26,14 +17,17 @@ def _format_pandas_series(
             return x
         return [escape_html_chars(i) for i in x]
 
+    import pandas.io.formats.format as fmt
+
     try:
         x = fmt.format_array(x._values, None, justify="all", leading_space=False)  # type: ignore
     except TypeError:
         # Older versions of Pandas don't have 'leading_space'
         x = fmt.format_array(x._values, None, justify="all")  # type: ignore
 
-    y: "Union[pd.Series[Any], Sequence[Any]]" = x
+    y: Sequence[Any] = x
     if dtype_kind == "f":
+        np = sys.modules["numpy"]
         try:
             z = np.array(x).astype(float)
         except ValueError:
@@ -50,7 +44,7 @@ def _format_pandas_series(
 
 def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
-    assert pl is not None
+    pl = sys.modules["polars"]
     dtype = x.dtype
 
     # Boolean and integer types - return as-is
@@ -92,11 +86,11 @@ def escape_non_finite_float(value: Any) -> Any:
     """Encode non-finite float values to strings that will be parsed by parseJSON"""
     if not isinstance(value, float):
         return value
-    if np.isnan(value):
+    if math.isnan(value):
         return "___NaN___"
-    if value == np.inf:
+    if value == math.inf:
         return "___Infinity___"
-    if value == -np.inf:
+    if value == -math.inf:
         return "___-Infinity___"
     return value
 
@@ -115,17 +109,19 @@ def generate_encoder(warn_on_unexpected_types: bool = True) -> Any:
         def default(self, o):
             if isinstance(o, (bool, int, float, str)):
                 return json.JSONEncoder.default(self, o)
-            if isinstance(o, np.bool_):
-                return bool(o)
-            if isinstance(o, np.integer):
-                return int(o)
-            if isinstance(o, np.floating):
-                return float(o)
-            try:
-                if o is pd.NA:
-                    return str(o)
-            except AttributeError:
-                pass
+            module = type(o).__module__
+            if module == "numpy":
+                import numpy as np
+
+                if isinstance(o, np.bool_):
+                    return bool(o)
+                if isinstance(o, np.integer):
+                    return int(o)
+                if isinstance(o, np.floating):
+                    return float(o)
+            pd = sys.modules.get("pandas", None)
+            if pd is not None and o is pd.NA:
+                return str(o)
 
             if warn_on_unexpected_types:
                 warnings.warn(

@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-import pandas as pd
 import pytest
 import requests
 
@@ -24,6 +23,10 @@ def test_get_itable_arguments():
     """
     As much as possible we want few arguments for the ITable class
     """
+    try:
+        import pandas as pd
+    except ImportError:
+        pytest.skip("Pandas is not available")
     dt_args = get_itable_arguments(df=pd.DataFrame({"x": [1, 2]}))
     del dt_args["table_html"]
     del dt_args["connected"]
@@ -45,6 +48,10 @@ def test_get_itable_arguments_with_index():
     """
     As much as possible we want few arguments for the ITable class
     """
+    try:
+        import pandas as pd
+    except ImportError:
+        pytest.skip("Pandas is not available")
     dt_args = get_itable_arguments(
         df=pd.DataFrame({"x": [1, 2]}, index=pd.Index(["a", "b"], name="index"))
     )

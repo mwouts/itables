@@ -1,6 +1,6 @@
 # References
 
-ITables is a wrapper for the [datatables-net](https://datatables.net) Javascript library, for Python. That library is developped by [SpryMedia](https://sprymedia.co.uk/) and made available under a MIT license. It has an extensive [documentation](https://datatables.net/manual/), as well as a large set of [examples](https://datatables.net/examples/index).
+ITables is a wrapper for the [datatables-net](https://datatables.net) Javascript library, for Python. That library is developed by [SpryMedia](https://sprymedia.co.uk/) and made available under an MIT license. It has an extensive [documentation](https://datatables.net/manual/), as well as a large set of [examples](https://datatables.net/examples/index).
 
 ## ITables and its alternatives
 

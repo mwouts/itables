@@ -1,6 +1,5 @@
 import re
 
-import pandas as pd
 import pytest
 
 import itables
@@ -11,11 +10,7 @@ if not itables.typing.is_typeguard_available():
 
 @pytest.fixture
 def df():
-    return pd.DataFrame(
-        {
-            "a": [1, 2],
-        }
-    )
+    return itables.sample_dfs.get_countries(html=False)
 
 
 def test_warns_on_incorrect_option(df):

@@ -8,7 +8,8 @@ ITables ChangeLog
 - We need to use `hatch<1.16.0` to build ITables ([jupyter-builder-#40](https://github.com/jupyterlab/jupyter-builder/issues/40))
 
 **Changed**
-- The development environment for ITables is now controled with Pixi.
+- ITables has minimal dependencies (only `typing-extensions`)! ([#457](https://github.com/mwouts/itables/issues/457))
+- The development environment for ITables is now controlled with Pixi.
 - When displaying Polars DataFrames, ITables will format floats using `float_precision`, if set on the `pl.Config` object ([#447](https://github.com/mwouts/itables/issues/447))
 
 **Added**

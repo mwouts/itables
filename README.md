@@ -12,16 +12,16 @@
 [![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://mwouts.github.io/itables/apps/dash.html)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 
-This packages changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
+This package changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
 With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 that you can sort, paginate, scroll or filter.
 
 ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 with no other impact on your data workflow.
 
-The `itables` package only depends on `numpy`, `pandas` and `IPython`
-which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
-work with Polars DataFrames).
+Since v2.6.0, ITables has minimal dependencies: just `typing_extensions`.
+It works out of the box with your favorite subset of Pandas or Polars, Jupyter, Dash, Streamlit, or Marimo.
+You only need to have these installed. The only exception is the Jupyter Widget, which requires `anywidget`.
 
 ## Documentation
 
@@ -72,7 +72,7 @@ ITables is also available as
 ## Licence
 
 ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
-under a MIT license.
+under an MIT license.
 
 ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
-[(sponsor him!)](https://github.com/sponsors/AllanJard), also under a MIT license.
+[(sponsor him!)](https://github.com/sponsors/AllanJard), also under an MIT license.

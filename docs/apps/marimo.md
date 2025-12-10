@@ -30,7 +30,7 @@ df = pd.DataFrame({"x": [2, 1, 3]})
 ITable(df)
 ```
 
-A Sample Marimo application is available at [`apps/marimo/widget.py`](https://github.com/mwouts/itables/tree/main/apps/marimo/widget.py).
+A sample Marimo application is available at [`apps/marimo/widget.py`](https://github.com/mwouts/itables/tree/main/apps/marimo/widget.py).
 
 ⚠️ Some datatables buttons don't work when using the ITable widget within Marimo, see [issue #387](https://github.com/mwouts/itables/issues/387). The next paragraph provides a workaround.
 
@@ -47,4 +47,4 @@ html = to_html_datatable(df, connected=True)
 mo.iframe(html)
 ```
 
-A Sample Marimo application that uses `to_html_datatable` is available at [`apps/marimo/html.py`](https://github.com/mwouts/itables/tree/main/apps/marimo/html.py).
+A sample Marimo application that uses `to_html_datatable` is available at [`apps/marimo/html.py`](https://github.com/mwouts/itables/tree/main/apps/marimo/html.py).

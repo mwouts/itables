@@ -2,7 +2,6 @@ import subprocess
 import warnings
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
 from itables.downsample import downsample
@@ -23,6 +22,13 @@ def test_select_on_downsampled_df():
     When a DF of 17 rows is downsampled to 3 rows,
     we can only select rows 0, 1, 16
     """
+    try:
+        import pandas as pd
+    except ImportError:
+        try:
+            import polars as pd  # type: ignore
+        except ImportError:
+            pytest.skip("Neither pandas nor polars is installed")
     df = pd.DataFrame({"x": range(17)})
     dn, _ = downsample(df, max_rows=3)
     assert len(dn) == 3

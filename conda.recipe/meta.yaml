@@ -26,12 +26,8 @@ requirements:
     - hatchling
     - pip
   run:
-    - ipython
-    - pandas
-    - numpy
-    - packaging
-    - typing-extensions
     - python >=3.9
+    - typing_extensions
 
 test:
   imports:

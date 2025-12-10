@@ -27,41 +27,46 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.9"
-dependencies = ["IPython", "pandas", "numpy"]
+dependencies = ["typing-extensions"]
 dynamic = ["version"]
 
 [project.optional-dependencies]
-config = ["tomli;python_version<\"3.11\"", "platformdirs"]
+pandas = ["pandas", "numpy"]
 polars = ["polars", "pyarrow"]
-check_type = ["typeguard>=4.4.1"]
 style = ["matplotlib"]
-samples = ["pytz", "world_bank_data"]
+
+notebook = ["IPython"]
 widget = ["anywidget", "traitlets"]
-streamlit = ["streamlit"]
-dash = ["dash"]
 shiny = ["shiny", "shinywidgets"]
-all = ["itables[config,polars,style,samples,widget,dash,shiny,streamlit,check_type]"]
-test = [
-  "itables[all]",
+dash = ["dash"]
+streamlit = ["streamlit"]
+marimo = ["marimo"]
+
+config = ["tomli;python_version<\"3.11\"", "platformdirs"]
+check_type = ["typeguard>=4.4.1"]
+
+samples = ["pytz", "world_bank_data"]
+
+all = ["itables[config,pandas,polars,style,samples,notebook,widget,dash,shiny,streamlit,marimo,check_type]"]
+test-base = [
+  "itables",
   # Pytest
   "pytest",
   "pytest-xdist",
   "pytest-cov",
+]
+test-notebook = [
+   "itables[test-base,widget,notebook]",
   # Test the documentation
   "ipykernel",
   "nbconvert",
   "jupytext",
-  # Marimo app
-  "marimo",
   # Test urls
   "requests",
-]
-pyright = ["pyright", "pandas-stubs"]
-dev = ["itables[test,pyright]", "watchfiles", "jupyterlab"]
-
-# automatically add the dev feature to the default env (e.g., hatch shell)
-[tool.hatch.envs.default]
-features = ["dev"]
+  ]
+test-dash = ["itables[test-base,dash]"]
+test-all = ["itables[all,test-notebook]"]
+dev = ["itables[test-all]", "watchfiles", "jupyterlab", "pyright", "pandas-stubs"]
 
 [tool.hatch.version]
 path = "src/itables/version.py"
@@ -153,15 +158,35 @@ platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 nodejs = ">=20"
 pre-commit = "*"
 
+[tool.pixi.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["dev"]}
+
 [tool.pixi.feature.docs.dependencies]
 jupyter-book = ">=1,<2"
 
 [tool.pixi.feature.docs.pypi-dependencies]
 sphinxext-rediraffe = "*"
 
+[tool.pixi.feature.minimal.dependencies]
+nodejs = ">=20"
+python = ">=3.9"
+
+[tool.pixi.feature.test-pandas-notebook.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["pandas", "test-notebook"]}
+
+[tool.pixi.feature.test-polars-notebook.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["polars", "test-notebook"]}
+
+[tool.pixi.feature.test-pandas-dash.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["pandas", "test-dash"]}
+
+[tool.pixi.feature.test-polars-dash.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["polars", "test-dash"]}
+
 [tool.pixi.environments]
 default = { solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
-
-[tool.pixi.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["dev"]}
+test-pandas-notebook = { features = ["minimal", "test-pandas-notebook"], no-default-feature = true}
+test-polars-notebook = { features = ["minimal", "test-polars-notebook"], no-default-feature = true}
+test-pandas-dash = { features = ["minimal", "test-pandas-dash"], no-default-feature = true}
+test-polars-dash = { features = ["minimal", "test-polars-dash"], no-default-feature = true}

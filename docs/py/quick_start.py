@@ -34,16 +34,16 @@
 # <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true"></a>
 # <script src="https://buttons.github.io/buttons.js"></script>
 #
-# This packages changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
+# This package changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
 # With `itables` you can display your tables as interactive [DataTables](https://datatables.net/)
 # that you can sort, paginate, scroll or filter.
 #
 # ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 # with no other impact on your data workflow.
 #
-# The `itables` package depends only on `numpy`, `pandas` and `IPython`
-# which you must already have if you work with Pandas in Jupyter (add `polars`, `pyarrow` if you
-# work with Polars DataFrames).
+# Since v2.6.0, ITables has minimal dependencies: just `typing_extensions`.
+# It works out of the box with your favorite subset of Pandas or Polars, Jupyter, Dash, Streamlit, or Marimo.
+# You only need to have these installed. The only exception is the Jupyter Widget, which requires `anywidget`.
 #
 # # Quick Start
 #
@@ -72,7 +72,7 @@ itables.init_notebook_mode()
 # %% [markdown]
 # After this, any Pandas or Polars DataFrame, or Series,
 # is displayed as an interactive [DataTables](https://datatables.net/),
-# which lets you explore, filter or sort your data.
+# which let you explore, filter or sort your data.
 
 # %% tags=["full-width"]
 df = itables.sample_dfs.get_countries()
@@ -88,7 +88,7 @@ df
 # ## Licence
 #
 # ITables is developed by [Marc Wouts](https://github.com/mwouts) on [GitHub](https://github.com/mwouts/itables),
-# under a MIT license.
+# under an MIT license.
 #
 # ITables is a wrapper for [datatables.net](https://datatables.net/) which is developed by Allan Jardine
-# [(sponsor him!)](https://github.com/sponsors/AllanJard), also under a MIT license.
+# [(sponsor him!)](https://github.com/sponsors/AllanJard), also under an MIT license.

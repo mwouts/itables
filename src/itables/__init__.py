@@ -10,6 +10,16 @@ from .typing import (
 )
 from .version import __version__
 
+try:
+    from itables import sample_pandas_dfs
+except ImportError:
+    sample_pandas_dfs = None
+
+try:
+    from itables import sample_polars_dfs
+except ImportError:
+    sample_polars_dfs = None
+
 __all__ = [
     "__version__",
     "to_html_datatable",
@@ -24,4 +34,6 @@ __all__ = [
     "options",
     "downsample",
     "sample_dfs",
+    "sample_pandas_dfs",
+    "sample_polars_dfs",
 ]

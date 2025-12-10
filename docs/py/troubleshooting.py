@@ -46,7 +46,7 @@ itables.show(df, connected=False)
 #
 # ## Trust your notebook
 #
-# It could also be that your notebook is not _trusted_. This happens when you
+# It could also be because your notebook is not _trusted_. This happens when you
 # have not run the notebook in full yourself (e.g. the notebook was sent to you with outputs,
 # or the notebook was created by a tool like `papermill`). In that case, JavaScript
 # code cannot run (and the interactive tables won't display)

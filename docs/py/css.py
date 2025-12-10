@@ -41,7 +41,7 @@ display(HTML(f"<style>{css}</style>" ""))
 # This is helpful for instance in the context of
 # [Quarto presentations](apps/quarto.md).
 #
-# With this over CSS, we change _every datatable_ table header
+# With this CSS override, we change _every datatable_ table header
 # in the notebook to bold/italic.
 
 # %%

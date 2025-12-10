@@ -20,7 +20,7 @@ dataframes are displayed nicely with the default `itables` settings.
 ```{code-cell} ipython3
 import itables
 
-dict_of_test_dfs = itables.sample_dfs.get_dict_of_polars_test_dfs()
+dict_of_test_dfs = itables.sample_polars_dfs.get_dict_of_test_dfs()
 itables.init_notebook_mode()
 ```
 
@@ -34,24 +34,6 @@ itables.show(dict_of_test_dfs["empty"])
 
 ```{code-cell} ipython3
 itables.show(dict_of_test_dfs["no_rows"])
-```
-
-## No rows one column
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["no_rows_one_column"])
-```
-
-## No columns
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["no_columns"])
-```
-
-## No columns one row
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["no_columns_one_row"])
 ```
 
 ## bool
@@ -102,38 +84,12 @@ itables.show(dict_of_test_dfs["time"])
 itables.show(dict_of_test_dfs["ordered_categories"])
 ```
 
-## ordered_categories_in_multiindex
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["ordered_categories_in_multiindex"])
-```
-
-## multiindex
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["multiindex"])
-```
-
 ## countries
 
 ```{code-cell} ipython3
 :tags: [full-width]
 
 itables.show(dict_of_test_dfs["countries"])
-```
-
-## capital
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["capital"])
-```
-
-## complex_index
-
-```{code-cell} ipython3
-:tags: [full-width]
-
-itables.show(dict_of_test_dfs["complex_index"])
 ```
 
 ## int_float_str
@@ -156,12 +112,6 @@ itables.show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
 :tags: [full-width]
 
 itables.show(dict_of_test_dfs["long_column_names"])
-```
-
-## named_column_index
-
-```{code-cell} ipython3
-itables.show(dict_of_test_dfs["named_column_index"])
 ```
 
 ## big_integers

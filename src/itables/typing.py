@@ -2,15 +2,41 @@ import re
 import warnings
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Literal, Mapping, Sequence, TypedDict, Union
+from typing import Any, Literal, Mapping, Sequence, TypedDict, Union, cast
 
-from packaging.version import Version
 from typing_extensions import NotRequired, TypeAlias
+
+DataFrameModuleName: TypeAlias = Literal["pandas", "polars", "numpy", None]
+DataFrameTypeName: TypeAlias = Literal["DataFrame", "Series", "Styler", "ndarray", None]
 
 """
 A Pandas or Polars DataFrame or Series, a numpy array, or a Pandas Style object.
 """
 DataFrameOrSeries: TypeAlias = Any
+
+
+def get_dataframe_module_name(df: DataFrameOrSeries) -> DataFrameModuleName:
+    """
+    Return the module name of the given DataFrame or Series.
+    """
+    if df is None:
+        return None
+    module_name = type(df).__module__.split(".")[0]
+    if module_name not in DataFrameModuleName.__args__:
+        raise TypeError(f"Unsupported DataFrame type: {type(df)}")
+    return cast(DataFrameModuleName, module_name)
+
+
+def get_dataframe_type_name(df: DataFrameOrSeries) -> DataFrameTypeName:
+    """
+    Return the type name of the given DataFrame or Series.
+    """
+    if df is None:
+        return None
+    type_name = type(df).__name__
+    if type_name not in DataFrameTypeName.__args__:
+        raise TypeError(f"Unsupported DataFrame type: {type(df)}")
+    return cast(DataFrameTypeName, type_name)
 
 
 class JavascriptFunction(str):
@@ -160,7 +186,15 @@ def is_typeguard_available() -> bool:
     except PackageNotFoundError:
         return False
     else:
-        return Version(typeguard_version) >= Version("4.4.1")
+        major, minor, bugfix = typeguard_version.split(".", 2)
+        bugfix_int = int(
+            re.match(
+                r"(\d+)", bugfix
+            ).group(  # pyright: ignore[reportOptionalMemberAccess]
+                1
+            )
+        )
+        return (int(major), int(minor), bugfix_int) >= (4, 4, 1)
 
 
 def check_itable_arguments(kwargs: dict[str, Any], typed_dict: type) -> None:
