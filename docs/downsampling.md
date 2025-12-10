@@ -20,7 +20,7 @@ kernelspec:
 
 # Downsampling
 
-When an interactive table is displayed by `itables`, the table data is embedded into the notebook itself. Large tables need to be downsampled, otherwise your notebook will become huge and irresponsive.
+When an interactive table is displayed by `itables`, the table data is embedded into the notebook itself. Large tables need to be downsampled, otherwise your notebook will become huge and unresponsive.
 
 Downsampling occurs when the table data is larger than `maxBytes`, which is equal to 64KB by default. When downsampling occurs, a warning is displayed below the table, which points to the `itables` documentation.
 

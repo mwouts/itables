@@ -26,7 +26,7 @@ The Python code can be tested with just
 pytest
 ```
 
-Running the `pytest` test suite is not enough to guaranty that a change won't
+Running the `pytest` test suite is not enough to guarantee that a change won't
 break `itables`. You also need to test that the tables are well rendered in the
 different contexts like Jupyter Book, Jupyter Lab, VS Code.
 

@@ -14,7 +14,7 @@ kernelspec:
 
 # Dash
 
-If you wish to display a DataFrame which content is fixed (not reacting to the other controls in the application), you just need to import `ITable` from `itables.dash` and add it to your layout like here:
+If you wish to display a DataFrame whose content is fixed (not reacting to the other controls in the application), you just need to import `ITable` from `itables.dash` and add it to your layout like here:
 
 ```{include} ../../apps/dash/1_display_only.py
 :code: python

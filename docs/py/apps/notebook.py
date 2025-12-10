@@ -35,12 +35,12 @@ df = itables.sample_dfs.get_countries()
 df
 
 # %% [markdown]
-# Note that the `init_connected_mode` function also activates ITable's offline mode, unless you call it with a `connected=False` argument.
+# Note that the `init_notebook_mode` function also activates ITables' offline mode, unless you call it with a `connected=False` argument.
 #
 #
 # ## Offline mode
 #
-# By default `init_connected_mode` configures ITables to work offline (except in Colab). No internet connection is required as the JavaScript code is embedded into the notebook itself when you execute `init_notebook_mode`.
+# By default `init_notebook_mode` configures ITables to work offline (except in Colab). No internet connection is required as the JavaScript code is embedded into the notebook itself when you execute `init_notebook_mode`.
 #
 # In some contexts (Jupyter Book, Google Colab, etc...) you might
 # prefer to load the libraries dynamically from the internet.
