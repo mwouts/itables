@@ -4,7 +4,8 @@ from typing import Optional, Sequence, cast
 
 import pyarrow  # type: ignore
 import streamlit as st
-from typing_extensions import Unpack
+
+from itables.typing import Unpack
 
 try:
     from st_aggrid import AgGrid  # type: ignore

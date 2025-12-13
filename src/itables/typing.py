@@ -1,10 +1,38 @@
 import re
+import sys
 import warnings
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Literal, Mapping, Sequence, TypedDict, Union, cast
 
-from typing_extensions import NotRequired, TypeAlias
+# Conditional imports based on Python version
+if sys.version_info >= (3, 11):
+    from typing import NotRequired, TypeAlias, Unpack
+else:
+    try:
+        from typing_extensions import NotRequired, TypeAlias, Unpack
+    except ImportError:
+        # Fallback for when typing_extensions is not available
+        NotRequired = Any  # type: ignore
+        TypeAlias = Any  # type: ignore
+        Unpack = Any  # type: ignore
+
+if sys.version_info >= (3, 10):
+    pass  # TypeAlias already imported above
+elif sys.version_info < (3, 11):
+    try:
+        from typing_extensions import TypeAlias
+    except ImportError:
+        TypeAlias = Any  # type: ignore
+
+__all__ = [
+    "NotRequired",
+    "TypeAlias",
+    "Unpack",
+    "DataFrameModuleName",
+    "DataFrameTypeName",
+    "DataFrameOrSeries",
+]
 
 DataFrameModuleName: TypeAlias = Literal["pandas", "polars", "numpy", None]
 DataFrameTypeName: TypeAlias = Literal["DataFrame", "Series", "Styler", "ndarray", None]

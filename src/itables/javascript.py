@@ -10,8 +10,6 @@ from importlib.util import find_spec
 from pathlib import Path
 from typing import Any, Literal, Mapping, Optional, Sequence, Union, cast
 
-from typing_extensions import Unpack
-
 import itables.options as opt
 
 from .datatables_format import datatables_rows, escape_html_chars
@@ -24,6 +22,7 @@ from .typing import (
     ITableOptions,
     JavascriptCode,
     JavascriptFunction,
+    Unpack,
     check_itable_arguments,
     get_dataframe_module_name,
     get_dataframe_type_name,

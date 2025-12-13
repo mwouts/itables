@@ -1,7 +1,7 @@
-from typing_extensions import Optional, Unpack
+from typing import Optional
 
 from itables import __version__
-from itables.typing import DataFrameOrSeries, ITableOptions
+from itables.typing import DataFrameOrSeries, ITableOptions, Unpack
 
 from .ITable import ITable as ITableComponent
 from .properties import (
