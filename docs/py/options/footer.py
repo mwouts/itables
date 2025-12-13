@@ -17,7 +17,7 @@
 # %% [markdown]
 # # Footer
 #
-# Use `footer = True` if you wish to display a table footer.
+# Use `footer = True` to display a table footer.
 
 # %% tags=["full-width"]
 import itables

@@ -42,6 +42,7 @@ parts:
       - file: options/keys
       - file: options/allow_html
       - file: options/show_index
+      - file: options/show_dtypes
       - file: options/text_in_header_can_be_selected
   - caption: More about ITables
     chapters:

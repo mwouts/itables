@@ -18,3 +18,7 @@ div.dt-layout-table>div {
     overflow: auto;
     max-width: 100%;
 }
+
+.itables-dtype {
+    font-weight: normal;
+}
