@@ -37,7 +37,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install jupyter-book sphinxext-rediraffe
+        pip install 'jupyter-book<2' sphinxext-rediraffe
         pip install matplotlib  # Pandas style
         pip install .[all]
 
