@@ -27,7 +27,6 @@ requirements:
     - pip
   run:
     - python >=3.9
-    - typing_extensions
 
 test:
   imports:

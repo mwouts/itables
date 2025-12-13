@@ -28,18 +28,18 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.9"
-dependencies = ["typing-extensions"]
+dependencies = []
 dynamic = ["version"]
 
 [project.optional-dependencies]
-pandas = ["pandas", "numpy"]
-polars = ["polars", "pyarrow"]
-style = ["matplotlib"]
+pandas = ["pandas"]
+polars = ["polars"]
+style = ["pandas", "matplotlib"]
 
 notebook = ["IPython"]
 widget = ["anywidget", "traitlets"]
 shiny = ["shiny", "shinywidgets"]
-dash = ["dash"]
+dash = ["dash", "typing-extensions"]
 streamlit = ["streamlit"]
 marimo = ["marimo"]
 

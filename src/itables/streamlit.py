@@ -2,10 +2,9 @@ from typing import Optional
 
 import streamlit.components.v1 as components
 from streamlit.components.v1.custom_component import CustomComponent
-from typing_extensions import Unpack
 
 from .javascript import get_itables_extension_arguments
-from .typing import DataFrameOrSeries, ITableOptions
+from .typing import DataFrameOrSeries, ITableOptions, Unpack
 from .utils import find_package_file
 
 _streamlit_component_func = components.declare_component(

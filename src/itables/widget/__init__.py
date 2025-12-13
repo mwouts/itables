@@ -1,12 +1,12 @@
 import importlib.metadata
 import pathlib
+from typing import Optional
 
 import anywidget
 import traitlets
-from typing_extensions import Optional, Unpack
 
 from itables.javascript import get_itables_extension_arguments
-from itables.typing import DataFrameOrSeries, ITableOptions
+from itables.typing import DataFrameOrSeries, ITableOptions, Unpack
 
 try:
     __version__ = importlib.metadata.version("itables_anywidget")

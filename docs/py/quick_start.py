@@ -41,9 +41,7 @@
 # ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 # with no other impact on your data workflow.
 #
-# Since v2.6.0, ITables has minimal dependencies: just `typing_extensions`.
-# It works out of the box with your favorite subset of Pandas or Polars, Jupyter, Dash, Streamlit, or Marimo.
-# You only need to have these installed. The only exception is the Jupyter Widget, which requires `anywidget`.
+# Since v2.6.0, ITables has no dependencies. It works out of the box with Pandas or Polars in Jupyter, Dash, Streamlit, or Marimo—you only need these packages installed. The Jupyter Widget is the sole exception, requiring `anywidget`.
 #
 # # Quick Start
 #

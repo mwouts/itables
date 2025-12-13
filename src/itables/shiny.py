@@ -1,7 +1,5 @@
 from pathlib import Path
-from typing import Union
-
-from typing_extensions import Optional, Unpack
+from typing import Optional, Union
 
 import itables.options as opt
 
@@ -10,7 +8,7 @@ from .javascript import (
     replace_value,
     to_html_datatable,
 )
-from .typing import DataFrameOrSeries, ITableOptions
+from .typing import DataFrameOrSeries, ITableOptions, Unpack
 from .utils import read_package_file
 
 _CONNECTED = True

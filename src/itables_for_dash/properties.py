@@ -1,13 +1,12 @@
 from typing import Any, Optional, cast
 
 from dash import Output, no_update
-from typing_extensions import Unpack
 
 from itables.javascript import (
     get_expanded_style,
     get_itables_extension_arguments,
 )
-from itables.typing import DataFrameOrSeries, DTForITablesOptions, ITableOptions
+from itables.typing import DataFrameOrSeries, DTForITablesOptions, ITableOptions, Unpack
 
 ITABLE_PROPERTIES = (
     "caption",
