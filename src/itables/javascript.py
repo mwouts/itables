@@ -261,14 +261,13 @@ def _table_header(
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
     pattern = re.compile(r".*<thead>(.*)</thead>", flags=re.MULTILINE | re.DOTALL)
-    if df_module_name == "pandas":
+    if df_module_name in ["pandas", "numpy"]:
         html_header = df.head(0).to_html(escape=escape_html)
-    elif df_module_name == "polars":
+    else:
+        # Polars or Narwhalified DataFrame
         columns = [escape_html_chars(col) if escape_html else col for col in df.columns]
         formatted_columns = "".join(f"<th>{col}</th>" for col in columns)
         html_header = f'<table class="dataframe">\n<thead>\n<tr style="text-align: right;">\n<th></th>\n{formatted_columns}\n</tr>\n</thead>\n  <tbody>\n  </tbody>\n</table>'
-    else:
-        raise TypeError(f"Unsupported DataFrame type: {df_module_name}")
 
     # NB: The dtype row is not compatible with the footer option
     # which requires a flat header
@@ -516,10 +515,20 @@ def get_itable_arguments(
     else:
         maxColumns = 0
 
+    if df is not None and df_module_name not in ["pandas", "polars", "numpy"]:
+        try:
+            import narwhals as nw
+        except ImportError as e:
+            raise TypeError(
+                "Narwhals is required to render DataFrames other than Pandas or Polars"
+            ) from e
+        else:
+            df = nw.from_native(df, eager_only=True)
+
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
     allow_html = kwargs.pop("allow_html")
 
-    if not showIndex and df_module_name == "pandas" and df_type_name == "DataFrame":
+    if not showIndex and df_module_name == "pandas" and df_type_name != "Styler":
         import pandas as pd
 
         df = df.set_index(pd.RangeIndex(len(df.index)))

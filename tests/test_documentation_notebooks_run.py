@@ -35,6 +35,9 @@ def test_run_documentation_notebooks(notebook):
         pytest.importorskip("pandas.io.formats.style")
     if "marimo" in notebook.stem or "widget" in notebook.stem:
         pytest.importorskip("anywidget")
+    if "other_dataframes" in notebook.stem:
+        pytest.importorskip("modin")
+        pytest.importorskip("pyarrow")
 
     notebook_text = notebook.read_text()
     if "import pandas" in notebook_text or "sample_pandas_dfs" in notebook_text:

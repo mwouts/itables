@@ -6,10 +6,10 @@ build-backend = "hatchling.build"
 name = "itables"
 authors = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
 maintainers = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
-description = "Pandas and Polar DataFrames as interactive DataTables"
+description = "Python DataFrames as interactive DataTables"
 readme = "README.md"
 license = { file = "LICENSE" }
-keywords = ["Pandas", "Polars", "Interactive", "Javascript", "DataTables"]
+keywords = ["Pandas", "Polars", "Narwhals", "Interactive", "Javascript", "DataTables"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: MIT License",
@@ -34,6 +34,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 pandas = ["pandas"]
 polars = ["polars"]
+narwhals = ["narwhals"]
 style = ["pandas", "matplotlib"]
 
 notebook = ["IPython"]
@@ -42,13 +43,14 @@ shiny = ["shiny", "shinywidgets"]
 dash = ["dash", "typing-extensions"]
 streamlit = ["streamlit"]
 marimo = ["marimo"]
+other_dataframes = ["narwhals", "pyarrow", "modin[dask]"]
 
 config = ["tomli;python_version<\"3.11\"", "platformdirs"]
 check_type = ["typeguard>=4.4.1"]
 
 samples = ["pytz", "world_bank_data"]
 
-all = ["itables[config,pandas,polars,style,samples,notebook,widget,dash,shiny,streamlit,marimo,check_type]"]
+all = ["itables[config,pandas,polars,style,narwhals,other_dataframes,samples,notebook,widget,dash,shiny,streamlit,marimo,check_type]"]
 test-base = [
   "itables",
   # Pytest

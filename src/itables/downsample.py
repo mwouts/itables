@@ -8,20 +8,17 @@ from itables.typing import (
 )
 
 
-def nbytes(
-    df: DataFrameOrSeries, df_module_name: Optional[DataFrameModuleName] = None
-) -> int:
+def nbytes(df: DataFrameOrSeries, df_module_name: DataFrameModuleName = None) -> int:
     """Return an estimate for number of bytes used by the dataframe"""
     if df_module_name is None:
         df_module_name = get_dataframe_module_name(df)
+        assert df_module_name is not None
 
     if df_module_name == "pandas":
         return sum(x.values.nbytes for _, x in df.items())
-    elif df_module_name == "polars":
-        # Polars DataFrame
-        return df.estimated_size()
     else:
-        raise TypeError(f"Unsupported DataFrame type: {df_module_name}")
+        # Polars or Narwhalified DataFrame
+        return df.estimated_size()
 
 
 def as_nbytes(mem: Union[int, float, str]) -> int:
