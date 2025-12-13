@@ -14,7 +14,7 @@ kernelspec:
 
 # Footer
 
-Use `footer = True` if you wish to display a table footer.
+Use `footer = True` to display a table footer.
 
 ```{code-cell} ipython3
 :tags: [full-width]

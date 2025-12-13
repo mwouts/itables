@@ -122,7 +122,8 @@ class ITableOptions(DataTableOptions):
     style: NotRequired[Union[str, dict[str, str]]]
     selected_rows: NotRequired[Sequence[int]]
 
-    showIndex: NotRequired[Union[bool, str]]
+    showIndex: NotRequired[Union[bool, Literal["auto"]]]
+    show_dtypes: NotRequired[Union[bool, Literal["auto"]]]
 
     maxBytes: NotRequired[Union[int, str]]
     maxRows: NotRequired[int]

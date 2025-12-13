@@ -2,6 +2,7 @@
 
 import json
 import re
+import sys
 import uuid
 import warnings
 from base64 import b64encode
@@ -256,6 +257,7 @@ def _table_header(
     footer: Union[bool, str],
     column_filters: Literal["header", "footer", False],
     escape_html: bool,
+    show_dtypes: bool,
 ):
     """This function returns the HTML table header. Rows are not included."""
     # Generate table head using pandas.to_html(), see issue 63
@@ -268,6 +270,41 @@ def _table_header(
         html_header = f'<table class="dataframe">\n<thead>\n<tr style="text-align: right;">\n<th></th>\n{formatted_columns}\n</tr>\n</thead>\n  <tbody>\n  </tbody>\n</table>'
     else:
         raise TypeError(f"Unsupported DataFrame type: {df_module_name}")
+
+    # NB: The dtype row is not compatible with the footer option
+    # which requires a flat header
+    if show_dtypes and (footer is False):
+
+        def format_dtype(dtype):
+            if hasattr(dtype, "_string_repr"):
+                return dtype._string_repr()
+
+            dtype = str(dtype)
+            if dtype.startswith("int"):
+                return "i" + dtype[3:]
+            elif dtype.startswith("uint"):
+                return "u" + dtype[4:]
+            elif dtype.startswith("float"):
+                return "f" + dtype[5:]
+            else:
+                return dtype
+
+        if show_index:
+            pd = sys.modules["pandas"]
+
+            if isinstance(df.index, pd.MultiIndex):
+                all_dtypes = list(df.index.dtypes) + list(df.dtypes)
+            else:
+                all_dtypes = [df.index.dtype] + list(df.dtypes)
+        else:
+            all_dtypes = df.dtypes
+        formatted_dtypes = "".join(
+            f"<th><small class='itables-dtype'>{escape_html_chars(format_dtype(dt)) if escape_html else dt}</small></th>"
+            for dt in all_dtypes
+        )
+        html_header = replace_value(
+            html_header, "</thead>", f"<tr>{formatted_dtypes}</thead>"
+        )
 
     match = pattern.match(html_header)
     assert match is not None
@@ -405,6 +442,22 @@ def _evaluate_show_index(
     return not isinstance(df.index, pd.RangeIndex)
 
 
+def _evaluate_show_dtypes(
+    df_module_name: DataFrameModuleName,
+    show_dtypes: Union[bool, Literal["auto"]],
+) -> bool:
+    """
+    Determine whether to show dtypes in the table header.
+    """
+    if show_dtypes != "auto":
+        return show_dtypes
+    if df_module_name == "polars":
+        import polars as pl
+
+        return pl.Config.state()["POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES"] is None
+    return False
+
+
 def get_itable_arguments(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
@@ -443,6 +496,9 @@ def get_itable_arguments(
         df = df.to_frame()
 
     showIndex = _evaluate_show_index(df, df_module_name, df_type_name, showIndex)
+    show_dtypes = _evaluate_show_dtypes(
+        df_module_name, kwargs.pop("show_dtypes", "auto")
+    )
 
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
@@ -513,6 +569,7 @@ def get_itable_arguments(
             footer,
             dt_args.get("column_filters", False),
             escape_html=allow_html is not True,
+            show_dtypes=show_dtypes,
         )
 
         # Export the table data to JSON and include this in the HTML

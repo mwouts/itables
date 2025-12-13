@@ -28,7 +28,14 @@ layout: Mapping[str, Union[None, str, Mapping[str, Any]]] = {
 Show the index? Possible values: True, False and 'auto'. In mode 'auto', the index is not shown
 if it has no name and its content is range(N)
 """
-showIndex: Literal[True, False, "auto"] = "auto"
+showIndex: Union[bool, Literal["auto"]] = "auto"
+
+"""
+Show the column data types? Possible values: True, False and 'auto'. In mode
+'auto' the dtypes will be shown only for Polars dataframes, unless the
+Polars config says otherwise.
+"""
+show_dtypes: Union[bool, Literal["auto"]] = "auto"
 
 """
 The default classes.

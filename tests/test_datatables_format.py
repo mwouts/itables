@@ -7,7 +7,11 @@ from datetime import date, datetime, timedelta
 import pytest
 
 from itables.datatables_format import datatables_rows, generate_encoder
-from itables.javascript import _column_count_in_header, _table_header
+from itables.javascript import (
+    _column_count_in_header,
+    _table_header,
+    get_itable_arguments,
+)
 from itables.typing import get_dataframe_module_name
 
 
@@ -233,6 +237,7 @@ def test_datatables_rows(df, expected):
         footer=False,
         column_filters=False,
         escape_html=True,
+        show_dtypes=False,
     )
     column_count = _column_count_in_header(table_header)
     actual = datatables_rows(df, column_count=column_count)
@@ -316,3 +321,41 @@ def test_polars_float_formatting():
 
     with pl.Config(float_precision=6):
         assert datatables_rows(df) == "[[3.141593], [3141592653589.793]]"
+
+
+def test_show_dtypes_pandas():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"a": [1], "b": [2]})
+    dt_args = get_itable_arguments(df, show_dtypes=True)
+    assert "table_html" in dt_args
+    assert (
+        "<tr><th><small class='itables-dtype'>i64</small></th><th><small class='itables-dtype'>i64</small></th>"
+        in dt_args["table_html"]
+    )
+
+    df = pd.DataFrame({"a": [1], "b": [2]}, index=pd.Index(["O"], name="index"))
+    dt_args = get_itable_arguments(df, show_dtypes=True)
+    assert "table_html" in dt_args
+    assert (
+        "<tr><th><small class='itables-dtype'>object</small></th><th><small class='itables-dtype'>i64</small></th><th><small class='itables-dtype'>i64</small></th>"
+        in dt_args["table_html"]
+    )
+
+
+def test_show_dtypes_polars():
+    pl = pytest.importorskip("polars")
+    df = pl.DataFrame({"a": [1]})
+    dt_args = get_itable_arguments(df)
+    assert "table_html" in dt_args
+    assert "i64" in dt_args["table_html"]
+
+    df = pl.DataFrame({"a": [1]}, schema={"a": pl.UInt32})
+    dt_args = get_itable_arguments(df)
+    assert "table_html" in dt_args
+    assert "u32" in dt_args["table_html"]
+
+    df = pl.DataFrame({"a": [1], "b": [2]})
+    with pl.Config(tbl_hide_column_data_types=True):
+        dt_args = get_itable_arguments(df)
+    assert "table_html" in dt_args
+    assert "64" not in dt_args["table_html"]

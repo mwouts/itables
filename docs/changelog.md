@@ -14,6 +14,7 @@ ITables ChangeLog
 
 **Added**
 - A conda package is built (and attached) to each PR.
+- ITables has a new option `show_dtypes` which defaults to `"auto"`, meaning that dtypes are shown for Polars Dataframes by default ([#449](https://github.com/mwouts/itables/issues/449))
 
 
 2.5.2 (2025-09-02)
