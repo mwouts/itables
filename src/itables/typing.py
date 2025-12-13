@@ -3,7 +3,7 @@ import sys
 import warnings
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Literal, Mapping, Sequence, TypedDict, Union, cast
+from typing import Any, Literal, Mapping, Optional, Sequence, TypedDict, Union
 
 # Conditional imports based on Python version
 if sys.version_info >= (3, 11):
@@ -34,8 +34,8 @@ __all__ = [
     "DataFrameOrSeries",
 ]
 
-DataFrameModuleName: TypeAlias = Literal["pandas", "polars", "numpy", None]
-DataFrameTypeName: TypeAlias = Literal["DataFrame", "Series", "Styler", "ndarray", None]
+DataFrameModuleName: TypeAlias = Optional[str]
+DataFrameTypeName: TypeAlias = Optional[str]
 
 """
 A Pandas or Polars DataFrame or Series, a numpy array, or a Pandas Style object.
@@ -49,10 +49,7 @@ def get_dataframe_module_name(df: DataFrameOrSeries) -> DataFrameModuleName:
     """
     if df is None:
         return None
-    module_name = type(df).__module__.split(".")[0]
-    if module_name not in DataFrameModuleName.__args__:
-        raise TypeError(f"Unsupported DataFrame type: {type(df)}")
-    return cast(DataFrameModuleName, module_name)
+    return type(df).__module__.split(".", 1)[0]
 
 
 def get_dataframe_type_name(df: DataFrameOrSeries) -> DataFrameTypeName:
@@ -61,10 +58,7 @@ def get_dataframe_type_name(df: DataFrameOrSeries) -> DataFrameTypeName:
     """
     if df is None:
         return None
-    type_name = type(df).__name__
-    if type_name not in DataFrameTypeName.__args__:
-        raise TypeError(f"Unsupported DataFrame type: {type(df)}")
-    return cast(DataFrameTypeName, type_name)
+    return type(df).__name__
 
 
 class JavascriptFunction(str):

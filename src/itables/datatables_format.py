@@ -4,7 +4,7 @@ import sys
 import warnings
 from typing import Any, Optional, Sequence
 
-from .typing import DataFrameOrSeries
+from .typing import DataFrameOrSeries, get_dataframe_module_name
 
 
 def _format_pandas_series(x, escape_html: bool) -> Sequence[Any]:
@@ -82,6 +82,35 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
     return formatted
 
 
+def _format_narwhals_series(x, escape_html: bool) -> Sequence[Any]:
+    """Format a Narwhals Series for DataTables display"""
+    nw = sys.modules["narwhals"]
+    dtype = x.dtype
+
+    # Boolean and integer types - return as-is
+    if dtype in (
+        nw.Boolean,
+        nw.Int8,
+        nw.Int16,
+        nw.Int32,
+        nw.Int64,
+        nw.UInt8,
+        nw.UInt16,
+        nw.UInt32,
+        nw.UInt64,
+    ):
+        return [v for v in x]
+
+    # Float types - format and handle non-finite values
+    if dtype in (nw.Float32, nw.Float64):
+        return [escape_non_finite_float(v) for v in x]
+
+    formatted = [str(v) for v in x]
+    if escape_html:
+        return [escape_html_chars(i) for i in formatted]
+    return formatted
+
+
 def escape_non_finite_float(value: Any) -> Any:
     """Encode non-finite float values to strings that will be parsed by parseJSON"""
     if not isinstance(value, float):
@@ -153,17 +182,23 @@ def datatables_rows(
         assert missing_columns > 0
         empty_columns = [[None] * len(df)] * missing_columns
 
-    df_module = type(df).__module__
-    if df_module.startswith("pandas"):
+    df_module = get_dataframe_module_name(df)
+    if df_module == "pandas":
         formatted_columns = [
             _format_pandas_series(x, escape_html) for _, x in df.items()
         ]
-    elif df_module.startswith("polars"):
+    elif df_module == "polars":
         formatted_columns = [
             _format_polars_series(df[col], escape_html) for col in df.columns
         ]
     else:
-        raise TypeError(f"Unsupported DataFrame type: {df_module}")
+        # Narwhalified DataFrame
+        import narwhals as nw
+
+        df = nw.from_native(df, eager_only=True)
+        formatted_columns = [
+            _format_narwhals_series(df[col], escape_html) for col in df.columns
+        ]
 
     data = list(zip(*(empty_columns + formatted_columns)))
 
