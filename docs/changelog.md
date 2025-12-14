@@ -1,20 +1,25 @@
 ITables ChangeLog
 =================
 
-2.6.0 (2025-12-??)
+2.6.0 (2025-12-14)
 ------------------
 
 **Added**
-- ITables has minimal dependencies (only `typing-extensions`)! ([#457](https://github.com/mwouts/itables/issues/457))
-- ITables has a new option `show_dtypes` which defaults to `"auto"`, meaning that dtypes are shown for Polars Dataframes by default ([#449](https://github.com/mwouts/itables/issues/449))
+- ITables has no dependencies ([#457](https://github.com/mwouts/itables/issues/457),[#465](https://github.com/mwouts/itables/pull/465)). Also, it has been tested with Python 3.14.
+- When Narwhals is installed, ITables can show cuDF and Modin DataFrames, as well as PyArrow tables. Many thanks to [Marco Gorelli](https://github.com/MarcoGorelli) and to [Dea María Léon](https://github.com/DeaMariaLeon) for making this happen! ([#325](https://github.com/mwouts/itables/issues/325))
+- We have added a new `show_dtypes` option. It defaults to `"auto"`, meaning that dtypes are only shown for Polars Dataframes by default ([#449](https://github.com/mwouts/itables/issues/449))
+- Another new option is `show_df_type` (defaults to `False`) to show the DataFrame or Series type ([#448](https://github.com/mwouts/itables/issues/448))
 - When displaying Polars DataFrames, ITables will format floats using `float_precision`, if set on the `pl.Config` object ([#447](https://github.com/mwouts/itables/issues/447))
-- The development environment for ITables is now controlled with Pixi.
-- ITables works with Python 3.14
-- A conda package is built (and attached) to each PR.
+- The development environment for ITables is now controlled with Pixi ([#453](https://github.com/mwouts/itables/pull/453))
+- A conda package is built (and attached) to each PR ([#438](https://github.com/mwouts/itables/pull/438))
 
 **Fixed**
 - We need to use `hatch<1.16.0` to build ITables ([jupyter-builder-#40](https://github.com/jupyterlab/jupyter-builder/issues/40))
 - ITables now works with `datadog` ([#451](https://github.com/mwouts/itables/issues/451))
+
+**Changed**
+- We have updated the JavaScript dependencies of our Streamlit component
+
 
 2.5.2 (2025-09-02)
 ------------------

@@ -192,10 +192,12 @@ def datatables_rows(
             _format_polars_series(df[col], escape_html) for col in df.columns
         ]
     else:
-        # Narwhalified DataFrame
+        # Other DataFrame types are handled via Narwhals, and are expected
+        # to have been converted to Narwhals already (except in tests)
         import narwhals as nw
 
-        df = nw.from_native(df, eager_only=True)
+        df = nw.from_native(df, eager_only=True, allow_series=True)
+
         formatted_columns = [
             _format_narwhals_series(df[col], escape_html) for col in df.columns
         ]

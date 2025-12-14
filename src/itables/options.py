@@ -37,6 +37,11 @@ Polars config says otherwise.
 show_dtypes: Union[bool, Literal["auto"]] = "auto"
 
 """
+Show the DataFrame or Series type, e.g. 'pandas.Series', 'polars.DataFrame', ...
+"""
+show_df_type: bool = False
+
+"""
 The default classes.
 See https://mwouts.github.io/itables/options/classes.html
 """

@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Union
+from typing import Union
 
 from itables.typing import (
     DataFrameModuleName,
@@ -14,7 +14,7 @@ def nbytes(df: DataFrameOrSeries, df_module_name: DataFrameModuleName = None) ->
         df_module_name = get_dataframe_module_name(df)
         assert df_module_name is not None
 
-    if df_module_name == "pandas":
+    if df_module_name in ["pandas", "numpy"]:
         return sum(x.values.nbytes for _, x in df.items())
     else:
         # Polars or Narwhalified DataFrame
@@ -41,7 +41,7 @@ def as_nbytes(mem: Union[int, float, str]) -> int:
 
 def downsample(
     df: DataFrameOrSeries,
-    df_module_name: Optional[DataFrameModuleName] = None,
+    df_module_name: DataFrameModuleName = None,
     max_rows: int = 0,
     max_columns: int = 0,
     max_bytes: Union[int, str] = 0,
@@ -65,7 +65,7 @@ def downsample(
     )
 
     if len(df) < org_rows or len(df.columns) < org_columns:
-        link = '<a href="https://mwouts.github.io/itables/downsampling.html">downsampled</a>'
+        downsampled = '<a href="https://mwouts.github.io/itables/downsampling.html">downsampled</a>'
         reasons = []
         if org_rows > max_rows > 0:
             reasons.append("maxRows={}".format(max_rows))
@@ -74,16 +74,14 @@ def downsample(
         if org_bytes > max_bytes_numeric > 0:
             reasons.append("maxBytes={}".format(max_bytes))
 
-        warning = "{} from {:,d}x{:,d} to {:,d}x{:,d} as {}".format(
-            link,
-            org_rows,
-            org_columns,
-            len(df),
-            len(df.columns),
-            " and ".join(reasons),
-        )
+        if len(df.columns) < org_columns:
+            downsampled_warning = f"{downsampled} from {org_rows:,d}x{org_columns:,d} to {len(df):,d}x{len(df.columns):,d} as {' and '.join(reasons)}"
+        else:
+            downsampled_warning = (
+                f"{downsampled} from {org_rows:,d} rows as {' and '.join(reasons)}"
+            )
 
-        return df, warning
+        return df, downsampled_warning
 
     return df, ""
 

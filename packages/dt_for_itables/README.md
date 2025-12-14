@@ -28,5 +28,6 @@ Update the dependencies, bump the version in `package.json`, and then:
 npm pack
 
 # Publish the package on npm with
-npm publish --access=public
+npm login
+npm publish --access public
 ```

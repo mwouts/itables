@@ -43,6 +43,31 @@ A Pandas or Polars DataFrame or Series, a numpy array, or a Pandas Style object.
 DataFrameOrSeries: TypeAlias = Any
 
 
+def get_dataframe_type_description(df: DataFrameOrSeries) -> str:
+    """
+    Return a string description of the type of the given DataFrame or Series.
+    """
+    if df is None:
+        return "None"
+    module = type(df).__module__
+    if module.startswith("modin.pandas."):
+        return f"modin.pandas.{type(df).__name__}"
+    if module.startswith("narwhals."):
+        return f"{get_dataframe_type_description(df.to_native())} (narwhalified)"
+    return f"{type(df).__module__.split('.', 1)[0]}.{type(df).__name__}"
+
+
+def get_dataframe_module_and_type_name(
+    df: DataFrameOrSeries,
+) -> tuple[DataFrameModuleName, DataFrameTypeName]:
+    """
+    Return the module and type name of the given DataFrame or Series.
+    """
+    if df is None:
+        return None, None
+    return type(df).__module__.split(".", 1)[0], type(df).__name__
+
+
 def get_dataframe_module_name(df: DataFrameOrSeries) -> DataFrameModuleName:
     """
     Return the module name of the given DataFrame or Series.
@@ -50,15 +75,6 @@ def get_dataframe_module_name(df: DataFrameOrSeries) -> DataFrameModuleName:
     if df is None:
         return None
     return type(df).__module__.split(".", 1)[0]
-
-
-def get_dataframe_type_name(df: DataFrameOrSeries) -> DataFrameTypeName:
-    """
-    Return the type name of the given DataFrame or Series.
-    """
-    if df is None:
-        return None
-    return type(df).__name__
 
 
 class JavascriptFunction(str):
@@ -146,6 +162,7 @@ class ITableOptions(DataTableOptions):
 
     showIndex: NotRequired[Union[bool, Literal["auto"]]]
     show_dtypes: NotRequired[Union[bool, Literal["auto"]]]
+    show_df_type: NotRequired[bool]
 
     maxBytes: NotRequired[Union[int, str]]
     maxRows: NotRequired[int]
