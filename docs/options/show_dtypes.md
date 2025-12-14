@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# Show DTypes
+# Show dtypes
 
 By default, the columns dtypes are shown only for Polars dataframes. If you prefer, you can change the value of `show_dtypes` to either `True` or `False` to always or never show the index (the default value being `"auto"`).
 

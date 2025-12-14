@@ -17,15 +17,14 @@ from .downsample import downsample
 from .typing import (
     DataFrameModuleName,
     DataFrameOrSeries,
-    DataFrameTypeName,
     DTForITablesOptions,
     ITableOptions,
     JavascriptCode,
     JavascriptFunction,
     Unpack,
     check_itable_arguments,
-    get_dataframe_module_name,
-    get_dataframe_type_name,
+    get_dataframe_module_and_type_name,
+    get_dataframe_type_description,
 )
 from .utils import (
     UNPKG_DT_BUNDLE_CSS_NO_VERSION,
@@ -413,14 +412,13 @@ def to_html_datatable(
     )
 
 
-def _evaluate_show_index(
-    df, df_module_name: DataFrameModuleName, df_type_name: DataFrameTypeName, showIndex
-) -> bool:
+def _evaluate_show_index(df, showIndex) -> bool:
     """
     We don't want to show trivial indices (RangeIndex with no name) on Pandas DataFrames.
     """
     if df is None:
         return False
+    df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
     if df_module_name != "pandas":
         return False
     if showIndex != "auto":
@@ -428,8 +426,6 @@ def _evaluate_show_index(
     if df_type_name == "Styler":
         return _evaluate_show_index(
             df.data,  # pyright: ignore[reportAttributeAccessIssue]
-            df_module_name,
-            "DataFrame",
             showIndex,
         )
     if df.index.name is not None:
@@ -470,9 +466,16 @@ def get_itable_arguments(
             "The argument 'import_jquery' was removed in ITables v2.0. "
             "Please pass a custom 'dt_url' instead."
         )
+    df_type_description = get_dataframe_type_description(df)
+    df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
+    if df_module_name == "narwhals":
+        import narwhals as nw
 
-    df_module_name = get_dataframe_module_name(df)
-    df_type_name = get_dataframe_type_name(df)
+        native_namespace = nw.get_native_namespace(df).__name__
+        # Pandas indexes are very specific so we go back to the native dataframe
+        if native_namespace == "pandas":
+            df = df.to_native()
+            df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
 
     if df_module_name == "pandas" and df_type_name == "Styler":
         use_to_html = kwargs.pop("use_to_html", True)
@@ -493,10 +496,11 @@ def get_itable_arguments(
     if df_type_name == "Series":
         df = df.to_frame()
 
-    showIndex = _evaluate_show_index(df, df_module_name, df_type_name, showIndex)
+    showIndex = _evaluate_show_index(df, showIndex)
     show_dtypes = _evaluate_show_dtypes(
         df_module_name, kwargs.pop("show_dtypes", "auto")
     )
+    show_df_type = kwargs.pop("show_df_type", False)
 
     maxBytes = kwargs.pop("maxBytes", 0)
     maxRows = kwargs.pop("maxRows", 0)
@@ -523,7 +527,7 @@ def get_itable_arguments(
                 "Narwhals is required to render DataFrames other than Pandas or Polars"
             ) from e
         else:
-            df = nw.from_native(df, eager_only=True)
+            df = nw.from_native(df, eager_only=True, allow_series=True)
 
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
     allow_html = kwargs.pop("allow_html")
@@ -625,6 +629,15 @@ def get_itable_arguments(
         else:
             # NB: style is not available either
             dt_args["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
+
+    if show_df_type:
+        if "downsampling_warning" in dt_args:
+            downsampling_warning = dt_args["downsampling_warning"]
+            downsampling_warning = f"{df_type_description} {downsampling_warning}"
+            dt_args["downsampling_warning"] = downsampling_warning
+        else:
+            dt_args["downsampling_warning"] = df_type_description
+            dt_args["filtered_row_count"] = 0
 
     _adjust_layout(df, dt_args)
 
