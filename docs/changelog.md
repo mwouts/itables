@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.6.1 (2025-12-14)
+------------------
+
+**Fixed**
+- We have fixed a conda build error: `TypeError: typing.Any is not subscriptable` ([#468](https://github.com/mwouts/itables/issues/468)), and added more tests
+
+
 2.6.0 (2025-12-14)
 ------------------
 

@@ -180,6 +180,7 @@ jobs:
       fail-fast: false
       matrix:
         environment:
+          - minimal
           - test-pandas-notebook
           - test-polars-notebook
           - test-pandas-dash

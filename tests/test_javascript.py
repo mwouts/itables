@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-import requests
 
 import itables.options as opt
 from itables.javascript import (
@@ -174,6 +173,7 @@ def test_check_table_id():
 
 @pytest.mark.parametrize("url", [UNPKG_DT_BUNDLE_URL, UNPKG_DT_BUNDLE_CSS])
 def test_unpkg_links(url):
+    requests = pytest.importorskip("requests")
     response_no_version = requests.get("https://www.unpkg.com/dt_for_itables/")
     if not response_no_version.ok:
         pytest.skip("unpkg.com is not reachable")

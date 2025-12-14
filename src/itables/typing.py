@@ -13,9 +13,14 @@ else:
         from typing_extensions import NotRequired, TypeAlias, Unpack
     except ImportError:
         # Fallback for when typing_extensions is not available
-        NotRequired = Any  # type: ignore
+        # Create subscriptable fallbacks that return Any
+        class SubscriptableFallback:
+            def __getitem__(self, item):
+                return Any
+
+        NotRequired = SubscriptableFallback()  # type: ignore
+        Unpack = SubscriptableFallback()  # type: ignore
         TypeAlias = Any  # type: ignore
-        Unpack = Any  # type: ignore
 
 if sys.version_info >= (3, 10):
     pass  # TypeAlias already imported above

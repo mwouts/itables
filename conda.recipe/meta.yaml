@@ -36,12 +36,13 @@ test:
     - python -c "import itables; print(itables.__version__)"
   requires:
     - pip
+    - python = 3.9
 
 about:
   home: https://github.com/mwouts/itables
   dev_url: https://github.com/mwouts/itables
   doc_url: https://mwouts.github.io/itables
-  summary: Pandas and Polars DataFrames as Interactive DataTables
+  summary: Python DataFrames as Interactive DataTables
   license: MIT
   license_file:
     - LICENSE

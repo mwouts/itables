@@ -65,7 +65,8 @@ def test_shiny_apps_are_valid_python_scripts(
     shiny_app: str,
     ignore_errors=[
         "RuntimeError: express.ui.page_opts() can only "
-        "be used inside of a standalone Shiny Express app"
+        "be used inside of a standalone Shiny Express app",
+        "ModuleNotFoundError: No module named 'shiny'",
     ],
 ):
     """Test that the Shiny apps are valid Python scripts.
