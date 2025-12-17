@@ -221,9 +221,7 @@ jobs:
         with:
           python-version: 3.11
       - name: Install hatch
-        # hatch==1.16.0 fails with
-        # hatchling.plugin.exceptions.UnknownPluginError: Unknown build hook: jupyter-builder
-        run : pip install 'hatch<1.16'
+        run : pip install hatch
       - name: Build package
         run: hatch build
       - name: Check LICENSE.txt in wheel
