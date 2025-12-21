@@ -71,6 +71,57 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
             values = x.round(precision).to_list()
         return [escape_non_finite_float(v) for v in values]
 
+    # Array and List types with float inner dtype - apply formatting to nested values
+    if dtype.is_nested() and hasattr(dtype, 'inner') and dtype.inner in (pl.Float32, pl.Float64):
+        precision = pl.Config.state().get("set_float_precision")
+        if precision is None:
+            # No precision set - format as-is but handle non-finite floats
+            result = []
+            for item in x.to_list():
+                if item is None:
+                    result.append(None)
+                else:
+                    # Apply escape_non_finite_float to each element in the nested structure
+                    formatted_item = [escape_non_finite_float(v) for v in item]
+                    result.append(str(formatted_item))
+        else:
+            # Apply precision formatting using explode-round-group approach
+            # First, track which rows are None before exploding
+            original_values = x.to_list()
+            none_mask = [item is None for item in original_values]
+            
+            temp_df = pl.DataFrame({
+                '_row_idx': range(len(x)),
+                '_nested_col': x
+            })
+            
+            # Explode the nested column
+            exploded = temp_df.explode('_nested_col')
+            
+            # Round the floats
+            exploded = exploded.with_columns(
+                pl.col('_nested_col').round(precision)
+            )
+            
+            # Group back by row index
+            grouped = exploded.group_by('_row_idx', maintain_order=True).agg(
+                pl.col('_nested_col')
+            )['_nested_col']
+            
+            # Convert to strings, handling non-finite values and restoring None rows
+            result = []
+            for idx, item in enumerate(grouped.to_list()):
+                if none_mask[idx]:
+                    # Row was originally None, keep it as None
+                    result.append(None)
+                else:
+                    formatted_item = [escape_non_finite_float(v) for v in item]
+                    result.append(str(formatted_item))
+        
+        if escape_html:
+            return [escape_html_chars(i) for i in result]
+        return result
+
     # Any other type: convert to string
     try:
         formatted = x.cast(str).to_list()

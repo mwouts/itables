@@ -323,6 +323,115 @@ def test_polars_float_formatting():
         assert datatables_rows(df) == "[[3.141593], [3141592653589.793]]"
 
 
+def test_polars_array_float_formatting():
+    """Test that Polars float_precision config applies to Array[Float64] columns"""
+    try:
+        import polars as pl
+    except ImportError:
+        pytest.skip("polars is not installed")
+
+    # Test with Array[Float64]
+    df = pl.DataFrame(
+        {"array_col": [[1.234567890123456, 2.345678901234567, math.pi]]},
+        schema={"array_col": pl.Array(pl.Float64, 3)},
+    )
+    
+    # Default formatting - full precision
+    result = datatables_rows(df)
+    assert "[1.234567890123456, 2.345678901234567, 3.141592653589793]" in result
+
+    # With precision=2
+    with pl.Config(float_precision=2):
+        result = datatables_rows(df)
+        assert "[1.23, 2.35, 3.14]" in result
+
+    # With precision=6
+    with pl.Config(float_precision=6):
+        result = datatables_rows(df)
+        assert "[1.234568, 2.345679, 3.141593]" in result
+
+
+def test_polars_list_float_formatting():
+    """Test that Polars float_precision config applies to List[Float64] columns"""
+    try:
+        import polars as pl
+    except ImportError:
+        pytest.skip("polars is not installed")
+
+    # Test with List[Float64]
+    df = pl.DataFrame({
+        "list_col": [
+            [1.234567890123456, 2.345678901234567, math.pi],
+            [4.5, 6.7],
+        ]
+    })
+    
+    # Default formatting - full precision
+    result = datatables_rows(df)
+    assert "[1.234567890123456, 2.345678901234567, 3.141592653589793]" in result
+    assert "[4.5, 6.7]" in result
+
+    # With precision=2
+    with pl.Config(float_precision=2):
+        result = datatables_rows(df)
+        assert "[1.23, 2.35, 3.14]" in result
+        assert "[4.5, 6.7]" in result
+
+    # With precision=6
+    with pl.Config(float_precision=6):
+        result = datatables_rows(df)
+        assert "[1.234568, 2.345679, 3.141593]" in result
+        assert "[4.5, 6.7]" in result
+
+
+def test_polars_array_list_with_non_finite_floats():
+    """Test that non-finite floats in arrays/lists are properly escaped"""
+    try:
+        import polars as pl
+    except ImportError:
+        pytest.skip("polars is not installed")
+
+    # Test with Array containing NaN, Inf, -Inf
+    df_array = pl.DataFrame(
+        {"array_col": [[1.5, math.nan, math.inf, -math.inf, 2.5]]},
+        schema={"array_col": pl.Array(pl.Float64, 5)},
+    )
+    result = datatables_rows(df_array)
+    assert "___NaN___" in result
+    assert "___Infinity___" in result
+    assert "___-Infinity___" in result
+
+    # Test with List containing NaN, Inf
+    df_list = pl.DataFrame({
+        "list_col": [[1.5, math.nan, math.inf], [-math.inf, 2.5]]
+    })
+    result = datatables_rows(df_list)
+    assert "___NaN___" in result
+    assert "___Infinity___" in result
+    assert "___-Infinity___" in result
+
+
+def test_polars_list_with_none_values():
+    """Test that None values in list columns are handled correctly"""
+    try:
+        import polars as pl
+    except ImportError:
+        pytest.skip("polars is not installed")
+
+    df = pl.DataFrame({
+        "list_col": [[1.5, 2.5], None, [3.5]]
+    })
+    
+    # Default formatting
+    result = datatables_rows(df)
+    assert result == '[["[1.5, 2.5]"], [null], ["[3.5]"]]'
+
+    # With precision
+    with pl.Config(float_precision=2):
+        result = datatables_rows(df)
+        assert result == '[["[1.5, 2.5]"], [null], ["[3.5]"]]'
+
+
 def test_show_dtypes_pandas():
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"a": [1], "b": [2]})
