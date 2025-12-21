@@ -1,34 +1,43 @@
 import re
-import sys
 import warnings
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Literal, Mapping, Optional, Sequence, TypedDict, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    TypedDict,
+    Union,
+)
 
-# Conditional imports based on Python version
-if sys.version_info >= (3, 11):
-    from typing import NotRequired, TypeAlias, Unpack
-else:
+try:
+    from typing import TypeAlias  # py3.10+
+except ImportError:
     try:
-        from typing_extensions import NotRequired, TypeAlias, Unpack
+        from typing_extensions import TypeAlias  # type: ignore
     except ImportError:
-        # Fallback for when typing_extensions is not available
-        # Create subscriptable fallbacks that return Any
-        class SubscriptableFallback:
+        if TYPE_CHECKING:
+            raise
+        TypeAlias = Any  # type: ignore
+
+try:
+    from typing import NotRequired, Unpack  # py3.11+
+except ImportError:
+    try:
+        from typing_extensions import NotRequired, Unpack  # type: ignore
+    except ImportError:
+        if TYPE_CHECKING:
+            raise
+
+        class _SubscriptableFallback:
             def __getitem__(self, item):
                 return Any
 
-        NotRequired = SubscriptableFallback()  # type: ignore
-        Unpack = SubscriptableFallback()  # type: ignore
-        TypeAlias = Any  # type: ignore
-
-if sys.version_info >= (3, 10):
-    pass  # TypeAlias already imported above
-elif sys.version_info < (3, 11):
-    try:
-        from typing_extensions import TypeAlias
-    except ImportError:
-        TypeAlias = Any  # type: ignore
+        NotRequired = _SubscriptableFallback()  # type: ignore
+        Unpack = _SubscriptableFallback()  # type: ignore
 
 __all__ = [
     "NotRequired",
