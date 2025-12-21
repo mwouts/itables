@@ -4,6 +4,9 @@ ITables ChangeLog
 2.6.2 (2025-12-21)
 ------------------
 
+**Changed**
+- Polars objects are displayed using Polars' internal method `x._s.get_fmt` ([#471](https://github.com/mwouts/itables/issues/471))
+
 **Fixed**
 - The `typing_extensions` package is required for static type checking on Python <= 3.10.
 
