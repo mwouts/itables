@@ -72,7 +72,10 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
         return [escape_non_finite_float(v) for v in values]
 
     # Array and List types with float inner dtype - apply formatting to nested values
-    if dtype.is_nested() and hasattr(dtype, 'inner') and dtype.inner in (pl.Float32, pl.Float64):
+    if (dtype.is_nested() and 
+        hasattr(dtype, 'inner') and 
+        dtype.inner is not None and 
+        dtype.inner in (pl.Float32, pl.Float64)):
         precision = pl.Config.state().get("set_float_precision")
         if precision is None:
             # No precision set - format as-is but handle non-finite floats
@@ -119,6 +122,7 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
                     result.append(str(formatted_item))
         
         if escape_html:
+            # escape_html_chars handles None values correctly
             return [escape_html_chars(i) for i in result]
         return result
 
