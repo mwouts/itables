@@ -46,11 +46,12 @@ marimo = ["marimo"]
 other_dataframes = ["narwhals", "pyarrow", "modin[dask]"]
 
 config = ["tomli;python_version<\"3.11\"", "platformdirs"]
+typing = ["typing_extensions;python_version<\"3.11\""]
 check_type = ["typeguard>=4.4.1"]
 
 samples = ["pytz", "world_bank_data"]
 
-all = ["itables[config,pandas,polars,style,narwhals,other_dataframes,samples,notebook,widget,dash,shiny,streamlit,marimo,check_type]"]
+all = ["itables[config,pandas,polars,style,narwhals,other_dataframes,samples,notebook,widget,dash,shiny,streamlit,marimo,typing,check_type]"]
 test-base = [
   "itables",
   # Pytest
