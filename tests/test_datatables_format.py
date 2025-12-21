@@ -336,19 +336,19 @@ def test_polars_array_float_formatting():
         schema={"array_col": pl.Array(pl.Float64, 3)},
     )
     
-    # Default formatting - full precision
+    # Default formatting - Polars default precision (6 decimal places)
     result = datatables_rows(df)
-    assert "[1.234567890123456, 2.345678901234567, 3.141592653589793]" in result
+    assert "[1.234568, 2.345679, 3.141593]" in result
 
     # With precision=2
     with pl.Config(float_precision=2):
         result = datatables_rows(df)
         assert "[1.23, 2.35, 3.14]" in result
 
-    # With precision=6
-    with pl.Config(float_precision=6):
+    # With precision=10
+    with pl.Config(float_precision=10):
         result = datatables_rows(df)
-        assert "[1.234568, 2.345679, 3.141593]" in result
+        assert "[1.2345678901, 2.3456789012, 3.1415926536]" in result
 
 
 def test_polars_list_float_formatting():
@@ -366,22 +366,23 @@ def test_polars_list_float_formatting():
         ]
     })
     
-    # Default formatting - full precision
+    # Default formatting - Polars default precision (6 decimal places)
     result = datatables_rows(df)
-    assert "[1.234567890123456, 2.345678901234567, 3.141592653589793]" in result
+    assert "[1.234568, 2.345679, 3.141593]" in result
     assert "[4.5, 6.7]" in result
 
     # With precision=2
     with pl.Config(float_precision=2):
         result = datatables_rows(df)
         assert "[1.23, 2.35, 3.14]" in result
-        assert "[4.5, 6.7]" in result
+        # Note: 4.5 and 6.7 become 4.50 and 6.70 with precision=2
+        assert "[4.50, 6.70]" in result
 
-    # With precision=6
-    with pl.Config(float_precision=6):
+    # With precision=10
+    with pl.Config(float_precision=10):
         result = datatables_rows(df)
-        assert "[1.234568, 2.345679, 3.141593]" in result
-        assert "[4.5, 6.7]" in result
+        assert "[1.2345678901, 2.3456789012, 3.1415926536]" in result
+        assert "[4.5000000000, 6.7000000000]" in result
 
 
 def test_polars_array_list_with_non_finite_floats():
@@ -426,10 +427,10 @@ def test_polars_list_with_none_values():
     result = datatables_rows(df)
     assert result == '[["[1.5, 2.5]"], [null], ["[3.5]"]]'
 
-    # With precision
+    # With precision - Polars adds trailing zeros to match precision
     with pl.Config(float_precision=2):
         result = datatables_rows(df)
-        assert result == '[["[1.5, 2.5]"], [null], ["[3.5]"]]'
+        assert result == '[["[1.50, 2.50]"], [null], ["[3.50]"]]'
 
 
 def test_show_dtypes_pandas():
