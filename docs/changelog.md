@@ -1,11 +1,11 @@
 ITables ChangeLog
 =================
 
-2.6.2 (2025-12-21)
+2.6.2 (2025-12-26)
 ------------------
 
 **Fixed**
-- The `typing_extensions` package is required for static type checking on Python <= 3.10.
+- The `typing_extensions` package is required for static type checking on Python <= 3.10 ([#473](https://github.com/mwouts/itables/pull/473))
 
 
 2.6.1 (2025-12-14)
