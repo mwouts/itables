@@ -1,5 +1,6 @@
 import json
 import math
+import os
 import sys
 import warnings
 from typing import Any, Optional, Sequence
@@ -61,22 +62,26 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
     ):
         return x.to_list()
 
-    # Float types - format and handle non-finite values
+    # Other types - use Polars' native formatting
+    str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
+    formatted = [x._s.get_fmt(i, str_len_limit) for i in range(len(x))]
+
+    # Replace "null" with None
+    formatted = [None if v == "null" else v for v in formatted]
+
+    # Float types: handle non-finite values
     if dtype in (pl.Float32, pl.Float64):
-        # Round floats according to Polars config
-        precision = pl.Config.state().get("set_float_precision")
-        if precision is None:
-            values = x.to_list()
-        else:
-            values = x.round(precision).to_list()
-        return [escape_non_finite_float(v) for v in values]
+        try:
+            formatted = [
+                escape_non_finite_float(float(v)) if v is not None else None
+                for v in formatted
+            ]
+        except ValueError:
+            pass
 
-    # Any other type: convert to string
-    try:
-        formatted = x.cast(str).to_list()
-    except pl.exceptions.InvalidOperationError:
-        formatted = [str(i) if i is not None else None for i in x.to_list()]
-
+    if dtype == pl.String:
+        # Remove surrounding quotes added by Polars
+        formatted = [v[1:-1] if v is not None else None for v in formatted]
     if escape_html:
         return [escape_html_chars(i) for i in formatted]
     return formatted
