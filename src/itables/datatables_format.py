@@ -71,6 +71,30 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
             values = x.round(precision).to_list()
         return [escape_non_finite_float(v) for v in values]
 
+    # Array and List types with float inner dtype - use Polars' native formatting
+    if (dtype.is_nested() and 
+        hasattr(dtype, 'inner') and 
+        dtype.inner is not None and 
+        dtype.inner in (pl.Float32, pl.Float64)):
+        # Use Polars' native get_fmt method which respects the float_precision config
+        # Set a high list length to avoid truncation in the formatted output
+        with pl.Config(fmt_table_cell_list_len=1000):
+            result = []
+            for i in range(len(x)):
+                formatted = x._s.get_fmt(i, 100)
+                # Check if the value is actually None (Polars returns "null" string)
+                if formatted == "null":
+                    result.append(None)
+                else:
+                    # Escape special float values (NaN, inf) in the formatted string
+                    formatted = escape_special_floats_in_string(formatted)
+                    result.append(formatted)
+        
+        if escape_html:
+            # escape_html_chars handles None values correctly
+            return [escape_html_chars(i) for i in result]
+        return result
+
     # Any other type: convert to string
     try:
         formatted = x.cast(str).to_list()
@@ -109,6 +133,17 @@ def _format_narwhals_series(x, escape_html: bool) -> Sequence[Any]:
     if escape_html:
         return [escape_html_chars(i) for i in formatted]
     return formatted
+
+
+def escape_special_floats_in_string(value: Any) -> Any:
+    """Replace NaN/Inf text in formatted strings with escaped versions for JSON"""
+    if not isinstance(value, str):
+        return value
+    # Replace special float representations that appear in Polars formatted strings
+    value = value.replace("NaN", '"___NaN___"')
+    value = value.replace("inf", '"___Infinity___"')
+    value = value.replace("-\"___Infinity___\"", '"___-Infinity___"')  # Fix -inf
+    return value
 
 
 def escape_non_finite_float(value: Any) -> Any:
