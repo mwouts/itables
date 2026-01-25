@@ -268,6 +268,14 @@ def _table_header(
         formatted_columns = "".join(f"<th>{col}</th>" for col in columns)
         html_header = f'<table class="dataframe">\n<thead>\n<tr style="text-align: right;">\n<th></th>\n{formatted_columns}\n</tr>\n</thead>\n  <tbody>\n  </tbody>\n</table>'
 
+    match = pattern.match(html_header)
+    del html_header
+    assert match is not None
+    thead = match.groups()[0]
+    # Don't remove the index header for empty dfs
+    if not show_index and len(df.columns):
+        thead = thead.replace("<th></th>", "", 1)
+
     # NB: The dtype row is not compatible with the footer option
     # which requires a flat header
     if show_dtypes and (footer is False):
@@ -295,20 +303,15 @@ def _table_header(
                 all_dtypes = [df.index.dtype] + list(df.dtypes)
         else:
             all_dtypes = df.dtypes
+
+        column_count = _column_count_in_header(thead)
+        all_dtypes = [""] * (column_count - len(all_dtypes)) + list(all_dtypes)
+
         formatted_dtypes = "".join(
             f"<th><small class='itables-dtype'>{escape_html_chars(format_dtype(dt)) if escape_html else dt}</small></th>"
             for dt in all_dtypes
         )
-        html_header = replace_value(
-            html_header, "</thead>", f"<tr>{formatted_dtypes}</thead>"
-        )
-
-    match = pattern.match(html_header)
-    assert match is not None
-    thead = match.groups()[0]
-    # Don't remove the index header for empty dfs
-    if not show_index and len(df.columns):
-        thead = thead.replace("<th></th>", "", 1)
+        thead = thead + f"<tr>{formatted_dtypes}</tr>"
 
     header = "<thead>{}</thead>".format(
         _flat_header(df, show_index) if column_filters == "header" else thead

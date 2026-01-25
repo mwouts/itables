@@ -206,3 +206,32 @@ def test_get_expanded_style(style: str):
     exp_style = get_expanded_style(style)
     compact_style = get_compact_style(exp_style)
     assert compact_style == style.replace(" ", "").removesuffix(";")
+
+
+def test_show_dtypes_in_html():
+    df = (
+        pytest.importorskip("pandas")
+        .DataFrame({"a": [1.0]})
+        .rename_axis("columns", axis=1)
+    )
+    itable_args = get_itable_arguments(df, show_dtypes=True)
+    assert "table_html" in itable_args
+    table_html = itable_args["table_html"]
+    # Check that the table header has two rows
+    assert table_html.count("<tr") == 2
+    assert table_html.count("</tr>") == 2
+
+    _, first_row, second_row = table_html.split("<tr")
+
+    # Check that each row has two columns (th elements)
+    # First row: columns header + 'a' column
+    assert "<th>columns</th>" in first_row
+    assert "<th>a</th>" in first_row
+
+    # Second row: empty dtype + 'f64' dtype
+    assert "<th><small class='itables-dtype'></small></th>" in second_row
+    assert "<th><small class='itables-dtype'>f64</small></th>" in second_row
+
+    # Verify total number of th elements (2 rows * 2 columns = 4)
+    assert table_html.count("<th>") == 4
+    assert table_html.count("</th>") == 4
