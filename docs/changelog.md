@@ -7,6 +7,9 @@ ITables ChangeLog
 **Fixed**
 - We have fixed an issue with `show_dtypes` for certain dataframes ([#480](https://github.com/mwouts/itables/issues/480))
 
+**Added**
+- We have added a test to ensure that `float("nan")` entries in a Polars DataFrame are displayed as `NaN`. However, `None` entries are displayed as `null`, e.g. as an empty cell.
+
 
 2.6.2 (2025-12-26)
 ------------------

@@ -141,3 +141,20 @@ def test_format_polars_series(series_name, series):
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_show_test_series(series_name, series, connected, monkeypatch):
     show(series, connected=connected)
+
+
+def test_polars_df_with_nan_and_none():
+    df = pl.DataFrame(
+        {
+            "A": [1, 2, None, 4],
+            "B": [0.1, None, float("nan"), 0.4],
+            "C": ["x", None, "z", "w"],
+        }
+    )
+    assert df.dtypes == [pl.Int64, pl.Float64, pl.Utf8]
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    assert (
+        dt_args["data_json"]
+        == '[[1, 0.1, "x"], [2, null, null], [null, "___NaN___", "z"], [4, 0.4, "w"]]'
+    )
