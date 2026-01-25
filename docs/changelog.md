@@ -4,6 +4,9 @@ ITables ChangeLog
 2.6.3.dev0 (2026-01-25)
 -----------------------
 
+**Fixed**
+- We have fixed an issue with `show_dtypes` for certain dataframes ([#480](https://github.com/mwouts/itables/issues/480))
+
 
 2.6.2 (2025-12-26)
 ------------------
