@@ -1,3 +1,8 @@
+# 2.5.0 (2026-02-01)
+
+- We have updated datatables and its extensions to `datatables.net-dt==2.3.7`
+
+
 # 2.4.0 (2025-08-23)
 
 - We have added the ColumnControl extension of DataTables to the `dt_for_itables` package ([#403](https://github.com/mwouts/itables/issues/403))
