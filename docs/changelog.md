@@ -1,12 +1,14 @@
 ITables ChangeLog
 =================
 
-2.7.0.dev0 (2026-02-01)
+2.7.0rc0 (2026-02-01)
 -----------------------
 
 **Changed**
 - Floats are formatted using the underlying dataframe formatter when `format_floats_in_python` is `"auto"` (the default). Set that option `False` if you want to format the values in JS directly ([#483](https://github.com/mwouts/itables/issues/483)).
 - Polars objects are displayed using Polars' internal method `x._s.get_fmt` ([#471](https://github.com/mwouts/itables/issues/471))
+- We have updated `dt_for_itables` to the latest version of `datatables.net-dt==2.3.7` ([#485](https://github.com/mwouts/itables/issues/485))
+
 
 **Fixed**
 - We have fixed an issue with `show_dtypes` for certain dataframes ([#480](https://github.com/mwouts/itables/issues/480))

@@ -5426,7 +5426,7 @@ packages:
   requires_python: '>=3.7'
 - pypi: ./
   name: itables
-  version: 2.6.2
+  version: 2.7.0rc0
   sha256: 9004ab056c4563c443846b3f438d453109dd69072544e115c421d97696782c4a
   requires_dist:
   - anywidget ; extra == 'all'
@@ -5552,7 +5552,6 @@ packages:
   - anywidget ; extra == 'widget'
   - traitlets ; extra == 'widget'
   requires_python: '>=3.9'
-  editable: true
 - pypi: https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl
   name: itsdangerous
   version: 2.2.0
