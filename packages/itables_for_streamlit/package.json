@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/jest": "^29.5.14",
-    "@types/node": "^20.19.27",
+    "@types/node": "^20.19.30",
     "dt_for_itables": "file:../dt_for_itables",
     "react-scripts": "^5.0.1",
     "streamlit-component-lib": "^2.0.0",
