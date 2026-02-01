@@ -12,6 +12,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have fixed an issue with `show_dtypes` for certain dataframes ([#480](https://github.com/mwouts/itables/issues/480))
+- We have updated the JavaScript dependencies of the Streamlit extension ([#477](https://github.com/mwouts/itables/pull/477), [#479](https://github.com/mwouts/itables/pull/479))
 
 
 2.6.2 (2025-12-26)
