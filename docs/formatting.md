@@ -22,8 +22,9 @@ kernelspec:
 
 ## Formatting with Pandas
 
-`itables` builds the HTML representation of your Pandas dataframes using Pandas itself, so
+By default, ITables format floats using Pandas itself, so
 you can use [Pandas' formatting options](https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html).
+
 For instance, you can change the precision used to display floating numbers:
 
 ```{code-cell} ipython3
@@ -50,7 +51,7 @@ with pd.option_context("display.float_format", "${:,.2f}".format):
 
 ## Formatting with Polars
 
-Starting with v2.6.0, ITables will format floats in Polars DataFrames according to `float_precision` from the Polars configuration:
+By default, ITables v2.7.0 and above formats floats in Polars DataFrames according to the Polars configuration:
 
 ```{code-cell} ipython3
 import polars as pl
@@ -61,8 +62,7 @@ with pl.Config(float_precision=2):
 
 ## Formatting with Javascript
 
-Numbers are formatted using Pandas, then are converted back to float to ensure they come in the right order when sorted.
-Therefore, to achieve a particular formatting you might have to resort to the
+If you pass a `columnDefs` argument, the columns that appear in the targets are not formatted - instead they are passed verbatim to datatables.net. Therefore, to achieve a particular formatting you can resort to the
 [`columns.render` option](https://datatables.net/examples/advanced_init/column_render.html)
 of DataTables.
 
@@ -71,10 +71,12 @@ can be ported like this:
 
 ```{code-cell} ipython3
 itables.show(
-    pd.Series([i * math.pi * 1e4 for i in range(1, 6)]),
+    pd.DataFrame(
+        {"int": range(1, 6), "float": [i * math.pi * 1e4 for i in range(1, 6)]}
+    ),
     columnDefs=[
         {
-            "targets": "_all",
+            "targets": [1],
             "render": itables.JavascriptCode(
                 "$.fn.dataTable.render.number(',', '.', 3, '$')"
             ),
@@ -93,14 +95,19 @@ Note how the Javascript callback is declared as `JavascriptFunction` object belo
 
 ```{code-cell} ipython3
 itables.show(
-    pd.DataFrame([[-1, 2, -3, 4, -5], [6, -7, 8, -9, 10]], columns=list("abcde")),
+    pd.DataFrame([[-1, 2, -3, 4.0, -5], [6, -7.0, 8, -9.0, 10]], columns=list("abcde")),
     columnDefs=[
         {
             "targets": "_all",
             "createdCell": itables.JavascriptFunction(
                 """
 function (td, cellData, rowData, row, col) {
-    if (cellData < 0) {
+    // cellData for floats contains their display (=formatted) value,
+    // we need the rawValue from the sort field instead.
+    const rawValue = this.api()
+        .cell(row, col)
+        .render('sort');
+    if (rawValue < 0) {
         $(td).css('color', 'red')
     }
 }

@@ -76,6 +76,14 @@ order: Optional[
     Union[Sequence[Sequence[Union[int, str]]], Mapping[str, Union[int, str]]]
 ] = []
 
+"""
+Should float values be formatted using the native Python DataFrame formatters?
+
+Use 'auto' to format floats in Python only when the corresponding columns have
+no render function defined in the DataTables columnDefs option.
+"""
+format_floats_in_python: Union[bool, Literal["auto"]] = "auto"
+
 """Authorize, or not, the use of HTML in the table content.
 
 Make sure that you trust the content of your tables before

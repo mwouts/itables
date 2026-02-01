@@ -103,8 +103,16 @@ def test_ordered_categories():
 
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
-def test_format_pandas_series(series_name, series):
-    values = list(_format_pandas_series(series, escape_html=True))
+def test_format_pandas_series(
+    series_name, series, escape_html, format_floats_in_python
+):
+    values = list(
+        _format_pandas_series(
+            series,
+            escape_html=escape_html,
+            format_floats_in_python=format_floats_in_python,
+        )
+    )
     json.dumps(values, cls=generate_encoder())
 
 
