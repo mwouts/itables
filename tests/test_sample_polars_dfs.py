@@ -57,7 +57,7 @@ def test_encode_mixed_contents():
     )
     assert (
         datatables_rows(df)
-        == "[[1666767918216000000, 1699300000000, 0.9510565400123596, -0.30901700258255005]]"
+        == "[[1666767918216000000, 1699300000000, 0.951057, -0.309017]]"
     )
 
 
@@ -141,3 +141,42 @@ def test_format_polars_series(series_name, series):
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
 def test_show_test_series(series_name, series, connected, monkeypatch):
     show(series, connected=connected)
+
+
+def test_polars_df_with_categorical_and_enums():
+    cardinal_directions = pl.Enum(["north", "south", "east", "west"])
+    df = pl.DataFrame(
+        {
+            "cat": pl.Series(["a", "b", "a", "c"], dtype=pl.Categorical),
+            "enum": pl.Series(
+                ["north", "south", "north", "west"], dtype=cardinal_directions
+            ),
+            "int": pl.Series([1, 2, 1, 3]),
+        }
+    )
+    assert df.dtypes == [pl.Categorical, pl.Enum, pl.Int64]
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    assert (
+        dt_args["data_json"]
+        == '[["a", "north", 1], ["b", "south", 2], ["a", "north", 1], ["c", "west", 3]]'
+    )
+
+
+def test_polars_df_with_nan_and_none():
+    df = pl.DataFrame(
+        {
+            "A": [1, 2, None, 4],
+            "B": [0.1, None, float("nan"), 0.4],
+            "C": ["x", None, "z", "w"],
+        }
+    )
+    assert df.dtypes == [pl.Int64, pl.Float64, pl.Utf8]
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    assert (
+        dt_args["data_json"] == '[[1, 0.1, "x"], '
+        "[2, null, null], "
+        '[null, "___NaN___", "z"], '
+        '[4, 0.4, "w"]]'
+    )

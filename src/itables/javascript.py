@@ -545,6 +545,9 @@ def get_itable_arguments(
     warn_on_selected_rows_not_rendered = kwargs.pop(
         "warn_on_selected_rows_not_rendered", False
     )
+    warn_on_polars_get_fmt_not_found = kwargs.pop(
+        "warn_on_polars_get_fmt_not_found", True
+    )
     dt_args = cast(DTForITablesOptions, kwargs)
     if caption is not None:
         dt_args["caption"] = caption
@@ -597,8 +600,9 @@ def get_itable_arguments(
         dt_args["table_html"] = table_header
         dt_args["data_json"] = datatables_rows(
             df,
-            column_count,
+            column_count=column_count,
             warn_on_unexpected_types=warn_on_unexpected_types,
+            warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
             escape_html=allow_html is not True,
         )
     else:

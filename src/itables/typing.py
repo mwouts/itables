@@ -194,6 +194,7 @@ class ITableOptions(DataTableOptions):
 
     warn_on_unexpected_types: NotRequired[bool]
     warn_on_selected_rows_not_rendered: NotRequired[bool]
+    warn_on_polars_get_fmt_not_found: NotRequired[bool]
     warn_on_undocumented_option: NotRequired[bool]
     warn_on_unexpected_option_type: NotRequired[bool]
     text_in_header_can_be_selected: NotRequired[bool]
