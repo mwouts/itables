@@ -1,8 +1,11 @@
 ITables ChangeLog
 =================
 
-2.6.3.dev0 (2026-01-25)
+2.7.0.dev0 (2026-02-01)
 -----------------------
+
+**Changed**
+- Polars objects are displayed using Polars' internal method `x._s.get_fmt` ([#471](https://github.com/mwouts/itables/issues/471))
 
 **Fixed**
 - We have fixed an issue with `show_dtypes` for certain dataframes ([#480](https://github.com/mwouts/itables/issues/480))

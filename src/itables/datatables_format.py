@@ -1,5 +1,6 @@
 import json
 import math
+import os
 import sys
 import warnings
 from typing import Any, Optional, Sequence
@@ -42,7 +43,9 @@ def _format_pandas_series(x, escape_html: bool) -> Sequence[Any]:
     return y
 
 
-def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
+def _format_polars_series(
+    x, escape_html: bool, warn_on_polars_get_fmt_not_found: bool = True
+) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
     pl = sys.modules["polars"]
     dtype = x.dtype
@@ -61,24 +64,44 @@ def _format_polars_series(x, escape_html: bool) -> Sequence[Any]:
     ):
         return x.to_list()
 
-    # Float types - format and handle non-finite values
-    if dtype in (pl.Float32, pl.Float64):
-        # Round floats according to Polars config
-        precision = pl.Config.state().get("set_float_precision")
-        if precision is None:
-            values = x.to_list()
-        else:
-            values = x.round(precision).to_list()
-        return [escape_non_finite_float(v) for v in values]
-
-    # Any other type: convert to string
+    # Other types - use Polars' native formatting
+    str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
     try:
-        formatted = x.cast(str).to_list()
-    except pl.exceptions.InvalidOperationError:
-        formatted = [str(i) if i is not None else None for i in x.to_list()]
+        formatted = [x._s.get_fmt(i, str_len_limit) for i in range(len(x))]
+    except AttributeError:
+        if warn_on_polars_get_fmt_not_found:
+            warnings.warn(
+                "Polars private formatting method '_s.get_fmt' not found. We will use str() instead. "
+                "Please report this warning at https://github.com/mwouts/itables/issues/484. "
+                "To silence this warning, please set warn_on_polars_get_fmt_not_found to False.\n"
+            )
+        formatted = [str(v) for v in x]
+
+    # Replace "null" with None
+    formatted = [None if v == "null" else v for v in formatted]
+
+    # Float types: handle non-finite values
+    if dtype in (pl.Float32, pl.Float64):
+        try:
+            formatted = [
+                escape_non_finite_float(float(v)) if v is not None else None
+                for v in formatted
+            ]
+        except ValueError:
+            pass
+
+    if dtype == pl.String or dtype == pl.Enum or dtype == pl.Categorical:
+        # Remove surrounding quotes added by Polars's formatting
+        def remove_surrounding_quotes(v: Optional[str]) -> Optional[str]:
+            if v is not None and len(v) >= 2 and v[0] == '"' and v[-1] == '"':
+                return v[1:-1]
+            return v
+
+        formatted = [remove_surrounding_quotes(v) for v in formatted]
 
     if escape_html:
         return [escape_html_chars(i) for i in formatted]
+
     return formatted
 
 
@@ -167,9 +190,11 @@ def generate_encoder(warn_on_unexpected_types: bool = True) -> Any:
 
 def datatables_rows(
     df: DataFrameOrSeries,
+    *,
     column_count: Optional[int] = None,
-    warn_on_unexpected_types: bool = False,
     escape_html: bool = True,
+    warn_on_unexpected_types: bool = False,
+    warn_on_polars_get_fmt_not_found: bool = True,
 ) -> str:
     """Format the values in the table and return the data, row by row, as requested by DataTables"""
     # We iterate over columns using an index rather than the column name
@@ -189,7 +214,10 @@ def datatables_rows(
         ]
     elif df_module == "polars":
         formatted_columns = [
-            _format_polars_series(df[col], escape_html) for col in df.columns
+            _format_polars_series(
+                df[col], escape_html, warn_on_polars_get_fmt_not_found
+            )
+            for col in df.columns
         ]
     else:
         # Other DataFrame types are handled via Narwhals, and are expected

@@ -96,6 +96,9 @@ warn_on_unexpected_types: bool = True
 filtered by the downsampling?"""
 warn_on_selected_rows_not_rendered: bool = True
 
+"""Display a warning if the private Polars formatting method is not found"""
+warn_on_polars_get_fmt_not_found: bool = True
+
 """The DataTables URL for the connected mode"""
 dt_url: str = utils.UNPKG_DT_BUNDLE_URL
 
