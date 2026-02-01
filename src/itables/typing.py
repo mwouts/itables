@@ -183,6 +183,7 @@ class ITableOptions(DataTableOptions):
     maxColumns: NotRequired[int]
 
     allow_html: NotRequired[bool]
+    format_floats_in_python: NotRequired[Union[bool, Literal["auto"]]]
 
     table_id: NotRequired[str]
     dt_url: NotRequired[str]

@@ -57,7 +57,13 @@ def test_encode_mixed_contents():
     )
     assert (
         datatables_rows(df)
-        == "[[1666767918216000000, 1699300000000, 0.951057, -0.309017]]"
+        == "[[1666767918216000000, 1699300000000, 0.9510565400123596, -0.30901700258255005]]"
+    )
+    assert (
+        datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3})
+        == "[[1666767918216000000, 1699300000000, "
+        '{"display": "0.951057", "sort": 0.9510565400123596}, '
+        '{"display": "-0.309017", "sort": -0.30901700258255005}]]'
     )
 
 
@@ -133,8 +139,17 @@ def test_ordered_categories():
 
 
 @pytest.mark.parametrize("series_name,series", get_dict_of_test_series().items())
-def test_format_polars_series(series_name, series):
-    values = list(_format_polars_series(series, escape_html=True))
+def test_format_polars_series(
+    series_name, series, escape_html, format_floats_in_python
+):
+    values = list(
+        _format_polars_series(
+            series,
+            escape_html=escape_html,
+            format_floats_in_python=format_floats_in_python,
+            warn_on_polars_get_fmt_not_found=True,
+        )
+    )
     json.dumps(values, cls=generate_encoder())
 
 
@@ -172,11 +187,20 @@ def test_polars_df_with_nan_and_none():
         }
     )
     assert df.dtypes == [pl.Int64, pl.Float64, pl.Utf8]
-    dt_args = get_itable_arguments(df)
+    dt_args = get_itable_arguments(df, format_floats_in_python=False)
     assert "data_json" in dt_args
     assert (
         dt_args["data_json"] == '[[1, 0.1, "x"], '
-        "[2, null, null], "
+        '[2, null, "null"], '
         '[null, "___NaN___", "z"], '
         '[4, 0.4, "w"]]'
+    )
+
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    assert (
+        dt_args["data_json"] == '[[1, {"display": "0.1", "sort": 0.1}, "x"], '
+        '[2, {"display": "null", "sort": null}, "null"], '
+        '[null, {"display": "NaN", "sort": "___NaN___"}, "z"], '
+        '[4, {"display": "0.4", "sort": 0.4}, "w"]]'
     )

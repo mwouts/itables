@@ -24,7 +24,7 @@ def test_create_widget_with_no_df():
 def test_create_widget_with_df(df):
     from itables.widget import ITable
 
-    itable = ITable(df)
+    itable = ITable(df, format_floats_in_python=False)
     assert itable.df is df
     assert itable.caption == ""
     assert itable.classes == opt.classes

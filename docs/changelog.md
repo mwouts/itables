@@ -5,6 +5,7 @@ ITables ChangeLog
 -----------------------
 
 **Changed**
+- Floats are formatted using the underlying dataframe formatter when `format_floats_in_python` is `"auto"` (the default). Set that option `False` if you want to format the values in JS directly ([#483](https://github.com/mwouts/itables/issues/483)).
 - Polars objects are displayed using Polars' internal method `x._s.get_fmt` ([#471](https://github.com/mwouts/itables/issues/471))
 
 **Fixed**

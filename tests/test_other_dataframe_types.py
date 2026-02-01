@@ -56,6 +56,11 @@ def test_modin_dataframe():
     assert datatables_rows(df_modin) == "[[1, 4.0], [2, 5.0], [3, 6.0]]"
     to_html_datatable(df_modin)
 
+    assert (
+        datatables_rows(df_modin, float_columns_to_be_formatted_in_python={1})
+        == '[[1, {"display": "4.0", "sort": 4.0}], [2, {"display": "5.0", "sort": 5.0}], [3, {"display": "6.0", "sort": 6.0}]]'
+    )
+
 
 def test_pandas_dataframe_same_through_narwhals_df():
     pd = pytest.importorskip("pandas")

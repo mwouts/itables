@@ -8,8 +8,10 @@ import pytest
 
 from itables.datatables_format import datatables_rows, generate_encoder
 from itables.javascript import (
+    JavascriptCode,
     _column_count_in_header,
     _table_header,
+    get_float_columns_to_be_formatted_in_python,
     get_itable_arguments,
 )
 from itables.typing import get_dataframe_module_name
@@ -91,7 +93,19 @@ def df_and_expected(request):
     elif id == "float":
         return (
             pd_or_pl.DataFrame({"x": [0.2, math.pi, math.nan, -math.inf]}),
-            '[[0.2], [3.141593], ["___NaN___"], ["___-Infinity___"]]',
+            (
+                (
+                    '[[{"display": "0.200000", "sort": 0.2}], '
+                    '[{"display": "3.141593", "sort": 3.141592653589793}], '
+                    '[{"display": "NaN", "sort": "___NaN___"}], '
+                    '[{"display": "-inf", "sort": "___-Infinity___"}]]'
+                )
+                if lib == "pd"
+                else '[[{"display": "0.2", "sort": 0.2}], '
+                '[{"display": "3.141593", "sort": 3.141592653589793}], '
+                '[{"display": "NaN", "sort": "___NaN___"}], '
+                '[{"display": "-inf", "sort": "___-Infinity___"}]]'
+            ),
         )
     elif id == "str":
         return (pd_or_pl.DataFrame({"s": ["hi", '"hi"']}), [["hi"], ['"hi"']])
@@ -106,7 +120,7 @@ def df_and_expected(request):
             assert pl is not None
             return (
                 pl.DataFrame({"d": [date(2022, 1, 1), None]}),
-                [["2022-01-01"], [None]],
+                [["2022-01-01"], ["null"]],
             )
     elif id == "datetime":
         if lib == "pd":
@@ -119,7 +133,7 @@ def df_and_expected(request):
             assert pl is not None
             return (
                 pl.DataFrame({"t": [datetime(2022, 1, 1, 18, 5, 27), None]}),
-                [["2022-01-01 18:05:27"], [None]],
+                [["2022-01-01 18:05:27"], ["null"]],
             )
     elif id == "datetime_with_tz":
         if lib == "pd":
@@ -151,7 +165,7 @@ def df_and_expected(request):
                 ).with_columns(
                     pl.col("t").dt.replace_time_zone(timezone("US/Eastern").zone)
                 ),
-                [["2022-01-01 18:05:27 EST"], [None]],
+                [["2022-01-01 18:05:27 EST"], ["null"]],
             )
     elif id == "timedelta":
         if lib == "pd":
@@ -164,7 +178,7 @@ def df_and_expected(request):
             assert pl is not None
             return (
                 pl.DataFrame({"dt": [timedelta(hours=1), None]}),
-                [["1h"], [None]],
+                [["1h"], ["null"]],
             )
     elif id == "object_list":
         return (pd_or_pl.DataFrame({"list": [[1], [2, 3]]}), [["[1]"], ["[2, 3]"]])
@@ -222,9 +236,10 @@ def expected(df_and_expected):
 
 
 def test_datatables_rows(df, expected):
+    df_module_name = get_dataframe_module_name(df)
     table_header = _table_header(
         df,
-        df_module_name=get_dataframe_module_name(df),
+        df_module_name=df_module_name,
         show_index=False,
         footer=False,
         column_filters=False,
@@ -232,7 +247,14 @@ def test_datatables_rows(df, expected):
         show_dtypes=False,
     )
     column_count = _column_count_in_header(table_header)
-    actual = datatables_rows(df, column_count=column_count)
+    float_columns_to_be_formatted_in_python = (
+        get_float_columns_to_be_formatted_in_python(df_module_name, df, True, [])
+    )
+    actual = datatables_rows(
+        df,
+        column_count=column_count,
+        float_columns_to_be_formatted_in_python=float_columns_to_be_formatted_in_python,
+    )
     if isinstance(expected, str):
         assert actual == expected
     else:
@@ -275,9 +297,13 @@ def test_encode_mixed_contents_pandas():
             "neg": [-0.30901700258255005],
         }
     )
-    assert (
-        datatables_rows(df)
-        == "[[1666767918216000000, 1699300000000, 0.951057, -0.309017]]"
+    assert datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3}) == (
+        "[[1666767918216000000, 1699300000000, "
+        '{"display": "0.951057", "sort": 0.9510565400123596}, '
+        '{"display": "-0.309017", "sort": -0.30901700258255005}]]'
+    )
+    assert datatables_rows(df, float_columns_to_be_formatted_in_python=set()) == (
+        "[[1666767918216000000, 1699300000000, 0.9510565400123596, -0.30901700258255005]]"
     )
 
 
@@ -295,9 +321,14 @@ def test_encode_mixed_contents_polars():
             "neg": [-0.30901700258255005],
         }
     )
-    assert (
-        datatables_rows(df)
-        == "[[1666767918216000000, 1699300000000, 0.951057, -0.309017]]"
+    assert datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3}) == (
+        "[[1666767918216000000, 1699300000000, "
+        '{"display": "0.951057", "sort": 0.9510565400123596}, '
+        '{"display": "-0.309017", "sort": -0.30901700258255005}]]'
+    )
+
+    assert datatables_rows(df, float_columns_to_be_formatted_in_python=set()) == (
+        "[[1666767918216000000, 1699300000000, 0.9510565400123596, -0.30901700258255005]]"
     )
 
 
@@ -309,14 +340,20 @@ def test_polars_float_formatting():
         pytest.skip("polars is not installed")
 
     df = pl.DataFrame({"float": [math.pi, math.pi * 1e12]})
-    assert datatables_rows(df) == "[[3.141593], [3141600000000.0]]"
+    assert datatables_rows(df, float_columns_to_be_formatted_in_python={0}) == (
+        '[[{"display": "3.141593", "sort": 3.141592653589793}], '
+        '[{"display": "3.1416e12", "sort": 3141592653589.793}]]'
+    )
 
     with pl.Config(float_precision=12):
-        assert datatables_rows(df) == "[[3.14159265359], [3141592653590.0]]"
+        assert datatables_rows(df, float_columns_to_be_formatted_in_python={0}) == (
+            '[[{"display": "3.141592653590", "sort": 3.141592653589793}], '
+            '[{"display": "3.141592653590e12", "sort": 3141592653589.793}]]'
+        )
 
 
 def test_polars_array_float_formatting():
-    """Test that Polars float_precision config applies to Array[Float64] columns"""
+    """Test that Polars float_precision config applies to Array[Float64] columns, cf. #471"""
     try:
         import polars as pl
     except ImportError:
@@ -344,7 +381,7 @@ def test_polars_array_float_formatting():
 
 
 def test_polars_list_float_formatting():
-    """Test that Polars float_precision config applies to List[Float64] columns"""
+    """Test that Polars float_precision config applies to List[Float64] columns, cf. #471"""
     try:
         import polars as pl
     except ImportError:
@@ -411,12 +448,12 @@ def test_polars_list_with_none_values():
 
     # Default formatting
     result = datatables_rows(df)
-    assert result == '[["[1.5, 2.5]"], [null], ["[3.5]"]]'
+    assert result == '[["[1.5, 2.5]"], ["null"], ["[3.5]"]]'
 
     # With precision - Polars adds trailing zeros to match precision
     with pl.Config(float_precision=2):
         result = datatables_rows(df)
-        assert result == '[["[1.50, 2.50]"], [null], ["[3.50]"]]'
+        assert result == '[["[1.50, 2.50]"], ["null"], ["[3.50]"]]'
 
 
 def test_show_dtypes_pandas():
@@ -455,3 +492,67 @@ def test_show_dtypes_polars():
         dt_args = get_itable_arguments(df)
     assert "table_html" in dt_args
     assert "64" not in dt_args["table_html"]
+
+
+def test_render_in_columndefs_deactivates_python_float_formatting_polars():
+    pl = pytest.importorskip("polars")
+    df = pl.DataFrame(
+        {
+            "bigint": [1666767918216000000],
+            "int": [1699300000000],
+            "float": [0.9510565400123596],
+            "neg": [-0.30901700258255005],
+        }
+    )
+    float_columns = get_float_columns_to_be_formatted_in_python(
+        df_module_name="polars",
+        df=df,
+        format_floats_in_python="auto",
+        columnDefs=[],
+    )
+    assert float_columns == {2, 3}
+    columnDefs = [
+        {
+            "targets": 2,
+            "render": "function(data, type, row, meta) { return data.toFixed(3); }",
+        },
+        {
+            "targets": 3,
+            "render": "function(data, type, row, meta) { return data.toFixed(3); }",
+        },
+    ]
+    float_columns = get_float_columns_to_be_formatted_in_python(
+        df_module_name="polars",
+        df=df,
+        format_floats_in_python="auto",
+        columnDefs=columnDefs,
+    )
+    assert float_columns == set()
+
+
+def test_render_in_columndefs_deactivates_python_float_formatting_pandas():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame(
+        {"int": range(1, 6), "float": [i * math.pi * 1e4 for i in range(1, 6)]}
+    )
+
+    float_columns = get_float_columns_to_be_formatted_in_python(
+        df_module_name="pandas",
+        df=df,
+        format_floats_in_python="auto",
+        columnDefs=[],
+    )
+    assert float_columns == {1}
+    columnDefs = [
+        {
+            "targets": 1,
+            "render": JavascriptCode("$.fn.dataTable.render.number(',', '.', 3, '$')"),
+        }
+    ]
+    float_columns = get_float_columns_to_be_formatted_in_python(
+        df_module_name="pandas",
+        df=df,
+        format_floats_in_python="auto",
+        columnDefs=columnDefs,
+    )
+    assert float_columns == set()

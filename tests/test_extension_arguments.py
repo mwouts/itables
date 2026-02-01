@@ -5,7 +5,9 @@ from itables.javascript import get_itables_extension_arguments
 
 def test_get_itables_extension_arguments(df):
     try:
-        dt_args, other_args = get_itables_extension_arguments(df)
+        dt_args, other_args = get_itables_extension_arguments(
+            df, format_floats_in_python=False
+        )
     except NotImplementedError as e:
         pytest.skip(str(e))
 

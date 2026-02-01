@@ -455,6 +455,63 @@ def _evaluate_show_dtypes(
     return False
 
 
+def get_float_columns_to_be_formatted_in_python(
+    df_module_name: DataFrameModuleName,
+    df: DataFrameOrSeries,
+    format_floats_in_python: Union[bool, Literal["auto"]],
+    columnDefs: Optional[Sequence[Mapping[str, Any]]],
+) -> set[int]:
+    """
+    Return the set of column indices that should have their float values formatted in Python
+    """
+    if format_floats_in_python is False:
+        return set()
+
+    if df_module_name in ["pandas", "numpy"]:
+        float_columns_to_be_formatted_in_python = {
+            i for i, dtype in enumerate(df.dtypes) if dtype.kind == "f"
+        }
+    elif df_module_name == "polars":
+        float_columns_to_be_formatted_in_python = {
+            i for i, col in enumerate(df.columns) if df[col].dtype.is_float()
+        }
+    else:
+        import narwhals as nw
+
+        nw_df = nw.from_native(df, eager_only=True, allow_series=True)
+
+        float_columns_to_be_formatted_in_python = {
+            i for i, col in enumerate(nw_df.columns) if nw_df[col].dtype.is_float()
+        }
+
+    if columnDefs is None or format_floats_in_python is True:
+        return float_columns_to_be_formatted_in_python
+
+    # format_floats_in_python="auto":
+    # remove columns that have a render function defined
+    def remove_if_present(target: int):
+        if target < 0:
+            target = len(df.columns) + target
+        if target in float_columns_to_be_formatted_in_python:
+            float_columns_to_be_formatted_in_python.remove(target)
+
+    for col_def in columnDefs:
+        if "render" not in col_def:
+            continue
+        if "targets" not in col_def:
+            continue
+        targets = col_def["targets"]
+        if targets == "_all":
+            return set()
+        if isinstance(targets, int):
+            remove_if_present(targets)
+            continue
+        assert isinstance(targets, list), targets
+        for target in targets:
+            remove_if_present(target)
+    return float_columns_to_be_formatted_in_python
+
+
 def get_itable_arguments(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
@@ -542,6 +599,7 @@ def get_itable_arguments(
 
     table_id = kwargs.pop("table_id", None)
     footer = kwargs.pop("footer", False)
+    format_floats_in_python = kwargs.pop("format_floats_in_python", "auto")
     warn_on_selected_rows_not_rendered = kwargs.pop(
         "warn_on_selected_rows_not_rendered", False
     )
@@ -598,13 +656,30 @@ def get_itable_arguments(
         # an extra empty column in the table data #141
         column_count = _column_count_in_header(table_header)
         dt_args["table_html"] = table_header
+        columnDefs = dt_args.get("columnDefs") or []
+        float_columns_to_be_formatted_in_python: set[int] = (
+            get_float_columns_to_be_formatted_in_python(
+                df_module_name, df, format_floats_in_python, columnDefs
+            )
+        )
         dt_args["data_json"] = datatables_rows(
             df,
             column_count=column_count,
+            escape_html=allow_html is not True,
+            float_columns_to_be_formatted_in_python=float_columns_to_be_formatted_in_python,
             warn_on_unexpected_types=warn_on_unexpected_types,
             warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
-            escape_html=allow_html is not True,
         )
+        if float_columns_to_be_formatted_in_python:
+            dt_args["columnDefs"] = [
+                {
+                    "targets": [
+                        i + column_count - len(df.columns)
+                        for i in float_columns_to_be_formatted_in_python
+                    ],
+                    "render": {"_": "display", "sort": "sort"},
+                }
+            ] + list(columnDefs)
     else:
         if df_module_name == "pandas" and df_type_name == "Styler":
             if not allow_html:

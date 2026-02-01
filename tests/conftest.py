@@ -68,3 +68,13 @@ def no_itables_config_env_variable(monkeypatch):
     monkeypatch.delenv("ITABLES_CONFIG", raising=False)
     yield
     monkeypatch.undo()
+
+
+@pytest.fixture(params=[False, True])
+def escape_html(request) -> bool:
+    return request.param
+
+
+@pytest.fixture(params=[False, True])
+def format_floats_in_python(request) -> bool:
+    return request.param
