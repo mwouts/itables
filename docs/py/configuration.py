@@ -32,9 +32,9 @@
 #
 # ## Example configuration
 #
-# A simple `itables.toml` configuration file that makes the tables a bit more [compact](options/classes.md) looks like this:
+# A simple `itables.toml` configuration file that makes the tables less [compact](options/classes.md) looks like this:
 # ```
-# classes = ["display", "nowrap", "compact"]
+# classes = ["display", "nowrap"]
 # ```
 #
 # If you want the Excel export button on each table, add this:

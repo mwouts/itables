@@ -45,7 +45,7 @@ show_df_type: bool = False
 The default classes.
 See https://mwouts.github.io/itables/options/classes.html
 """
-classes: Union[str, Sequence[str]] = "display nowrap"
+classes: Union[str, Sequence[str]] = "display nowrap compact"
 
 """
 The default table style.
