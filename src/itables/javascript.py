@@ -671,15 +671,24 @@ def get_itable_arguments(
             warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
         )
         if float_columns_to_be_formatted_in_python:
-            dt_args["columnDefs"] = [
-                {
-                    "targets": [
-                        i + column_count - len(df.columns)
-                        for i in float_columns_to_be_formatted_in_python
-                    ],
-                    "render": {"_": "display", "sort": "sort"},
-                }
-            ] + list(columnDefs)
+            dt_args["columnDefs"] = (
+                [
+                    {
+                        "targets": [
+                            i + column_count - len(df.columns)
+                            for i in float_columns_to_be_formatted_in_python
+                        ],
+                        "render": JavascriptFunction(
+                            """
+                        function (data, type, row, meta) {
+                            return type === 'sort' ? data[1] : data[0];
+                        }
+                    """
+                        ),
+                    }
+                ]
+                + list(columnDefs)
+            )
     else:
         if df_module_name == "pandas" and df_type_name == "Styler":
             if not allow_html:

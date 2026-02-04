@@ -37,7 +37,7 @@ def _format_pandas_series(
 
     if dtype_kind == "f":
         return [
-            {"display": formatted_value, "sort": rank}
+            [formatted_value, rank]
             for formatted_value, rank in zip(
                 formatted, x.rank(method="dense", na_option="bottom").astype(int)
             )
@@ -96,14 +96,7 @@ def _format_polars_series(
 
     if dtype.is_float():
         return [
-            (
-                {"display": None, "sort": 0}
-                if rank is None
-                else {
-                    "display": formatted_value,
-                    "sort": rank,
-                }
-            )
+            ([None, 0] if rank is None else [formatted_value, rank])
             for formatted_value, rank in zip(formatted, x.rank(method="dense"))
         ]
 
@@ -141,10 +134,7 @@ def _format_narwhals_series(
 
     if dtype.is_float():
         return [
-            {
-                "display": formatted_value,
-                "sort": int(rank) if rank is not None else 0,
-            }
+            ([None, 0] if rank is None else [formatted_value, int(rank)])
             for formatted_value, rank in zip(formatted, x.rank(method="dense"))
         ]
 
