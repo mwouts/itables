@@ -14,12 +14,16 @@ kernelspec:
 
 # Classes
 
-Select how your table looks like with the `classes` argument (defaults to `"display nowrap compact"`) of the `show` function, or by changing `itables.options.classes`.
+Select how your table looks like with the `classes` argument of the `show` function, or by changing `itables.options.classes`.
+
+The default value for `classes` is `"display nowrap compact"` (`"compact"` was added in ITables v2.7).
 
 Remove `"compact"` if you want a less dense table:
 
 ```{code-cell} ipython3
 :tags: [full-width]
+
+import pandas as pd
 
 import itables
 
@@ -35,7 +39,10 @@ Remove `"nowrap"` if you want the cell content to be wrapped:
 ```{code-cell} ipython3
 :tags: [full-width]
 
-itables.show(df, classes="display compact")
+itables.show(
+    pd.DataFrame({"text": ["This is a " + "very " * 60 + "long text"]}),
+    classes="display compact",
+)
 ```
 
 [More options](https://datatables.net/manual/styling/classes#Table-classes) like `"cell-border"` are available:
