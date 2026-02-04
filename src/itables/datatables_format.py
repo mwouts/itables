@@ -74,27 +74,23 @@ def _format_polars_series(
     if dtype.is_float() and not format_floats_in_python:
         return [escape_non_finite_float(v) for v in x.to_list()]
 
-    # Other types - use Polars' native formatting
-    str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
-    try:
-        formatted = [x._s.get_fmt(i, str_len_limit) for i in range(len(x))]
-    except AttributeError:
-        if warn_on_polars_get_fmt_not_found:
-            warnings.warn(
-                "Polars private formatting method '_s.get_fmt' not found. We will use str() instead. "
-                "Please report this warning at https://github.com/mwouts/itables/issues/484. "
-                "To silence this warning, please set warn_on_polars_get_fmt_not_found to False.\n"
-            )
-        formatted = [str(v) for v in x]
-
-    if dtype == pl.String or dtype == pl.Enum or dtype == pl.Categorical:
-        # Remove surrounding quotes added by Polars's formatting
-        def remove_surrounding_quotes(v: Optional[str]) -> Optional[str]:
-            if v is not None and len(v) >= 2 and v[0] == '"' and v[-1] == '"':
-                return v[1:-1]
-            return v
-
-        formatted = [remove_surrounding_quotes(v) for v in formatted]
+    if dtype == pl.String:
+        formatted = x.to_list()
+    elif dtype == pl.Enum or dtype == pl.Categorical:
+        formatted = x.cast(pl.String).to_list()
+    else:
+        # Other types - use Polars' native formatting
+        str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
+        try:
+            formatted = [x._s.get_fmt(i, str_len_limit) for i in range(len(x))]
+        except AttributeError:
+            if warn_on_polars_get_fmt_not_found:
+                warnings.warn(
+                    "Polars private formatting method '_s.get_fmt' not found. We will use str() instead. "
+                    "Please report this warning at https://github.com/mwouts/itables/issues/484. "
+                    "To silence this warning, please set warn_on_polars_get_fmt_not_found to False.\n"
+                )
+            formatted = [str(v) for v in x]
 
     if escape_html:
         formatted = [escape_html_chars(i) for i in formatted]
