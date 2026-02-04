@@ -95,16 +95,16 @@ def df_and_expected(request):
             pd_or_pl.DataFrame({"x": [0.2, math.pi, math.nan, -math.inf]}),
             (
                 (
-                    '[[{"display": "0.200000", "sort": 0.2}], '
-                    '[{"display": "3.141593", "sort": 3.141592653589793}], '
-                    '[{"display": "NaN", "sort": "___NaN___"}], '
-                    '[{"display": "-inf", "sort": "___-Infinity___"}]]'
+                    '[[{"display": "0.200000", "sort": 2}], '
+                    '[{"display": "3.141593", "sort": 3}], '
+                    '[{"display": "NaN", "sort": 4}], '
+                    '[{"display": "-inf", "sort": 1}]]'
                 )
                 if lib == "pd"
-                else '[[{"display": "0.2", "sort": 0.2}], '
-                '[{"display": "3.141593", "sort": 3.141592653589793}], '
-                '[{"display": "NaN", "sort": "___NaN___"}], '
-                '[{"display": "-inf", "sort": "___-Infinity___"}]]'
+                else '[[{"display": "0.2", "sort": 2}], '
+                '[{"display": "3.141593", "sort": 3}], '
+                '[{"display": "NaN", "sort": 4}], '
+                '[{"display": "-inf", "sort": 1}]]'
             ),
         )
     elif id == "str":
@@ -299,8 +299,8 @@ def test_encode_mixed_contents_pandas():
     )
     assert datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3}) == (
         "[[1666767918216000000, 1699300000000, "
-        '{"display": "0.951057", "sort": 0.9510565400123596}, '
-        '{"display": "-0.309017", "sort": -0.30901700258255005}]]'
+        '{"display": "0.951057", "sort": 1}, '
+        '{"display": "-0.309017", "sort": 1}]]'
     )
     assert datatables_rows(df, float_columns_to_be_formatted_in_python=set()) == (
         "[[1666767918216000000, 1699300000000, 0.9510565400123596, -0.30901700258255005]]"
@@ -323,8 +323,8 @@ def test_encode_mixed_contents_polars():
     )
     assert datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3}) == (
         "[[1666767918216000000, 1699300000000, "
-        '{"display": "0.951057", "sort": 0.9510565400123596}, '
-        '{"display": "-0.309017", "sort": -0.30901700258255005}]]'
+        '{"display": "0.951057", "sort": 1}, '
+        '{"display": "-0.309017", "sort": 1}]]'
     )
 
     assert datatables_rows(df, float_columns_to_be_formatted_in_python=set()) == (
@@ -341,14 +341,14 @@ def test_polars_float_formatting():
 
     df = pl.DataFrame({"float": [math.pi, math.pi * 1e12]})
     assert datatables_rows(df, float_columns_to_be_formatted_in_python={0}) == (
-        '[[{"display": "3.141593", "sort": 3.141592653589793}], '
-        '[{"display": "3.1416e12", "sort": 3141592653589.793}]]'
+        '[[{"display": "3.141593", "sort": 1}], '
+        '[{"display": "3.1416e12", "sort": 2}]]'
     )
 
     with pl.Config(float_precision=12):
         assert datatables_rows(df, float_columns_to_be_formatted_in_python={0}) == (
-            '[[{"display": "3.141592653590", "sort": 3.141592653589793}], '
-            '[{"display": "3.141592653590e12", "sort": 3141592653589.793}]]'
+            '[[{"display": "3.141592653590", "sort": 1}], '
+            '[{"display": "3.141592653590e12", "sort": 2}]]'
         )
 
 
