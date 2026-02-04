@@ -126,10 +126,22 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> "dict[str, pl.DataFrame]
         ),
         "float": pl.DataFrame(
             {
-                "int": [0.0, 1.0],
-                "inf": [float("inf"), float("-inf")],
-                "nan": [float("nan"), float("nan")],
-                "math": [math.pi, math.e],
+                "int": [float(i) for i in range(10)],
+                "inf": [float("inf"), float("-inf")] * 5,
+                "nan": [float("nan"), 0 / float("nan")] * 5,
+                "math": [math.pi, math.e] * 5,
+                "unsorted": [
+                    100.0,
+                    float("nan"),
+                    float("nan"),
+                    20.0,
+                    math.pi,
+                    math.e,
+                    1 / float("inf"),
+                    -1 / float("inf"),
+                    float("inf"),
+                    float("-inf"),
+                ],
             }
         ),
         "str": pl.DataFrame(

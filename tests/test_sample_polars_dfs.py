@@ -62,8 +62,8 @@ def test_encode_mixed_contents():
     assert (
         datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3})
         == "[[1666767918216000000, 1699300000000, "
-        '{"display": "0.951057", "sort": 0.9510565400123596}, '
-        '{"display": "-0.309017", "sort": -0.30901700258255005}]]'
+        '["0.951057", 1], '
+        '["-0.309017", 1]]]'
     )
 
 
@@ -199,8 +199,8 @@ def test_polars_df_with_nan_and_none():
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
     assert (
-        dt_args["data_json"] == '[[1, {"display": "0.1", "sort": 0.1}, "x"], '
-        '[2, {"display": "null", "sort": null}, null], '
-        '[null, {"display": "NaN", "sort": "___NaN___"}, "z"], '
-        '[4, {"display": "0.4", "sort": 0.4}, "w"]]'
+        dt_args["data_json"] == '[[1, ["0.1", 1], "x"], '
+        "[2, [null, 0], null], "
+        '[null, ["NaN", 3], "z"], '
+        '[4, ["0.4", 2], "w"]]'
     )
