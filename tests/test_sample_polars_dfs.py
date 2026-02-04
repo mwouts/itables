@@ -186,12 +186,12 @@ def test_polars_df_with_nan_and_none():
             "C": ["x", None, "z", "w"],
         }
     )
-    assert df.dtypes == [pl.Int64, pl.Float64, pl.Utf8]
+    assert df.dtypes == [pl.Int64, pl.Float64, pl.String]
     dt_args = get_itable_arguments(df, format_floats_in_python=False)
     assert "data_json" in dt_args
     assert (
         dt_args["data_json"] == '[[1, 0.1, "x"], '
-        '[2, null, "null"], '
+        "[2, null, null], "
         '[null, "___NaN___", "z"], '
         '[4, 0.4, "w"]]'
     )
@@ -200,7 +200,7 @@ def test_polars_df_with_nan_and_none():
     assert "data_json" in dt_args
     assert (
         dt_args["data_json"] == '[[1, {"display": "0.1", "sort": 0.1}, "x"], '
-        '[2, {"display": "null", "sort": null}, "null"], '
+        '[2, {"display": "null", "sort": null}, null], '
         '[null, {"display": "NaN", "sort": "___NaN___"}, "z"], '
         '[4, {"display": "0.4", "sort": 0.4}, "w"]]'
     )

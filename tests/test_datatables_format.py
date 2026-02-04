@@ -556,3 +556,24 @@ def test_render_in_columndefs_deactivates_python_float_formatting_pandas():
         columnDefs=columnDefs,
     )
     assert float_columns == set()
+
+
+@pytest.mark.parametrize("dataframe_library", ["pandas", "polars"])
+def test_long_strings_are_not_truncated(dataframe_library: str):
+    """Test that long strings are passed verbatim to itables for Pandas"""
+    pd_or_pl = pytest.importorskip(dataframe_library)
+
+    # Create a dataframe with a long string that exceeds the typical truncation length
+    long_string = (
+        "This is a very long string that should not be truncated by itables formatting. "
+        * 50
+    )
+    df = pd_or_pl.DataFrame({"text": [long_string]})
+
+    # Get the formatted rows
+    result = datatables_rows(df)
+
+    # The result should contain the full string
+    assert (
+        long_string in result
+    ), f"Long string was truncated in {dataframe_library} dataframe"

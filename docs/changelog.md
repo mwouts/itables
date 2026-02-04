@@ -6,7 +6,7 @@ ITables ChangeLog
 
 **Changed**
 - Floats are formatted using the underlying dataframe formatter when `format_floats_in_python` is `"auto"` (the default). Set that option `False` if you want to format the values in JS directly ([#483](https://github.com/mwouts/itables/issues/483)).
-- Polars objects are displayed using Polars' internal method `x._s.get_fmt` ([#471](https://github.com/mwouts/itables/issues/471))
+- Float and complex Polars objects are displayed using Polars' internal method `x._s.get_fmt` ([#471](https://github.com/mwouts/itables/issues/471))
 - We have updated `dt_for_itables` to the latest version of `datatables.net-dt==2.3.7` ([#485](https://github.com/mwouts/itables/issues/485))
 - The default look of ITables is more compact. Create an `itables.toml` configuration file with just `classes = ["display", "nowrap"]` to revert the change locally.
 
