@@ -467,9 +467,11 @@ def test_show_dtypes_pandas():
     df = pd.DataFrame({"a": [1], "b": [2]}, index=pd.Index(["O"], name="index"))
     dt_args = get_itable_arguments(df, show_dtypes=True)
     assert "table_html" in dt_args
+    table_html = dt_args["table_html"]
+    str_dtype = pd.Series(["O"]).dtype.name
     assert (
-        "<tr><th><small class='itables-dtype'>object</small></th><th><small class='itables-dtype'>i64</small></th><th><small class='itables-dtype'>i64</small></th>"
-        in dt_args["table_html"]
+        f"<tr><th><small class='itables-dtype'>{str_dtype}</small></th><th><small class='itables-dtype'>i64</small></th><th><small class='itables-dtype'>i64</small></th>"
+        in table_html
     )
 
 

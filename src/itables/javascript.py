@@ -284,15 +284,20 @@ def _table_header(
             if hasattr(dtype, "_string_repr"):
                 return dtype._string_repr()
 
-            dtype = str(dtype)
-            if dtype.startswith("int"):
-                return "i" + dtype[3:]
-            elif dtype.startswith("uint"):
-                return "u" + dtype[4:]
-            elif dtype.startswith("float"):
-                return "f" + dtype[5:]
+            # Use dtype.name for cleaner representation (e.g., "string" instead of "<StringDtype(...)>")
+            if hasattr(dtype, "name"):
+                dtype_str = dtype.name
             else:
-                return dtype
+                dtype_str = str(dtype)
+
+            if dtype_str.startswith("int"):
+                return "i" + dtype_str[3:]
+            elif dtype_str.startswith("uint"):
+                return "u" + dtype_str[4:]
+            elif dtype_str.startswith("float"):
+                return "f" + dtype_str[5:]
+            else:
+                return dtype_str
 
         if show_index:
             pd = sys.modules["pandas"]
