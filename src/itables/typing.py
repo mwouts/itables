@@ -156,6 +156,7 @@ class DataTableOptions(TypedDict):
     # DataTable options provided by its extensions
     buttons: NotRequired[Sequence[Union[str, Mapping[str, Any]]]]
     columnControl: NotRequired[Any]
+    fixedHeader: NotRequired[bool]
     fixedColumns: NotRequired[Mapping[Literal["left", "right", "start", "end"], int]]
     searchPanes: NotRequired[Mapping[str, Any]]
     searchBuilder: NotRequired[Mapping[str, Any]]
