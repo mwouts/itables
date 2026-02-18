@@ -146,6 +146,7 @@ drawCallback: Optional[typing.JavascriptFunction]
 stateSave: Optional[bool]
 stateDuration: Optional[int]
 buttons: Optional[Sequence[Union[str, Mapping[str, Any]]]]
+columnControl: Optional[Any]
 fixedColumns: Optional[Mapping[Literal["left", "right", "start", "end"], int]]
 fixedHeader: Optional[
     Union[
