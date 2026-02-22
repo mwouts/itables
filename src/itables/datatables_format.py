@@ -9,27 +9,9 @@ from .typing import DataFrameOrSeries, get_dataframe_module_name
 
 
 def _format_pandas_series(
-    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool = True
+    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool
 ) -> Sequence[Any]:
     import pandas as pd
-
-    if isinstance(x.dtype, pd.CategoricalDtype):
-        import pandas.io.formats.format as fmt
-
-        try:
-            formatted = fmt.format_array(
-                x._values, None, justify="all", leading_space=False
-            )
-        except TypeError:
-            formatted = fmt.format_array(x._values, None, justify="all")
-        if escape_html:
-            formatted = [escape_html_chars(i) for i in formatted]
-        if add_rank_to_categories:
-            codes = x.cat.codes.tolist()
-            # null (code=-1) gets rank 0 (sorts first), categories are 1-indexed
-            ranks = [0 if c == -1 else c + 1 for c in codes]
-            return [[fmt_val, rank] for fmt_val, rank in zip(formatted, ranks)]
-        return list(formatted)
 
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
@@ -63,6 +45,11 @@ def _format_pandas_series(
             )
         ]
 
+    if isinstance(x.dtype, pd.CategoricalDtype) and add_rank_to_categories:
+        codes = x.cat.codes.tolist()
+        # null (code=-1) gets rank 0 (sorts first), categories are 1-indexed
+        return [0 if c == -1 else c + 1 for c in codes]
+
     return formatted
 
 
@@ -95,15 +82,11 @@ def _format_polars_series(
         return [escape_non_finite_float(v) for v in x.to_list()]
 
     if dtype == pl.Enum or dtype == pl.Categorical:
-        formatted = x.cast(pl.String).to_list()
-        if escape_html:
-            formatted = [escape_html_chars(i) for i in formatted]
         if add_rank_to_categories:
             codes = x.to_physical().to_list()
             # null gets rank 0 (sorts first), categories are 1-indexed
-            ranks = [0 if c is None else c + 1 for c in codes]
-            return [[fmt_val, rank] for fmt_val, rank in zip(formatted, ranks)]
-        return formatted
+            return [0 if c is None else c + 1 for c in codes]
+        return x.cast(pl.String).to_list()
 
     if dtype == pl.String:
         formatted = x.to_list()
@@ -158,19 +141,14 @@ def _format_narwhals_series(
     if dtype.is_float() and not format_floats_in_python:
         return [escape_non_finite_float(v) for v in x]
 
-    # Categorical and Enum types - return [display_value, category_code] for sorting
+    # Categorical and Enum types
     if isinstance(dtype, (nw.Categorical, nw.Enum)):
-        categories = x.cat.get_categories().to_list()
-        values = x.to_list()
-        formatted = [str(v) if v is not None else str(None) for v in values]
-        if escape_html:
-            formatted = [escape_html_chars(i) for i in formatted]
         if add_rank_to_categories:
-            # null gets rank 0 (sorts first), categories are 1-indexed
+            categories = x.cat.get_categories().to_list()
             category_to_rank = {cat: i + 1 for i, cat in enumerate(categories)}
-            ranks = [0 if v is None else category_to_rank.get(v, 0) for v in values]
-            return [[fmt_val, rank] for fmt_val, rank in zip(formatted, ranks)]
-        return formatted
+            # null gets rank 0 (sorts first), categories are 1-indexed
+            return [0 if v is None else category_to_rank.get(v, 0) for v in x.to_list()]
+        return [str(v) if v is not None else str(None) for v in x.to_list()]
 
     formatted = [str(v) for v in x]
     if escape_html:

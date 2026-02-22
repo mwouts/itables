@@ -580,7 +580,7 @@ def test_long_strings_are_not_truncated(dataframe_library: str):
 
 
 def test_pandas_categorical_sorting():
-    """Pandas categorical columns should be encoded as [display_value, rank] for sorting"""
+    """Pandas categorical columns are encoded as integer ranks for sorting"""
     pd = pytest.importorskip("pandas")
 
     # Ordered categorical: category order is low < medium < high
@@ -596,17 +596,14 @@ def test_pandas_categorical_sorting():
     )
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
-    # Null sorts first (rank 0), categories are 1-indexed: low=1, medium=2, high=3
-    assert (
-        dt_args["data_json"]
-        == '[[["high", 3], 1], [["low", 1], 2], [["medium", 2], 3], [["low", 1], 4]]'
-    )
+    # Null sorts first (rank 0), categories 1-indexed: low=1, medium=2, high=3
+    assert dt_args["data_json"] == "[[3, 1], [1, 2], [2, 3], [1, 4]]"
     assert "columnDefs" in dt_args
-    assert dt_args["columnDefs"][0]["targets"] == [0]
+    assert dt_args["columnDefs"][0]["targets"] == 0
 
 
 def test_pandas_categorical_with_missing_values():
-    """Null/NaN values in categorical columns should sort first (rank 0)"""
+    """Null/NaN values in categorical columns sort first (rank 0)"""
     pd = pytest.importorskip("pandas")
 
     df = pd.DataFrame(
@@ -619,13 +616,12 @@ def test_pandas_categorical_with_missing_values():
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
     data = json.loads(dt_args["data_json"])
-    # Null sorts first (rank 0), a=1, b=2
-    ranks = [row[0][1] for row in data]
-    assert ranks == [2, 0, 1]  # b=2, NaN=0, a=1
+    # Null sorts first (rank 0), a=1, b=2; data is just the integer rank
+    assert data == [[2], [0], [1]]
 
 
 def test_polars_categorical_with_missing_values():
-    """Null values in polars categorical columns should sort first (rank 0)"""
+    """Null values in polars categorical columns sort first (rank 0)"""
     pl = pytest.importorskip("polars")
 
     df = pl.DataFrame(
@@ -634,6 +630,5 @@ def test_polars_categorical_with_missing_values():
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
     data = json.loads(dt_args["data_json"])
-    # Null sorts first (rank 0); polars assigns codes as values appear: b=0→rank 1, a=1→rank 2
-    ranks = [row[0][1] for row in data]
-    assert ranks == [1, 0, 2]  # b=1, null=0, a=2
+    # Polars assigns codes in insertion order: b=0→rank 1, a=1→rank 2; null=rank 0
+    assert data == [[1], [0], [2]]

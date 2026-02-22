@@ -173,15 +173,16 @@ def test_polars_df_with_categorical_and_enums():
     assert df.dtypes == [pl.Categorical, pl.Enum, pl.Int64]
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
-    # Categorical and Enum columns are encoded as [display_value, rank]
-    # Null sorts first (rank 0), categories are 1-indexed.
+    # Categorical and Enum columns are encoded as integer ranks (null=0, categories 1-indexed).
     # Cat ranks: a=1, b=2, c=3. Enum ranks: north=1, south=2, east=3, west=4.
     assert (
         dt_args["data_json"]
-        == '[[["a", 1], ["north", 1], 1], [["b", 2], ["south", 2], 2], [["a", 1], ["north", 1], 1], [["c", 3], ["west", 4], 3]]'
+        == "[[1, 1, 1], [2, 2, 2], [1, 1, 1], [3, 4, 3]]"
     )
     assert "columnDefs" in dt_args
-    assert dt_args["columnDefs"][0]["targets"] == [0, 1]
+    # Each categorical column gets its own columnDef with embedded categories
+    assert dt_args["columnDefs"][0]["targets"] == 0
+    assert dt_args["columnDefs"][1]["targets"] == 1
 
 
 def test_polars_df_with_nan_and_none():

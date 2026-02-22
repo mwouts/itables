@@ -111,6 +111,7 @@ def test_format_pandas_series(
             series,
             escape_html=escape_html,
             format_floats_in_python=format_floats_in_python,
+            add_rank_to_categories=True,
         )
     )
     json.dumps(values, cls=generate_encoder())
