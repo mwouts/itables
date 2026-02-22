@@ -7,6 +7,9 @@ ITables ChangeLog
 **Added**
 - We have added the FixedHeader extension of DataTables to the `dt_for_itables` package ([#496](https://github.com/mwouts/itables/pull/496)). Thanks to [kultura-luke](https://github.com/kultura-luke) for suggesting this!
 
+**Fixed**
+- We have added an optional `columnControl` to `option.py`. Thanks to [kultura-luke](https://github.com/kultura-luke) for pointing out at this.
+
 
 2.7.0 (2026-02-04)
 ------------------
