@@ -11,6 +11,24 @@ from .typing import DataFrameOrSeries, get_dataframe_module_name
 def _format_pandas_series(
     x, escape_html: bool, format_floats_in_python: bool
 ) -> Sequence[Any]:
+    import pandas as pd
+
+    if isinstance(x.dtype, pd.CategoricalDtype):
+        import pandas.io.formats.format as fmt
+
+        try:
+            formatted = fmt.format_array(
+                x._values, None, justify="all", leading_space=False
+            )
+        except TypeError:
+            formatted = fmt.format_array(x._values, None, justify="all")
+        if escape_html:
+            formatted = [escape_html_chars(i) for i in formatted]
+        codes = x.cat.codes.tolist()
+        n_categories = len(x.cat.categories)
+        sort_keys = [n_categories if c == -1 else c for c in codes]
+        return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
         return x
@@ -73,10 +91,17 @@ def _format_polars_series(
     if dtype.is_float() and not format_floats_in_python:
         return [escape_non_finite_float(v) for v in x.to_list()]
 
+    if dtype == pl.Enum or dtype == pl.Categorical:
+        formatted = x.cast(pl.String).to_list()
+        if escape_html:
+            formatted = [escape_html_chars(i) for i in formatted]
+        codes = x.to_physical().to_list()
+        null_sort_key = len(x.cat.get_categories())
+        sort_keys = [null_sort_key if c is None else c for c in codes]
+        return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+
     if dtype == pl.String:
         formatted = x.to_list()
-    elif dtype == pl.Enum or dtype == pl.Categorical:
-        formatted = x.cast(pl.String).to_list()
     else:
         # Other types - use Polars' native formatting
         str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
@@ -127,6 +152,21 @@ def _format_narwhals_series(
     # Float types - format and handle non-finite values
     if dtype.is_float() and not format_floats_in_python:
         return [escape_non_finite_float(v) for v in x]
+
+    # Categorical and Enum types - return [display_value, category_code] for sorting
+    if isinstance(dtype, (nw.Categorical, nw.Enum)):
+        categories = x.cat.get_categories().to_list()
+        category_to_rank = {cat: i for i, cat in enumerate(categories)}
+        null_sort_key = len(categories)
+        values = x.to_list()
+        formatted = [str(v) if v is not None else str(None) for v in values]
+        if escape_html:
+            formatted = [escape_html_chars(i) for i in formatted]
+        sort_keys = [
+            null_sort_key if v is None else category_to_rank.get(v, null_sort_key)
+            for v in values
+        ]
+        return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
 
     formatted = [str(v) for v in x]
     if escape_html:

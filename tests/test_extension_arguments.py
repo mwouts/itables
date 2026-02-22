@@ -20,6 +20,8 @@ def test_get_itables_extension_arguments(df):
         "text_in_header_can_be_selected",
         "filtered_row_count",
         "downsampling_warning",
+        "columnDefs",
+        "keys_to_be_evaluated",
     }, set(dt_args)
     assert isinstance(dt_args["data_json"], str)  # type: ignore
     assert isinstance(dt_args["table_html"], str)  # type: ignore

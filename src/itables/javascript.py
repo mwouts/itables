@@ -517,6 +517,39 @@ def get_float_columns_to_be_formatted_in_python(
     return float_columns_to_be_formatted_in_python
 
 
+def get_categorical_columns(
+    df_module_name: DataFrameModuleName,
+    df: DataFrameOrSeries,
+) -> set[int]:
+    """
+    Return the set of column indices that have categorical dtypes
+    """
+    if df_module_name in ["pandas", "numpy"]:
+        import pandas as pd
+
+        return {
+            i for i, dtype in enumerate(df.dtypes) if isinstance(dtype, pd.CategoricalDtype)
+        }
+    elif df_module_name == "polars":
+        import polars as pl
+
+        return {
+            i
+            for i, col in enumerate(df.columns)
+            if df[col].dtype in (pl.Categorical, pl.Enum)
+        }
+    else:
+        import narwhals as nw
+
+        nw_df = nw.from_native(df, eager_only=True, allow_series=True)
+
+        return {
+            i
+            for i, col in enumerate(nw_df.columns)
+            if isinstance(nw_df[col].dtype, (nw.Categorical, nw.Enum))
+        }
+
+
 def get_itable_arguments(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
@@ -693,6 +726,26 @@ def get_itable_arguments(
                     }
                 ]
                 + list(columnDefs)
+            )
+        categorical_columns = get_categorical_columns(df_module_name, df)
+        if categorical_columns:
+            dt_args["columnDefs"] = (
+                [
+                    {
+                        "targets": [
+                            i + column_count - len(df.columns)
+                            for i in categorical_columns
+                        ],
+                        "render": JavascriptFunction(
+                            """
+                        function (data, type, row, meta) {
+                            return type === 'sort' ? data[1] : data[0];
+                        }
+                    """
+                        ),
+                    }
+                ]
+                + list(dt_args.get("columnDefs") or [])
             )
     else:
         if df_module_name == "pandas" and df_type_name == "Styler":

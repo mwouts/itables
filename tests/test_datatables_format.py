@@ -577,3 +577,63 @@ def test_long_strings_are_not_truncated(dataframe_library: str):
     assert (
         long_string in result
     ), f"Long string was truncated in {dataframe_library} dataframe"
+
+
+def test_pandas_categorical_sorting():
+    """Pandas categorical columns should be encoded as [display_value, code] for sorting"""
+    pd = pytest.importorskip("pandas")
+
+    # Ordered categorical: category order is low < medium < high
+    df = pd.DataFrame(
+        {
+            "priority": pd.Categorical(
+                ["high", "low", "medium", "low"],
+                categories=["low", "medium", "high"],
+                ordered=True,
+            ),
+            "value": [1, 2, 3, 4],
+        }
+    )
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    # high=2, low=0, medium=1 according to category order
+    assert (
+        dt_args["data_json"]
+        == '[[["high", 2], 1], [["low", 0], 2], [["medium", 1], 3], [["low", 0], 4]]'
+    )
+    assert "columnDefs" in dt_args
+    assert dt_args["columnDefs"][0]["targets"] == [0]
+
+
+def test_pandas_categorical_with_nan_sorting():
+    """NaN values in categorical columns should sort after all categories"""
+    pd = pytest.importorskip("pandas")
+
+    df = pd.DataFrame(
+        {
+            "cat": pd.Categorical(
+                ["b", None, "a"], categories=["a", "b"], ordered=False
+            )
+        }
+    )
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    data = json.loads(dt_args["data_json"])
+    # NaN should have sort key = n_categories (2), which sorts after a=0 and b=1
+    sort_keys = [row[0][1] for row in data]
+    assert sort_keys == [1, 2, 0]  # b=1, NaN=2, a=0
+
+
+def test_polars_categorical_with_null_sorting():
+    """Null values in polars categorical columns should sort after all categories"""
+    pl = pytest.importorskip("polars")
+
+    df = pl.DataFrame(
+        {"cat": pl.Series(["b", None, "a"], dtype=pl.Categorical)}
+    )
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    data = json.loads(dt_args["data_json"])
+    # Codes: b=0 (first inserted), a=1 (second inserted), null sort key=2 (n_categories)
+    sort_keys = [row[0][1] for row in data]
+    assert sort_keys == [0, 2, 1]
