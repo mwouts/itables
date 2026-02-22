@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.7.1-dev (unreleased)
+----------------------
+
+**Added**
+- We have added the FixedHeader extension of DataTables to the `dt_for_itables` package ([#496](https://github.com/mwouts/itables/pull/496)). Thanks to [kultura-luke](https://github.com/kultura-luke) for suggesting this!
+
+
 2.7.0 (2026-02-04)
 ------------------
 

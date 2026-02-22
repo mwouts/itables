@@ -147,6 +147,15 @@ stateSave: Optional[bool]
 stateDuration: Optional[int]
 buttons: Optional[Sequence[Union[str, Mapping[str, Any]]]]
 fixedColumns: Optional[Mapping[Literal["left", "right", "start", "end"], int]]
+fixedHeader: Optional[
+    Union[
+        bool,
+        Mapping[
+            Literal["header", "footer", "headerOffset", "footerOffset"],
+            Union[bool, int, typing.JavascriptFunction],
+        ],
+    ]
+]
 searchPanes: Optional[Mapping[str, Any]]
 searchBuilder: Optional[Mapping[str, Any]]
 rowGroup: Optional[Mapping[str, Any]]

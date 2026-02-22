@@ -157,6 +157,15 @@ class DataTableOptions(TypedDict):
     buttons: NotRequired[Sequence[Union[str, Mapping[str, Any]]]]
     columnControl: NotRequired[Any]
     fixedColumns: NotRequired[Mapping[Literal["left", "right", "start", "end"], int]]
+    fixedHeader: NotRequired[
+        Union[
+            bool,
+            Mapping[
+                Literal["header", "footer", "headerOffset", "footerOffset"],
+                Union[bool, int, JavascriptFunction],
+            ],
+        ]
+    ]
     searchPanes: NotRequired[Mapping[str, Any]]
     searchBuilder: NotRequired[Mapping[str, Any]]
     rowGroup: NotRequired[Mapping[str, Any]]

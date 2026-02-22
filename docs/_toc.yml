@@ -38,6 +38,7 @@ parts:
       - file: options/search_panes
       - file: options/search_builder
       - file: options/fixed_columns
+      - file: options/fixed_header
       - file: options/row_group
       - file: options/keys
       - file: options/allow_html
