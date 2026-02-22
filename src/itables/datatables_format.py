@@ -26,9 +26,9 @@ def _format_pandas_series(
             formatted = [escape_html_chars(i) for i in formatted]
         if add_rank_to_categories:
             codes = x.cat.codes.tolist()
-            n_categories = len(x.cat.categories)
-            sort_keys = [n_categories if c == -1 else c for c in codes]
-            return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+            # null (code=-1) gets rank 0 (sorts first), categories are 1-indexed
+            ranks = [0 if c == -1 else c + 1 for c in codes]
+            return [[fmt_val, rank] for fmt_val, rank in zip(formatted, ranks)]
         return list(formatted)
 
     dtype_kind = x.dtype.kind
@@ -71,7 +71,7 @@ def _format_polars_series(
     escape_html: bool,
     format_floats_in_python: bool,
     warn_on_polars_get_fmt_not_found: bool,
-    add_rank_to_categories: bool = True,
+    add_rank_to_categories: bool,
 ) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
     pl = sys.modules["polars"]
@@ -100,9 +100,9 @@ def _format_polars_series(
             formatted = [escape_html_chars(i) for i in formatted]
         if add_rank_to_categories:
             codes = x.to_physical().to_list()
-            null_sort_key = len(x.cat.get_categories())
-            sort_keys = [null_sort_key if c is None else c for c in codes]
-            return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+            # null gets rank 0 (sorts first), categories are 1-indexed
+            ranks = [0 if c is None else c + 1 for c in codes]
+            return [[fmt_val, rank] for fmt_val, rank in zip(formatted, ranks)]
         return formatted
 
     if dtype == pl.String:
@@ -134,7 +134,7 @@ def _format_polars_series(
 
 
 def _format_narwhals_series(
-    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool = True
+    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool
 ) -> Sequence[Any]:
     """Format a Narwhals Series for DataTables display"""
     nw = sys.modules["narwhals"]
@@ -161,18 +161,15 @@ def _format_narwhals_series(
     # Categorical and Enum types - return [display_value, category_code] for sorting
     if isinstance(dtype, (nw.Categorical, nw.Enum)):
         categories = x.cat.get_categories().to_list()
-        null_sort_key = len(categories)
         values = x.to_list()
         formatted = [str(v) if v is not None else str(None) for v in values]
         if escape_html:
             formatted = [escape_html_chars(i) for i in formatted]
         if add_rank_to_categories:
-            category_to_rank = {cat: i for i, cat in enumerate(categories)}
-            sort_keys = [
-                null_sort_key if v is None else category_to_rank.get(v, null_sort_key)
-                for v in values
-            ]
-            return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+            # null gets rank 0 (sorts first), categories are 1-indexed
+            category_to_rank = {cat: i + 1 for i, cat in enumerate(categories)}
+            ranks = [0 if v is None else category_to_rank.get(v, 0) for v in values]
+            return [[fmt_val, rank] for fmt_val, rank in zip(formatted, ranks)]
         return formatted
 
     formatted = [str(v) for v in x]
@@ -248,7 +245,7 @@ def datatables_rows(
     column_count: Optional[int] = None,
     escape_html: bool = True,
     float_columns_to_be_formatted_in_python: Optional[set[int]] = None,
-    categorical_columns: Optional[set[int]] = None,
+    categorical_columns_to_be_represented_through_their_rank: Optional[set[int]] = None,
     warn_on_unexpected_types: bool = False,
     warn_on_polars_get_fmt_not_found: bool = True,
 ) -> str:
@@ -266,15 +263,15 @@ def datatables_rows(
     df_module = get_dataframe_module_name(df)
     if float_columns_to_be_formatted_in_python is None:
         float_columns_to_be_formatted_in_python = set()
-    if categorical_columns is None:
-        categorical_columns = set()
+    if categorical_columns_to_be_represented_through_their_rank is None:
+        categorical_columns_to_be_represented_through_their_rank = set()
     if df_module == "pandas":
         formatted_columns = [
             _format_pandas_series(
                 x,
                 escape_html,
                 i in float_columns_to_be_formatted_in_python,
-                i in categorical_columns,
+                i in categorical_columns_to_be_represented_through_their_rank,
             )
             for i, (_, x) in enumerate(df.items())
         ]
@@ -285,7 +282,7 @@ def datatables_rows(
                 escape_html,
                 i in float_columns_to_be_formatted_in_python,
                 warn_on_polars_get_fmt_not_found,
-                i in categorical_columns,
+                i in categorical_columns_to_be_represented_through_their_rank,
             )
             for i, col in enumerate(df.columns)
         ]
@@ -301,7 +298,7 @@ def datatables_rows(
                 df[col],
                 escape_html,
                 i in float_columns_to_be_formatted_in_python,
-                i in categorical_columns,
+                i in categorical_columns_to_be_represented_through_their_rank,
             )
             for i, col in enumerate(df.columns)
         ]

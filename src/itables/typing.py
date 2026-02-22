@@ -193,7 +193,7 @@ class ITableOptions(DataTableOptions):
 
     allow_html: NotRequired[bool]
     format_floats_in_python: NotRequired[Union[bool, Literal["auto"]]]
-    add_rank_to_categories: NotRequired[bool]
+    add_rank_to_categories: NotRequired[Union[bool, Literal["auto"]]]
 
     table_id: NotRequired[str]
     dt_url: NotRequired[str]
