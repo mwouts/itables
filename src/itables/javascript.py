@@ -524,7 +524,9 @@ def get_categorical_columns(
     """
     Return the set of column indices that have categorical dtypes
     """
-    if df_module_name in ["pandas", "numpy"]:
+    if df_module_name == "numpy":
+        return set()
+    elif df_module_name == "pandas":
         import pandas as pd
 
         return {
@@ -638,6 +640,7 @@ def get_itable_arguments(
     table_id = kwargs.pop("table_id", None)
     footer = kwargs.pop("footer", False)
     format_floats_in_python = kwargs.pop("format_floats_in_python", "auto")
+    add_rank_to_categories = kwargs.pop("add_rank_to_categories", True)
     warn_on_selected_rows_not_rendered = kwargs.pop(
         "warn_on_selected_rows_not_rendered", False
     )
@@ -700,53 +703,48 @@ def get_itable_arguments(
                 df_module_name, df, format_floats_in_python, columnDefs
             )
         )
+        categorical_columns = (
+            get_categorical_columns(df_module_name, df) if add_rank_to_categories else set()
+        )
         dt_args["data_json"] = datatables_rows(
             df,
             column_count=column_count,
             escape_html=allow_html is not True,
             float_columns_to_be_formatted_in_python=float_columns_to_be_formatted_in_python,
+            categorical_columns=categorical_columns,
             warn_on_unexpected_types=warn_on_unexpected_types,
             warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
         )
+        _RENDER_SORT_FUNCTION = JavascriptFunction(
+            """
+                        function (data, type, row, meta) {
+                            return type === 'sort' ? data[1] : data[0];
+                        }
+                    """
+        )
+        extra_column_defs = []
         if float_columns_to_be_formatted_in_python:
-            dt_args["columnDefs"] = (
-                [
-                    {
-                        "targets": [
-                            i + column_count - len(df.columns)
-                            for i in float_columns_to_be_formatted_in_python
-                        ],
-                        "render": JavascriptFunction(
-                            """
-                        function (data, type, row, meta) {
-                            return type === 'sort' ? data[1] : data[0];
-                        }
-                    """
-                        ),
-                    }
-                ]
-                + list(columnDefs)
+            extra_column_defs.append(
+                {
+                    "targets": [
+                        i + column_count - len(df.columns)
+                        for i in float_columns_to_be_formatted_in_python
+                    ],
+                    "render": _RENDER_SORT_FUNCTION,
+                }
             )
-        categorical_columns = get_categorical_columns(df_module_name, df)
         if categorical_columns:
-            dt_args["columnDefs"] = (
-                [
-                    {
-                        "targets": [
-                            i + column_count - len(df.columns)
-                            for i in categorical_columns
-                        ],
-                        "render": JavascriptFunction(
-                            """
-                        function (data, type, row, meta) {
-                            return type === 'sort' ? data[1] : data[0];
-                        }
-                    """
-                        ),
-                    }
-                ]
-                + list(dt_args.get("columnDefs") or [])
+            extra_column_defs.append(
+                {
+                    "targets": [
+                        i + column_count - len(df.columns)
+                        for i in categorical_columns
+                    ],
+                    "render": _RENDER_SORT_FUNCTION,
+                }
             )
+        if extra_column_defs:
+            dt_args["columnDefs"] = extra_column_defs + list(columnDefs)
     else:
         if df_module_name == "pandas" and df_type_name == "Styler":
             if not allow_html:

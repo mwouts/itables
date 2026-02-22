@@ -9,7 +9,7 @@ from .typing import DataFrameOrSeries, get_dataframe_module_name
 
 
 def _format_pandas_series(
-    x, escape_html: bool, format_floats_in_python: bool
+    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool = True
 ) -> Sequence[Any]:
     import pandas as pd
 
@@ -24,10 +24,12 @@ def _format_pandas_series(
             formatted = fmt.format_array(x._values, None, justify="all")
         if escape_html:
             formatted = [escape_html_chars(i) for i in formatted]
-        codes = x.cat.codes.tolist()
-        n_categories = len(x.cat.categories)
-        sort_keys = [n_categories if c == -1 else c for c in codes]
-        return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+        if add_rank_to_categories:
+            codes = x.cat.codes.tolist()
+            n_categories = len(x.cat.categories)
+            sort_keys = [n_categories if c == -1 else c for c in codes]
+            return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+        return list(formatted)
 
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
@@ -69,6 +71,7 @@ def _format_polars_series(
     escape_html: bool,
     format_floats_in_python: bool,
     warn_on_polars_get_fmt_not_found: bool,
+    add_rank_to_categories: bool = True,
 ) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
     pl = sys.modules["polars"]
@@ -95,10 +98,12 @@ def _format_polars_series(
         formatted = x.cast(pl.String).to_list()
         if escape_html:
             formatted = [escape_html_chars(i) for i in formatted]
-        codes = x.to_physical().to_list()
-        null_sort_key = len(x.cat.get_categories())
-        sort_keys = [null_sort_key if c is None else c for c in codes]
-        return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+        if add_rank_to_categories:
+            codes = x.to_physical().to_list()
+            null_sort_key = len(x.cat.get_categories())
+            sort_keys = [null_sort_key if c is None else c for c in codes]
+            return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+        return formatted
 
     if dtype == pl.String:
         formatted = x.to_list()
@@ -129,7 +134,7 @@ def _format_polars_series(
 
 
 def _format_narwhals_series(
-    x, escape_html: bool, format_floats_in_python: bool
+    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool = True
 ) -> Sequence[Any]:
     """Format a Narwhals Series for DataTables display"""
     nw = sys.modules["narwhals"]
@@ -156,17 +161,19 @@ def _format_narwhals_series(
     # Categorical and Enum types - return [display_value, category_code] for sorting
     if isinstance(dtype, (nw.Categorical, nw.Enum)):
         categories = x.cat.get_categories().to_list()
-        category_to_rank = {cat: i for i, cat in enumerate(categories)}
         null_sort_key = len(categories)
         values = x.to_list()
         formatted = [str(v) if v is not None else str(None) for v in values]
         if escape_html:
             formatted = [escape_html_chars(i) for i in formatted]
-        sort_keys = [
-            null_sort_key if v is None else category_to_rank.get(v, null_sort_key)
-            for v in values
-        ]
-        return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+        if add_rank_to_categories:
+            category_to_rank = {cat: i for i, cat in enumerate(categories)}
+            sort_keys = [
+                null_sort_key if v is None else category_to_rank.get(v, null_sort_key)
+                for v in values
+            ]
+            return [[fmt_val, sort_key] for fmt_val, sort_key in zip(formatted, sort_keys)]
+        return formatted
 
     formatted = [str(v) for v in x]
     if escape_html:
@@ -241,6 +248,7 @@ def datatables_rows(
     column_count: Optional[int] = None,
     escape_html: bool = True,
     float_columns_to_be_formatted_in_python: Optional[set[int]] = None,
+    categorical_columns: Optional[set[int]] = None,
     warn_on_unexpected_types: bool = False,
     warn_on_polars_get_fmt_not_found: bool = True,
 ) -> str:
@@ -258,10 +266,15 @@ def datatables_rows(
     df_module = get_dataframe_module_name(df)
     if float_columns_to_be_formatted_in_python is None:
         float_columns_to_be_formatted_in_python = set()
+    if categorical_columns is None:
+        categorical_columns = set()
     if df_module == "pandas":
         formatted_columns = [
             _format_pandas_series(
-                x, escape_html, i in float_columns_to_be_formatted_in_python
+                x,
+                escape_html,
+                i in float_columns_to_be_formatted_in_python,
+                i in categorical_columns,
             )
             for i, (_, x) in enumerate(df.items())
         ]
@@ -272,6 +285,7 @@ def datatables_rows(
                 escape_html,
                 i in float_columns_to_be_formatted_in_python,
                 warn_on_polars_get_fmt_not_found,
+                i in categorical_columns,
             )
             for i, col in enumerate(df.columns)
         ]
@@ -284,7 +298,10 @@ def datatables_rows(
 
         formatted_columns = [
             _format_narwhals_series(
-                df[col], escape_html, i in float_columns_to_be_formatted_in_python
+                df[col],
+                escape_html,
+                i in float_columns_to_be_formatted_in_python,
+                i in categorical_columns,
             )
             for i, col in enumerate(df.columns)
         ]
