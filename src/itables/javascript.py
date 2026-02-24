@@ -981,8 +981,8 @@ def html_table_from_template(
     assert "style" in kwargs
     kwargs["style"] = get_expanded_style(kwargs["style"])
 
-    # Export the DT args to JSON
-    dt_args = json.dumps(kwargs)
+    # Export the DT args to JSON, sort keys for reproducible output
+    dt_args = json.dumps(kwargs, sort_keys=True)
     output = replace_value(
         output, "let dt_args = {};", "let dt_args = {};".format(dt_args)
     )
