@@ -9,6 +9,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have added an optional `columnControl` to `option.py`. Thanks to [kultura-luke](https://github.com/kultura-luke) for pointing out at this.
+- We have bumped `minimatch` from 3.1.2 to 3.1.5 in `packages/itables_for_dash` ([#507](https://github.com/mwouts/itables/pull/507))
 
 
 2.7.0 (2026-02-04)
