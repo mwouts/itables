@@ -13,7 +13,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have fixed the ordering of floats ([#508](https://github.com/mwouts/itables/issues/508))
-- We don't calculate the rank of floats anymore, they are sorted using their value directly ([#490](https://github.com/mwouts/itables/issues/490))
+- We no longer calculate the rank of floats; they are now sorted directly by their value ([#490](https://github.com/mwouts/itables/issues/490))
 - We have added an optional `columnControl` to `option.py`. Thanks to [kultura-luke](https://github.com/kultura-luke) for pointing out at this.
 - We have fixed one test on the streamlit example app ([#509](https://github.com/mwouts/itables/issues/509))
 - We have fixed the build step as well ([#513](https://github.com/mwouts/itables/issues/513))
