@@ -1,0 +1,33 @@
+<!--| quarto-html-table-processing: none -->
+<table id="table_id">
+  <tbody>
+    <tr>
+      <td style="vertical-align:middle; text-align:left">
+        Loading ITables v{itables_version} from the internet...
+        (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
+      </td>
+    </tr>
+  </tbody>
+</table>
+<link href="https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.css" rel="stylesheet">
+<script type="module">
+    import { ITable, jQuery as $ } from 'https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.js';
+
+    document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
+        if (!(table instanceof HTMLTableElement))
+            return;
+
+        let dt_args = {
+          "classes": ["display", "nowrap", "compact"],
+          "columnDefs": [{"render": "function (data, type, row, meta) { return type === 'sort' || type === 'type' ? data[1] : data[0]; }", "targets": [1]}],
+          "data_json": "[[0, [\"5.000000\", 5], \"a\"], [1, [\"4.949495\", 4], \"b\"], [2, [\"4.898990\", 3], \"c\"], [3, [\"4.848485\", 2], \"d\"], [4, [\"4.797980\", 1], \"e\"]]",
+          "keys_to_be_evaluated": [["columnDefs", 0, "render"]],
+          "layout": {"bottomEnd": null, "bottomStart": null, "topEnd": null, "topStart": null},
+          "order": [],
+          "style": {"caption-side": "bottom", "margin": "auto", "table-layout": "auto", "width": "auto"},
+          "table_html": "<table><thead>\n    <tr style=\"text-align: right;\">\n      \n      <th>int</th>\n      <th>float</th>\n      <th>str</th>\n    </tr>\n  </thead></table>",
+          "text_in_header_can_be_selected": true
+        };
+        new ITable(table, dt_args);
+    });
+</script>

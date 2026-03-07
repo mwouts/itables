@@ -1,6 +1,6 @@
 """Run this app with: streamlit run apps/streamlit/itables_app.py"""
 
-from typing import Optional, Sequence, cast
+from typing import Optional
 
 import pyarrow  # type: ignore
 import streamlit as st
@@ -131,7 +131,7 @@ st.write(t)  # type: ignore
 
 st.header("More sample dataframes")
 test_dfs = itables.sample_dfs.get_dict_of_test_dfs()
-tabs = st.tabs(cast(Sequence[str], test_dfs.keys()))
+tabs = st.tabs(list(test_dfs.keys()))
 
 for (name, df), tab in zip(test_dfs.items(), tabs):
     with tab:

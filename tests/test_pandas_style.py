@@ -14,6 +14,8 @@ except ImportError:
 
 
 def test_buttons_are_shown_on_pd_style_objects():
+    import re
+
     df = pd.DataFrame({"A": ["a"]}).style
     html = to_html_datatable(
         df,
@@ -22,16 +24,9 @@ def test_buttons_are_shown_on_pd_style_objects():
     )
 
     # Extract the dt_args passed to datatables
-    dt_args = ""
-    for line in html.splitlines():
-        line = line.strip()
-        if line.startswith("let dt_args"):
-            dt_args = line.split("=", 1)[1]
-            break
-
-    assert dt_args.endswith(";"), dt_args
-    dt_args = dt_args[:-1]
-    dt_args = json.loads(dt_args)
+    match = re.search(r"let dt_args = ({.*?});\s*new ITable", html, re.DOTALL)
+    assert match, "Could not find dt_args in HTML"
+    dt_args = json.loads(match.group(1))
 
     print(dt_args)
     assert "dom" not in dt_args

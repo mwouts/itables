@@ -676,24 +676,17 @@ def get_itable_arguments(
             warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
         )
         if float_columns_to_be_formatted_in_python:
-            dt_args["columnDefs"] = (
-                [
-                    {
-                        "targets": [
-                            i + column_count - len(df.columns)
-                            for i in float_columns_to_be_formatted_in_python
-                        ],
-                        "render": JavascriptFunction(
-                            """
-                        function (data, type, row, meta) {
-                            return type === 'sort' ? data[1] : data[0];
-                        }
-                    """
-                        ),
-                    }
-                ]
-                + list(columnDefs)
-            )
+            dt_args["columnDefs"] = [
+                {
+                    "targets": [
+                        i + column_count - len(df.columns)
+                        for i in float_columns_to_be_formatted_in_python
+                    ],
+                    "render": JavascriptFunction(
+                        "function (data, type, row, meta) { return type === 'sort' || type === 'type' ? data[1] : data[0]; }"
+                    ),
+                }
+            ] + list(columnDefs)
     else:
         if df_module_name == "pandas" and df_type_name == "Styler":
             if not allow_html:
@@ -969,12 +962,16 @@ def html_table_from_template(
     itables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"
     )
-    table_body = f"""<tbody><tr>
-    <td style="vertical-align:middle; text-align:left">
-    {get_animated_logo(display_logo_when_loading)}
-    Loading ITables v{itables_version} from {itables_source}...
-    (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)</td>
-    </tr></tbody>"""
+    table_body = f"""
+  <tbody>
+    <tr>
+      <td style="vertical-align:middle; text-align:left">{get_animated_logo(display_logo_when_loading)}
+        Loading ITables v{itables_version} from {itables_source}...
+        (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
+      </td>
+    </tr>
+  </tbody>
+"""
     check_table_id(table_id, kwargs)
     output = replace_value(
         output,
@@ -988,10 +985,24 @@ def html_table_from_template(
     assert "style" in kwargs
     kwargs["style"] = get_expanded_style(kwargs["style"])
 
-    # Export the DT args to JSON
-    dt_args = json.dumps(kwargs)
+    # Export the DT args to JSON, sort keys for reproducible output
+    # Format with one line per top-level key/value for readability and version control
+    json_lines = ["{"]
+    items = sorted(kwargs.items())
+    for i, (key, value) in enumerate(items):
+        value_json = json.dumps(value, sort_keys=True)
+        comma = "," if i < len(items) - 1 else ""
+        json_lines.append(f'  "{key}": {value_json}{comma}')
+    json_lines.append("}")
+    dt_args_json = "\n".join(json_lines)
+
+    # Indent all lines after the first to align with the JavaScript code structure
+    lines = dt_args_json.split("\n")
+    indented_lines = [lines[0]] + ["        " + line for line in lines[1:]]
+    dt_args_formatted = "\n".join(indented_lines)
+
     output = replace_value(
-        output, "let dt_args = {};", "let dt_args = {};".format(dt_args)
+        output, "let dt_args = {};", f"let dt_args = {dt_args_formatted};"
     )
 
     return output
