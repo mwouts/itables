@@ -17,7 +17,7 @@ except ImportError as e:
             raise import_error
 
 
-from streamlit.components.v1.components import MarshallComponentException
+from streamlit.errors import StreamlitAPIException
 
 import itables
 from itables.streamlit import interactive_table
@@ -144,6 +144,6 @@ for (name, df), tab in zip(test_dfs.items(), tabs):
             ValueError,
             # streamlit-aggrid
             pyarrow.lib.ArrowInvalid,  # pyright: ignore[reportUnknownMemberType,reportAttributeAccessIssue]
-            MarshallComponentException,
+            StreamlitAPIException,
         ) as e:  # pyright: ignore[reportUnknownVariableType]
             st.warning(e)  # pyright: ignore[reportUnknownArgumentType]

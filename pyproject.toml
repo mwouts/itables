@@ -105,7 +105,7 @@ ensured-targets = [
     "src/itables_for_dash/ITable.py",
     "src/itables_for_dash/async-ITable.js",
     "src/itables_for_dash/async-ITable.js.LICENSE.txt",
-    "src/itables/itables_for_streamlit/asset-manifest.json",
+    "src/itables/itables_for_streamlit/index.js",
     "src/itables/widget/static/widget.js",
     ]
 
@@ -113,6 +113,11 @@ ensured-targets = [
 path = "packages"
 build_cmd = "build"
 npm = ["npm"]
+
+[tool.streamlit.component]
+components = [
+    {name = "itables_for_streamlit", asset_dir = "itables_for_streamlit"},
+]
 
 [tool.hatch.build.targets.sdist]
 packages = ["src/itables", "src/itables_for_dash"]
