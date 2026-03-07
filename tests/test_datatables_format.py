@@ -95,16 +95,16 @@ def df_and_expected(request):
             pd_or_pl.DataFrame({"x": [0.2, math.pi, math.nan, -math.inf]}),
             (
                 (
-                    '[[["0.200000", 2]], '
-                    '[["3.141593", 3]], '
-                    '[["NaN", 4]], '
-                    '[["-inf", 1]]]'
+                    '[[["0.200000", 0.2]], '
+                    '[["3.141593", 3.141592653589793]], '
+                    '[["NaN", "___NaN___"]], '
+                    '[["-inf", "___-Infinity___"]]]'
                 )
                 if lib == "pd"
-                else '[[["0.2", 2]], '
-                '[["3.141593", 3]], '
-                '[["NaN", 4]], '
-                '[["-inf", 1]]]'
+                else '[[["0.2", 0.2]], '
+                '[["3.141593", 3.141592653589793]], '
+                '[["NaN", "___NaN___"]], '
+                '[["-inf", "___-Infinity___"]]]'
             ),
         )
     elif id == "str":
@@ -299,8 +299,8 @@ def test_encode_mixed_contents_pandas():
     )
     assert datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3}) == (
         "[[1666767918216000000, 1699300000000, "
-        '["0.951057", 1], '
-        '["-0.309017", 1]]]'
+        '["0.951057", 0.9510565400123596], '
+        '["-0.309017", -0.30901700258255005]]]'
     )
     assert datatables_rows(df, float_columns_to_be_formatted_in_python=set()) == (
         "[[1666767918216000000, 1699300000000, 0.9510565400123596, -0.30901700258255005]]"
@@ -323,8 +323,8 @@ def test_encode_mixed_contents_polars():
     )
     assert datatables_rows(df, float_columns_to_be_formatted_in_python={2, 3}) == (
         "[[1666767918216000000, 1699300000000, "
-        '["0.951057", 1], '
-        '["-0.309017", 1]]]'
+        '["0.951057", 0.9510565400123596], '
+        '["-0.309017", -0.30901700258255005]]]'
     )
 
     assert datatables_rows(df, float_columns_to_be_formatted_in_python=set()) == (
@@ -341,12 +341,13 @@ def test_polars_float_formatting():
 
     df = pl.DataFrame({"float": [math.pi, math.pi * 1e12]})
     assert datatables_rows(df, float_columns_to_be_formatted_in_python={0}) == (
-        '[[["3.141593", 1]], ' '[["3.1416e12", 2]]]'
+        '[[["3.141593", 3.141592653589793]], ' '[["3.1416e12", 3141592653589.793]]]'
     )
 
     with pl.Config(float_precision=12):
         assert datatables_rows(df, float_columns_to_be_formatted_in_python={0}) == (
-            '[[["3.141592653590", 1]], ' '[["3.141592653590e12", 2]]]'
+            '[[["3.141592653590", 3.141592653589793]], '
+            '[["3.141592653590e12", 3141592653589.793]]]'
         )
 
 
