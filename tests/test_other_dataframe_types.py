@@ -58,7 +58,7 @@ def test_modin_dataframe():
 
     assert (
         datatables_rows(df_modin, float_columns_to_be_formatted_in_python={1})
-        == '[[1, ["4.0", 1]], [2, ["5.0", 2]], [3, ["6.0", 3]]]'
+        == '[[1, ["4.0", 4.0]], [2, ["5.0", 5.0]], [3, ["6.0", 6.0]]]'
     )
 
 
