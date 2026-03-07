@@ -93,13 +93,14 @@ def _format_polars_series(
         formatted = [escape_html_chars(i) for i in formatted]
 
     if dtype.is_float():
+        values = x.to_list()
         return [
             (
                 [None, None]
                 if value is None
                 else [formatted_value, escape_non_finite_float(value)]
             )
-            for formatted_value, value in zip(formatted, x)
+            for formatted_value, value in zip(formatted, values)
         ]
 
     return formatted
@@ -135,13 +136,14 @@ def _format_narwhals_series(
         formatted = [escape_html_chars(i) for i in formatted]
 
     if dtype.is_float():
+        values = x.to_list()
         return [
             (
                 [None, None]
                 if value is None
                 else [formatted_value, escape_non_finite_float(value)]
             )
-            for formatted_value, value in zip(formatted, x)
+            for formatted_value, value in zip(formatted, values)
         ]
 
     return formatted
