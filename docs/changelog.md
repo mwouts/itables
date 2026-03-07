@@ -17,6 +17,7 @@ ITables ChangeLog
 - We have added an optional `columnControl` to `option.py`. Thanks to [kultura-luke](https://github.com/kultura-luke) for pointing out at this.
 - We have fixed one test on the streamlit example app ([#509](https://github.com/mwouts/itables/issues/509))
 - We have fixed the build step as well ([#513](https://github.com/mwouts/itables/issues/513))
+- We have updated the dependencies of the ITables extension for Dash to address three vulnerability issues.
 
 
 2.7.0 (2026-02-04)
