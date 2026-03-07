@@ -8,6 +8,7 @@ ITables ChangeLog
 - We have added the FixedHeader extension of DataTables to the `dt_for_itables` package ([#496](https://github.com/mwouts/itables/pull/496)). Thanks to [kultura-luke](https://github.com/kultura-luke) for suggesting this!
 
 **Fixed**
+- We have fixed the ordering of floats ([#508](https://github.com/mwouts/itables/issues/508))
 - We have added an optional `columnControl` to `option.py`. Thanks to [kultura-luke](https://github.com/kultura-luke) for pointing out at this.
 - We have fixed one test on the streamlit example app ([#509](https://github.com/mwouts/itables/issues/509))
 - We have fixed the build step as well ([#513](https://github.com/mwouts/itables/issues/513))
