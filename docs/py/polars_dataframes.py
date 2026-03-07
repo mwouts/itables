@@ -21,6 +21,8 @@
 # dataframes are displayed nicely with the default `itables` settings.
 
 # %%
+import polars as pl
+
 import itables
 
 dict_of_test_dfs = itables.sample_polars_dfs.get_dict_of_test_dfs()
@@ -67,6 +69,17 @@ itables.show(dict_of_test_dfs["nullable_int"])
 
 # %%
 itables.show(dict_of_test_dfs["float"])
+
+# %% [markdown]
+# ## Ordered floats
+
+# %%
+itables.show(
+    pl.DataFrame(
+        {"float": [float("nan"), float("inf")] + [float(x) for x in range(18)]}
+    ),
+    order=[[0, "asc"]],
+)
 
 # %% [markdown]
 # ## str
