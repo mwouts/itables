@@ -9,8 +9,10 @@ from .typing import DataFrameOrSeries, get_dataframe_module_name
 
 
 def _format_pandas_series(
-    x, escape_html: bool, format_floats_in_python: bool
+    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool
 ) -> Sequence[Any]:
+    import pandas as pd
+
     dtype_kind = x.dtype.kind
     if dtype_kind in ["b", "i"]:
         return x
@@ -43,6 +45,11 @@ def _format_pandas_series(
             )
         ]
 
+    if isinstance(x.dtype, pd.CategoricalDtype) and add_rank_to_categories:
+        codes = x.cat.codes.tolist()
+        # null (code=-1) gets rank 0 (sorts first), categories are 1-indexed
+        return [0 if c == -1 else c + 1 for c in codes]
+
     return formatted
 
 
@@ -51,6 +58,7 @@ def _format_polars_series(
     escape_html: bool,
     format_floats_in_python: bool,
     warn_on_polars_get_fmt_not_found: bool,
+    add_rank_to_categories: bool,
 ) -> Sequence[Any]:
     """Format a Polars Series for DataTables display"""
     pl = sys.modules["polars"]
@@ -73,10 +81,15 @@ def _format_polars_series(
     if dtype.is_float() and not format_floats_in_python:
         return [escape_non_finite_float(v) for v in x.to_list()]
 
+    if dtype == pl.Enum or dtype == pl.Categorical:
+        if add_rank_to_categories:
+            codes = x.to_physical().to_list()
+            # null gets rank 0 (sorts first), categories are 1-indexed
+            return [0 if c is None else c + 1 for c in codes]
+        return x.cast(pl.String).to_list()
+
     if dtype == pl.String:
         formatted = x.to_list()
-    elif dtype == pl.Enum or dtype == pl.Categorical:
-        formatted = x.cast(pl.String).to_list()
     else:
         # Other types - use Polars' native formatting
         str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
@@ -104,7 +117,7 @@ def _format_polars_series(
 
 
 def _format_narwhals_series(
-    x, escape_html: bool, format_floats_in_python: bool
+    x, escape_html: bool, format_floats_in_python: bool, add_rank_to_categories: bool
 ) -> Sequence[Any]:
     """Format a Narwhals Series for DataTables display"""
     nw = sys.modules["narwhals"]
@@ -127,6 +140,15 @@ def _format_narwhals_series(
     # Float types - format and handle non-finite values
     if dtype.is_float() and not format_floats_in_python:
         return [escape_non_finite_float(v) for v in x]
+
+    # Categorical and Enum types
+    if isinstance(dtype, (nw.Categorical, nw.Enum)):
+        if add_rank_to_categories:
+            categories = x.cat.get_categories().to_list()
+            category_to_rank = {cat: i + 1 for i, cat in enumerate(categories)}
+            # null gets rank 0 (sorts first), categories are 1-indexed
+            return [0 if v is None else category_to_rank.get(v, 0) for v in x.to_list()]
+        return [str(v) if v is not None else str(None) for v in x.to_list()]
 
     formatted = [str(v) for v in x]
     if escape_html:
@@ -201,6 +223,7 @@ def datatables_rows(
     column_count: Optional[int] = None,
     escape_html: bool = True,
     float_columns_to_be_formatted_in_python: Optional[set[int]] = None,
+    categorical_columns_to_be_represented_through_their_rank: Optional[set[int]] = None,
     warn_on_unexpected_types: bool = False,
     warn_on_polars_get_fmt_not_found: bool = True,
 ) -> str:
@@ -218,10 +241,15 @@ def datatables_rows(
     df_module = get_dataframe_module_name(df)
     if float_columns_to_be_formatted_in_python is None:
         float_columns_to_be_formatted_in_python = set()
+    if categorical_columns_to_be_represented_through_their_rank is None:
+        categorical_columns_to_be_represented_through_their_rank = set()
     if df_module == "pandas":
         formatted_columns = [
             _format_pandas_series(
-                x, escape_html, i in float_columns_to_be_formatted_in_python
+                x,
+                escape_html,
+                i in float_columns_to_be_formatted_in_python,
+                i in categorical_columns_to_be_represented_through_their_rank,
             )
             for i, (_, x) in enumerate(df.items())
         ]
@@ -232,6 +260,7 @@ def datatables_rows(
                 escape_html,
                 i in float_columns_to_be_formatted_in_python,
                 warn_on_polars_get_fmt_not_found,
+                i in categorical_columns_to_be_represented_through_their_rank,
             )
             for i, col in enumerate(df.columns)
         ]
@@ -244,7 +273,10 @@ def datatables_rows(
 
         formatted_columns = [
             _format_narwhals_series(
-                df[col], escape_html, i in float_columns_to_be_formatted_in_python
+                df[col],
+                escape_html,
+                i in float_columns_to_be_formatted_in_python,
+                i in categorical_columns_to_be_represented_through_their_rank,
             )
             for i, col in enumerate(df.columns)
         ]

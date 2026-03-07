@@ -148,6 +148,7 @@ def test_format_polars_series(
             escape_html=escape_html,
             format_floats_in_python=format_floats_in_python,
             warn_on_polars_get_fmt_not_found=True,
+            add_rank_to_categories=True,
         )
     )
     json.dumps(values, cls=generate_encoder())
@@ -172,10 +173,16 @@ def test_polars_df_with_categorical_and_enums():
     assert df.dtypes == [pl.Categorical, pl.Enum, pl.Int64]
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
+    # Categorical and Enum columns are encoded as integer ranks (null=0, categories 1-indexed).
+    # Cat ranks: a=1, b=2, c=3. Enum ranks: north=1, south=2, east=3, west=4.
     assert (
         dt_args["data_json"]
-        == '[["a", "north", 1], ["b", "south", 2], ["a", "north", 1], ["c", "west", 3]]'
+        == "[[1, 1, 1], [2, 2, 2], [1, 1, 1], [3, 4, 3]]"
     )
+    assert "columnDefs" in dt_args
+    # Each categorical column gets its own columnDef with embedded categories
+    assert dt_args["columnDefs"][0]["targets"] == 0
+    assert dt_args["columnDefs"][1]["targets"] == 1
 
 
 def test_polars_df_with_nan_and_none():

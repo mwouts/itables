@@ -6,6 +6,7 @@ ITables ChangeLog
 
 **Added**
 - We have added the FixedHeader extension of DataTables to the `dt_for_itables` package ([#496](https://github.com/mwouts/itables/pull/496)). Thanks to [kultura-luke](https://github.com/kultura-luke) for suggesting this!
+- Categorical columns (pandas `CategoricalDtype`, polars `Categorical`/`Enum`) are now sorted according to the category order in DataTables. Set `add_rank_to_categories=False` to sort categories alphabetically instead ([#504](https://github.com/mwouts/itables/issues/504)).
 
 **Fixed**
 - We have added an optional `columnControl` to `option.py`. Thanks to [kultura-luke](https://github.com/kultura-luke) for pointing out at this.

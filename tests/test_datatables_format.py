@@ -577,3 +577,58 @@ def test_long_strings_are_not_truncated(dataframe_library: str):
     assert (
         long_string in result
     ), f"Long string was truncated in {dataframe_library} dataframe"
+
+
+def test_pandas_categorical_sorting():
+    """Pandas categorical columns are encoded as integer ranks for sorting"""
+    pd = pytest.importorskip("pandas")
+
+    # Ordered categorical: category order is low < medium < high
+    df = pd.DataFrame(
+        {
+            "priority": pd.Categorical(
+                ["high", "low", "medium", "low"],
+                categories=["low", "medium", "high"],
+                ordered=True,
+            ),
+            "value": [1, 2, 3, 4],
+        }
+    )
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    # Null sorts first (rank 0), categories 1-indexed: low=1, medium=2, high=3
+    assert dt_args["data_json"] == "[[3, 1], [1, 2], [2, 3], [1, 4]]"
+    assert "columnDefs" in dt_args
+    assert dt_args["columnDefs"][0]["targets"] == 0
+
+
+def test_pandas_categorical_with_missing_values():
+    """Null/NaN values in categorical columns sort first (rank 0)"""
+    pd = pytest.importorskip("pandas")
+
+    df = pd.DataFrame(
+        {
+            "cat": pd.Categorical(
+                ["b", None, "a"], categories=["a", "b"], ordered=False
+            )
+        }
+    )
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    data = json.loads(dt_args["data_json"])
+    # Null sorts first (rank 0), a=1, b=2; data is just the integer rank
+    assert data == [[2], [0], [1]]
+
+
+def test_polars_categorical_with_missing_values():
+    """Null values in polars categorical columns sort first (rank 0)"""
+    pl = pytest.importorskip("polars")
+
+    df = pl.DataFrame(
+        {"cat": pl.Series(["b", None, "a"], dtype=pl.Categorical)}
+    )
+    dt_args = get_itable_arguments(df)
+    assert "data_json" in dt_args
+    data = json.loads(dt_args["data_json"])
+    # Polars assigns codes in insertion order: b=0→rank 1, a=1→rank 2; null=rank 0
+    assert data == [[1], [0], [2]]

@@ -460,6 +460,33 @@ def _evaluate_show_dtypes(
     return False
 
 
+def _remove_columns_with_render_in_columndefs(
+    column_set: set[int],
+    n_columns: int,
+    columnDefs: Sequence[Mapping[str, Any]],
+) -> None:
+    """Remove from column_set (in-place) any column indices covered by a render function in columnDefs."""
+
+    def remove_if_present(target: int) -> None:
+        if target < 0:
+            target = n_columns + target
+        column_set.discard(target)
+
+    for col_def in columnDefs:
+        if "render" not in col_def or "targets" not in col_def:
+            continue
+        targets = col_def["targets"]
+        if targets == "_all":
+            column_set.clear()
+            return
+        if isinstance(targets, int):
+            remove_if_present(targets)
+            continue
+        assert isinstance(targets, list), targets
+        for target in targets:
+            remove_if_present(target)
+
+
 def get_float_columns_to_be_formatted_in_python(
     df_module_name: DataFrameModuleName,
     df: DataFrameOrSeries,
@@ -494,27 +521,61 @@ def get_float_columns_to_be_formatted_in_python(
 
     # format_floats_in_python="auto":
     # remove columns that have a render function defined
-    def remove_if_present(target: int):
-        if target < 0:
-            target = len(df.columns) + target
-        if target in float_columns_to_be_formatted_in_python:
-            float_columns_to_be_formatted_in_python.remove(target)
-
-    for col_def in columnDefs:
-        if "render" not in col_def:
-            continue
-        if "targets" not in col_def:
-            continue
-        targets = col_def["targets"]
-        if targets == "_all":
-            return set()
-        if isinstance(targets, int):
-            remove_if_present(targets)
-            continue
-        assert isinstance(targets, list), targets
-        for target in targets:
-            remove_if_present(target)
+    _remove_columns_with_render_in_columndefs(
+        float_columns_to_be_formatted_in_python, len(df.columns), columnDefs
+    )
     return float_columns_to_be_formatted_in_python
+
+
+def get_categorical_columns_to_be_represented_through_their_rank(
+    df_module_name: DataFrameModuleName,
+    df: DataFrameOrSeries,
+    add_rank_to_categories: Union[bool, Literal["auto"]],
+    columnDefs: Optional[Sequence[Mapping[str, Any]]],
+) -> "dict[int, list]":
+    """
+    Return a dict mapping column indices to their ordered categories list,
+    for categorical columns where the rank should be used for sorting.
+    """
+    if add_rank_to_categories is False:
+        return {}
+
+    if df_module_name == "numpy":
+        return {}
+    elif df_module_name == "pandas":
+        import pandas as pd
+
+        categorical_columns = {
+            i: x.cat.categories.tolist()
+            for i, (_, x) in enumerate(df.items())
+            if isinstance(x.dtype, pd.CategoricalDtype)
+        }
+    elif df_module_name == "polars":
+        import polars as pl
+
+        categorical_columns = {
+            i: df[col].cat.get_categories().to_list()
+            for i, col in enumerate(df.columns)
+            if df[col].dtype in (pl.Categorical, pl.Enum)
+        }
+    else:
+        import narwhals as nw
+
+        nw_df = nw.from_native(df, eager_only=True, allow_series=True)
+
+        categorical_columns = {
+            i: nw_df[col].cat.get_categories().to_list()
+            for i, col in enumerate(nw_df.columns)
+            if isinstance(nw_df[col].dtype, (nw.Categorical, nw.Enum))
+        }
+
+    if columnDefs is None or add_rank_to_categories is True:
+        return categorical_columns
+
+    # add_rank_to_categories="auto": remove columns that have a render function defined
+    keys = set(categorical_columns.keys())
+    _remove_columns_with_render_in_columndefs(keys, len(df.columns), columnDefs)
+    return {k: v for k, v in categorical_columns.items() if k in keys}
 
 
 def get_itable_arguments(
@@ -605,6 +666,7 @@ def get_itable_arguments(
     table_id = kwargs.pop("table_id", None)
     footer = kwargs.pop("footer", False)
     format_floats_in_python = kwargs.pop("format_floats_in_python", "auto")
+    add_rank_to_categories = kwargs.pop("add_rank_to_categories", "auto")
     warn_on_selected_rows_not_rendered = kwargs.pop(
         "warn_on_selected_rows_not_rendered", False
     )
@@ -667,33 +729,55 @@ def get_itable_arguments(
                 df_module_name, df, format_floats_in_python, columnDefs
             )
         )
+        categorical_columns = (
+            get_categorical_columns_to_be_represented_through_their_rank(
+                df_module_name, df, add_rank_to_categories, columnDefs
+            )
+        )
         dt_args["data_json"] = datatables_rows(
             df,
             column_count=column_count,
             escape_html=allow_html is not True,
             float_columns_to_be_formatted_in_python=float_columns_to_be_formatted_in_python,
+            categorical_columns_to_be_represented_through_their_rank=set(
+                categorical_columns.keys()
+            ),
             warn_on_unexpected_types=warn_on_unexpected_types,
             warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
         )
+        col_offset = column_count - len(df.columns)
+        extra_column_defs = []
         if float_columns_to_be_formatted_in_python:
-            dt_args["columnDefs"] = (
-                [
-                    {
-                        "targets": [
-                            i + column_count - len(df.columns)
-                            for i in float_columns_to_be_formatted_in_python
-                        ],
-                        "render": JavascriptFunction(
-                            """
+            extra_column_defs.append(
+                {
+                    "targets": sorted(
+                        i + col_offset for i in float_columns_to_be_formatted_in_python
+                    ),
+                    "render": JavascriptFunction(
+                        """
                         function (data, type, row, meta) {
                             return type === 'sort' ? data[1] : data[0];
                         }
                     """
-                        ),
-                    }
-                ]
-                + list(columnDefs)
+                    ),
+                }
             )
+        for col_idx, categories in sorted(categorical_columns.items()):
+            extra_column_defs.append(
+                {
+                    "targets": col_idx + col_offset,
+                    "render": JavascriptFunction(
+                        f"""
+                        function (data, type, row, meta) {{
+                            var categories = {json.dumps(categories)};
+                            return type === 'sort' ? data : (data === 0 ? null : categories[data - 1]);
+                        }}
+                    """
+                    ),
+                }
+            )
+        if extra_column_defs:
+            dt_args["columnDefs"] = extra_column_defs + list(columnDefs)
     else:
         if df_module_name == "pandas" and df_type_name == "Styler":
             if not allow_html:
