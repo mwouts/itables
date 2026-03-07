@@ -18,6 +18,8 @@ In this notebook we make sure that our test [Polars](https://www.pola.rs/)
 dataframes are displayed nicely with the default `itables` settings.
 
 ```{code-cell} ipython3
+import polars as pl
+
 import itables
 
 dict_of_test_dfs = itables.sample_polars_dfs.get_dict_of_test_dfs()
@@ -64,6 +66,17 @@ itables.show(dict_of_test_dfs["nullable_int"])
 
 ```{code-cell} ipython3
 itables.show(dict_of_test_dfs["float"])
+```
+
+## Ordered floats
+
+```{code-cell} ipython3
+itables.show(
+    pl.DataFrame(
+        {"float": [float("nan"), float("inf")] + [float(x) for x in range(18)]}
+    ),
+    order=[[0, "asc"]],
+)
 ```
 
 ## str
