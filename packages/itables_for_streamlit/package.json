@@ -3,41 +3,17 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@types/jest": "^29.5.14",
-    "@types/node": "^20.19.30",
-    "dt_for_itables": "file:../dt_for_itables",
-    "react-scripts": "^5.0.1",
-    "streamlit-component-lib": "^2.0.0",
-    "typescript": "^4.9.5"
-  },
-  "overrides": {
-    "nth-check": "2.1.1",
-    "postcss": ">=8.4.31"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build_only": "react-scripts build",
-    "build": "react-scripts build && rm -rf ../../src/itables/itables_for_streamlit && mv build ../../src/itables/itables_for_streamlit",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "@streamlit/component-v2-lib": "^0.2.0",
+    "dt_for_itables": "file:../dt_for_itables"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "esbuild": "^0.25.9",
+    "typescript": "^5.9.2"
   },
-  "homepage": ".",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "scripts": {
+    "build:js": "esbuild src/index.tsx --bundle --minify --format=esm --outdir=../../src/itables/itables_for_streamlit",
+    "build:css": "esbuild src/index.css --bundle --outdir=../../src/itables/itables_for_streamlit",
+    "build": "npm run build:js && npm run build:css",
+    "typecheck": "tsc --noEmit"
   }
 }
