@@ -149,13 +149,18 @@ def _format_narwhals_series(
 
 def escape_non_finite_float(value: Any) -> Any:
     """Encode non-finite float values to strings that will be parsed by parseJSON"""
-    if not isinstance(value, float):
+    # Coerce float-like scalars (including numpy.float32/float64) to a Python float
+    # so a single NaN/Infinity path handles all scalar float implementations.
+    try:
+        float_value = float(value)
+    except (TypeError, ValueError):
         return value
-    if math.isnan(value):
+
+    if math.isnan(float_value):
         return "___NaN___"
-    if value == math.inf:
+    if float_value == math.inf:
         return "___Infinity___"
-    if value == -math.inf:
+    if float_value == -math.inf:
         return "___-Infinity___"
     return value
 

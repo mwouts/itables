@@ -235,3 +235,16 @@ def test_show_dtypes_in_html():
     # Verify total number of th elements (2 rows * 2 columns = 4)
     assert table_html.count("<th>") == 4
     assert table_html.count("</th>") == 4
+
+
+def test_to_html_datatable_handles_float32_nan():
+    pd = pytest.importorskip("pandas")
+    np = pytest.importorskip("numpy")
+
+    # Regression: numpy.float32 NaN used to bypass non-finite escaping and fail
+    # at JSON serialization with allow_nan=False.
+    df = pd.DataFrame({"x": pd.Series([1.0, np.nan], dtype="float32")})
+
+    html = to_html_datatable(df)
+
+    assert "___NaN___" in html
