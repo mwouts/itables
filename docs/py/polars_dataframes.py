@@ -71,6 +71,12 @@ itables.show(dict_of_test_dfs["nullable_int"])
 itables.show(dict_of_test_dfs["float"])
 
 # %% [markdown]
+# ## float_types
+
+# %%
+itables.show(dict_of_test_dfs["float_types"])
+
+# %% [markdown]
 # ## Ordered floats
 
 # %%

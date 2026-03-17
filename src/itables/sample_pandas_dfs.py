@@ -162,6 +162,18 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> dict[str, pd.DataFrame]:
                 ],
             }
         ),
+        "float_types": pd.DataFrame(
+            {
+                "float32": pd.array(
+                    [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+                    dtype="float32",
+                ),
+                "float64": pd.array(
+                    [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+                    dtype="float64",
+                ),
+            }
+        ),
         "str": pd.DataFrame(
             {
                 "text_column": ["some", "text"],

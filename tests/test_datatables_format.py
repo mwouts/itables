@@ -578,3 +578,44 @@ def test_long_strings_are_not_truncated(dataframe_library: str):
     assert (
         long_string in result
     ), f"Long string was truncated in {dataframe_library} dataframe"
+
+
+@pytest.mark.parametrize(
+    "lib,dtype,pi_value",
+    [
+        pytest.param(
+            "pandas",
+            "float16",
+            3.140625,
+            # pandas raises RuntimeWarning: overflow encountered in cast for float16
+            marks=pytest.mark.filterwarnings("ignore::RuntimeWarning"),
+        ),
+        ("pandas", "float32", 3.1415927410125732),
+        ("pandas", "float64", math.pi),
+        ("polars", "Float32", 3.1415927410125732),
+        ("polars", "Float64", math.pi),
+    ],
+)
+def test_float_dtype_non_finite_encoding(lib, dtype, pi_value):
+    """Test that NaN, inf and -inf are properly encoded for various float dtypes, including numpy float32 (#issue)"""
+    if lib == "pandas":
+        pd = pytest.importorskip("pandas")
+        series = pd.Series(
+            [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+            dtype=dtype,
+        )
+        df = pd.DataFrame({"x": series})
+    else:
+        pl = pytest.importorskip("polars")
+        series = pl.Series(
+            "x",
+            [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+            dtype=getattr(pl, dtype),
+        )
+        df = pl.DataFrame({"x": series})
+
+    dt_args = get_itable_arguments(df, format_floats_in_python=False, showIndex=False)
+    assert "data_json" in dt_args
+    assert dt_args["data_json"] == json.dumps(
+        [[1.0], [0.0], [pi_value], ["___NaN___"], ["___Infinity___"], ["___-Infinity___"]]
+    )

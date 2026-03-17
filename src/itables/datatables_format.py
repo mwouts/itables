@@ -150,7 +150,9 @@ def _format_narwhals_series(
 def escape_non_finite_float(value: Any) -> Any:
     """Encode non-finite float values to strings that will be parsed by parseJSON"""
     if not isinstance(value, float):
-        return value
+        numpy = sys.modules.get("numpy")
+        if numpy is None or not isinstance(value, numpy.floating):
+            return value
     if math.isnan(value):
         return "___NaN___"
     if value == math.inf:
