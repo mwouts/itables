@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.7.2 (2026-03-18)
+------------------
+
+**Fixed**
+- We have fixed a `ValueError` raised by `to_html_datatable` on columns with numpy floating scalars (`float32`, `float16`) containing `NaN` or `Inf` values ([#524](https://github.com/mwouts/itables/issues/524)). Thanks to [LukeGT](https://github.com/LukeGT) for reporting this!
+
+
 2.7.1 (2026-03-08)
 ------------------
 
