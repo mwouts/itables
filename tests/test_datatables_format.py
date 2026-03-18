@@ -636,7 +636,9 @@ def test_float_dtype_non_finite_encoding(lib, dtype, pi_value, nan_encoded):
         pd = pytest.importorskip("pandas")
         if dtype.startswith("arrow_"):
             pa = pytest.importorskip("pyarrow")
-            pa_type = {"arrow_float32": pa.float32(), "arrow_float64": pa.float64()}[dtype]
+            pa_type = {"arrow_float32": pa.float32(), "arrow_float64": pa.float64()}[
+                dtype
+            ]
             series_dtype = pd.ArrowDtype(pa_type)
         else:
             series_dtype = dtype
@@ -657,5 +659,12 @@ def test_float_dtype_non_finite_encoding(lib, dtype, pi_value, nan_encoded):
     dt_args = get_itable_arguments(df, format_floats_in_python=False, showIndex=False)
     assert "data_json" in dt_args
     assert dt_args["data_json"] == json.dumps(
-        [[1.0], [0.0], [pi_value], [nan_encoded], ["___Infinity___"], ["___-Infinity___"]]
+        [
+            [1.0],
+            [0.0],
+            [pi_value],
+            [nan_encoded],
+            ["___Infinity___"],
+            ["___-Infinity___"],
+        ]
     )

@@ -85,6 +85,12 @@ itables.show(dict_of_test_dfs["nullable_int"])
 itables.show(dict_of_test_dfs["float"])
 ```
 
+## float_types
+
+```{code-cell} ipython3
+itables.show(dict_of_test_dfs["float_types"])
+```
+
 ## Ordered floats
 
 ```{code-cell} ipython3
