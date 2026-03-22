@@ -62,7 +62,7 @@ def test_update_clears_stale_column_defs():
     dict_of_test_dfs = itables.sample_dfs.get_dict_of_test_dfs()
 
     # Step 1: empty table
-    table = ITable(pd.DataFrame(dict_of_test_dfs["empty"]))
+    table = ITable(dict_of_test_dfs["empty"])
     assert "columnDefs" not in table._dt_args
     assert "keys_to_be_evaluated" not in table._dt_args
 
@@ -85,7 +85,7 @@ def test_update_clears_stale_column_defs():
 
     # Step 3: update back to an empty table – stale keys must be removed so
     # that DataTables does not raise "Requested unknown parameter" warnings
-    table.update(pd.DataFrame(dict_of_test_dfs["empty"]))
+    table.update(dict_of_test_dfs["empty"])
     assert "columnDefs" not in table._dt_args, table._dt_args.get("columnDefs")
     assert "keys_to_be_evaluated" not in table._dt_args, table._dt_args.get(
         "keys_to_be_evaluated"
