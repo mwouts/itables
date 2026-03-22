@@ -581,50 +581,56 @@ def test_long_strings_are_not_truncated(dataframe_library: str):
 
 
 @pytest.mark.parametrize(
-    "lib,dtype,pi_value",
+    "lib,dtype,pi_value,nan_encoded",
     [
         # numpy float types - NaN is passed as numpy scalar and encoded as sentinel
         pytest.param(
             "pandas",
             "float16",
             3.140625,
+            "___NaN___",
             # pandas raises RuntimeWarning: overflow encountered in cast for float16
             marks=pytest.mark.filterwarnings("ignore::RuntimeWarning"),
         ),
-        ("pandas", "float32", 3.1415927410125732),
-        ("pandas", "float64", math.pi),
-        # pandas nullable extension types
+        ("pandas", "float32", 3.1415927410125732, "___NaN___"),
+        ("pandas", "float64", math.pi, "___NaN___"),
+        # pandas nullable extension types - NaN is stored as pd.NA, encoded as null
         pytest.param(
             "pandas",
             "Float32",
             3.1415927410125732,
+            None,
             marks=pytest.mark.filterwarnings("ignore::RuntimeWarning"),
         ),
         pytest.param(
             "pandas",
             "Float64",
             math.pi,
+            None,
             marks=pytest.mark.filterwarnings("ignore::RuntimeWarning"),
         ),
-        # pandas ArrowDtypes
+        # pandas ArrowDtype - NaN is stored as null, encoded as null
         pytest.param(
             "pandas",
             "arrow_float32",
             3.1415927410125732,
+            None,
             marks=pytest.mark.filterwarnings("ignore::RuntimeWarning"),
         ),
         pytest.param(
             "pandas",
             "arrow_float64",
             math.pi,
+            None,
             marks=pytest.mark.filterwarnings("ignore::RuntimeWarning"),
         ),
-        ("polars", "Float16", 3.140625),
-        ("polars", "Float32", 3.1415927410125732),
-        ("polars", "Float64", math.pi),
+        # Polars float types - NaN is a sentinel value, encoded as "___NaN___"
+        ("polars", "Float16", 3.140625, "___NaN___"),
+        ("polars", "Float32", 3.1415927410125732, "___NaN___"),
+        ("polars", "Float64", math.pi, "___NaN___"),
     ],
 )
-def test_float_dtype_non_finite_encoding(lib, dtype, pi_value):
+def test_float_dtype_non_finite_encoding(lib, dtype, pi_value, nan_encoded):
     """Test that NaN, inf and -inf are properly encoded for various float dtypes, including numpy float32 (#issue)"""
     if lib == "pandas":
         pd = pytest.importorskip("pandas")
@@ -657,7 +663,7 @@ def test_float_dtype_non_finite_encoding(lib, dtype, pi_value):
             [1.0],
             [0.0],
             [pi_value],
-            ["___NaN___"],
+            [nan_encoded],
             ["___Infinity___"],
             ["___-Infinity___"],
         ]

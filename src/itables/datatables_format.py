@@ -154,7 +154,7 @@ def escape_non_finite_float(value: Any) -> Any:
         if numpy is None or not isinstance(value, numpy.floating):
             pd = sys.modules.get("pandas")
             if pd is not None and value is pd.NA:
-                return "___NaN___"
+                return None
             return value
     if math.isnan(value):
         return "___NaN___"
