@@ -1,3 +1,5 @@
+import itertools
+
 import pytest
 
 import itables.options as opt
@@ -90,3 +92,28 @@ def test_update_clears_stale_column_defs():
     assert "keys_to_be_evaluated" not in table._dt_args, table._dt_args.get(
         "keys_to_be_evaluated"
     )
+
+_SUBSET_OF_PANDAS_DFS = ["empty", "no_rows", "float", "int_float_str", "countries"]
+
+
+@pytest.mark.parametrize(
+    "df1_name,df2_name",
+    list(itertools.product(_SUBSET_OF_PANDAS_DFS, _SUBSET_OF_PANDAS_DFS)),
+)
+def test_update_equivalent_to_create(df1_name, df2_name):
+    """Updating an ITable widget from df1 to df2 must produce the same _dt_args
+    as creating the widget directly with df2."""
+    pytest.importorskip("pandas")
+
+    from itables.widget import ITable
+
+    dict_of_test_dfs = itables.sample_pandas_dfs.get_dict_of_test_dfs()
+    df1 = dict_of_test_dfs[df1_name]
+    df2 = dict_of_test_dfs[df2_name]
+
+    table_updated = ITable(df1)
+    table_updated.update(df2)
+
+    table_direct = ITable(df2)
+
+    assert table_updated._dt_args == table_direct._dt_args
