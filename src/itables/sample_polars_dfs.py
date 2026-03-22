@@ -144,6 +144,26 @@ def get_dict_of_test_dfs(N: int = 100, M: int = 100) -> "dict[str, pl.DataFrame]
                 ],
             }
         ),
+        "float_types": pl.DataFrame(
+            {
+                "float16": pl.Series(
+                    [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+                    dtype=pl.Float16,
+                ),
+                "float32": pl.Series(
+                    [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+                    dtype=pl.Float32,
+                ),
+                "float64": pl.Series(
+                    [1.0, 0.0, math.pi, float("nan"), float("inf"), float("-inf")],
+                    dtype=pl.Float64,
+                ),
+                "decimal": pl.Series(
+                    [1, 0, 3, None, None, None],
+                    dtype=pl.Decimal(precision=10, scale=6),
+                ),
+            }
+        ),
         "str": pl.DataFrame(
             {
                 "text_column": ["some", "text"],
