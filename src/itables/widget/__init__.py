@@ -97,13 +97,22 @@ class ITable(anywidget.AnyWidget):
         # switching to a dataframe with a different column structure). These keys
         # are always freshly computed by get_itables_extension_arguments, so any
         # value left over from a previous call is stale and should be dropped.
-        for key in ("keys_to_be_evaluated", "filtered_row_count", "downsampling_warning", "table_style"):
+        for key in (
+            "keys_to_be_evaluated",
+            "filtered_row_count",
+            "downsampling_warning",
+            "table_style",
+        ):
             if key in new_dt_args and key not in dt_args:
                 del new_dt_args[key]
                 dt_args_changed = True
         # columnDefs may be auto-generated (e.g. for float formatting). Remove
         # the stale copy unless the caller explicitly passed a new value.
-        if "columnDefs" not in kwargs and "columnDefs" in new_dt_args and "columnDefs" not in dt_args:
+        if (
+            "columnDefs" not in kwargs
+            and "columnDefs" in new_dt_args
+            and "columnDefs" not in dt_args
+        ):
             del new_dt_args["columnDefs"]
             dt_args_changed = True
 
