@@ -55,7 +55,7 @@ def test_update_clears_stale_column_defs():
     in _dt_args (regression test for
     https://github.com/mwouts/itables/issues/526).
     """
-    import pandas as pd
+    pd = pytest.importorskip("pandas")
 
     from itables.widget import ITable
 
@@ -87,4 +87,6 @@ def test_update_clears_stale_column_defs():
     # that DataTables does not raise "Requested unknown parameter" warnings
     table.update(pd.DataFrame(dict_of_test_dfs["empty"]))
     assert "columnDefs" not in table._dt_args, table._dt_args.get("columnDefs")
-    assert "keys_to_be_evaluated" not in table._dt_args, table._dt_args.get("keys_to_be_evaluated")
+    assert "keys_to_be_evaluated" not in table._dt_args, table._dt_args.get(
+        "keys_to_be_evaluated"
+    )
