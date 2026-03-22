@@ -1,6 +1,7 @@
 import pytest
 
 import itables.options as opt
+import itables.sample_dfs
 
 pytest.importorskip("anywidget")
 
@@ -46,3 +47,44 @@ def test_create_widget_with_df(df):
         "text_in_header_can_be_selected": True,
         "order": [],
     }
+
+
+def test_update_clears_stale_column_defs():
+    """Updating a widget to a dataframe with a different column structure
+    should not leave stale auto-generated columnDefs or keys_to_be_evaluated
+    in _dt_args (regression test for
+    https://github.com/mwouts/itables/issues/526).
+    """
+    import pandas as pd
+
+    from itables.widget import ITable
+
+    dict_of_test_dfs = itables.sample_dfs.get_dict_of_test_dfs()
+
+    # Step 1: empty table
+    table = ITable(pd.DataFrame(dict_of_test_dfs["empty"]))
+    assert "columnDefs" not in table._dt_args
+    assert "keys_to_be_evaluated" not in table._dt_args
+
+    # Step 2: update with a dataframe that contains a float column, which
+    # causes auto-generated columnDefs / keys_to_be_evaluated to be added
+    data_with_float = pd.DataFrame(
+        {
+            "col1": ["row1", "row2"],
+            "col2": ["row1", "row2"],
+            "col3": [1, 2],
+            "col4": [1.0, 2.0],
+            "col5": ["a", "b"],
+            "col6": ["c", "d"],
+            "col7": ["e", "f"],
+        }
+    )
+    table.update(data_with_float)
+    assert "columnDefs" in table._dt_args
+    assert "keys_to_be_evaluated" in table._dt_args
+
+    # Step 3: update back to an empty table – stale keys must be removed so
+    # that DataTables does not raise "Requested unknown parameter" warnings
+    table.update(pd.DataFrame(dict_of_test_dfs["empty"]))
+    assert "columnDefs" not in table._dt_args, table._dt_args.get("columnDefs")
+    assert "keys_to_be_evaluated" not in table._dt_args, table._dt_args.get("keys_to_be_evaluated")
