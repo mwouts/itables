@@ -93,6 +93,7 @@ def test_update_clears_stale_column_defs():
         "keys_to_be_evaluated"
     )
 
+
 _SUBSET_OF_PANDAS_DFS = ["empty", "no_rows", "float", "int_float_str", "countries"]
 
 
