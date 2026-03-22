@@ -1,6 +1,9 @@
+import itertools
+
 import pytest
 
 import itables.options as opt
+import itables.sample_dfs
 
 pytest.importorskip("anywidget")
 
@@ -46,3 +49,72 @@ def test_create_widget_with_df(df):
         "text_in_header_can_be_selected": True,
         "order": [],
     }
+
+
+def test_update_clears_stale_column_defs():
+    """Updating a widget to a dataframe with a different column structure
+    should not leave stale auto-generated columnDefs or keys_to_be_evaluated
+    in _dt_args (regression test for
+    https://github.com/mwouts/itables/issues/526).
+    """
+    pd = pytest.importorskip("pandas")
+
+    from itables.widget import ITable
+
+    dict_of_test_dfs = itables.sample_dfs.get_dict_of_test_dfs()
+
+    # Step 1: empty table
+    table = ITable(dict_of_test_dfs["empty"])
+    assert "columnDefs" not in table._dt_args
+    assert "keys_to_be_evaluated" not in table._dt_args
+
+    # Step 2: update with a dataframe that contains a float column, which
+    # causes auto-generated columnDefs / keys_to_be_evaluated to be added
+    data_with_float = pd.DataFrame(
+        {
+            "col1": ["row1", "row2"],
+            "col2": ["row1", "row2"],
+            "col3": [1, 2],
+            "col4": [1.0, 2.0],
+            "col5": ["a", "b"],
+            "col6": ["c", "d"],
+            "col7": ["e", "f"],
+        }
+    )
+    table.update(data_with_float)
+    assert "columnDefs" in table._dt_args
+    assert "keys_to_be_evaluated" in table._dt_args
+
+    # Step 3: update back to an empty table – stale keys must be removed so
+    # that DataTables does not raise "Requested unknown parameter" warnings
+    table.update(dict_of_test_dfs["empty"])
+    assert "columnDefs" not in table._dt_args, table._dt_args.get("columnDefs")
+    assert "keys_to_be_evaluated" not in table._dt_args, table._dt_args.get(
+        "keys_to_be_evaluated"
+    )
+
+
+_SUBSET_OF_PANDAS_DFS = ["empty", "no_rows", "float", "int_float_str", "countries"]
+
+
+@pytest.mark.parametrize(
+    "df1_name,df2_name",
+    list(itertools.product(_SUBSET_OF_PANDAS_DFS, _SUBSET_OF_PANDAS_DFS)),
+)
+def test_update_equivalent_to_create(df1_name, df2_name):
+    """Updating an ITable widget from df1 to df2 must produce the same _dt_args
+    as creating the widget directly with df2."""
+    pytest.importorskip("pandas")
+
+    from itables.widget import ITable
+
+    dict_of_test_dfs = itables.sample_pandas_dfs.get_dict_of_test_dfs()
+    df1 = dict_of_test_dfs[df1_name]
+    df2 = dict_of_test_dfs[df2_name]
+
+    table_updated = ITable(df1)
+    table_updated.update(df2)
+
+    table_direct = ITable(df2)
+
+    assert table_updated._dt_args == table_direct._dt_args

@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.7.3 (2026-03-22)
+------------------
+
+**Fixed**
+- We have fixed a DataTables "Requested unknown parameter" warning triggered when updating an `ITable` widget to a dataframe with a different column structure (e.g., a dataframe with float columns followed by an empty dataframe) ([#525](https://github.com/mwouts/itables/issues/525)). Thanks to [newrokor](https://github.com/newrokor) for reporting this!
+
+
 2.7.2 (2026-03-22)
 ------------------
 
