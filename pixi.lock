@@ -5414,7 +5414,7 @@ packages:
 - pypi: ./
   name: itables
   version: 2.8.0.dev0
-  sha256: 8bbe3c23ee3651a1ee41ddc4f607c22dcf3fc4273ccbb1625cb5cffe0d8d7958
+  sha256: 1fea75b1ba7198dbef64a99959f41c837542c7e41f1cd7fcbf54f1da081f43d3
   requires_dist:
   - anywidget ; extra == 'all'
   - dash ; extra == 'all'
