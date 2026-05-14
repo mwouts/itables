@@ -1,0 +1,55 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      pip-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/dt_for_itables"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-dt-for-itables:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/itables_anywidget"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-itables-anywidget:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/itables_for_dash"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-itables-for-dash:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/packages/itables_for_streamlit"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-itables-for-streamlit:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
