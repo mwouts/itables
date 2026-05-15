@@ -22,7 +22,9 @@ jobs:
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          pixi-version: v0.68.1
+          pixi-version: latest
+          locked: false
+          frozen: true
           cache: true
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,7 +40,9 @@ jobs:
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          pixi-version: v0.68.1
+          pixi-version: latest
+          locked: false
+          frozen: true
           cache: true
       - run: pixi run pyright
 
@@ -133,7 +137,9 @@ jobs:
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          pixi-version: v0.68.1
+          pixi-version: latest
+          locked: false
+          frozen: true
           cache: true
 
       - name: Install a Jupyter Kernel
@@ -157,7 +163,9 @@ jobs:
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.9.1
         with:
-          pixi-version: v0.68.1
+          pixi-version: latest
+          locked: false
+          frozen: true
           cache: true
 
       - name: Update pixi environment
@@ -193,7 +201,9 @@ jobs:
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.8.1
         with:
-          pixi-version: v0.68.1
+          pixi-version: latest
+          locked: false
+          frozen: true
           cache: true
 
       - name: Install a Jupyter Kernel
