@@ -1,5 +1,5 @@
 """
-Run this app with: 
+Run this app with:
 
 pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py
 """
