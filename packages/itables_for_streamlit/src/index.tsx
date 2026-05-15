@@ -16,8 +16,17 @@ interface ITableData {
   };
 }
 
+// The cleanup function is only called on unmount, not on data updates.
+// We keep a registry so we can manually clean up the previous render when
+// the component is updated in-place (same key, new data).
+const cleanupRegistry = new Map<string, () => void>();
+
 const ITableForStreamlit: FrontendRenderer<ITableState, ITableData> = (component) => {
-  const { data, parentElement, setStateValue } = component;
+  const { data, key, parentElement, setStateValue } = component;
+
+  // Clean up the previous render for this key before creating a new one.
+  cleanupRegistry.get(key)?.();
+  cleanupRegistry.delete(key);
 
   set_or_remove_dark_class();
 
@@ -44,6 +53,9 @@ const ITableForStreamlit: FrontendRenderer<ITableState, ITableData> = (component
     setStateValue('selected_rows', dt.selected_rows);
   }
 
+  // Sync state immediately so stale values from a previous render are cleared.
+  export_selected_rows();
+
   dt.dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
     export_selected_rows();
   });
@@ -52,10 +64,13 @@ const ITableForStreamlit: FrontendRenderer<ITableState, ITableData> = (component
     export_selected_rows();
   });
 
-  return () => {
+  const cleanup = () => {
     dt.destroy();
     span.remove();
+    cleanupRegistry.delete(key);
   };
+  cleanupRegistry.set(key, cleanup);
+  return cleanup;
 };
 
 export default ITableForStreamlit;

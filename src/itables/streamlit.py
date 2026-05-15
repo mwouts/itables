@@ -30,5 +30,6 @@ def interactive_table(
     return _streamlit_component_func(
         key=key,
         data={"dt_args": dt_args, "other_args": other_args},
+        on_selected_rows_change=lambda: None,
         default={"selected_rows": []},
     )

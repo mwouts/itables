@@ -1,4 +1,8 @@
-"""Run this app with: streamlit run apps/streamlit/itables_app.py"""
+"""
+Run this app with: 
+
+pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py
+"""
 
 from typing import Optional
 
