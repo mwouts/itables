@@ -30,6 +30,20 @@ Running the `pytest` test suite is not enough to guarantee that a change won't
 break `itables`. You also need to test that the tables are well rendered in the
 different contexts like Jupyter Book, Jupyter Lab, VS Code.
 
+## How to build the package locally
+
+Build both the wheel and source distribution with:
+
+```shell
+pixi run -e build hatch build
+```
+
+The build artifacts are created in `dist/`.
+
+This uses the dedicated `build` pixi environment, which pins `hatch` and
+`virtualenv` to versions that are currently compatible with the
+`jupyter-builder` build hook.
+
 ## Jupyter Book
 
 The `itables` documentation uses [Jupyter Book](https://jupyterbook.org/).

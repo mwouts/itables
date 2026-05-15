@@ -39,6 +39,7 @@ st.sidebar.markdown(
                     ![Stars](https://img.shields.io/github/stars/mwouts/itables)
                     """
 )
+st.sidebar.caption(f"ITables version: {itables.__version__}")
 
 caption = st.sidebar.text_input("Caption", value="Countries")
 select = st.sidebar.toggle("Row selection", value=True)

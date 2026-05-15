@@ -7,6 +7,10 @@ ITables ChangeLog
 **Changed**
 - The Streamlit component has been migrated to `st.components.v2`, which renders inline (no iframe) and uses a cleaner function-based lifecycle ([#519](https://github.com/mwouts/itables/issues/519))
 
+**Added**
+- A new Pixi environment lets you build the package locally: `pixi run -e build hatch build`
+- Another Pixi environment lets you test the example streamlit app: `pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py`
+
 
 2.7.3 (2026-03-22)
 ------------------

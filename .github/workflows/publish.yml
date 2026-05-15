@@ -15,17 +15,15 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-      - name: Set up Node
-        uses: actions/setup-node@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.9.1
         with:
-          python-version: 3.11
+          pixi-version: latest
+          cache: true
       - name: Build package
         run: |
           # hatch==1.16.0 fails with
           # hatchling.plugin.exceptions.UnknownPluginError: Unknown build hook: jupyter-builder
-          python -m pip install 'hatch<1.16' 'virtualenv<21'  # https://github.com/pypa/hatch/issues/2193
-          python -m hatch build
+          pixi run -e build hatch build
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1
