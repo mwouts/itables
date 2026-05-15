@@ -18,7 +18,7 @@ jobs:
       - name: Setup Pixi
         uses: prefix-dev/setup-pixi@v0.9.1
         with:
-          pixi-version: 0.68.1
+          pixi-version: v0.68.1
           cache: true
       - name: Build package
         run: |
