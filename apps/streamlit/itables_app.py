@@ -1,4 +1,8 @@
-"""Run this app with: streamlit run apps/streamlit/itables_app.py"""
+"""
+Run this app with:
+
+pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py
+"""
 
 from typing import Optional
 
@@ -17,7 +21,7 @@ except ImportError as e:
             raise import_error
 
 
-from streamlit.components.v1.components import MarshallComponentException
+from streamlit.errors import StreamlitAPIException
 
 import itables
 from itables.streamlit import interactive_table
@@ -39,6 +43,7 @@ st.sidebar.markdown(
                     ![Stars](https://img.shields.io/github/stars/mwouts/itables)
                     """
 )
+st.sidebar.caption(f"ITables version: {itables.__version__}")
 
 caption = st.sidebar.text_input("Caption", value="Countries")
 select = st.sidebar.toggle("Row selection", value=True)
@@ -144,6 +149,6 @@ for (name, df), tab in zip(test_dfs.items(), tabs):
             ValueError,
             # streamlit-aggrid
             pyarrow.lib.ArrowInvalid,  # pyright: ignore[reportUnknownMemberType,reportAttributeAccessIssue]
-            MarshallComponentException,
+            StreamlitAPIException,
         ) as e:  # pyright: ignore[reportUnknownVariableType]
             st.warning(e)  # pyright: ignore[reportUnknownArgumentType]

@@ -105,7 +105,7 @@ ensured-targets = [
     "src/itables_for_dash/ITable.py",
     "src/itables_for_dash/async-ITable.js",
     "src/itables_for_dash/async-ITable.js.LICENSE.txt",
-    "src/itables/itables_for_streamlit/asset-manifest.json",
+    "src/itables/itables_for_streamlit/index.js",
     "src/itables/widget/static/widget.js",
     ]
 
@@ -113,6 +113,11 @@ ensured-targets = [
 path = "packages"
 build_cmd = "build"
 npm = ["npm"]
+
+[tool.streamlit.component]
+components = [
+    {name = "itables_for_streamlit", asset_dir = "itables_for_streamlit"},
+]
 
 [tool.hatch.build.targets.sdist]
 packages = ["src/itables", "src/itables_for_dash"]
@@ -171,6 +176,17 @@ jupyter-book = ">=1,<2"
 [tool.pixi.feature.docs.pypi-dependencies]
 sphinxext-rediraffe = "*"
 
+[tool.pixi.feature.build.dependencies]
+nodejs = ">=20"
+pip = "*"
+python = "=3.11"
+
+
+[tool.pixi.feature.build.pypi-dependencies]
+dash = "*"
+hatch = "<1.16"
+virtualenv = "<21"
+
 [tool.pixi.feature.minimal.dependencies]
 nodejs = ">=20"
 python = ">=3.9"
@@ -193,10 +209,20 @@ itables = {path = ".", editable = true, extras=["pandas", "test-dash"]}
 [tool.pixi.feature.test-polars-dash.pypi-dependencies]
 itables = {path = ".", editable = true, extras=["polars", "test-dash"]}
 
+[tool.pixi.feature.streamlit-app.dependencies]
+nodejs = ">=20"
+python = ">=3.9"
+pyarrow = "*"
+
+[tool.pixi.feature.streamlit-app.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["pandas", "streamlit"]}
+
 [tool.pixi.environments]
 default = { solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
+build = { features = ["build"], no-default-feature = true }
 minimal = { features = ["minimal", "retro", "test-base"], no-default-feature = true}
+streamlit-app = { features = ["streamlit-app"], no-default-feature = true }
 test-pandas-notebook = { features = ["minimal", "test-pandas-notebook"], no-default-feature = true}
 test-polars-notebook = { features = ["minimal", "test-polars-notebook"], no-default-feature = true}
 test-pandas-dash = { features = ["minimal", "test-pandas-dash"], no-default-feature = true}

@@ -1,39 +1,60 @@
-import { Streamlit, RenderData } from "streamlit-component-lib"
+import type { FrontendRenderer, FrontendState } from "@streamlit/component-v2-lib"
 
-import {ITable, set_or_remove_dark_class} from "dt_for_itables"
-import "dt_for_itables/dt_bundle.css"
+import { ITable, set_or_remove_dark_class } from "dt_for_itables"
 
-set_or_remove_dark_class();
-// Create a table element
-const span = document.body.appendChild(document.createElement("span"))
-const table = span.appendChild(document.createElement("table"))
-let dt = new ITable(table, {})
+interface ITableState extends FrontendState {
+  selected_rows: number[];
+}
 
-function onRender(event: Event): void {
-  // dt_args is the whole map of arguments passed on the Python side
-  var other_args = (event as CustomEvent<RenderData>).detail.args.other_args;
-  const dt_args = (event as CustomEvent<RenderData>).detail.args.dt_args;
+interface ITableData {
+  dt_args: object;
+  other_args: {
+    classes: string;
+    style: string;
+    caption?: string;
+    selected_rows: number[];
+  };
+}
 
-  // As we can't pass the dt_args other than in the
-  // DataTable constructor, we call
-  // destroy and then re-create the table
-  dt.destroy()
+// The cleanup function is only called on unmount, not on data updates.
+// We keep a registry so we can manually clean up the previous render when
+// the component is updated in-place (same key, new data).
+const cleanupRegistry = new Map<string, () => void>();
+
+const ITableForStreamlit: FrontendRenderer<ITableState, ITableData> = (component) => {
+  const { data, key, parentElement, setStateValue } = component;
+
+  // Clean up the previous render for this key before creating a new one.
+  cleanupRegistry.get(key)?.();
+  cleanupRegistry.delete(key);
+
+  set_or_remove_dark_class();
+
+  // Create a table element
+  const span = document.createElement("span");
+  const table = span.appendChild(document.createElement("table"));
+  parentElement.appendChild(span);
+
+  const { dt_args, other_args } = data;
 
   // Set the class and style here otherwise the width
   // might become a fixed width
-  table.setAttribute('class', other_args.classes)
-  table.setAttribute('style', other_args.style)
+  table.setAttribute('class', other_args.classes);
+  table.setAttribute('style', other_args.style);
 
-  dt = new ITable(table, dt_args)
+  let dt = new ITable(table, dt_args);
   if (other_args.caption) {
-    dt.dt.caption(other_args.caption)
+    dt.dt.caption(other_args.caption);
   }
 
   dt.selected_rows = other_args.selected_rows;
 
   function export_selected_rows() {
-    Streamlit.setComponentValue({ selected_rows: dt.selected_rows });
-  };
+    setStateValue('selected_rows', dt.selected_rows);
+  }
+
+  // Sync state immediately so stale values from a previous render are cleared.
+  export_selected_rows();
 
   dt.dt.on('select', function (e: any, dt: any, type: any, indexes: any) {
     export_selected_rows();
@@ -43,10 +64,13 @@ function onRender(event: Event): void {
     export_selected_rows();
   });
 
-  // we recalculate the height
-  Streamlit.setFrameHeight()
-}
+  const cleanup = () => {
+    dt.destroy();
+    span.remove();
+    cleanupRegistry.delete(key);
+  };
+  cleanupRegistry.set(key, cleanup);
+  return cleanup;
+};
 
-// connect the render function to Streamlit
-Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
-Streamlit.setComponentReady()
+export default ITableForStreamlit;
