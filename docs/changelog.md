@@ -19,6 +19,7 @@ ITables ChangeLog
 
 **Fixed**
 - We have fixed the missing leading whitespace in lengthMenu label ([#542](https://github.com/mwouts/itables/issues/542))
+- We have added a new CSS rule to make sure that sorting icons are always displayed on the same side ([[#535](https://github.com/mwouts/itables/issues/535)])
 - We have updated `postcss` in `itables_for_dash` to address a security issue ([#549](https://github.com/mwouts/itables/pull/549))
 - We have fixed a `TypeError` raised by `dash-generate-components` when building `itables_for_dash` with `npm run build`
 
