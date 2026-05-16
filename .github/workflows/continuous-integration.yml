@@ -18,16 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.8.1
+        uses: prefix-dev/setup-pixi@v0.9.5
         with:
           pixi-version: latest
           locked: false
           frozen: true
           cache: true
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
       - uses: pre-commit/action@v3.0.1
@@ -36,9 +36,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.8.1
+        uses: prefix-dev/setup-pixi@v0.9.5
         with:
           pixi-version: latest
           locked: false
@@ -52,13 +52,13 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: python, javascript
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
   pytest:
     strategy:
@@ -80,13 +80,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -123,7 +123,7 @@ jobs:
         run: pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: true
           verbose: true
@@ -132,10 +132,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.8.1
+        uses: prefix-dev/setup-pixi@v0.9.5
         with:
           pixi-version: latest
           locked: false
@@ -149,7 +149,7 @@ jobs:
         run: pixi run pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: true
           verbose: true
@@ -158,10 +158,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.9.1
+        uses: prefix-dev/setup-pixi@v0.9.5
         with:
           pixi-version: latest
           locked: false
@@ -178,7 +178,7 @@ jobs:
         run: pixi run pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: true
           verbose: true
@@ -196,10 +196,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.8.1
+        uses: prefix-dev/setup-pixi@v0.9.5
         with:
           pixi-version: latest
           locked: false
@@ -214,7 +214,7 @@ jobs:
         run: pixi run -e ${{ matrix.environment }} pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v6
         with:
           fail_ci_if_error: false
           verbose: true
@@ -227,11 +227,11 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
       - name: Install hatch
@@ -247,7 +247,7 @@ jobs:
 
       # Build conda package
       - name: Set up Mambaforge
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
           miniforge-version: latest
           auto-update-conda: true
@@ -266,13 +266,13 @@ jobs:
 
       # Upload the wheel and conda package as artifacts
       - name: Upload wheel
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: itables-wheel
           path: dist/itables-*.whl
 
       - name: Upload conda package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: itables-conda-package
           path: conda-dist/**/itables-*.conda
@@ -280,7 +280,7 @@ jobs:
       # Comment on PR with artifact link
       - name: Comment with direct artifact link
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const pr_number = context.payload.pull_request.number;
