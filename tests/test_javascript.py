@@ -235,3 +235,29 @@ def test_show_dtypes_in_html():
     # Verify total number of th elements (2 rows * 2 columns = 4)
     assert table_html.count("<th>") == 4
     assert table_html.count("</th>") == 4
+
+
+def test_categorical_labels_are_escaped_when_allow_html_is_false():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame(
+        {
+            "category": pd.Categorical(
+                [
+                    "<b>bold</b>",
+                    "</script><script>alert(1)</script>",
+                ]
+            )
+        }
+    )
+
+    itable_args_default = get_itable_arguments(df)
+    assert "columnDefs" in itable_args_default
+    render_default = str(itable_args_default["columnDefs"][0]["render"])
+    assert "&lt;b&gt;bold&lt;/b&gt;" in render_default
+    assert "&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;" in render_default
+
+    itable_args_allow_html = get_itable_arguments(df, allow_html=True)
+    assert "columnDefs" in itable_args_allow_html
+    render_allow_html = str(itable_args_allow_html["columnDefs"][0]["render"])
+    assert "<b>bold</b>" in render_allow_html
+    assert "</script><script>alert(1)</script>" in render_allow_html

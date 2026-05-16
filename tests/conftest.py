@@ -36,8 +36,13 @@ def pl_df(request):
         + list(it.product(["pl"], dict_of_test_polars_dfs.keys()))
     ]
 )
-def df(request):
-    name, lib = request.param.rsplit("_", 1)
+def df_name(request) -> str:
+    return request.param
+
+
+@pytest.fixture
+def df(df_name: str):
+    name, lib = df_name.rsplit("_", 1)
     if lib == "pd":
         return dict_of_test_pandas_dfs[name]
     else:

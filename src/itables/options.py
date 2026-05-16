@@ -84,6 +84,14 @@ no render function defined in the DataTables columnDefs option.
 """
 format_floats_in_python: Union[bool, Literal["auto"]] = "auto"
 
+"""Should categorical columns be sorted according to the category order?
+
+Use 'auto' to add rank-based sorting for categorical columns only when the
+corresponding columns have no render function defined in the DataTables columnDefs
+option. Set to False to sort categories alphabetically by DataTables.
+"""
+add_rank_to_categories: Union[bool, Literal["auto"]] = "auto"
+
 """Authorize, or not, the use of HTML in the table content.
 
 Make sure that you trust the content of your tables before
