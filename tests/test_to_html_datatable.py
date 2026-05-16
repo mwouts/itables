@@ -1,7 +1,6 @@
 from pathlib import Path
 from unittest.mock import patch
 
-import pandas as pd
 import pytest
 
 from itables import to_html_datatable
@@ -22,6 +21,8 @@ def df_name(request):
 @pytest.fixture
 def df(df_name):
     if df_name == "int_float_str_categorical":
+        pd = pytest.importorskip("pandas")
+
         df = get_dict_of_test_dfs()["int_float_str"].head().copy()
         df["category"] = pd.Categorical(["low", "medium", "high", "medium", "low"])
         return df
