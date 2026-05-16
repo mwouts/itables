@@ -751,8 +751,7 @@ def get_itable_arguments(
             extra_column_defs.append(
                 {
                     "targets": [
-                        i + col_offset
-                        for i in float_columns_to_be_formatted_in_python
+                        i + col_offset for i in float_columns_to_be_formatted_in_python
                     ],
                     "render": JavascriptFunction(
                         "function (data, type, row, meta) { return type === 'sort' || type === 'type' ? data[1] : data[0]; }"
@@ -760,6 +759,8 @@ def get_itable_arguments(
                 }
             )
         for col_idx, categories in sorted(categorical_columns.items()):
+            if allow_html is not True:
+                categories = [escape_html_chars(cat) for cat in categories]
             extra_column_defs.append(
                 {
                     "targets": col_idx + col_offset,
