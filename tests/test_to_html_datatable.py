@@ -1,6 +1,7 @@
 from pathlib import Path
 from unittest.mock import patch
 
+import pandas as pd
 import pytest
 
 from itables import to_html_datatable
@@ -13,13 +14,18 @@ except ImportError:
     pytest.skip("Pandas is not available", allow_module_level=True)
 
 
-@pytest.fixture(params=["int_float_str", "countries"])
+@pytest.fixture(params=["int_float_str", "countries", "int_float_str_categorical"])
 def df_name(request):
     return request.param
 
 
 @pytest.fixture
 def df(df_name):
+    if df_name == "int_float_str_categorical":
+        df = get_dict_of_test_dfs()["int_float_str"].head().copy()
+        df["category"] = pd.Categorical(["low", "medium", "high", "medium", "low"])
+        return df
+
     return get_dict_of_test_dfs()[df_name].head()
 
 
