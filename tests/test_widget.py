@@ -24,7 +24,7 @@ def test_create_widget_with_no_df():
     }
 
 
-def test_create_widget_with_df(df):
+def test_create_widget_with_df(df, df_name):
     from itables.widget import ITable
 
     itable = ITable(df, format_floats_in_python=False)
@@ -45,6 +45,10 @@ def test_create_widget_with_df(df):
             "layout",
         ]
     }
+    if "ordered_categories" in df_name:
+        selected_dt_args.pop("columnDefs")
+        selected_dt_args.pop("keys_to_be_evaluated")
+
     assert selected_dt_args == {
         "text_in_header_can_be_selected": True,
         "order": [],

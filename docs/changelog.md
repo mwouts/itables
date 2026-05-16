@@ -15,6 +15,7 @@ ITables ChangeLog
 **Added**
 - A new Pixi environment lets you build the package locally: `pixi run -e build hatch build`
 - Another Pixi environment lets you test the example streamlit app: `pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py`
+- Categorical columns (`pd.CategoricalDtype`, `pl.Categorical`, `pl.Enum`) are now sorted according to the category order rather than alphabetically. Null/missing values sort first. Set `add_rank_to_categories=False` to revert to alphabetical sorting ([#501](https://github.com/mwouts/itables/issues/501)).
 
 **Fixed**
 - We have updated `postcss` in `itables_for_dash` to address a security issue ([#549](https://github.com/mwouts/itables/pull/549))
