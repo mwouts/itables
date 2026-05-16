@@ -221,6 +221,10 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
