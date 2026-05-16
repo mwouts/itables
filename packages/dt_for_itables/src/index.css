@@ -24,6 +24,15 @@ div.dt-layout-table>div {
     font-weight: normal;
 }
 
+/* Fix length-menu label spacing (#553) */
 div.dt-container .dt-length select.dt-input {
     margin-inline-end: 0.35em;
+}
+
+/* Sorting icons on the same side (#535) */
+table.dataTable thead > tr > th div.dt-column-header,
+table.dataTable thead > tr > td div.dt-column-header,
+table.dataTable tfoot > tr > th div.dt-column-footer,
+table.dataTable tfoot > tr > td div.dt-column-footer {
+    flex-direction: row !important;
 }
