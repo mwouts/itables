@@ -1,3 +1,8 @@
+# 2.5.3 (2026-05-16)
+
+- We have added a new CSS rule to enforce a whitespace before the lengthMenu ([[#542](https://github.com/mwouts/itables/issues/542)])
+
+
 # 2.5.2 (2026-05-16)
 
 - We have updated the JavaScript dependencies of `dt_for_itables` ([#545](https://github.com/mwouts/itables/pull/545))

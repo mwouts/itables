@@ -23,3 +23,7 @@ div.dt-layout-table>div {
 .itables-dtype {
     font-weight: normal;
 }
+
+div.dt-container .dt-length select.dt-input {
+    margin-inline-end: 0.35em;
+}
