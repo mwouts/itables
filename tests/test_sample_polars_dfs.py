@@ -175,10 +175,7 @@ def test_polars_df_with_categorical_and_enums():
     assert "data_json" in dt_args
     # Categorical and Enum columns are encoded as integer ranks (null=0, categories 1-indexed).
     # Cat ranks: a=1, b=2, c=3. Enum ranks: north=1, south=2, east=3, west=4.
-    assert (
-        dt_args["data_json"]
-        == "[[1, 1, 1], [2, 2, 2], [1, 1, 1], [3, 4, 3]]"
-    )
+    assert dt_args["data_json"] == "[[1, 1, 1], [2, 2, 2], [1, 1, 1], [3, 4, 3]]"
     assert "columnDefs" in dt_args
     # Each categorical column gets its own columnDef with embedded categories
     assert dt_args["columnDefs"][0]["targets"] == 0

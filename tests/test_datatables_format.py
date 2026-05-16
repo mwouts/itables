@@ -698,11 +698,7 @@ def test_pandas_categorical_with_missing_values():
     pd = pytest.importorskip("pandas")
 
     df = pd.DataFrame(
-        {
-            "cat": pd.Categorical(
-                ["b", None, "a"], categories=["a", "b"], ordered=False
-            )
-        }
+        {"cat": pd.Categorical(["b", None, "a"], categories=["a", "b"], ordered=False)}
     )
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
@@ -715,9 +711,7 @@ def test_polars_categorical_with_missing_values():
     """Null values in polars categorical columns sort first (rank 0)"""
     pl = pytest.importorskip("polars")
 
-    df = pl.DataFrame(
-        {"cat": pl.Series(["b", None, "a"], dtype=pl.Categorical)}
-    )
+    df = pl.DataFrame({"cat": pl.Series(["b", None, "a"], dtype=pl.Categorical)})
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
     data = json.loads(dt_args["data_json"])

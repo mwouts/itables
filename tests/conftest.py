@@ -39,6 +39,7 @@ def pl_df(request):
 def df_name(request) -> str:
     return request.param
 
+
 @pytest.fixture
 def df(df_name: str):
     name, lib = df_name.rsplit("_", 1)
