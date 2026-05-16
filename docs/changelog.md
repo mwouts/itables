@@ -18,9 +18,9 @@ ITables ChangeLog
 - Categorical columns (`pd.CategoricalDtype`, `pl.Categorical`, `pl.Enum`) are now sorted according to the category order rather than alphabetically. Null/missing values sort first. Set `add_rank_to_categories=False` to revert to alphabetical sorting ([#501](https://github.com/mwouts/itables/issues/501)).
 
 **Fixed**
+- We have fixed the missing leading whitespace in lengthMenu label ([#542](https://github.com/mwouts/itables/issues/542))
 - We have updated `postcss` in `itables_for_dash` to address a security issue ([#549](https://github.com/mwouts/itables/pull/549))
 - We have fixed a `TypeError` raised by `dash-generate-components` when building `itables_for_dash` with `npm run build`
-- We have fixed an issue link in the changelog/documentation ([#530](https://github.com/mwouts/itables/pull/530))
 
 
 2.7.3 (2026-03-22)
