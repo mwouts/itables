@@ -5,11 +5,21 @@ ITables ChangeLog
 -------------------
 
 **Changed**
-- The Streamlit component has been migrated to `st.components.v2`, which renders inline (no iframe) and uses a cleaner function-based lifecycle ([#519](https://github.com/mwouts/itables/issues/519))
+- The Streamlit component has been migrated to `st.components.v2`, which renders inline (no iframe) and uses a cleaner function-based lifecycle ([#521](https://github.com/mwouts/itables/pull/521), [#519](https://github.com/mwouts/itables/issues/519))
+- We have updated TypeScript to its latest version ([#543](https://github.com/mwouts/itables/pull/543))
+- We have updated the JavaScript dependencies of `dt_for_itables` ([#545](https://github.com/mwouts/itables/pull/545)), `itables_anywidget` ([#544](https://github.com/mwouts/itables/pull/544)), and `itables_for_dash` ([#546](https://github.com/mwouts/itables/pull/546))
+- We have updated `@babel/plugin-transform-modules-systemjs` ([#547](https://github.com/mwouts/itables/pull/547))
+- We have updated GitHub Actions dependencies in the workflows ([#548](https://github.com/mwouts/itables/pull/548))
+- We now allow the build step to comment on pull requests ([#552](https://github.com/mwouts/itables/pull/552))
 
 **Added**
 - A new Pixi environment lets you build the package locally: `pixi run -e build hatch build`
 - Another Pixi environment lets you test the example streamlit app: `pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py`
+
+**Fixed**
+- We have updated `postcss` in `itables_for_dash` to address a security issue ([#549](https://github.com/mwouts/itables/pull/549))
+- We have fixed a `TypeError` raised by `dash-generate-components` when building `itables_for_dash` with `npm run build`
+- We have fixed an issue link in the changelog/documentation ([#530](https://github.com/mwouts/itables/pull/530))
 
 
 2.7.3 (2026-03-22)
@@ -70,7 +80,7 @@ ITables ChangeLog
 ------------------
 
 **Fixed**
-- We have fixed a conda build error: `TypeError: typing.Any is not subscriptable` ([#468](https://github.com/mwouts/itables/issues/468)), and added more tests
+- We have fixed a conda build error: `TypeError: typing.Any is not subscriptable` ([#468](https://github.com/mwouts/itables/issues/468), [#469](https://github.com/mwouts/itables/pull/469)), and added more tests
 
 
 2.6.0 (2025-12-14)

@@ -1,3 +1,7 @@
+# 2.5.2 (2026-05-16)
+
+- We have updated the JavaScript dependencies of `dt_for_itables` ([#545](https://github.com/mwouts/itables/pull/545))
+
 # 2.5.1 (2026-02-22)
 
 - We have added the FixedHeader extension of DataTables to the `dt_for_itables` package ([#496](https://github.com/mwouts/itables/pull/496))
