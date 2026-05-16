@@ -219,12 +219,8 @@ jobs:
           fail_ci_if_error: false
           verbose: true
 
-  build:
+  build-wheel:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: read
-      pull-requests: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v6
@@ -245,7 +241,24 @@ jobs:
       - name: Check LICENSE.txt in sdist
         run: tar -tvf dist/*.tar.gz | grep -q itables_for_dash/async-ITable.js.LICENSE.txt
 
-      # Build conda package
+      # Upload the wheel and sdist as artifacts
+      - name: Upload wheel
+        uses: actions/upload-artifact@v7
+        with:
+          name: itables-wheel
+          path: dist/itables-*.whl
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v7
+        with:
+          name: itables-sdist
+          path: dist/itables-*.tar.gz
+
+  build-conda:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v6
       - name: Set up Mambaforge
         uses: conda-incubator/setup-miniconda@v4
         with:
@@ -264,22 +277,22 @@ jobs:
           # conda config --remove channels defaults
           conda build conda.recipe --output-folder conda-dist
 
-      # Upload the wheel and conda package as artifacts
-      - name: Upload wheel
-        uses: actions/upload-artifact@v7
-        with:
-          name: itables-wheel
-          path: dist/itables-*.whl
-
       - name: Upload conda package
         uses: actions/upload-artifact@v7
         with:
           name: itables-conda-package
           path: conda-dist/**/itables-*.conda
 
-      # Comment on PR with artifact link
+  comment-on-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    needs: [build-wheel, build-conda]
+    if: github.event_name == 'pull_request'
+    steps:
       - name: Comment with direct artifact link
-        if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
         with:
           script: |

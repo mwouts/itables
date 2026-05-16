@@ -10,7 +10,7 @@ ITables ChangeLog
 - We have updated the JavaScript dependencies of `dt_for_itables` ([#545](https://github.com/mwouts/itables/pull/545)), `itables_anywidget` ([#544](https://github.com/mwouts/itables/pull/544)), and `itables_for_dash` ([#546](https://github.com/mwouts/itables/pull/546))
 - We have updated `@babel/plugin-transform-modules-systemjs` ([#547](https://github.com/mwouts/itables/pull/547))
 - We have updated GitHub Actions dependencies in the workflows ([#548](https://github.com/mwouts/itables/pull/548))
-- We now allow the build step to comment on pull requests ([#552](https://github.com/mwouts/itables/pull/552))
+- We now allow the build step to comment on pull requests ([#552](https://github.com/mwouts/itables/pull/552)), and build the wheel and conda packages in parallel ([#656](https://github.com/mwouts/itables/pull/556))
 
 **Added**
 - A new Pixi environment lets you build the package locally: `pixi run -e build hatch build`
