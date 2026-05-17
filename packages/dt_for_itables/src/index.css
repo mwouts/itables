@@ -36,3 +36,8 @@ table.dataTable tfoot > tr > th div.dt-column-footer,
 table.dataTable tfoot > tr > td div.dt-column-footer {
     flex-direction: row !important;
 }
+
+/* Keep ColumnControl icon and selector aligned in Bootstrap contexts (#557) */
+div.dtcc-dropdown div.dtcc-search > div {
+    flex-wrap: nowrap;
+}

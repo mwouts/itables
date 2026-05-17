@@ -209,6 +209,15 @@ itables = {path = ".", editable = true, extras=["pandas", "test-dash"]}
 [tool.pixi.feature.test-polars-dash.pypi-dependencies]
 itables = {path = ".", editable = true, extras=["polars", "test-dash"]}
 
+[tool.pixi.feature.quarto.dependencies]
+quarto = "*"
+python = ">=3.9"
+pip = "*"
+nodejs = ">=20"
+
+[tool.pixi.feature.quarto.pypi-dependencies]
+itables = {path = ".", editable = true, extras=["dev"]}
+
 [tool.pixi.feature.streamlit-app.dependencies]
 nodejs = ">=20"
 python = ">=3.9"
@@ -227,3 +236,4 @@ test-pandas-notebook = { features = ["minimal", "test-pandas-notebook"], no-defa
 test-polars-notebook = { features = ["minimal", "test-polars-notebook"], no-default-feature = true}
 test-pandas-dash = { features = ["minimal", "test-pandas-dash"], no-default-feature = true}
 test-polars-dash = { features = ["minimal", "test-polars-dash"], no-default-feature = true}
+quarto = { features = ["quarto"], no-default-feature = true }

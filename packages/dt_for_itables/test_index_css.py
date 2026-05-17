@@ -10,3 +10,11 @@ table.dataTable tfoot > tr > td div.dt-column-footer {
     flex-direction: row !important;
 }"""
     assert expected_wrapper_rule in css
+
+
+def test_column_control_search_row_does_not_wrap():
+    css = (Path(__file__).parent / "src/index.css").read_text()
+    expected_rule = """div.dtcc-dropdown div.dtcc-search > div {
+    flex-wrap: nowrap;
+}"""
+    assert expected_rule in css
