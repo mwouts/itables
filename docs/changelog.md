@@ -1,8 +1,8 @@
 ITables ChangeLog
 =================
 
-2.8.0 (unreleased)
--------------------
+2.8.0 (2026-05-17)
+------------------
 
 **Changed**
 - The Streamlit component has been migrated to `st.components.v2`, which renders inline (no iframe) and uses a cleaner function-based lifecycle ([#521](https://github.com/mwouts/itables/pull/521), [#519](https://github.com/mwouts/itables/issues/519))
