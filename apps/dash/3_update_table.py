@@ -8,7 +8,8 @@ import logging
 from typing import Any, Optional
 
 from dash import callback  # pyright: ignore[reportUnknownVariableType]
-from dash import Dash, Input, Output, State, callback_context, dcc, html
+from dash import Dash, callback_context, dcc, html
+from dash.dependencies import Input, Output, State
 
 from itables import DTForITablesOptions, ITableOptions
 from itables.dash import (
@@ -38,14 +39,14 @@ app.layout = html.Div(
                     children=[
                         html.H2("Controls"),
                         html.Label("Table Options:"),
-                        dcc.Checklist(
+                        dcc.Checklist(  # pyright: ignore[reportPrivateImportUsage]
                             ["Select", "Buttons", "HTML", "ColumnControl"],
                             ["Select"],
                             id="checklist",
                             style={"marginBottom": "20px"},
                         ),
                         html.Label("Table Caption:"),
-                        dcc.Input(
+                        dcc.Input(  # pyright: ignore[reportPrivateImportUsage]
                             id="caption",
                             value="table caption",
                             style={"width": "100%", "marginBottom": "20px"},

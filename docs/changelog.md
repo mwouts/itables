@@ -1,8 +1,13 @@
 ITables ChangeLog
 =================
 
-2.8.0 (unreleased)
--------------------
+2.8.0 (2026-05-17)
+------------------
+
+**Added**
+- Categorical columns (`pd.CategoricalDtype`, `pl.Categorical`, `pl.Enum`) are now sorted according to the category order rather than alphabetically. Null/missing values sort first. Set `add_rank_to_categories=False` to revert to alphabetical sorting ([#501](https://github.com/mwouts/itables/issues/501)).
+- A new Pixi environment lets you build the package locally: `pixi run -e build hatch build`
+- Another Pixi environment lets you test the example streamlit app: `pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py`
 
 **Changed**
 - The Streamlit component has been migrated to `st.components.v2`, which renders inline (no iframe) and uses a cleaner function-based lifecycle ([#521](https://github.com/mwouts/itables/pull/521), [#519](https://github.com/mwouts/itables/issues/519))
@@ -11,11 +16,6 @@ ITables ChangeLog
 - We have updated `@babel/plugin-transform-modules-systemjs` ([#547](https://github.com/mwouts/itables/pull/547))
 - We have updated GitHub Actions dependencies in the workflows ([#548](https://github.com/mwouts/itables/pull/548))
 - We now allow the build step to comment on pull requests ([#552](https://github.com/mwouts/itables/pull/552)), and build the wheel and conda packages in parallel ([#656](https://github.com/mwouts/itables/pull/556))
-
-**Added**
-- A new Pixi environment lets you build the package locally: `pixi run -e build hatch build`
-- Another Pixi environment lets you test the example streamlit app: `pixi run -e streamlit-app streamlit run apps/streamlit/itables_app.py`
-- Categorical columns (`pd.CategoricalDtype`, `pl.Categorical`, `pl.Enum`) are now sorted according to the category order rather than alphabetically. Null/missing values sort first. Set `add_rank_to_categories=False` to revert to alphabetical sorting ([#501](https://github.com/mwouts/itables/issues/501)).
 
 **Fixed**
 - We have fixed the missing leading whitespace in lengthMenu label ([#542](https://github.com/mwouts/itables/issues/542))

@@ -64,6 +64,7 @@ table.selected_rows = [3, 4]
 # Use it to retrieve the table data:
 
 # %%
+assert table.df is not None
 table.df.iloc[table.selected_rows]
 
 # %% [markdown]
