@@ -658,7 +658,12 @@ def get_itable_arguments(
     warn_on_unexpected_types = kwargs.pop("warn_on_unexpected_types", False)
     allow_html = kwargs.pop("allow_html")
 
-    if not showIndex and df_module_name == "pandas" and df_type_name != "Styler":
+    if (
+        df is not None
+        and not showIndex
+        and df_module_name == "pandas"
+        and df_type_name != "Styler"
+    ):
         import pandas as pd
 
         df = df.set_index(pd.RangeIndex(len(df.index)))
