@@ -6,7 +6,7 @@ To display Python DataFrames as interactive DataTables in Streamlit applications
 from itables.streamlit import interactive_table
 ```
 
-We have a sample application available at https://itables.streamlit.app (source code [here](https://github.com/mwouts/demo_itables_in_streamlit/blob/main/itables_app.py))
+We have a sample application available at https://itables.streamlit.app (source code [here](https://github.com/mwouts/itables/blob/main/apps/streamlit/itables_app.py))
 
 ```{div} full-width
 <iframe src="https://itables.streamlit.app?embed=true"

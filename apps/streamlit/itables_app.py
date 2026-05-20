@@ -127,12 +127,13 @@ st.markdown(
 
 t = render_table(df, caption=caption, key="my_table", **it_args)
 
-st.header("Table state")
-st.markdown(
-    """The value returned by `interactive_table` is
-a dict that contains the index of the selected rows:"""
-)
-st.write(t)  # type: ignore
+if render_with == "itables":
+    st.header("Table state")
+    st.markdown(
+        """The value returned by `interactive_table` is
+    a dict that contains the index of the selected rows:"""
+    )
+    st.write(t)  # type: ignore
 
 st.header("More sample dataframes")
 test_dfs = itables.sample_dfs.get_dict_of_test_dfs()
@@ -141,7 +142,7 @@ tabs = st.tabs(list(test_dfs.keys()))
 for (name, df), tab in zip(test_dfs.items(), tabs):
     with tab:
         try:
-            interactive_table(df, key=name, classes=classes, style=style)
+            render_table(df, caption=None, key=name)
         except (
             # ITables
             NotImplementedError,

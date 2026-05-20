@@ -215,6 +215,7 @@ python = ">=3.9"
 pyarrow = "*"
 
 [tool.pixi.feature.streamlit-app.pypi-dependencies]
+streamlit-aggrid = "*"
 itables = {path = ".", editable = true, extras=["pandas", "streamlit"]}
 
 [tool.pixi.environments]
