@@ -1,5 +1,6 @@
 streamlit>=1.51 # introduces the v2 components
 itables>=2.8.0 # added support for streamlit v2 components
+pandas
 
 # For comparison with st_aggrid
 streamlit-aggrid
