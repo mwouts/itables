@@ -142,7 +142,7 @@ tabs = st.tabs(list(test_dfs.keys()))
 for (name, df), tab in zip(test_dfs.items(), tabs):
     with tab:
         try:
-            interactive_table(df, key=name, classes=classes, style=style)
+            render_table(df, caption=None, key=name)
         except (
             # ITables
             NotImplementedError,
