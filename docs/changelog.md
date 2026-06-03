@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.8.1 (2026-06-03)
+------------------
+
+**Added**
+- We have added the [ColReorder](https://datatables.net/extensions/colreorder/) extension of DataTables to the `dt_for_itables` package. Use `colReorder=True` to let users drag and drop column headers to reorder them.
+
+
 2.8.0 (2026-05-17)
 ------------------
 

@@ -34,6 +34,7 @@ parts:
       - file: options/state_save
       - file: options/select
       - file: options/buttons
+      - file: options/col_reorder
       - file: options/colvis
       - file: options/search_panes
       - file: options/search_builder

@@ -1,6 +1,6 @@
 {
   "name": "dt_for_itables",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "description": "DataTables bundle for itables",
   "main": "src/index.js",
   "typings": "src/index.d.js",
@@ -27,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "datatables.net-buttons": "^3.0.1",
+    "datatables.net-colreorder-dt": "^2.0.4",
     "datatables.net-buttons-dt": "^3.2.6",
     "datatables.net-columncontrol": "^1.0.7",
     "datatables.net-columncontrol-dt": "^1.2.1",
