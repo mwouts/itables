@@ -1,7 +1,7 @@
 from shiny.express import input, render, ui
 
-from itables.sample_dfs import get_dict_of_test_dfs
-from itables.shiny import DT, init_itables
+from pydatatables.sample_dfs import get_dict_of_test_dfs
+from pydatatables.shiny import DT, init_pydatatables
 
 dfs = get_dict_of_test_dfs()
 
@@ -17,7 +17,7 @@ with ui.card():
                 selected="int_float_str",
             )
 
-        ui.HTML(init_itables())
+        ui.HTML(init_pydatatables())
 
         @render.ui
         def my_table():

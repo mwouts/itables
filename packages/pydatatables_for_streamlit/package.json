@@ -1,0 +1,19 @@
+{
+  "name": "pydatatables_for_streamlit",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "@streamlit/component-v2-lib": "^0.2.0",
+    "pydatatables": "file:../pydatatables"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.9",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "build:js": "esbuild src/index.tsx --bundle --minify --format=esm --outdir=../../src/pydatatables/pydatatables_for_streamlit",
+    "build:css": "esbuild src/index.css --bundle --outdir=../../src/pydatatables/pydatatables_for_streamlit",
+    "build": "npm run build:js && npm run build:css",
+    "typecheck": "tsc --noEmit"
+  }
+}

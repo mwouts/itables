@@ -3,8 +3,8 @@ from typing import Optional
 from dash import callback  # pyright: ignore[reportUnknownVariableType]
 from dash import Dash, Input, Output, html
 
-from itables.dash import ITable
-from itables.sample_dfs import get_countries
+from pydatatables.dash import PyDataTablesRenderer
+from pydatatables.sample_dfs import get_countries
 
 app = Dash(__name__)
 

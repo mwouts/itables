@@ -1,0 +1,61 @@
+import json
+
+import pytest
+
+from pydatatables import to_html_datatable
+from pydatatables.javascript import get_itable_arguments
+
+pytest.importorskip("jinja2")
+
+try:
+    import pandas as pd
+except ImportError:
+    pytest.skip("Pandas is not available", allow_module_level=True)
+
+
+def test_buttons_are_shown_on_pd_style_objects():
+    import re
+
+    df = pd.DataFrame({"A": ["a"]}).style
+    html = to_html_datatable(
+        df,
+        buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5"],
+        allow_html=True,
+    )
+
+    # Extract the dt_args passed to datatables
+    match = re.search(r"let dt_args = ({.*?});\s*new PyDataTablesRenderer", html, re.DOTALL)
+    assert match, "Could not find dt_args in HTML"
+    dt_args = json.loads(match.group(1))
+
+    print(dt_args)
+    assert "dom" not in dt_args
+    assert "buttons" in dt_args
+    assert "buttons" in dt_args["layout"].values()
+
+
+def test_non_trivial_index_of_styler_objects_are_included():
+    """
+    When a Pandas Styler index is non trivial, it should appear
+    in the PyDataTablesRenderer output, see issue #393
+    """
+    df = pd.DataFrame({"A": [1]}, index=pd.Index([0], name="index"))
+    dt_args = get_itable_arguments(df.style, table_id="T_id", allow_html=True)
+    assert "table_html" in dt_args
+    table_html = dt_args["table_html"]
+    assert "index" in table_html, table_html
+
+
+@pytest.mark.parametrize("showIndex", [True, "auto"])
+def test_trivial_indexes_of_styler_objects_are_not_included(showIndex):
+    """
+    When a Pandas Styler index is trivial, it should appear
+    in the PyDataTablesRenderer output only if showIndex is True
+    """
+    df = pd.DataFrame({"A": [1]})
+    dt_args = get_itable_arguments(
+        df.style, table_id="T_id", allow_html=True, showIndex=showIndex
+    )
+    assert "table_html" in dt_args
+    table_html = dt_args["table_html"]
+    assert ('class="blank level0"' in table_html) == (showIndex is True), table_html

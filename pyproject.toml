@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "itables"
+name = "pydatatables"
 authors = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
 maintainers = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
 description = "Python DataFrames as interactive DataTables"
@@ -51,16 +51,16 @@ check_type = ["typeguard>=4.4.1"]
 
 samples = ["pytz", "world_bank_data"]
 
-all = ["itables[config,pandas,polars,style,narwhals,other_dataframes,samples,notebook,widget,dash,shiny,streamlit,marimo,typing,check_type]"]
+all = ["pydatatables[config,pandas,polars,style,narwhals,other_dataframes,samples,notebook,widget,dash,shiny,streamlit,marimo,typing,check_type]"]
 test-base = [
-  "itables",
+  "pydatatables",
   # Pytest
   "pytest",
   "pytest-xdist",
   "pytest-cov",
 ]
 test-notebook = [
-   "itables[test-base,widget,notebook]",
+   "pydatatables[test-base,widget,notebook]",
   # Test the documentation
   "ipykernel",
   "nbconvert",
@@ -68,12 +68,12 @@ test-notebook = [
   # Test urls
   "requests",
   ]
-test-dash = ["itables[test-base,dash]"]
-test-all = ["itables[all,test-notebook]"]
-dev = ["itables[test-all]", "watchfiles", "jupyterlab", "pyright", "pandas-stubs"]
+test-dash = ["pydatatables[test-base,dash]"]
+test-all = ["pydatatables[all,test-notebook]"]
+dev = ["pydatatables[test-all]", "watchfiles", "jupyterlab", "pyright", "pandas-stubs"]
 
 [tool.hatch.version]
-path = "src/itables/version.py"
+path = "src/pydatatables/version.py"
 
 [project.urls]
 Homepage = "https://mwouts.github.io/itables/"
@@ -100,13 +100,13 @@ enable-by-default = true
 dependencies = ["hatch-jupyter-builder>=0.5.0", "dash", "pyyaml"]
 build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
-    "src/itables/html/dt_bundle.js",
-    "src/itables/html/dt_bundle.css",
-    "src/itables_for_dash/ITable.py",
-    "src/itables_for_dash/async-ITable.js",
-    "src/itables_for_dash/async-ITable.js.LICENSE.txt",
-    "src/itables/itables_for_streamlit/index.js",
-    "src/itables/widget/static/widget.js",
+    "src/pydatatables/html/dt_bundle.js",
+    "src/pydatatables/html/dt_bundle.css",
+    "src/pydatatables_for_dash/PyDataTablesRenderer.py",
+    "src/pydatatables_for_dash/async-PyDataTablesRenderer.js",
+    "src/pydatatables_for_dash/async-PyDataTablesRenderer.js.LICENSE.txt",
+    "src/pydatatables/pydatatables_for_streamlit/index.js",
+    "src/pydatatables/widget/static/widget.js",
     ]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
@@ -116,47 +116,47 @@ npm = ["npm"]
 
 [tool.streamlit.component]
 components = [
-    {name = "itables_for_streamlit", asset_dir = "itables_for_streamlit"},
+    {name = "pydatatables_for_streamlit", asset_dir = "pydatatables_for_streamlit"},
 ]
 
 [tool.hatch.build.targets.sdist]
-packages = ["src/itables", "src/itables_for_dash"]
+packages = ["src/pydatatables", "src/pydatatables_for_dash"]
 artifacts = [
-    "src/itables/html/dt_bundle.js",
-    "src/itables/html/dt_bundle.css",
-    "src/itables_for_dash/*",
-    "src/itables/itables_for_streamlit/*",
-    "src/itables/widget/static/*",
-    "src/itables/py.typed",
-    "src/itables_for_dash/py.typed",
+    "src/pydatatables/html/dt_bundle.js",
+    "src/pydatatables/html/dt_bundle.css",
+    "src/pydatatables_for_dash/*",
+    "src/pydatatables/pydatatables_for_streamlit/*",
+    "src/pydatatables/widget/static/*",
+    "src/pydatatables/py.typed",
+    "src/pydatatables_for_dash/py.typed",
     ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/itables", "src/itables_for_dash"]
+packages = ["src/pydatatables", "src/pydatatables_for_dash"]
 artifacts = [
-    "src/itables/html/dt_bundle.js",
-    "src/itables/html/dt_bundle.css",
-    "src/itables_for_dash/*",
-    "src/itables/itables_for_streamlit/*",
-    "src/itables/widget/static/*",
-    "src/itables/py.typed",
-    "src/itables_for_dash/py.typed",
+    "src/pydatatables/html/dt_bundle.js",
+    "src/pydatatables/html/dt_bundle.css",
+    "src/pydatatables_for_dash/*",
+    "src/pydatatables/pydatatables_for_streamlit/*",
+    "src/pydatatables/widget/static/*",
+    "src/pydatatables/py.typed",
+    "src/pydatatables_for_dash/py.typed",
     ]
 
 [tool.pyright]
 typeCheckingMode = "standard"
 ignore = [
     "apps/marimo",
-    "src/itables_for_dash/ITable.py",
+    "src/pydatatables_for_dash/PyDataTablesRenderer.py",
     "research",
 ]
 strict = [
     "docs",
     "apps",
-    "src/itables_for_dash",
-    "src/itables/__init__.py",
-    "src/itables/dash.py",
-    "src/itables/streamlit.py",
+    "src/pydatatables_for_dash",
+    "src/pydatatables/__init__.py",
+    "src/pydatatables/dash.py",
+    "src/pydatatables/streamlit.py",
     ]
 
 [tool.pixi.workspace]
@@ -168,7 +168,7 @@ nodejs = ">=20"
 pre-commit = "*"
 
 [tool.pixi.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["dev"]}
+pydatatables = {path = ".", editable = true, extras=["dev"]}
 
 [tool.pixi.feature.docs.dependencies]
 jupyter-book = ">=1,<2"
@@ -192,22 +192,22 @@ nodejs = ">=20"
 python = ">=3.9"
 
 [tool.pixi.feature.minimal.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["test-base"]}
+pydatatables = {path = ".", editable = true, extras=["test-base"]}
 
 [tool.pixi.feature.retro.dependencies]
 python = "=3.9"
 
 [tool.pixi.feature.test-pandas-notebook.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["pandas", "test-notebook"]}
+pydatatables = {path = ".", editable = true, extras=["pandas", "test-notebook"]}
 
 [tool.pixi.feature.test-polars-notebook.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["polars", "test-notebook"]}
+pydatatables = {path = ".", editable = true, extras=["polars", "test-notebook"]}
 
 [tool.pixi.feature.test-pandas-dash.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["pandas", "test-dash"]}
+pydatatables = {path = ".", editable = true, extras=["pandas", "test-dash"]}
 
 [tool.pixi.feature.test-polars-dash.pypi-dependencies]
-itables = {path = ".", editable = true, extras=["polars", "test-dash"]}
+pydatatables = {path = ".", editable = true, extras=["polars", "test-dash"]}
 
 [tool.pixi.feature.streamlit-app.dependencies]
 nodejs = ">=20"
@@ -216,7 +216,7 @@ pyarrow = "*"
 
 [tool.pixi.feature.streamlit-app.pypi-dependencies]
 streamlit-aggrid = "*"
-itables = {path = ".", editable = true, extras=["pandas", "streamlit"]}
+pydatatables = {path = ".", editable = true, extras=["pandas", "streamlit"]}
 
 [tool.pixi.environments]
 default = { solve-group = "default" }

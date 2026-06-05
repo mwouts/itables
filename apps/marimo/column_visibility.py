@@ -2,7 +2,7 @@
 # requires-python = ">=3.12,<3.13"
 # dependencies = [
 #     "anywidget==0.9.18",
-#     "itables==2.4.0",
+#     "pydatatables==2.4.0",
 #     "marimo",
 #     "pandas==2.2.3",
 # ]
@@ -18,7 +18,7 @@ app = marimo.App(width="medium")
 def _():
     import pandas as pd
 
-    from itables.widget import ITable
+    from pydatatables.widget import PyDataTablesRenderer
 
     df = pd.DataFrame({"x": [2, 1, 3], "y": list("cbc")})
 
@@ -32,9 +32,9 @@ def _():
 def _(df):
     import marimo as mo
 
-    import itables
+    import pydatatables
 
-    html = itables.to_html_datatable(
+    html = pydatatables.to_html_datatable(
         df,
         buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5", "colvis"],
         connected=True,

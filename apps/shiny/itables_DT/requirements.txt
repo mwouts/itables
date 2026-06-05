@@ -1,2 +1,2 @@
-itables>=2.2
+pydatatables>=2.2
 shiny

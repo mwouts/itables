@@ -90,7 +90,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install a development version of 'itables'
+      - name: Install a development version of 'pydatatables'
         run: pip install -e .[test-all]
 
       - name: Install pandas latest
@@ -117,7 +117,7 @@ jobs:
         run: pip uninstall polars jinja2 dash anywidget streamlit shiny shinywidgets -y
 
       - name: Install a Jupyter Kernel
-        run: python -m ipykernel install --name itables --user
+        run: python -m ipykernel install --name pydatatables --user
 
       - name: Test with pytest
         run: pytest --cov=./ --cov-report=xml
@@ -143,7 +143,7 @@ jobs:
           cache: true
 
       - name: Install a Jupyter Kernel
-        run: pixi run python -m ipykernel install --name itables --user
+        run: pixi run python -m ipykernel install --name pydatatables --user
 
       - name: Test with pytest
         run: pixi run pytest --cov=./ --cov-report=xml
@@ -172,7 +172,7 @@ jobs:
         run: pixi update
 
       - name: Install a Jupyter Kernel
-        run: pixi run python -m ipykernel install --name itables --user
+        run: pixi run python -m ipykernel install --name pydatatables --user
 
       - name: Test with pytest
         run: pixi run pytest --cov=./ --cov-report=xml
@@ -208,7 +208,7 @@ jobs:
 
       - name: Install a Jupyter Kernel
         if: endsWith(matrix.environment, 'notebook')
-        run: pixi run -e ${{ matrix.environment }} python -m ipykernel install --name itables --user
+        run: pixi run -e ${{ matrix.environment }} python -m ipykernel install --name pydatatables --user
 
       - name: Test with pytest in ${{ matrix.environment }}
         run: pixi run -e ${{ matrix.environment }} pytest --cov=./ --cov-report=xml
@@ -237,22 +237,22 @@ jobs:
       - name: Build package
         run: hatch build
       - name: Check LICENSE.txt in wheel
-        run: unzip -l dist/*.whl | grep -q itables_for_dash/async-ITable.js.LICENSE.txt
+        run: unzip -l dist/*.whl | grep -q pydatatables_for_dash/async-PyDataTablesRenderer.js.LICENSE.txt
       - name: Check LICENSE.txt in sdist
-        run: tar -tvf dist/*.tar.gz | grep -q itables_for_dash/async-ITable.js.LICENSE.txt
+        run: tar -tvf dist/*.tar.gz | grep -q pydatatables_for_dash/async-PyDataTablesRenderer.js.LICENSE.txt
 
       # Upload the wheel and sdist as artifacts
       - name: Upload wheel
         uses: actions/upload-artifact@v7
         with:
-          name: itables-wheel
-          path: dist/itables-*.whl
+          name: pydatatables-wheel
+          path: dist/pydatatables-*.whl
 
       - name: Upload sdist
         uses: actions/upload-artifact@v7
         with:
-          name: itables-sdist
-          path: dist/itables-*.tar.gz
+          name: pydatatables-sdist
+          path: dist/pydatatables-*.tar.gz
 
   build-conda:
     runs-on: ubuntu-latest
@@ -280,8 +280,8 @@ jobs:
       - name: Upload conda package
         uses: actions/upload-artifact@v7
         with:
-          name: itables-conda-package
-          path: conda-dist/**/itables-*.conda
+          name: pydatatables-conda-package
+          path: conda-dist/**/pydatatables-*.conda
 
   comment-on-pr:
     runs-on: ubuntu-latest
@@ -298,7 +298,7 @@ jobs:
           script: |
             const pr_number = context.payload.pull_request.number;
             const run_id = context.runId;
-            const marker = '<!-- itables-artifact-link -->';
+            const marker = '<!-- pydatatables-artifact-link -->';
 
             // List artifacts for this run
             const { data: { artifacts } } = await github.rest.actions.listWorkflowRunArtifacts({
@@ -307,8 +307,8 @@ jobs:
               run_id: run_id,
             });
 
-            // Find the artifact named 'itables-wheel'
-            let artifact = artifacts.find(a => a.name === 'itables-wheel');
+            // Find the artifact named 'pydatatables-wheel'
+            let artifact = artifacts.find(a => a.name === 'pydatatables-wheel');
             let wheel_url;
             if (artifact) {
               wheel_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}/artifacts/${artifact.id}`;
@@ -316,8 +316,8 @@ jobs:
               wheel_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}#artifacts`;
             }
 
-            // Find the artifact named 'itables-conda-package'
-            artifact = artifacts.find(a => a.name === 'itables-conda-package');
+            // Find the artifact named 'pydatatables-conda-package'
+            artifact = artifacts.find(a => a.name === 'pydatatables-conda-package');
             let conda_url;
             if (artifact) {
               conda_url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${run_id}/artifacts/${artifact.id}`;
@@ -331,11 +331,11 @@ jobs:
 
             Did you know? You can try it on Binder: [![Binder:lab](https://img.shields.io/badge/binder-jupyterlab-0172B2.svg)](https://mybinder.org/v2/gh/${{ github.event.pull_request.head.repo.full_name }}/${{ github.event.pull_request.head.ref }}?urlpath=lab/tree/docs/quick_start.md).
 
-            Also, the version of ITables developed in this PR is available as a wheel artifact :package: for easy installation.
-            Download it [here](${wheel_url}), unzip it and then run <code>pip install itables-xxx.whl</code> in the unzipped directory.
+            Also, the version of pydatatables developed in this PR is available as a wheel artifact :package: for easy installation.
+            Download it [here](${wheel_url}), unzip it and then run <code>pip install pydatatables-xxx.whl</code> in the unzipped directory.
 
             A conda package is also available for easy installation:
-            Download it [here](${conda_url}), and then run <code>conda install itables-xxx.tar.bz2</code> in the directory where you downloaded the file.
+            Download it [here](${conda_url}), and then run <code>conda install pydatatables-xxx.tar.bz2</code> in the directory where you downloaded the file.
             `;
 
             // List comments on the PR

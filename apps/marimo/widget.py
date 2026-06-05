@@ -13,7 +13,7 @@ def _(mo):
     The `ITable` widget depends on [AnyWidget](https://anywidget.dev) -
     a great widget development framework! You can install it with
     ```bash
-    pip install itables[widget]
+    pip install pydatatables[widget]
     ```
 
     The `ITable` class accepts the same [options](../options/options.md) as the `show` method, but
@@ -25,8 +25,8 @@ def _(mo):
 
 @app.cell
 def _():
-    from itables.sample_dfs import get_dict_of_test_dfs
-    from itables.widget import ITable
+    from pydatatables.sample_dfs import get_dict_of_test_dfs
+    from pydatatables.widget import PyDataTablesRenderer
 
     df = get_dict_of_test_dfs()["int_float_str"]
 

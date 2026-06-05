@@ -11332,7 +11332,7 @@ packages:
   size: 388453
   timestamp: 1764777142545
 - pypi: .
-  name: itables
+  name: pydatatables
   requires_dist:
   - anywidget ; extra == 'all'
   - dash ; extra == 'all'

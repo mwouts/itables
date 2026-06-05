@@ -1,10 +1,10 @@
 {% set version_match = load_file_regex(
-  load_file="src/itables/version.py",
+  load_file="src/pydatatables/version.py",
   regex_pattern='.*__version__ = "(.+)"') %}
 {% set version = version_match[1] %}
 
 package:
-  name: itables
+  name: pydatatables
   version: {{ version }}
 
 source:
@@ -30,10 +30,10 @@ requirements:
 
 test:
   imports:
-    - itables
+    - pydatatables
   commands:
     - pip check
-    - python -c "import itables; print(itables.__version__)"
+    - python -c "import pydatatables; print(pydatatables.__version__)"
   requires:
     - pip
     - python = 3.9

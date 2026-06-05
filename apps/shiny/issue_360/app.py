@@ -1,8 +1,8 @@
 from shiny import App, ui
 from shinywidgets import output_widget, render_widget
 
-from itables.sample_dfs import get_countries
-from itables.widget import ITable
+from pydatatables.sample_dfs import get_countries
+from pydatatables.widget import PyDataTablesRenderer
 
 app_ui = ui.page_fluid(
     ui.h1("Issue #360"),

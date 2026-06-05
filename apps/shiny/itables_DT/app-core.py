@@ -1,7 +1,7 @@
 from shiny import App, render, ui
 
-from itables.sample_dfs import get_dict_of_test_dfs
-from itables.shiny import DT, init_itables
+from pydatatables.sample_dfs import get_dict_of_test_dfs
+from pydatatables.shiny import DT, init_pydatatables
 
 dfs = get_dict_of_test_dfs()
 
@@ -14,7 +14,7 @@ app_ui = ui.page_sidebar(
             selected="int_float_str",
         )
     ),
-    ui.HTML(init_itables()),
+    ui.HTML(init_pydatatables()),
     ui.output_ui("my_table"),
     ui.markdown("Selected rows"),
     ui.output_code("selected_rows"),

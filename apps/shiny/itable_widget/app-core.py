@@ -1,8 +1,8 @@
 from shiny import App, reactive, render, ui
 from shinywidgets import output_widget, reactive_read, render_widget
 
-from itables.sample_dfs import get_dict_of_test_dfs
-from itables.widget import ITable
+from pydatatables.sample_dfs import get_dict_of_test_dfs
+from pydatatables.widget import PyDataTablesRenderer
 
 dfs = get_dict_of_test_dfs()
 

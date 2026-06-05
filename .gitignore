@@ -35,14 +35,14 @@ dt_bundle.js
 dt_bundle.css
 
 # Dash component
-src/itables_for_dash/*.js*
-src/itables_for_dash/_imports_.py
+src/pydatatables_for_dash/*.js*
+src/pydatatables_for_dash/_imports_.py
 
 # Streamlit component
-src/itables/itables_for_streamlit
+src/pydatatables/pydatatables_for_streamlit
 
 # Jupyter Widget
-src/itables/widget/static
+src/pydatatables/widget/static
 
 # On-going research
 research
