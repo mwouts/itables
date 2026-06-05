@@ -8,8 +8,8 @@ app = marimo.App(width="medium")
 def _():
     import marimo as mo
 
-    from itables.sample_dfs import get_countries
-    from itables.widget import ITable
+    from pydatatables.sample_dfs import get_countries
+    from pydatatables.widget import PyDataTablesRenderer
 
     mo.output.append(
         ITable(

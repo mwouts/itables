@@ -1,0 +1,25 @@
+<!--| quarto-html-table-processing: none -->
+<table id="table_id"></table>
+<script type="module">
+    (async () => {
+        async function init() {
+            const { PyDataTablesRenderer, jQuery: $ } = await window._pydatatables_underscore_version;
+
+            document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
+                if (!(table instanceof HTMLTableElement))
+                    return;
+
+                let dt_args = {};
+                new PyDataTablesRenderer(table, dt_args);
+            });
+        }
+
+        if (window._pydatatables_underscore_version) {
+            init();
+        } else {
+            window.addEventListener("pydatatables-version-ready", () => {
+                init();
+            });
+        }
+    })();
+</script>

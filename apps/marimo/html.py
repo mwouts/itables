@@ -25,8 +25,8 @@ def _(mo):
 def _():
     import marimo as mo
 
-    from itables import to_html_datatable
-    from itables.sample_dfs import get_dict_of_test_dfs
+    from pydatatables import to_html_datatable
+    from pydatatables.sample_dfs import get_dict_of_test_dfs
 
     df = get_dict_of_test_dfs()["int_float_str"]
 

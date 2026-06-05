@@ -1,0 +1,26 @@
+import re
+
+import pytest
+
+import pydatatables
+
+if not pydatatables.typing.is_typeguard_available():
+    pytestmark = pytest.mark.skip(reason="Typeguard is not available")
+
+
+@pytest.fixture
+def df():
+    return pydatatables.sample_dfs.get_countries(html=False)
+
+
+def test_warns_on_incorrect_option(df):
+    with pytest.warns(
+        SyntaxWarning,
+        match="These arguments are not documented in PyDataTablesOptions: .*'lengthMenuWithTypo'",
+    ):
+        pydatatables.to_html_datatable(df, lengthMenuWithTypo=[2, 5, 10])  # type: ignore
+
+
+def test_warns_on_incorrect_type(df):
+    with pytest.warns(SyntaxWarning, match=re.escape("does not match")):
+        pydatatables.to_html_datatable(df, lengthMenu=[2.2])  # type: ignore

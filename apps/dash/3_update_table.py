@@ -11,13 +11,13 @@ from dash import callback  # pyright: ignore[reportUnknownVariableType]
 from dash import Dash, callback_context, dcc, html
 from dash.dependencies import Input, Output, State
 
-from itables import DTForITablesOptions, ITableOptions
-from itables.dash import (
+from pydatatables import PyDataTablesRendererOptions, PyDataTablesOptions
+from pydatatables.dash import (
     ITable,
     ITableOutputs,
     updated_itable_outputs,
 )
-from itables.sample_dfs import get_countries
+from pydatatables.sample_dfs import get_countries
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -81,12 +81,12 @@ def update_table(
     checklist: Optional[list[str]],
     caption: Optional[str],
     selected_rows: Optional[list[int]],
-    dt_args: Optional[DTForITablesOptions],
+    dt_args: Optional[PyDataTablesRendererOptions],
 ) -> list[Any]:
     if checklist is None:
         checklist = []
 
-    kwargs: ITableOptions = {}
+    kwargs: PyDataTablesOptions = {}
 
     # When df=None and when the dt_args don't change, the table is not updated
     df = None
