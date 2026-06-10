@@ -8,6 +8,7 @@ parts:
       - file: apps/widget
       - file: apps/marimo
       - file: apps/dash
+      - file: apps/panel
       - file: apps/streamlit
       - file: apps/shiny
       - file: apps/quarto

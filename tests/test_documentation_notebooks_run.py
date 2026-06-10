@@ -35,6 +35,8 @@ def test_run_documentation_notebooks(notebook):
         pytest.importorskip("pandas.io.formats.style")
     if "marimo" in notebook.stem or "widget" in notebook.stem:
         pytest.importorskip("anywidget")
+    if "panel" in notebook.stem:
+        pytest.importorskip("panel")
     if "other_dataframes" in notebook.stem:
         pytest.importorskip("modin")
         pytest.importorskip("pyarrow")
