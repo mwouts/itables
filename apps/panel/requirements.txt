@@ -1,0 +1,8 @@
+itables[widget]>=2.8.0
+panel
+pandas
+
+# Required by pn.extension("ipywidgets"), which lets
+# Panel render ipywidgets like the ITable widget
+ipywidgets_bokeh
+ipykernel

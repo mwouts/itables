@@ -147,6 +147,7 @@ artifacts = [
 typeCheckingMode = "standard"
 ignore = [
     "apps/marimo",
+    "apps/panel",
     "src/itables_for_dash/ITable.py",
     "research",
 ]
@@ -218,12 +219,23 @@ pyarrow = "*"
 streamlit-aggrid = "*"
 itables = {path = ".", editable = true, extras=["pandas", "streamlit"]}
 
+[tool.pixi.feature.panel-app.dependencies]
+nodejs = ">=20"
+python = ">=3.9"
+
+[tool.pixi.feature.panel-app.pypi-dependencies]
+panel = "*"
+ipywidgets_bokeh = "*"
+ipykernel = "*"
+itables = {path = ".", editable = true, extras=["pandas", "widget"]}
+
 [tool.pixi.environments]
 default = { solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
 build = { features = ["build"], no-default-feature = true }
 minimal = { features = ["minimal", "retro", "test-base"], no-default-feature = true}
 streamlit-app = { features = ["streamlit-app"], no-default-feature = true }
+panel-app = { features = ["panel-app"], no-default-feature = true }
 test-pandas-notebook = { features = ["minimal", "test-pandas-notebook"], no-default-feature = true}
 test-polars-notebook = { features = ["minimal", "test-polars-notebook"], no-default-feature = true}
 test-pandas-dash = { features = ["minimal", "test-pandas-dash"], no-default-feature = true}
