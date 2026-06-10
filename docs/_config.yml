@@ -1,9 +1,13 @@
 title: Interactive Tables
 author: Marc Wouts
-copyright: "2019-2025"
+copyright: "2019-2026"
 logo: "../src/itables/logo/logo.svg"
 execute:
   execute_notebooks: force
+# The docs/py folder holds the py:percent mirrors of the docs (used for linting
+# and formatting only), so we exclude it from the site build. The other entries
+# are Jupyter Book's defaults, which we have to repeat as this key overrides them.
+exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py]
 sphinx:
   config:
     html_extra_path: ['quarto']

@@ -15,7 +15,7 @@
 # ---
 
 # %% [markdown]
-# # LengthMenu
+# # Length Menu
 #
 # Select [how many entries](https://datatables.net/examples/advanced_init/length_menu.html) should appear at once in the table with either the `lengthMenu` argument of the `show` function, or with the global option `itables.options.lengthMenu`. Use `pageLength` to set the default page length:
 

@@ -1,3 +1,7 @@
+# 2.5.5 (2026-06-10)
+
+- We have added the Scroller and ColReorder extension of DataTables to the `dt_for_itables` package
+
 # 2.5.4 (2026-05-16)
 
 - We have added a new CSS rule to make sure that sorting icons are always displayed on the same side ([[#535](https://github.com/mwouts/itables/issues/535)])

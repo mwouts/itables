@@ -15,7 +15,7 @@
 # ---
 
 # %% [markdown]
-# # FixedColumns
+# # Fixed Columns
 #
 # [FixedColumn](https://datatables.net/extensions/fixedcolumns/) is an extension
 # that let you fix some columns as you scroll horizontally.
