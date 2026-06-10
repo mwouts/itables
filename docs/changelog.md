@@ -1,6 +1,14 @@
 ITables ChangeLog
 =================
 
+2.8.1 (2026-06-10)
+------------------
+
+**Added**
+- We have added the [Scroller](https://datatables.net/extensions/scroller/) extension of DataTables to the `dt_for_itables` package. Use `scroller=True` together with `scrollY` to enable virtual scrolling for large tables. The `deferRender` option is also now supported and pairs naturally with Scroller for improved rendering performance.
+- We have added the [ColReorder](https://datatables.net/extensions/colreorder/) extension of DataTables to the `dt_for_itables` package. Use `colReorder=True` to let users drag and drop column headers to reorder them.
+
+
 2.8.0 (2026-05-17)
 ------------------
 

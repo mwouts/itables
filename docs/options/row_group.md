@@ -18,7 +18,7 @@ kernelspec:
 # pyright: reportUnknownMemberType=false
 ```
 
-# RowGroup
+# Row Group
 
 Use the [RowGroup](https://datatables.net/extensions/rowgroup/) extension to group
 the data according to the content of one colum. Optionally, you can hide the content of that column to avoid duplicating the information.

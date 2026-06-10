@@ -12,7 +12,7 @@ kernelspec:
   name: itables
 ---
 
-# FixedHeader
+# Fixed Header
 
 [FixedHeader](https://datatables.net/extensions/fixedheader/) is a DataTables extension
 that keeps the table header visible while scrolling.
