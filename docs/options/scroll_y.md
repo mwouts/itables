@@ -29,6 +29,9 @@ itables.show(df, scrollY="350px", scrollCollapse=True, paging=False)
 
 ## Scroller
 
+```{versionadded} 2.8.1
+```
+
 When `scrollY` is set, DataTables still renders every row of the current page into the
 page (and with `paging=False`, every row of the table). That is fine for small tables,
 but for large ones it is more efficient to render only the rows that are actually
