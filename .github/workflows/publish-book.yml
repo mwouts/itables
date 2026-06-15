@@ -27,24 +27,13 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - name: Set up Node
-      uses: actions/setup-node@v6
-
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v6
+    - name: Set up Pixi
+      uses: prefix-dev/setup-pixi@v0
       with:
-        python-version: 3.11
-
-    - name: Install dependencies
-      run: |
-        pip install 'jupyter-book<2' sphinxext-rediraffe
-        pip install matplotlib  # Pandas style
-        pip install .[all]
+        environments: docs
 
     - name: Create a kernel
-      run: |
-        pip install ipykernel
-        python -m ipykernel install --name itables --user
+      run: pixi run -e docs python -m ipykernel install --name itables --user
 
     - name: Install Quarto
       uses: quarto-dev/quarto-actions/setup@v2
@@ -55,14 +44,17 @@ jobs:
 
     # Build the book
     - name: Build the book
-      run: |
-        jupyter-book build docs
+      run: pixi run -e docs jupyter-book build --html --execute
+
+    # Include quarto-rendered HTML in the output
+    - name: Copy quarto output into build
+      run: cp -r docs/quarto _build/html/quarto
 
     # Upload the book's HTML as an artifact
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v5
       with:
-        path: "docs/_build/html"
+        path: "_build/html"
 
     # Deploy the book's HTML to GitHub Pages
     - name: Deploy to GitHub Pages

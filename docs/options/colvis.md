@@ -44,7 +44,6 @@ have to convert the JavaScript notation (left) to Python (right) as in the below
 ::::{grid}
 
 :::{grid-item}
-:outline:
 :columns: 6
 ~~~javascript
 buttons: [
@@ -57,7 +56,6 @@ buttons: [
 ~~~
 :::
 :::{grid-item}
-:outline:
 :columns: 6
 ~~~python
 buttons = [

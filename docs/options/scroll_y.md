@@ -29,7 +29,8 @@ itables.show(df, scrollY="350px", scrollCollapse=True, paging=False)
 
 ## Scroller
 
-```{versionadded} 2.8.1
+```{note}
+New in version 2.8.1
 ```
 
 When `scrollY` is set, DataTables still renders every row of the current page into the

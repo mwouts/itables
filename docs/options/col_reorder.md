@@ -14,7 +14,8 @@ kernelspec:
 
 # Col Reorder
 
-```{versionadded} 2.8.1
+```{note}
+New in version 2.8.1
 ```
 
 [ColReorder](https://datatables.net/extensions/colreorder/) is a DataTables extension

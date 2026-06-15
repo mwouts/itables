@@ -51,11 +51,11 @@ The `itables` documentation uses [Jupyter Book](https://jupyterbook.org/).
 To build the documentation locally,
 you need to create a Jupyter kernel named `itables` with
 ```shell
-python -m ipykernel install --name itables --user
+pixi run -e docs python -m ipykernel install --name itables --user
 ```
-Then you can build the documentation with
-```
-pixi run -e docs jupyter book build docs
+Then you can render the documentation with
+```shell
+pixi run -e docs jupyter-book start
 ```
 
 This will give you a link to a local version of the documentation.

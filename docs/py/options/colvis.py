@@ -45,7 +45,6 @@ itables.show(
 # ::::{grid}
 #
 # :::{grid-item}
-# :outline:
 # :columns: 6
 # ~~~javascript
 # buttons: [
@@ -58,7 +57,6 @@ itables.show(
 # ~~~
 # :::
 # :::{grid-item}
-# :outline:
 # :columns: 6
 # ~~~python
 # buttons = [
