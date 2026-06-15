@@ -67,7 +67,7 @@ function evalNestedKeys(obj, keys, context) {
     }
 }
 
-class PyDataTablesRenderer {
+class DataTable {
     constructor(table, itable_args) {
         const { data, caption, classes, style, data_json, table_html, table_style, selected_rows, filtered_row_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
         if (data !== undefined) {
@@ -237,6 +237,6 @@ function set_or_remove_dark_class() {
     }
 }
 
-export { PyDataTablesRenderer, DateTime, jQuery, set_or_remove_dark_class };
+export { DataTable, DateTime, jQuery, set_or_remove_dark_class };
 
 export default DataTable;

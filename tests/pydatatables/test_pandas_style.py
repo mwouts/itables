@@ -24,7 +24,7 @@ def test_buttons_are_shown_on_pd_style_objects():
     )
 
     # Extract the dt_args passed to datatables
-    match = re.search(r"let dt_args = ({.*?});\s*new PyDataTablesRenderer", html, re.DOTALL)
+    match = re.search(r"let dt_args = ({.*?});\s*new DataTable", html, re.DOTALL)
     assert match, "Could not find dt_args in HTML"
     dt_args = json.loads(match.group(1))
 

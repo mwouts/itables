@@ -1,12 +1,12 @@
 import type { FrontendRenderer, FrontendState } from "@streamlit/component-v2-lib"
 
-import { PyDataTablesRenderer, set_or_remove_dark_class } from "pydatatables"
+import { DataTable as DataTableClass, set_or_remove_dark_class } from "pydatatables"
 
-interface PyDataTablesRendererState extends FrontendState {
+interface DataTableState extends FrontendState {
   selected_rows: number[];
 }
 
-interface PyDataTablesRendererData {
+interface DataTableData {
   dt_args: object;
   other_args: {
     classes: string;
@@ -21,7 +21,7 @@ interface PyDataTablesRendererData {
 // the component is updated in-place (same key, new data).
 const cleanupRegistry = new Map<string, () => void>();
 
-const PyDataTablesRendererForStreamlit: FrontendRenderer<PyDataTablesRendererState, PyDataTablesRendererData> = (component) => {
+const DataTableForStreamlit: FrontendRenderer<DataTableState, DataTableData> = (component) => {
   const { data, key, parentElement, setStateValue } = component;
 
   // Clean up the previous render for this key before creating a new one.
@@ -42,7 +42,7 @@ const PyDataTablesRendererForStreamlit: FrontendRenderer<PyDataTablesRendererSta
   table.setAttribute('class', other_args.classes);
   table.setAttribute('style', other_args.style);
 
-  let dt = new PyDataTablesRenderer(table, dt_args);
+  let dt = new DataTableClass(table, dt_args);
   if (other_args.caption) {
     dt.dt.caption(other_args.caption);
   }
@@ -73,4 +73,4 @@ const PyDataTablesRendererForStreamlit: FrontendRenderer<PyDataTablesRendererSta
   return cleanup;
 };
 
-export default PyDataTablesRendererForStreamlit;
+export default DataTableForStreamlit;

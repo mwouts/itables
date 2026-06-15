@@ -13,8 +13,8 @@ from dash.dependencies import Input, Output, State
 
 from pydatatables import PyDataTablesRendererOptions, PyDataTablesOptions
 from pydatatables.dash import (
-    ITable,
-    ITableOutputs,
+    DataTable,
+    PyDataTablesRendererOutputs,
     updated_itable_outputs,
 )
 from pydatatables.sample_dfs import get_countries
@@ -57,8 +57,8 @@ app.layout = html.Div(
                 html.Div(
                     className="main-content",
                     children=[
-                        html.H1("ITable in a Dash application"),
-                        ITable(id="my_dataframe"),
+                        html.H1("DataTable in a Dash application"),
+                        DataTable(id="my_dataframe"),
                         html.Div(id="output", style={"marginTop": "20px"}),
                     ],
                 ),
@@ -69,7 +69,7 @@ app.layout = html.Div(
 
 
 @callback(
-    ITableOutputs("my_dataframe"),
+    PyDataTablesRendererOutputs("my_dataframe"),
     [
         Input("checklist", "value"),
         Input("caption", "value"),

@@ -1,6 +1,6 @@
 from dash import Dash, html
 
-from pydatatables.dash import PyDataTablesRenderer
+from pydatatables.dash import DataTable
 from pydatatables.sample_dfs import get_countries
 
 app = Dash(__name__)
@@ -10,7 +10,7 @@ df = get_countries()
 app.layout = html.Div(
     [
         html.H1("ITables in a Dash application"),
-        ITable(id="my_dataframe", df=df, caption="A DataFrame displayed with ITables"),
+        DataTable(id="my_dataframe", df=df, caption="A DataFrame displayed with ITables"),
     ]
 )
 

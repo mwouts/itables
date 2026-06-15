@@ -1,13 +1,13 @@
 from pydatatables import __version__
 from pydatatables_for_dash import (
     ITABLE_PROPERTIES,
-    PyDataTablesRenderer,
+    DataTable,
     PyDataTablesRendererOutputs,
     updated_itable_outputs,
 )
 
 __all__ = [
-    "PyDataTablesRenderer",
+    "DataTable",
     "ITABLE_PROPERTIES",
     "PyDataTablesRendererOutputs",
     "updated_itable_outputs",

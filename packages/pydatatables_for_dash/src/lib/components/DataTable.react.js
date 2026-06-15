@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { PyDataTablesRenderer as RealComponent } from '../LazyLoader';
+import { DataTable as RealComponent } from '../LazyLoader';
 
 /**
- * PyDataTablesRenderer is a dash component for PyDataTablesRenderers
+ * DataTable is a dash component for DataTables
  */
-const PyDataTablesRenderer = (props) => {
+const DataTable = (props) => {
     return (
         <React.Suspense fallback={null}>
             <RealComponent {...props} />
@@ -13,9 +13,9 @@ const PyDataTablesRenderer = (props) => {
     );
 };
 
-PyDataTablesRenderer.defaultProps = {};
+DataTable.defaultProps = {};
 
-PyDataTablesRenderer.propTypes = {
+DataTable.propTypes = {
     /**
      * The ID used to identify this component in Dash callbacks.
      */
@@ -53,6 +53,6 @@ PyDataTablesRenderer.propTypes = {
     setProps: PropTypes.func
 };
 
-export default PyDataTablesRenderer;
-export const defaultProps = PyDataTablesRenderer.defaultProps;
-export const propTypes = PyDataTablesRenderer.propTypes;
+export default DataTable;
+export const defaultProps = DataTable.defaultProps;
+export const propTypes = DataTable.propTypes;

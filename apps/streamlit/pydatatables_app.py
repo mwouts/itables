@@ -24,7 +24,7 @@ except ImportError as e:
 from streamlit.errors import StreamlitAPIException
 
 import pydatatables
-from pydatatables.streamlit import interactive_table
+from pydatatables.streamlit import datatable
 
 st.set_page_config(
     page_title="ITables in Streamlit",
@@ -111,11 +111,11 @@ else:
         caption: Optional[str],
         **it_args: Unpack[pydatatables.PyDataTablesOptions],
     ):
-        return interactive_table(df, key=key, caption=caption, **it_args)
+        return datatable(df, key=key, caption=caption, **it_args)
 
-    snippet = f"""from pydatatables.streamlit import interactive_table
+    snippet = f"""from pydatatables.streamlit import datatable
 
-interactive_table(df, caption='{caption}', {formatted_args})
+datatable(df, caption='{caption}', {formatted_args})
 """
 
 st.markdown(
@@ -130,7 +130,7 @@ t = render_table(df, caption=caption, key="my_table", **it_args)
 if render_with == "pydatatables":
     st.header("Table state")
     st.markdown(
-        """The value returned by `interactive_table` is
+        """The value returned by `datatable` is
     a dict that contains the index of the selected rows:"""
     )
     st.write(t)  # type: ignore

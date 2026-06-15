@@ -1,6 +1,6 @@
 # 2.5.5 (2026-06-10)
 
-- We have added the Scroller and ColReorder extension of DataTables to the `dt_for_itables` package
+- We have added the Scroller and ColReorder extension of DataTables to the `pydatatables` package
 
 # 2.5.4 (2026-05-16)
 

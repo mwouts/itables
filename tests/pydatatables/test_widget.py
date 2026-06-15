@@ -9,9 +9,9 @@ pytest.importorskip("anywidget")
 
 
 def test_create_widget_with_no_df():
-    from pydatatables.widget import PyDataTablesRenderer
+    from pydatatables.widget import DataTable
 
-    itable = PyDataTablesRenderer()
+    itable = DataTable()
     assert itable._df is None
     assert itable.caption == ""
     assert itable.classes == opt.classes
@@ -25,9 +25,9 @@ def test_create_widget_with_no_df():
 
 
 def test_create_widget_with_df(df, df_name):
-    from pydatatables.widget import PyDataTablesRenderer
+    from pydatatables.widget import DataTable
 
-    itable = PyDataTablesRenderer(df, format_floats_in_python=False)
+    itable = DataTable(df, format_floats_in_python=False)
     assert itable.df is df
     assert itable.caption == ""
     assert itable.classes == opt.classes
@@ -63,12 +63,12 @@ def test_update_clears_stale_column_defs():
     """
     pd = pytest.importorskip("pandas")
 
-    from pydatatables.widget import PyDataTablesRenderer
+    from pydatatables.widget import DataTable
 
     dict_of_test_dfs = pydatatables.sample_dfs.get_dict_of_test_dfs()
 
     # Step 1: empty table
-    table = PyDataTablesRenderer(dict_of_test_dfs["empty"])
+    table = DataTable(dict_of_test_dfs["empty"])
     assert "columnDefs" not in table._dt_args
     assert "keys_to_be_evaluated" not in table._dt_args
 
@@ -106,19 +106,19 @@ _SUBSET_OF_PANDAS_DFS = ["empty", "no_rows", "float", "int_float_str", "countrie
     list(itertools.product(_SUBSET_OF_PANDAS_DFS, _SUBSET_OF_PANDAS_DFS)),
 )
 def test_update_equivalent_to_create(df1_name, df2_name):
-    """Updating an PyDataTablesRenderer widget from df1 to df2 must produce the same _dt_args
+    """Updating an DataTable widget from df1 to df2 must produce the same _dt_args
     as creating the widget directly with df2."""
     pytest.importorskip("pandas")
 
-    from pydatatables.widget import PyDataTablesRenderer
+    from pydatatables.widget import DataTable
 
     dict_of_test_dfs = pydatatables.sample_pandas_dfs.get_dict_of_test_dfs()
     df1 = dict_of_test_dfs[df1_name]
     df2 = dict_of_test_dfs[df2_name]
 
-    table_updated = PyDataTablesRenderer(df1)
+    table_updated = DataTable(df1)
     table_updated.update(df2)
 
-    table_direct = PyDataTablesRenderer(df2)
+    table_direct = DataTable(df2)
 
     assert table_updated._dt_args == table_direct._dt_args

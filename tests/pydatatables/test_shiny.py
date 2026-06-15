@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from pydatatables.downsample import downsample
-from pydatatables.shiny import DT
+from pydatatables.shiny import DataTable
 
 SHINY_APPS_PATH = Path(__file__).parent / ".." / "apps" / "shiny"
 SHINY_APPS_PY_FILES = [
@@ -35,15 +35,15 @@ def test_select_on_downsampled_df():
 
     with warnings.catch_warnings():
         warnings.simplefilter("error")
-        DT(df, maxRows=3, selected_rows=[0, 1, 16])
+        DataTable(df, maxRows=3, selected_rows=[0, 1, 16])
 
     for row in [-1, 17]:
         with pytest.raises(IndexError, match="Selected rows out of range"):
-            DT(df, maxRows=3, selected_rows=[row])
+            DataTable(df, maxRows=3, selected_rows=[row])
 
     for row in [2, 15]:
         with pytest.warns(match="no row with index between 2 and 15 can be selected"):
-            DT(df, maxRows=3, selected_rows=[row])
+            DataTable(df, maxRows=3, selected_rows=[row])
 
 
 pytest.importorskip("shiny")
@@ -84,5 +84,5 @@ def test_shiny_apps_are_valid_python_scripts(
     assert result.returncode == 0, f"Process failed: {result.stderr}"
 
 
-def test_table_id_in_DT():
-    DT(df=None, table_id="my_table1")
+def test_table_id_in_DataTable():
+    DataTable(df=None, table_id="my_table1")

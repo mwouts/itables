@@ -2,13 +2,13 @@
 <table id="table_id"></table>
 <link href="https://www.unpkg.com/pydatatables/dt_bundle.css" rel="stylesheet">
 <script type="module">
-    import { PyDataTablesRenderer, jQuery as $ } from 'https://www.unpkg.com/pydatatables/dt_bundle.js';
+    import { DataTable, jQuery as $ } from 'https://www.unpkg.com/pydatatables/dt_bundle.js';
 
     document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
             return;
 
         let dt_args = {};
-        new PyDataTablesRenderer(table, dt_args);
+        new DataTable(table, dt_args);
     });
 </script>

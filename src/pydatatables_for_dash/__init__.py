@@ -3,7 +3,7 @@ from typing import Optional
 from pydatatables import __version__
 from pydatatables.typing import DataFrameOrSeries, PyDataTablesOptions, Unpack
 
-from .PyDataTablesRenderer import PyDataTablesRenderer as PyDataTablesRendererComponent
+from .DataTable import DataTable as DataTableComponent
 from .properties import (
     ITABLE_PROPERTIES,
     PyDataTablesRendererOutputs,
@@ -14,8 +14,8 @@ from .properties import (
 _js_dist = [
     {"namespace": "pydatatables_for_dash", "relative_package_path": name, **kwargs}
     for name, kwargs in {
-        "async-PyDataTablesRenderer.js": {"async": True},
-        "async-PyDataTablesRenderer.js.map": {"dynamic": True},
+        "async-DataTable.js": {"async": True},
+        "async-DataTable.js.map": {"dynamic": True},
         "pydatatables_for_dash.min.js": {},
         "pydatatables_for_dash.min.js.map": {"dynamic": True},
     }.items()
@@ -24,12 +24,12 @@ _js_dist = [
 _css_dist = []
 
 
-PyDataTablesRendererComponent._js_dist = _js_dist  # type: ignore
-PyDataTablesRendererComponent._css_dist = _css_dist  # type: ignore
+DataTableComponent._js_dist = _js_dist  # type: ignore
+DataTableComponent._css_dist = _css_dist  # type: ignore
 
 
-class PyDataTablesRenderer(PyDataTablesRendererComponent):
-    """An PyDataTablesRenderer component for Dash"""
+class DataTable(DataTableComponent):
+    """A DataTable component for Dash"""
 
     def __init__(
         self,
@@ -39,7 +39,7 @@ class PyDataTablesRenderer(PyDataTablesRendererComponent):
         **kwargs: Unpack[PyDataTablesOptions],
     ):
         """
-        Initialize the PyDataTablesRenderer component.
+        Initialize the DataTable component.
 
         Parameters
         ----------
@@ -59,7 +59,7 @@ class PyDataTablesRenderer(PyDataTablesRendererComponent):
 
 
 __all__ = [
-    "PyDataTablesRenderer",
+    "DataTable",
     "ITABLE_PROPERTIES",
     "PyDataTablesRendererOutputs",
     "updated_itable_outputs",

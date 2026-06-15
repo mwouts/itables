@@ -11,7 +11,7 @@
 </table>
 <link href="https://www.unpkg.com/pydatatables@{dt_for_pydatatables_version}/dt_bundle.css" rel="stylesheet">
 <script type="module">
-    import { PyDataTablesRenderer, jQuery as $ } from 'https://www.unpkg.com/pydatatables@{dt_for_pydatatables_version}/dt_bundle.js';
+    import { DataTable, jQuery as $ } from 'https://www.unpkg.com/pydatatables@{dt_for_pydatatables_version}/dt_bundle.js';
 
     document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
         if (!(table instanceof HTMLTableElement))
@@ -28,6 +28,6 @@
           "table_html": "<table><thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>region</th>\n      <th>country</th>\n      <th>capital</th>\n      <th>longitude</th>\n      <th>latitude</th>\n    </tr>\n    <tr>\n      <th>code</th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n      <th></th>\n    </tr>\n  </thead></table>",
           "text_in_header_can_be_selected": true
         };
-        new PyDataTablesRenderer(table, dt_args);
+        new DataTable(table, dt_args);
     });
 </script>
