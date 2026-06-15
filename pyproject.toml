@@ -172,10 +172,7 @@ pre-commit = "*"
 itables = {path = ".", editable = true, extras=["dev"]}
 
 [tool.pixi.feature.docs.dependencies]
-jupyter-book = ">=1,<2"
-
-[tool.pixi.feature.docs.pypi-dependencies]
-sphinxext-rediraffe = "*"
+jupyter-book = ">=2,<3"
 
 [tool.pixi.feature.build.dependencies]
 nodejs = ">=20"
