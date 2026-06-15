@@ -102,9 +102,9 @@ build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
     "src/pydatatables/html/dt_bundle.js",
     "src/pydatatables/html/dt_bundle.css",
-    "src/pydatatables_for_dash/PyDataTablesRenderer.py",
-    "src/pydatatables_for_dash/async-PyDataTablesRenderer.js",
-    "src/pydatatables_for_dash/async-PyDataTablesRenderer.js.LICENSE.txt",
+    "src/pydatatables_for_dash/DataTable.py",
+    "src/pydatatables_for_dash/async-DataTable.js",
+    "src/pydatatables_for_dash/async-DataTable.js.LICENSE.txt",
     "src/pydatatables/pydatatables_for_streamlit/index.js",
     "src/pydatatables/widget/static/widget.js",
     ]
@@ -147,7 +147,7 @@ artifacts = [
 typeCheckingMode = "standard"
 ignore = [
     "apps/marimo",
-    "src/pydatatables_for_dash/PyDataTablesRenderer.py",
+    "src/pydatatables_for_dash/DataTable.py",
     "research",
 ]
 strict = [

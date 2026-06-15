@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { PyDataTablesRenderer as PyDataTablesRendererClass, set_or_remove_dark_class} from "pydatatables";
-import { defaultProps, propTypes } from '../components/PyDataTablesRenderer.react.js';
+import { DataTable as DataTableClass, set_or_remove_dark_class} from "pydatatables";
+import { defaultProps, propTypes } from '../components/DataTable.react.js';
 import "pydatatables/dt_bundle.css";
 
-const PyDataTablesRenderer = (props) => {
+const DataTable = (props) => {
   const { id, caption, selected_rows, classes, style, dt_args, setProps } = props;
 
   const dtInstance = useRef(null);
@@ -45,7 +45,7 @@ const PyDataTablesRenderer = (props) => {
 
     destroyDtInstance();
 
-    dtInstance.current = new PyDataTablesRendererClass("#".concat(id), dtArgs);
+    dtInstance.current = new DataTableClass("#".concat(id), dtArgs);
     dtInstance.current.dt.on('select', export_selected_rows);
     dtInstance.current.dt.on('deselect', export_selected_rows);
 
@@ -113,7 +113,7 @@ const PyDataTablesRenderer = (props) => {
   );
 }
 
-PyDataTablesRenderer.defaultProps = defaultProps;
-PyDataTablesRenderer.propTypes = propTypes;
+DataTable.defaultProps = defaultProps;
+DataTable.propTypes = propTypes;
 
-export default PyDataTablesRenderer;
+export default DataTable;

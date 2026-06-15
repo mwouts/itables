@@ -1,5 +1,5 @@
 import type { RenderContext } from "@anywidget/types";
-import { PyDataTablesRenderer, set_or_remove_dark_class } from 'pydatatables';
+import { DataTable as DataTableClass, set_or_remove_dark_class } from 'pydatatables';
 
 /* Specifies attributes defined with traitlets in ../src/pydatatables_anywidget/__init__.py */
 interface WidgetModel {
@@ -59,7 +59,7 @@ function render({ model, el }: RenderContext<WidgetModel>) {
 		}
 
 		let dt_args = model.get('_dt_args');
-		dt = new PyDataTablesRenderer(table, dt_args);
+		dt = new DataTableClass(table, dt_args);
 		set_selected_rows_from_model();
 	}
 	update_table();

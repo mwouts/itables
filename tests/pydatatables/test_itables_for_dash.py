@@ -4,7 +4,7 @@ import sys
 import pytest
 
 try:
-    from pydatatables.dash import PyDataTablesRenderer
+    from pydatatables.dash import DataTable
 except ImportError as e:
     pytest.skip(str(e), allow_module_level=True)
 
@@ -17,11 +17,11 @@ def check_ressource(relative_package_path, namespace, **kwargs):
 
 
 def test_itable_component_ressources():
-    for js in PyDataTablesRenderer._js_dist:  # type: ignore
+    for js in DataTable._js_dist:  # type: ignore
         check_ressource(**js)
-    for css in PyDataTablesRenderer._css_dist:  # type: ignore
+    for css in DataTable._css_dist:  # type: ignore
         check_ressource(**css)
 
 
 def test_create_empty_table():
-    PyDataTablesRenderer(id="test")
+    DataTable(id="test")

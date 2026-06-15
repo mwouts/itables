@@ -1,11 +1,11 @@
 from shiny.express import input, render, ui
 
 from pydatatables.sample_dfs import get_dict_of_test_dfs
-from pydatatables.shiny import DT, init_pydatatables
+from pydatatables.shiny import DataTable, init_pydatatables
 
 dfs = get_dict_of_test_dfs()
 
-ui.page_opts(title="Using DT in a Shiny App", fillable=True)
+ui.page_opts(title="Using DataTable in a Shiny App", fillable=True)
 
 with ui.card():
     with ui.layout_sidebar():
@@ -22,7 +22,7 @@ with ui.card():
         @render.ui
         def my_table():
             """
-            This function renders the table using "DT".
+            This function renders the table using "DataTable".
             """
             df = dfs[input.table_selector()]
-            return ui.HTML(DT(df, caption="A table rendered with ITable"))
+            return ui.HTML(DataTable(df, caption="A table rendered with ITable"))

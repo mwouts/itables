@@ -1,3 +1,5 @@
+# 2.5.5 ()
+
 # 2.5.4 (2026-05-16)
 
 - We have added a new CSS rule to make sure that sorting icons are always displayed on the same side ([[#535](https://github.com/mwouts/itables/issues/535)])

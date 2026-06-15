@@ -26,7 +26,7 @@ def _(mo):
 @app.cell
 def _():
     from pydatatables.sample_dfs import get_dict_of_test_dfs
-    from pydatatables.widget import PyDataTablesRenderer
+    from pydatatables.widget import DataTable
 
     df = get_dict_of_test_dfs()["int_float_str"]
 

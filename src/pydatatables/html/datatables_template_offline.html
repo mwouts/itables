@@ -3,14 +3,14 @@
 <script type="module">
     (async () => {
         async function init() {
-            const { PyDataTablesRenderer, jQuery: $ } = await window._pydatatables_underscore_version;
+            const { DataTable, jQuery: $ } = await window._pydatatables_underscore_version;
 
             document.querySelectorAll("#table_id:not(.dataTable)").forEach(table => {
                 if (!(table instanceof HTMLTableElement))
                     return;
 
                 let dt_args = {};
-                new PyDataTablesRenderer(table, dt_args);
+                new DataTable(table, dt_args);
             });
         }
 

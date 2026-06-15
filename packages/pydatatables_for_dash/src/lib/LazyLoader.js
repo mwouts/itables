@@ -1,1 +1,1 @@
-export const PyDataTablesRenderer = React.lazy(() => import(/* webpackChunkName: "PyDataTablesRenderer" */ './fragments/PyDataTablesRenderer.react'));
+export const DataTable = React.lazy(() => import(/* webpackChunkName: "DataTable" */ './fragments/DataTable.react'));

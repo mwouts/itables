@@ -19,7 +19,7 @@ _streamlit_component_func = components.component(
 )
 
 
-def interactive_table(
+def datatable(
     df: Optional[DataFrameOrSeries],
     key: Optional[str] = None,
     caption: Optional[str] = None,

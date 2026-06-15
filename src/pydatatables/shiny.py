@@ -36,7 +36,7 @@ def init_pydatatables(
     return html
 
 
-def DT(
+def DataTable(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
     **kwargs: Unpack[PyDataTablesOptions],
@@ -58,8 +58,8 @@ def DT(
     assert html.endswith(script_end)
     html = replace_value(
         html,
-        "new PyDataTablesRenderer(table, dt_args);",
-        "let dt = new PyDataTablesRenderer(table, dt_args);",
+        "new DataTable(table, dt_args);",
+        "let dt = new DataTable(table, dt_args);",
     )
 
     selected_rows_code = f"""

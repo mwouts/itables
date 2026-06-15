@@ -9,7 +9,7 @@ def _():
     import marimo as mo
 
     from pydatatables.sample_dfs import get_countries
-    from pydatatables.widget import PyDataTablesRenderer
+    from pydatatables.widget import DataTable
 
     mo.output.append(
         ITable(

@@ -15,9 +15,9 @@ NumberType = typing.Union[
 ]
 
 
-class PyDataTablesRenderer(Component):
-    """A PyDataTablesRenderer component.
-PyDataTablesRenderer is a dash component for PyDataTablesRenderers
+class DataTable(Component):
+    """A DataTable component.
+DataTable is a dash component for DataTables
 
 Keyword arguments:
 
@@ -39,7 +39,7 @@ Keyword arguments:
     _children_props: typing.List[str] = []
     _base_nodes = ['children']
     _namespace = 'pydatatables_for_dash'
-    _type = 'PyDataTablesRenderer'
+    _type = 'DataTable'
 
 
     def __init__(
@@ -66,6 +66,6 @@ Keyword arguments:
                 raise TypeError(
                     'Required argument `' + k + '` was not specified.')
 
-        super(PyDataTablesRenderer, self).__init__(**args)
+        super(DataTable, self).__init__(**args)
 
-setattr(PyDataTablesRenderer, "__init__", _explicitize_args(PyDataTablesRenderer.__init__))
+setattr(DataTable, "__init__", _explicitize_args(DataTable.__init__))
