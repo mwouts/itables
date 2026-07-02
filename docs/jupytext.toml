@@ -1,0 +1,6 @@
+# Don't record the jupytext version in the text notebooks. We set this
+# here rather than in the notebook frontmatter because MyST (Jupyter Book v2)
+# only accepts 'formats' and 'text_representation' under the 'jupytext' key
+# and warns on any other entry. The filter excludes itself so that it does
+# not get written back to the notebook frontmatter on jupytext --sync.
+notebook_metadata_filter = "-jupytext.text_representation.jupytext_version,-jupytext.notebook_metadata_filter"

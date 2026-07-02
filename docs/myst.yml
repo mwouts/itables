@@ -1,0 +1,85 @@
+version: 1
+
+project:
+  title: Interactive Tables
+  authors:
+    - name: Marc Wouts
+  copyright: "2019-2026"
+  github: https://github.com/mwouts/itables
+  binder: https://mybinder.org
+  jupyter: true
+  toc:
+    - file: quick_start.md
+    - title: Using ITables
+      children:
+        - file: apps/notebook.md
+        - file: apps/html.md
+        - file: apps/widget.md
+        - file: apps/marimo.md
+        - file: apps/dash.md
+        - file: apps/panel.md
+        - file: apps/streamlit.md
+        - file: apps/shiny.md
+        - file: apps/quarto.md
+    - file: configuration.md
+    - title: Options
+      children:
+        - file: options/options.md
+        - file: options/classes.md
+        - file: options/style.md
+        - file: options/caption.md
+        - file: options/layout.md
+        - file: options/column_defs.md
+        - file: options/search.md
+        - file: options/length_menu.md
+        - file: options/paging.md
+        - file: options/scroll_y.md
+        - file: options/scroll_x.md
+        - file: options/column_control.md
+        - file: options/footer.md
+        - file: options/column_filters.md
+        - file: options/order.md
+        - file: options/state_save.md
+        - file: options/select.md
+        - file: options/buttons.md
+        - file: options/col_reorder.md
+        - file: options/colvis.md
+        - file: options/search_panes.md
+        - file: options/search_builder.md
+        - file: options/fixed_columns.md
+        - file: options/fixed_header.md
+        - file: options/row_group.md
+        - file: options/keys.md
+        - file: options/allow_html.md
+        - file: options/show_index.md
+        - file: options/show_dtypes.md
+        - file: options/show_df_type.md
+        - file: options/text_in_header_can_be_selected.md
+    - title: More about ITables
+      children:
+        - file: downsampling.md
+        - file: formatting.md
+        - file: dark_mode.md
+        - file: css.md
+        - file: custom_extensions.md
+        - file: references.md
+        - file: supported_editors.md
+    - title: Contributing to ITables
+      children:
+        - file: contributing.md
+        - file: developing.md
+        - file: troubleshooting.md
+        - file: changelog.md
+    - title: Examples
+      children:
+        - file: pandas_dataframes.md
+        - file: pandas_style.md
+        - file: polars_dataframes.md
+        - file: other_dataframes.md
+
+site:
+  template: book-theme
+  options:
+    logo: ../src/itables/logo/logo.svg
+    folders: true
+    hide_title_block: true

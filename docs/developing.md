@@ -55,7 +55,7 @@ pixi run -e docs python -m ipykernel install --name itables --user
 ```
 Then you can render the documentation with
 ```shell
-pixi run -e docs jupyter-book start
+cd docs && pixi run -e docs jupyter-book start
 ```
 
 This will give you a link to a local version of the documentation.
