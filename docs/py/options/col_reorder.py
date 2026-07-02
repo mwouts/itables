@@ -3,7 +3,6 @@
 #   jupytext:
 #     default_lexer: ipython3
 #     formats: docs///md:myst,docs/py///py:percent
-#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
 #     text_representation:
 #       extension: .py
 #       format_name: percent
@@ -17,7 +16,8 @@
 # %% [markdown]
 # # Col Reorder
 #
-# ```{versionadded} 2.8.1
+# ```{note}
+# New in version 2.8.1
 # ```
 #
 # [ColReorder](https://datatables.net/extensions/colreorder/) is a DataTables extension

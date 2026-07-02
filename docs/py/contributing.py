@@ -3,7 +3,6 @@
 #   jupytext:
 #     default_lexer: ipython3
 #     formats: docs///md:myst,docs/py///py:percent
-#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
 #     text_representation:
 #       extension: .py
 #       format_name: percent
@@ -40,7 +39,7 @@
 #
 # ## Give credit to ITables
 #
-# It's always great to see new stars coming to ITables! <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true"></a>
+# It's always great to see new stars coming to ITables! <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true">Star</a>
 # <script src="https://buttons.github.io/buttons.js"></script>
 #
 # If you wanted to share a link to ITables and DataTables (no obligation whatsoever), you could use something like this:

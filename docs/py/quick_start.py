@@ -3,7 +3,6 @@
 #   jupytext:
 #     default_lexer: ipython3
 #     formats: docs///md:myst,docs/py///py:percent
-#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
 #     text_representation:
 #       extension: .py
 #       format_name: percent
@@ -31,7 +30,7 @@
 # [![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](apps/widget.md)
 # [![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](apps/dash.md)
 # [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
-# <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true"></a>
+# <a class="github-button" href="https://github.com/mwouts/itables" data-icon="octicon-star" data-show-count="true">Star</a>
 # <script src="https://buttons.github.io/buttons.js"></script>
 #
 # This package changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.

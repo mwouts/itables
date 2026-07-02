@@ -1,7 +1,6 @@
 ---
 jupytext:
   formats: docs///md:myst,docs/py///py:percent
-  notebook_metadata_filter: -jupytext.text_representation.jupytext_version
   text_representation:
     extension: .md
     format_name: myst
@@ -44,7 +43,6 @@ have to convert the JavaScript notation (left) to Python (right) as in the below
 ::::{grid}
 
 :::{grid-item}
-:outline:
 :columns: 6
 ~~~javascript
 buttons: [
@@ -57,7 +55,6 @@ buttons: [
 ~~~
 :::
 :::{grid-item}
-:outline:
 :columns: 6
 ~~~python
 buttons = [

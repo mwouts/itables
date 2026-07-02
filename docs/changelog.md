@@ -1,6 +1,12 @@
 ITables ChangeLog
 =================
 
+2.8.2.dev0 (unreleased)
+-----------------------
+
+**Changed**
+- We have transitioned ITables' documentation to Jupyter Book v2.
+
 2.8.1 (2026-06-10)
 ------------------
 

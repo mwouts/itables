@@ -3,7 +3,6 @@
 #   jupytext:
 #     default_lexer: ipython3
 #     formats: docs///md:myst,docs/py///py:percent
-#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
 #     text_representation:
 #       extension: .py
 #       format_name: percent
@@ -45,7 +44,6 @@ itables.show(
 # ::::{grid}
 #
 # :::{grid-item}
-# :outline:
 # :columns: 6
 # ~~~javascript
 # buttons: [
@@ -58,7 +56,6 @@ itables.show(
 # ~~~
 # :::
 # :::{grid-item}
-# :outline:
 # :columns: 6
 # ~~~python
 # buttons = [

@@ -8,7 +8,8 @@ from itables.streamlit import interactive_table
 
 We have a sample application available at https://itables.streamlit.app (source code [here](https://github.com/mwouts/itables/blob/main/apps/streamlit/itables_app.py))
 
-```{div} full-width
+```{div}
+:class: full-width
 <iframe src="https://itables.streamlit.app?embed=true"
 style="height: 600px; width: 100%;"></iframe>
 ```
@@ -29,7 +30,8 @@ Please note that:
 
 A sample application is available at https://to-html-datatable.streamlit.app (source code [here](https://github.com/mwouts/to_html_datatable_in_streamlit/blob/main/itables_app.py))
 
-```{div} full-width
+```{div}
+:class: full-width
 <iframe src="https://to-html-datatable.streamlit.app?embed=true"
 style="height: 600px; width: 100%;"></iframe>
 ```
