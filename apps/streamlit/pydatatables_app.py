@@ -8,7 +8,6 @@ from typing import Optional
 
 import pyarrow  # type: ignore
 import streamlit as st
-
 from pydatatables.typing import Unpack
 
 try:
@@ -21,10 +20,9 @@ except ImportError as e:
             raise import_error
 
 
-from streamlit.errors import StreamlitAPIException
-
 import pydatatables
 from pydatatables.streamlit import datatable
+from streamlit.errors import StreamlitAPIException
 
 st.set_page_config(
     page_title="ITables in Streamlit",

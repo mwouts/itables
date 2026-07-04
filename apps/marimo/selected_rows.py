@@ -7,7 +7,6 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import pandas as pd
-
     from pydatatables.widget import DataTable
 
     df = pd.DataFrame({"i": range(6)})

@@ -7,7 +7,6 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
-
     from pydatatables.sample_dfs import get_countries
     from pydatatables.widget import DataTable
 

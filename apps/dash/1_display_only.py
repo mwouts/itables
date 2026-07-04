@@ -1,5 +1,4 @@
 from dash import Dash, html
-
 from pydatatables.dash import DataTable
 from pydatatables.sample_dfs import get_countries
 

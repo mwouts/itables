@@ -17,7 +17,6 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import pandas as pd
-
     from pydatatables.widget import DataTable
 
     df = pd.DataFrame({"x": [2, 1, 3], "y": list("cbc")})
@@ -31,7 +30,6 @@ def _():
 @app.cell
 def _(df):
     import marimo as mo
-
     import pydatatables
 
     html = pydatatables.to_html_datatable(

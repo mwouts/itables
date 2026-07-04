@@ -10,8 +10,7 @@ from typing import Any, Optional
 from dash import callback  # pyright: ignore[reportUnknownVariableType]
 from dash import Dash, callback_context, dcc, html
 from dash.dependencies import Input, Output, State
-
-from pydatatables import PyDataTablesRendererOptions, PyDataTablesOptions
+from pydatatables import PyDataTablesOptions, PyDataTablesRendererOptions
 from pydatatables.dash import (
     DataTable,
     PyDataTablesRendererOutputs,

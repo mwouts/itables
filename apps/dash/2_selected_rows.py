@@ -2,7 +2,6 @@ from typing import Optional
 
 from dash import callback  # pyright: ignore[reportUnknownVariableType]
 from dash import Dash, Input, Output, html
-
 from pydatatables.dash import DataTable
 from pydatatables.sample_dfs import get_countries
 

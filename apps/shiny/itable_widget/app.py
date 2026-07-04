@@ -1,9 +1,8 @@
+from pydatatables.sample_dfs import get_dict_of_test_dfs
+from pydatatables.widget import DataTable
 from shiny import reactive
 from shiny.express import input, render, ui
 from shinywidgets import reactive_read, render_widget
-
-from pydatatables.sample_dfs import get_dict_of_test_dfs
-from pydatatables.widget import DataTable
 
 dfs = get_dict_of_test_dfs()
 

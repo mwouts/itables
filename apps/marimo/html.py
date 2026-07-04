@@ -24,7 +24,6 @@ def _(mo):
 @app.cell
 def _():
     import marimo as mo
-
     from pydatatables import to_html_datatable
     from pydatatables.sample_dfs import get_dict_of_test_dfs
 
