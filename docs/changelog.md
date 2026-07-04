@@ -1,6 +1,28 @@
 ITables ChangeLog
 =================
 
+3.0.0-dev (unreleased)
+----------------------
+
+**Changed**
+- The ITables project is now distributed as several Python packages:
+  `pydatatables` (the DataTables renderer, formerly `itables`),
+  `pyaggrid` (a new AG Grid renderer), and `itables_core` (the core
+  functions shared by the two renderers: downsampling, formatting, sample dataframes).
+  The Python packages are developed in the `python/` folder of the repository.
+- The `itables` package is now a thin backward-compatible wrapper around
+  `pydatatables`: the historical API (`itables.show`, `itables.options`,
+  `itables.widget.ITable`, `itables.dash.ITable`, `itables.streamlit.interactive_table`,
+  `itables.shiny.DT`, `itables.typing.ITableOptions`, ...) keeps working unchanged.
+
+**Added**
+- The new `pyaggrid` package renders Python DataFrames as interactive
+  [AG Grid](https://www.ag-grid.com/) tables: `from pyaggrid import show`.
+  It supports Pandas and Polars DataFrames (plus more through Narwhals),
+  downsampling with `maxBytes`/`maxRows`/`maxColumns`, the AG Grid options,
+  and `JavascriptFunction` arguments.
+
+
 2.8.1 (2026-06-10)
 ------------------
 

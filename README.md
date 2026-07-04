@@ -21,6 +21,20 @@ with no other impact on your data workflow.
 
 Since v2.6.0, ITables has no dependencies. It works out of the box with Pandas or Polars in Jupyter, Dash, Streamlit, Shiny, Panel or Marimo—you only need these packages installed. The Jupyter Widget is the sole exception, requiring `anywidget`. With Narwhals installed, ITables can also display DataFrames from other libraries like cuDF, Modin or PyArrow.
 
+## Project structure
+
+The ITables project is developed in this repository and is distributed as several Python packages:
+
+| Package | Description |
+| ------- | ----------- |
+| [`pydatatables`](python/pydatatables) | Python DataFrames as interactive [DataTables](https://datatables.net/) |
+| [`pyaggrid`](python/pyaggrid) | Python DataFrames as interactive [AG Grid](https://www.ag-grid.com/) tables |
+| [`itables_core`](python/itables_core) | The core functions (downsampling, formatting) shared by the two renderers |
+| [`itables`](python/itables) | The historical package, now a backward-compatible wrapper around `pydatatables` |
+
+Existing users of `itables` can keep using it unchanged - `import itables`,
+`itables.options`, `from itables.widget import ITable`, etc. all keep working.
+
 ## Documentation
 
 Browse the [documentation](https://mwouts.github.io/itables/) to see
