@@ -1,0 +1,67 @@
+<!--| quarto-html-table-processing: none -->
+<div id="table_id"></div>
+<script type="module">
+    import * as agGrid from 'https://cdn.jsdelivr.net/npm/ag-grid-community/+esm';
+
+    document.querySelectorAll("#table_id:not(.pyaggrid-rendered)").forEach(container => {
+        container.classList.add("pyaggrid-rendered");
+
+        let grid_args = {};
+
+        // Decode the non-finite float values
+        function decode(value) {
+            if (value === "___NaN___") return NaN;
+            if (value === "___Infinity___") return Infinity;
+            if (value === "___-Infinity___") return -Infinity;
+            return value;
+        }
+
+        const rowData = JSON.parse(grid_args["data_json"] || "[]");
+        const columns = grid_args["columns"] || [];
+        const gridOptions = grid_args["grid_options"] || {};
+
+        // Evaluate the JavascriptCode and JavascriptFunction values
+        (grid_args["keys_to_be_evaluated"] || []).forEach(keys => {
+            let obj = gridOptions;
+            for (let i = 0; i < keys.length - 1; i++)
+                obj = obj[keys[i]];
+            obj[keys[keys.length - 1]] = eval?.("(" + obj[keys[keys.length - 1]] + ")");
+        });
+
+        if (!("columnDefs" in gridOptions)) {
+            gridOptions.columnDefs = columns.map((name, i) => ({
+                headerName: name,
+                colId: "c" + i,
+                valueGetter: (params) => decode(params.data[i]),
+            }));
+        }
+
+        const themes = {
+            quartz: agGrid.themeQuartz,
+            balham: agGrid.themeBalham,
+            material: agGrid.themeMaterial,
+            alpine: agGrid.themeAlpine,
+        };
+
+        if (grid_args["caption"]) {
+            const caption = document.createElement("p");
+            caption.classList.add("pyaggrid-caption");
+            caption.style.textAlign = "center";
+            caption.textContent = grid_args["caption"];
+            container.after(caption);
+        }
+
+        if (grid_args["downsampling_warning"]) {
+            const warning = document.createElement("small");
+            warning.classList.add("pyaggrid-downsampling-warning");
+            warning.innerHTML = "Showing a downsampled table - " + grid_args["downsampling_warning"];
+            container.after(warning);
+        }
+
+        agGrid.createGrid(container, {
+            rowData: rowData,
+            theme: themes[grid_args["theme"] || "quartz"],
+            ...gridOptions,
+        });
+    });
+</script>
