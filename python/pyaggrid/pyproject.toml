@@ -27,7 +27,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.9"
-dependencies = ["itables_core>=0.1.0"]
+dependencies = ["itables_core==3.0.0.dev0"]
 dynamic = ["version"]
 
 [project.optional-dependencies]

@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "itables"
 authors = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
 maintainers = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
-description = "Python DataFrames as interactive DataTables (backward-compatible wrapper around pydatatables)"
+description = "Python DataFrames as interactive tables: installs pydatatables and pyaggrid, and provides the historical itables API"
 readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["Pandas", "Polars", "Narwhals", "Interactive", "Javascript", "DataTables"]
@@ -28,7 +28,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.9"
-dependencies = ["pydatatables"]
+dependencies = ["pydatatables==3.0.0.dev0", "pyaggrid==3.0.0.dev0"]
 dynamic = ["version"]
 
 [project.optional-dependencies]

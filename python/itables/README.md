@@ -7,8 +7,9 @@ is made of three packages:
 - [`pyaggrid`](https://pypi.org/project/pyaggrid/) renders Python DataFrames using [AG Grid](https://www.ag-grid.com/)
 - `itables_core` contains the functions shared by the two renderers (downsampling, formatting, ...)
 
-The `itables` package itself is now a thin backward-compatibility wrapper around
-`pydatatables`: the historical itables API keeps working unchanged, e.g.
+The `itables` package itself now installs both renderers (`pydatatables` and
+`pyaggrid`), and provides the historical itables API as a thin
+backward-compatibility wrapper around `pydatatables`, so e.g.
 
 ```python
 from itables import init_notebook_mode, show
@@ -31,3 +32,8 @@ the environment variables are `PYDATATABLES_CONFIG` and
 
 Browse the [documentation](https://mwouts.github.io/itables/) to see
 examples of Pandas or Polars DataFrames rendered as interactive DataTables.
+
+The four ITables packages (`itables_core`, `pydatatables`, `pyaggrid`,
+`itables`) are released together with the same version number, and depend
+on each other with `==` pins, so that every installation gets a consistent
+set of packages.

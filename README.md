@@ -83,14 +83,19 @@ pyaggrid.show(df, theme="quartz", rowSelection={"mode": "multiRow"})
 
 ## The historical `itables` package
 
-The `itables` package is now a thin backward-compatible wrapper around
-`pydatatables`. Existing users can keep using it unchanged - `import itables`,
-`itables.show`, `itables.options`, `from itables.widget import ITable`, etc.
-all keep working:
+The `itables` package now installs **both renderers** (`pydatatables` and
+`pyaggrid`), and provides the historical itables API as a thin
+backward-compatible wrapper around `pydatatables`. Existing users can keep
+using it unchanged - `import itables`, `itables.show`, `itables.options`,
+`from itables.widget import ITable`, etc. all keep working:
 
 ```shell
 pip install itables
 ```
+
+The four ITables packages are released together with the same version
+number, and depend on each other with `==` pins, so that every installation
+gets a consistent set of packages.
 
 ## Project structure
 
