@@ -46,16 +46,23 @@ This uses the dedicated `build` pixi environment, which pins `hatch` and
 
 ## Jupyter Book
 
-The `itables` documentation uses [Jupyter Book](https://jupyterbook.org/).
+The documentation uses [Jupyter Book](https://jupyterbook.org/). It is made
+of three books - one per website: `docs/itables` (the historical ITables
+website, at the root of https://mwouts.github.io/itables/), `docs/pydatatables`
+(published under `/pydatatables`) and `docs/pyaggrid` (under `/pyaggrid`).
 
 To build the documentation locally,
 you need to create a Jupyter kernel named `itables` with
 ```shell
 python -m ipykernel install --name itables --user
 ```
-Then you can build the documentation with
+Then you can build the three books with
 ```
-pixi run -e docs jupyter book build docs/pydatatables
+pixi run -e docs docs
+```
+or a single one with e.g.
+```
+pixi run -e docs docs-pydatatables
 ```
 
 This will give you a link to a local version of the documentation.

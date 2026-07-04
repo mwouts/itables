@@ -72,6 +72,9 @@ test-dash = ["pydatatables[test-base,dash]"]
 test-all = ["pydatatables[all,test-notebook]"]
 dev = ["pydatatables[test-all]", "watchfiles", "jupyterlab", "pyright", "pandas-stubs"]
 
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/pydatatables/version.py" }]
+
 [tool.hatch.version]
 path = "src/pydatatables/version.py"
 

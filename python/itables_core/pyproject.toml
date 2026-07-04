@@ -37,6 +37,9 @@ typing = ["typing_extensions;python_version<\"3.11\""]
 check_type = ["typeguard>=4.4.1"]
 samples = ["pytz", "world_bank_data"]
 
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/itables_core/version.py" }]
+
 [tool.hatch.version]
 path = "src/itables_core/version.py"
 

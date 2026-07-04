@@ -52,6 +52,9 @@ test-base = [
 ]
 test-all = ["pyaggrid[all,test-base]"]
 
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/pyaggrid/version.py" }]
+
 [tool.hatch.version]
 path = "src/pyaggrid/version.py"
 

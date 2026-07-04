@@ -60,7 +60,6 @@ parts:
   - caption: Contributing to ITables
     chapters:
       - file: contributing
-      - file: developing
       - file: troubleshooting
       - file: changelog
   - caption: Examples

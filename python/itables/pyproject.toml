@@ -53,6 +53,9 @@ samples = ["pydatatables[samples]"]
 
 all = ["pydatatables[all]"]
 
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/itables/version.py" }]
+
 [tool.hatch.version]
 path = "src/itables/version.py"
 

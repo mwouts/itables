@@ -36,7 +36,7 @@ If you would like to add a new example,
 or improve the documentation, feel free to make a pull request!
 
 You can render the documentation locally - see the section on
-[Jupyter Book](developing.md#jupyter-book) in the developer guide.
+[Jupyter Book](pydatatables/developing.html#jupyter-book) in the developer guide.
 
 ## Give credit to ITables
 
@@ -75,4 +75,4 @@ open an issue and let us know what you'd like to do.
 
 But you can also simply clone the project and test your ideas.
 A guide on how to set up a development environment, and how to
-run some tests, is available [here](developing.md).
+run some tests, is available [here](pydatatables/developing.html).
