@@ -69,7 +69,10 @@ python = ">=3.9"
 panel = "*"
 ipywidgets_bokeh = "*"
 ipykernel = "*"
+itables_core = {path = "python/itables_core", editable = true}
 pydatatables = {path = "python/pydatatables", editable = true, extras = ["pandas", "widget"]}
+# the example Panel app uses the historical itables API
+itables = {path = "python/itables", editable = true}
 
 [feature.streamlit-app.dependencies]
 nodejs = ">=20"
@@ -78,7 +81,9 @@ pyarrow = "*"
 
 [feature.streamlit-app.pypi-dependencies]
 streamlit-aggrid = "*"
+itables_core = {path = "python/itables_core", editable = true}
 pydatatables = {path = "python/pydatatables", editable = true, extras = ["pandas", "streamlit"]}
+pyaggrid = {path = "python/pyaggrid", editable = true}
 
 [environments]
 default = { solve-group = "default" }
