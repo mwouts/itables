@@ -12,7 +12,7 @@ pytestmark = pytest.mark.xfail(
     reason="HTTPError: 502 Server Error: Bad Gateway for url: http://api.worldbank.org/v2..."
 )
 
-SAMPLE_DIR = Path(__file__).parent / ".." / "src" / "pydatatables" / "samples"
+SAMPLE_DIR = Path(__file__).parent / ".." / ".." / "python" / "itables_core" / "src" / "itables_core" / "samples"
 
 
 def create_csv_file_if_missing(df, csv_file):

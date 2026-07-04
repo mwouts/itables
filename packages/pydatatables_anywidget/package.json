@@ -1,8 +1,8 @@
 {
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build:js": "esbuild js/widget.ts --format=esm --bundle --minify --outdir=../../src/pydatatables/widget/static",
-		"build:css": "esbuild js/widget.css --bundle --minify --outdir=../../src/pydatatables/widget/static",
+		"build:js": "esbuild js/widget.ts --format=esm --bundle --minify --outdir=../../python/pydatatables/src/pydatatables/widget/static",
+		"build:css": "esbuild js/widget.css --bundle --minify --outdir=../../python/pydatatables/src/pydatatables/widget/static",
 		"build": "npm run build:js && npm run build:css",
 		"typecheck": "tsc --noEmit"
 	},

@@ -1,14 +1,14 @@
 import JSZip from 'jszip';
 import jQuery from 'jquery';
 
-import DataTable from 'datatables.net-dt';
+import DataTablesNet from 'datatables.net-dt';
 
 import 'datatables.net-buttons-dt';
 import 'datatables.net-buttons/js/buttons.html5.min.mjs';
 import 'datatables.net-buttons/js/buttons.print.min.mjs';
 import 'datatables.net-buttons/js/buttons.colVis.min.mjs';
 
-DataTable.Buttons.jszip(JSZip);
+DataTablesNet.Buttons.jszip(JSZip);
 
 import 'datatables.net-colreorder-dt';
 import 'datatables.net-scroller-dt';
@@ -173,7 +173,7 @@ class DataTable {
                 jQuery(this).html(input);
             });
         }
-        this.dt = new DataTable(table, dt_args);
+        this.dt = new DataTablesNet(table, dt_args);
         if (caption !== undefined) {
             this.dt.caption(caption);
         }
@@ -239,4 +239,4 @@ function set_or_remove_dark_class() {
 
 export { DataTable, DateTime, jQuery, set_or_remove_dark_class };
 
-export default DataTable;
+export default DataTablesNet;

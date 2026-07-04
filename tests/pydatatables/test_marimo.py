@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-MARIMO_APPS_PATH = Path(__file__).parent / ".." / "apps" / "marimo"
+MARIMO_APPS_PATH = Path(__file__).parent / ".." / ".." / "apps" / "marimo"
 MARIMO_APPS_PY_FILES = [
     file for file in MARIMO_APPS_PATH.iterdir() if file.suffix == ".py"
 ]

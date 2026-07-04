@@ -24,7 +24,7 @@ jobs:
         with:
           pixi-version: latest
           locked: false
-          frozen: true
+          frozen: false
           cache: true
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -42,7 +42,7 @@ jobs:
         with:
           pixi-version: latest
           locked: false
-          frozen: true
+          frozen: false
           cache: true
       - run: pixi run pyright
 
@@ -90,8 +90,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install a development version of 'pydatatables'
-        run: pip install -e .[test-all]
+      - name: Install the development versions of the ITables packages
+        run: |
+          pip install -e python/itables_core
+          pip install -e "python/pydatatables[test-all]"
+          pip install -e python/pyaggrid
+          pip install -e python/itables
 
       - name: Install pandas latest
         if: matrix.pandas-version == 'latest'
@@ -139,7 +143,7 @@ jobs:
         with:
           pixi-version: latest
           locked: false
-          frozen: true
+          frozen: false
           cache: true
 
       - name: Install a Jupyter Kernel
@@ -165,7 +169,7 @@ jobs:
         with:
           pixi-version: latest
           locked: false
-          frozen: true
+          frozen: false
           cache: true
 
       - name: Update pixi environment
@@ -203,7 +207,7 @@ jobs:
         with:
           pixi-version: latest
           locked: false
-          frozen: true
+          frozen: false
           cache: true
 
       - name: Install a Jupyter Kernel
@@ -234,25 +238,30 @@ jobs:
         # hatch==1.16.0 fails with
         # hatchling.plugin.exceptions.UnknownPluginError: Unknown build hook: jupyter-builder
         run : pip install 'hatch<1.16' 'virtualenv<21' # https://github.com/pypa/hatch/issues/2193
-      - name: Build package
-        run: hatch build
+      - name: Build the packages
+        run: |
+          for package in itables_core pydatatables pyaggrid itables; do
+            (cd "python/$package" && hatch build)
+          done
+          mkdir dist
+          cp python/*/dist/* dist/
       - name: Check LICENSE.txt in wheel
-        run: unzip -l dist/*.whl | grep -q pydatatables_for_dash/async-PyDataTablesRenderer.js.LICENSE.txt
+        run: unzip -l dist/pydatatables-*.whl | grep -q pydatatables_for_dash/async-DataTable.js.LICENSE.txt
       - name: Check LICENSE.txt in sdist
-        run: tar -tvf dist/*.tar.gz | grep -q pydatatables_for_dash/async-PyDataTablesRenderer.js.LICENSE.txt
+        run: tar -tvf dist/pydatatables-*.tar.gz | grep -q pydatatables_for_dash/async-DataTable.js.LICENSE.txt
 
-      # Upload the wheel and sdist as artifacts
-      - name: Upload wheel
+      # Upload the wheels and sdists as artifacts
+      - name: Upload wheels
         uses: actions/upload-artifact@v7
         with:
           name: pydatatables-wheel
-          path: dist/pydatatables-*.whl
+          path: dist/*.whl
 
-      - name: Upload sdist
+      - name: Upload sdists
         uses: actions/upload-artifact@v7
         with:
           name: pydatatables-sdist
-          path: dist/pydatatables-*.tar.gz
+          path: dist/*.tar.gz
 
   build-conda:
     runs-on: ubuntu-latest

@@ -11,16 +11,22 @@ from pathlib import Path
 from typing import Any, Literal, Mapping, Optional, Sequence, Union, cast
 
 import pydatatables.options as opt
+from itables_core.downsample import downsample
+from itables_core.formatting import (
+    datatables_rows,
+    escape_html_chars,
+    get_keys_to_be_evaluated,
+)
+from itables_core.frames import evaluate_show_index as _evaluate_show_index
+from itables_core.frames import safe_reset_index
 
-from .datatables_format import datatables_rows, escape_html_chars
-from .downsample import downsample
 from .typing import (
     DataFrameModuleName,
     DataFrameOrSeries,
-    PyDataTablesRendererOptions,
-    PyDataTablesOptions,
     JavascriptCode,
     JavascriptFunction,
+    PyDataTablesOptions,
+    PyDataTablesRendererOptions,
     Unpack,
     check_itable_arguments,
     get_dataframe_module_and_type_name,
@@ -234,9 +240,7 @@ def generate_init_offline_pydatatables_html(dt_bundle: Union[Path, str]) -> str:
     init_notebook_mode = replace_value(init_notebook_mode, "dt_src_b64", dt_src_b64)
     init_notebook_mode = replace_value(init_notebook_mode, "dt_css_b64", dt_css_b64)
 
-    return (
-        init_notebook_mode
-        + f"""
+    return init_notebook_mode + f"""
 <div style="vertical-align:middle; text-align:left">
 <noscript>
 {get_animated_logo(opt.display_logo_when_loading)}
@@ -245,7 +249,6 @@ This is the <code>init_notebook_mode</code> cell from PyDataTablesRenderers v{py
 </noscript>
 </div>
 """
-    )
 
 
 def _table_header(
@@ -353,29 +356,6 @@ def _tfoot_from_thead(thead: str) -> str:
     return "".join(row + "</tr>" for row in header_rows[::-1] if "<tr" in row) + "\n"
 
 
-def get_keys_to_be_evaluated(data: Any) -> list[list[Union[int, str]]]:
-    """
-    This function returns the keys that need to be evaluated
-    in the PyDataTablesRenderer arguments
-    """
-    if isinstance(data, str):
-        return []
-    keys_to_be_evaluated = []
-    if isinstance(data, Sequence):
-        data = dict(enumerate(data))
-    if isinstance(data, dict):
-        for key, value in data.items():
-            if isinstance(value, (JavascriptCode, JavascriptFunction)):
-                keys_to_be_evaluated.append([key])
-            else:
-                nested_keys = get_keys_to_be_evaluated(value)
-                if nested_keys:
-                    for nested_key in nested_keys:
-                        keys_to_be_evaluated.append([key] + nested_key)
-
-    return keys_to_be_evaluated
-
-
 def replace_value(
     template: str, pattern: str, value: str, expected_count: int = 1
 ) -> str:
@@ -418,30 +398,6 @@ def to_html_datatable(
         display_logo_when_loading=display_logo_when_loading,
         kwargs=dt_args,
     )
-
-
-def _evaluate_show_index(df, showIndex) -> bool:
-    """
-    We don't want to show trivial indices (RangeIndex with no name) on Pandas DataFrames.
-    """
-    if df is None:
-        return False
-    df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
-    if df_module_name != "pandas":
-        return False
-    if showIndex != "auto":
-        return showIndex
-    if df_type_name == "Styler":
-        return _evaluate_show_index(
-            df.data,  # pyright: ignore[reportAttributeAccessIssue]
-            showIndex,
-        )
-    if df.index.name is not None:
-        return True
-
-    import pandas as pd
-
-    return not isinstance(df.index, pd.RangeIndex)
 
 
 def _evaluate_show_dtypes(
@@ -1046,7 +1002,9 @@ def html_table_from_template(
             _PYDATATABLES_UNDERSCORE_VERSION,
             expected_count=2,
         )
-        output = replace_value(output, "pydatatables-version-ready", _PYDATATABLES_READY_EVENT)
+        output = replace_value(
+            output, "pydatatables-version-ready", _PYDATATABLES_READY_EVENT
+        )
 
     pydatatables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"
@@ -1149,30 +1107,6 @@ def _filter_control(control, downsampling_warning):
     if control not in DEFAULT_LAYOUT_CONTROLS:
         return control
     return None
-
-
-def safe_reset_index(df):
-    import pandas as pd
-
-    assert isinstance(df, pd.DataFrame)
-    try:
-        return df.reset_index()
-    except ValueError:
-        # Issue #134: the above might fail if the index has duplicated names or if one of the
-        # index names is already a column, with e.g "ValueError: cannot insert A, already exists"
-        index_levels = [
-            pd.Series(
-                df.index.get_level_values(i),
-                name=name
-                or (
-                    "index{}".format(i)
-                    if isinstance(df.index, pd.MultiIndex)
-                    else "index"
-                ),
-            )
-            for i, name in enumerate(df.index.names)
-        ]
-        return pd.concat(index_levels + [df.reset_index(drop=True)], axis=1)
 
 
 def show(

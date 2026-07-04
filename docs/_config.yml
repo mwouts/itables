@@ -1,7 +1,7 @@
 title: Interactive Tables
 author: Marc Wouts
 copyright: "2019-2026"
-logo: "../src/itables/logo/logo.svg"
+logo: "../python/pydatatables/src/pydatatables/logo/logo.svg"
 execute:
   execute_notebooks: force
 # The docs/py folder holds the py:percent mirrors of the docs (used for linting

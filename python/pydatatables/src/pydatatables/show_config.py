@@ -6,7 +6,12 @@ python -m pydatatables.show_config
 
 from pathlib import Path
 
-from pydatatables.config import get_config_file, load_config_file, tomllib, user_config_path
+from pydatatables.config import (
+    get_config_file,
+    load_config_file,
+    tomllib,
+    user_config_path,
+)
 
 
 def show_config(path: Path):

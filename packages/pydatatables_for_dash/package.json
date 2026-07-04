@@ -6,7 +6,7 @@
   "scripts": {
     "build:js": "webpack --mode production",
     "build:backends": "dash-generate-components src/lib/components pydatatables_for_dash -p package-info.json",
-    "move": "mv pydatatables_for_dash/* ../../src/pydatatables_for_dash && rmdir pydatatables_for_dash",
+    "move": "mv pydatatables_for_dash/* ../../python/pydatatables/src/pydatatables_for_dash && rmdir pydatatables_for_dash",
     "build": "npm run build:js && npm run build:backends && npm run move"
   },
   "author": "Marc Wouts <marc.wouts@gmail.com>",

@@ -4,7 +4,6 @@ from typing import Optional
 
 import anywidget
 import traitlets
-
 from pydatatables.javascript import get_pydatatables_extension_arguments
 from pydatatables.typing import DataFrameOrSeries, PyDataTablesOptions, Unpack
 
@@ -38,7 +37,9 @@ class DataTable(anywidget.AnyWidget):
         **kwargs: Unpack[PyDataTablesOptions],
     ) -> None:
         super().__init__()
-        dt_args, other_args = get_pydatatables_extension_arguments(df, caption, **kwargs)
+        dt_args, other_args = get_pydatatables_extension_arguments(
+            df, caption, **kwargs
+        )
         self._df = df
         self.caption = other_args.pop("caption") or ""
         self.classes = other_args.pop("classes")
@@ -78,7 +79,9 @@ class DataTable(anywidget.AnyWidget):
             kwargs["style"] = self.style
             pass
 
-        dt_args, other_args = get_pydatatables_extension_arguments(df, caption, **kwargs)
+        dt_args, other_args = get_pydatatables_extension_arguments(
+            df, caption, **kwargs
+        )
 
         self.classes = other_args.pop("classes")
         self._style = other_args.pop("style")

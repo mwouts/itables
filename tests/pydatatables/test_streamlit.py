@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-STREAMLIT_APPS_PATH = Path(__file__).parent / ".." / "apps" / "streamlit"
+STREAMLIT_APPS_PATH = Path(__file__).parent / ".." / ".." / "apps" / "streamlit"
 STREAMLIT_APPS_PY_FILES = [
     file for file in STREAMLIT_APPS_PATH.iterdir() if file.suffix == ".py"
 ]

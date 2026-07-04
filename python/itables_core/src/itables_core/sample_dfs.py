@@ -3,12 +3,12 @@
 from typing import Any
 
 try:
-    import pydatatables.sample_pandas_dfs as sample_pandas_dfs
+    import itables_core.sample_pandas_dfs as sample_pandas_dfs
 except ImportError:
     sample_pandas_dfs = None
 
 try:
-    import pydatatables.sample_polars_dfs as sample_polars_dfs
+    import itables_core.sample_polars_dfs as sample_polars_dfs
 except ImportError:
     sample_polars_dfs = None
 

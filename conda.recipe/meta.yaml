@@ -1,5 +1,5 @@
 {% set version_match = load_file_regex(
-  load_file="src/pydatatables/version.py",
+  load_file="python/pydatatables/src/pydatatables/version.py",
   regex_pattern='.*__version__ = "(.+)"') %}
 {% set version = version_match[1] %}
 
@@ -13,7 +13,7 @@ source:
 build:
   number: 0
   noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install ./python/itables_core ./python/pydatatables -vv
 
 requirements:
   host:

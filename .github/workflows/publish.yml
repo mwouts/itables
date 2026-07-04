@@ -20,12 +20,14 @@ jobs:
         with:
           pixi-version: latest
           locked: false
-          frozen: true
+          frozen: false
           cache: true
-      - name: Build package
+      - name: Build the packages
         run: |
           # hatch==1.16.0 fails with
           # hatchling.plugin.exceptions.UnknownPluginError: Unknown build hook: jupyter-builder
-          pixi run -e build hatch build
+          pixi run -e build build-all
+          mkdir dist
+          cp python/*/dist/* dist/
       - name: Publish
         uses: pypa/gh-action-pypi-publish@release/v1

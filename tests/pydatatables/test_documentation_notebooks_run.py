@@ -15,7 +15,7 @@ except ImportError:
 
 
 def list_doc_notebooks():
-    documentation_folder = Path(__file__).parent / ".." / "docs"
+    documentation_folder = Path(__file__).parent / ".." / ".." / "docs"
     for path in documentation_folder.iterdir():
         if path.suffix == ".md":
             yield path

@@ -1,0 +1,134 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydatatables"
+authors = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
+maintainers = [{name = "Marc Wouts", email = "marc.wouts@gmail.com"}]
+description = "Python DataFrames as interactive DataTables"
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["Pandas", "Polars", "Narwhals", "Interactive", "Javascript", "DataTables"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: MIT License",
+  "Framework :: Jupyter",
+  "Framework :: Dash",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+requires-python = ">= 3.9"
+dependencies = ["itables_core>=0.1.0"]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+pandas = ["pandas"]
+polars = ["polars"]
+narwhals = ["narwhals"]
+style = ["pandas", "matplotlib"]
+
+notebook = ["IPython"]
+widget = ["anywidget", "traitlets"]
+shiny = ["shiny", "shinywidgets"]
+dash = ["dash", "typing-extensions"]
+streamlit = ["streamlit"]
+marimo = ["marimo"]
+other_dataframes = ["narwhals", "pyarrow", "modin[dask]"]
+
+config = ["tomli;python_version<\"3.11\"", "platformdirs"]
+typing = ["typing_extensions;python_version<\"3.11\""]
+check_type = ["typeguard>=4.4.1"]
+
+samples = ["itables_core[samples]"]
+
+all = ["pydatatables[config,pandas,polars,style,narwhals,other_dataframes,samples,notebook,widget,dash,shiny,streamlit,marimo,typing,check_type]"]
+test-base = [
+  "pydatatables",
+  # Pytest
+  "pytest",
+  "pytest-xdist",
+  "pytest-cov",
+]
+test-notebook = [
+   "pydatatables[test-base,widget,notebook]",
+  # Test the documentation
+  "ipykernel",
+  "nbconvert",
+  "jupytext",
+  # Test urls
+  "requests",
+  ]
+test-dash = ["pydatatables[test-base,dash]"]
+test-all = ["pydatatables[all,test-notebook]"]
+dev = ["pydatatables[test-all]", "watchfiles", "jupyterlab", "pyright", "pandas-stubs"]
+
+[tool.hatch.version]
+path = "src/pydatatables/version.py"
+
+[project.urls]
+Homepage = "https://mwouts.github.io/itables/"
+Documentation = "https://mwouts.github.io/itables"
+Repository = "https://github.com/mwouts/itables.git"
+Issues = "https://github.com/mwouts/itables/issues"
+Changelog = "https://github.com/mwouts/itables/blob/main/docs/changelog.md"
+
+[pycodestyle]
+max-line-length = 88
+
+[tool.hatch.build.hooks.jupyter-builder]
+enable-by-default = true
+dependencies = ["hatch-jupyter-builder>=0.5.0", "dash", "pyyaml"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "src/pydatatables/html/dt_bundle.js",
+    "src/pydatatables/html/dt_bundle.css",
+    "src/pydatatables_for_dash/DataTable.py",
+    "src/pydatatables_for_dash/async-DataTable.js",
+    "src/pydatatables_for_dash/async-DataTable.js.LICENSE.txt",
+    "src/pydatatables/pydatatables_for_streamlit/index.js",
+    "src/pydatatables/widget/static/widget.js",
+    ]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "../../packages"
+build_cmd = "build"
+npm = ["npm"]
+
+[tool.streamlit.component]
+components = [
+    {name = "pydatatables_for_streamlit", asset_dir = "pydatatables_for_streamlit"},
+]
+
+[tool.hatch.build.targets.sdist]
+packages = ["src/pydatatables", "src/pydatatables_for_dash"]
+artifacts = [
+    "src/pydatatables/html/dt_bundle.js",
+    "src/pydatatables/html/dt_bundle.css",
+    "src/pydatatables_for_dash/*",
+    "src/pydatatables/pydatatables_for_streamlit/*",
+    "src/pydatatables/widget/static/*",
+    "src/pydatatables/py.typed",
+    "src/pydatatables_for_dash/py.typed",
+    ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pydatatables", "src/pydatatables_for_dash"]
+artifacts = [
+    "src/pydatatables/html/dt_bundle.js",
+    "src/pydatatables/html/dt_bundle.css",
+    "src/pydatatables_for_dash/*",
+    "src/pydatatables/pydatatables_for_streamlit/*",
+    "src/pydatatables/widget/static/*",
+    "src/pydatatables/py.typed",
+    "src/pydatatables_for_dash/py.typed",
+    ]

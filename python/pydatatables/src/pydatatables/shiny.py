@@ -49,7 +49,9 @@ def DataTable(
         **kwargs,
     )
 
-    html = html.replace("<code>init_notebook_mode</code>", "<code>init_pydatatables</code>")
+    html = html.replace(
+        "<code>init_notebook_mode</code>", "<code>init_pydatatables</code>"
+    )
 
     if "table_id" not in kwargs:
         return html

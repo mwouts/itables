@@ -3,9 +3,14 @@ import math
 import os
 import sys
 import warnings
-from typing import Any, Optional, Sequence
+from typing import Any, Optional, Sequence, Union
 
-from .typing import DataFrameOrSeries, get_dataframe_module_name
+from .typing import (
+    DataFrameOrSeries,
+    JavascriptCode,
+    JavascriptFunction,
+    get_dataframe_module_name,
+)
 
 
 def _format_pandas_series(
@@ -216,8 +221,8 @@ def generate_encoder(warn_on_unexpected_types: bool = True) -> Any:
                 warnings.warn(
                     f"Unexpected type '{type(o)}' for '{o}'.\n"
                     "You can report this warning at https://github.com/mwouts/itables/issues\n"
-                    "To silence this warning, please run:\n"
-                    "    pydatatables.options.warn_on_unexpected_types = False",
+                    "To silence this warning, please set the option\n"
+                    "    warn_on_unexpected_types = False",
                     category=RuntimeWarning,
                 )
             return str(o)
@@ -296,3 +301,26 @@ def datatables_rows(
         cls=generate_encoder(warn_on_unexpected_types),
         allow_nan=False,
     )
+
+
+def get_keys_to_be_evaluated(data: Any) -> list[list[Union[int, str]]]:
+    """
+    This function returns the keys that need to be evaluated
+    in the table arguments (values of type JavascriptCode or JavascriptFunction)
+    """
+    if isinstance(data, str):
+        return []
+    keys_to_be_evaluated = []
+    if isinstance(data, Sequence):
+        data = dict(enumerate(data))
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if isinstance(value, (JavascriptCode, JavascriptFunction)):
+                keys_to_be_evaluated.append([key])
+            else:
+                nested_keys = get_keys_to_be_evaluated(value)
+                if nested_keys:
+                    for nested_key in nested_keys:
+                        keys_to_be_evaluated.append([key] + nested_key)
+
+    return keys_to_be_evaluated

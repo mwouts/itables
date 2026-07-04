@@ -1,7 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "/"
+    directories:
+      - "/python/itables_core"
+      - "/python/pydatatables"
+      - "/python/pyaggrid"
+      - "/python/itables"
     schedule:
       interval: "weekly"
     groups:

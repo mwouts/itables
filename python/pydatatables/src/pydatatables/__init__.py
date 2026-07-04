@@ -3,10 +3,10 @@ from pydatatables import config, downsample, options, sample_dfs
 from .javascript import init_notebook_mode, show, to_html_datatable
 from .typing import (
     DataFrameOrSeries,
-    PyDataTablesRendererOptions,
-    PyDataTablesOptions,
     JavascriptCode,
     JavascriptFunction,
+    PyDataTablesOptions,
+    PyDataTablesRendererOptions,
 )
 from .version import __version__
 

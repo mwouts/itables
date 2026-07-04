@@ -84,7 +84,9 @@ def load_config_file(config_file: Path) -> PyDataTablesOptions:
         try:
             config = tomllib.load(fp)
         except tomllib.TOMLDecodeError as e:
-            raise ValueError(f"Failed to load PyDataTablesRenderers config from {config_file}: {e}")
+            raise ValueError(
+                f"Failed to load PyDataTablesRenderers config from {config_file}: {e}"
+            )
 
     if config_file.name == "pyproject.toml":
         if "tool" not in config or "pydatatables" not in config["tool"]:

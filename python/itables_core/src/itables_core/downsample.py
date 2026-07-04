@@ -1,7 +1,7 @@
 import math
 from typing import Union
 
-from pydatatables.typing import (
+from itables_core.typing import (
     DataFrameModuleName,
     DataFrameOrSeries,
     get_dataframe_module_name,

@@ -2,7 +2,7 @@
 set -e
 
 # Install from sources
-pip install .[all]
+pip install ./python/itables_core "./python/pydatatables[all]" ./python/pyaggrid ./python/itables
 
 # Open .md notebooks with the Notebook editor
 mkdir -p ${HOME}/.jupyter/labconfig

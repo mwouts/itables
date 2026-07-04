@@ -1,12 +1,16 @@
 from typing import Any, Optional, cast
 
 from dash import Output, no_update
-
 from pydatatables.javascript import (
     get_expanded_style,
     get_pydatatables_extension_arguments,
 )
-from pydatatables.typing import DataFrameOrSeries, PyDataTablesRendererOptions, PyDataTablesOptions, Unpack
+from pydatatables.typing import (
+    DataFrameOrSeries,
+    PyDataTablesOptions,
+    PyDataTablesRendererOptions,
+    Unpack,
+)
 
 ITABLE_PROPERTIES = (
     "caption",
@@ -73,7 +77,9 @@ def updated_itable_outputs(
                 if k in current_dt_args:
                     updated_properties["dt_args"][k] = current_dt_args[k]
 
-        if current_dt_args == cast(PyDataTablesRendererOptions, updated_properties["dt_args"]):
+        if current_dt_args == cast(
+            PyDataTablesRendererOptions, updated_properties["dt_args"]
+        ):
             updated_properties["dt_args"] = no_update
 
     ordered_list_of_updated_properties = [

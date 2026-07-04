@@ -7,7 +7,7 @@ import pytest
 from pydatatables.downsample import downsample
 from pydatatables.shiny import DataTable
 
-SHINY_APPS_PATH = Path(__file__).parent / ".." / "apps" / "shiny"
+SHINY_APPS_PATH = Path(__file__).parent / ".." / ".." / "apps" / "shiny"
 SHINY_APPS_PY_FILES = [
     f"{directory.name}/{file.stem}"
     for directory in SHINY_APPS_PATH.iterdir()

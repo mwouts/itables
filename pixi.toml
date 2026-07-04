@@ -1,0 +1,93 @@
+[workspace]
+name = "itables"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[dependencies]
+nodejs = ">=20"
+pre-commit = "*"
+
+[pypi-dependencies]
+itables_core = {path = "python/itables_core", editable = true}
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["dev"]}
+pyaggrid = {path = "python/pyaggrid", editable = true, extras = ["test-all"]}
+itables = {path = "python/itables", editable = true}
+
+[feature.docs.dependencies]
+jupyter-book = ">=1,<2"
+
+[feature.docs.pypi-dependencies]
+sphinxext-rediraffe = "*"
+
+[feature.build.dependencies]
+nodejs = ">=20"
+pip = "*"
+python = "=3.11"
+
+[feature.build.pypi-dependencies]
+dash = "*"
+hatch = "<1.16"
+virtualenv = "<21"
+
+[feature.build.tasks]
+build-itables-core = { cmd = "hatch build", cwd = "python/itables_core" }
+build-pydatatables = { cmd = "hatch build", cwd = "python/pydatatables" }
+build-pyaggrid = { cmd = "hatch build", cwd = "python/pyaggrid" }
+build-itables = { cmd = "hatch build", cwd = "python/itables" }
+build-all = { depends-on = ["build-itables-core", "build-pydatatables", "build-pyaggrid", "build-itables"] }
+
+[feature.minimal.dependencies]
+nodejs = ">=20"
+python = ">=3.9"
+
+[feature.minimal.pypi-dependencies]
+itables_core = {path = "python/itables_core", editable = true}
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["test-base"]}
+pyaggrid = {path = "python/pyaggrid", editable = true}
+itables = {path = "python/itables", editable = true}
+
+[feature.retro.dependencies]
+python = "=3.9"
+
+[feature.test-pandas-notebook.pypi-dependencies]
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["pandas", "test-notebook"]}
+
+[feature.test-polars-notebook.pypi-dependencies]
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["polars", "test-notebook"]}
+
+[feature.test-pandas-dash.pypi-dependencies]
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["pandas", "test-dash"]}
+
+[feature.test-polars-dash.pypi-dependencies]
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["polars", "test-dash"]}
+
+[feature.panel-app.dependencies]
+nodejs = ">=20"
+python = ">=3.9"
+
+[feature.panel-app.pypi-dependencies]
+panel = "*"
+ipywidgets_bokeh = "*"
+ipykernel = "*"
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["pandas", "widget"]}
+
+[feature.streamlit-app.dependencies]
+nodejs = ">=20"
+python = ">=3.9"
+pyarrow = "*"
+
+[feature.streamlit-app.pypi-dependencies]
+streamlit-aggrid = "*"
+pydatatables = {path = "python/pydatatables", editable = true, extras = ["pandas", "streamlit"]}
+
+[environments]
+default = { solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
+build = { features = ["build"], no-default-feature = true }
+minimal = { features = ["minimal", "retro"], no-default-feature = true }
+streamlit-app = { features = ["streamlit-app"], no-default-feature = true }
+panel-app = { features = ["panel-app"], no-default-feature = true }
+test-pandas-notebook = { features = ["minimal", "test-pandas-notebook"], no-default-feature = true }
+test-polars-notebook = { features = ["minimal", "test-polars-notebook"], no-default-feature = true }
+test-pandas-dash = { features = ["minimal", "test-pandas-dash"], no-default-feature = true }
+test-polars-dash = { features = ["minimal", "test-polars-dash"], no-default-feature = true }

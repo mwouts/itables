@@ -182,7 +182,7 @@ def test_unpkg_links(url):
 
 
 def test_unpkg_urls_are_up_to_date():
-    with open(Path(__file__).parent / "../packages/pydatatables/package.json") as fp:
+    with open(Path(__file__).parent / "../../packages/pydatatables/package.json") as fp:
         pydatatables = json.load(fp)
     bundle_version = pydatatables["version"]
     assert (
