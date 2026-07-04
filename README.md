@@ -100,10 +100,11 @@ The ITables project is developed in this repository and is distributed as severa
 
 ## Documentation
 
-Both renderers are documented on a single website: browse the
-[documentation](https://mwouts.github.io/itables/) to see examples of Pandas
-or Polars DataFrames rendered with [DataTables](https://mwouts.github.io/itables/quick_start.html)
-or with [AG Grid](https://mwouts.github.io/itables/pyaggrid.html).
+Each renderer has its own documentation website, with the full dataframe
+examples rendered with that renderer:
+
+- [PyDataTables documentation](https://mwouts.github.io/itables/)
+- [PyAgGrid documentation](https://mwouts.github.io/itables/pyaggrid/)
 
 ## ITables in Notebooks
 

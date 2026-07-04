@@ -1,0 +1,201 @@
+---
+jupytext:
+  formats: docs///md:myst,docs/py///py:percent
+  notebook_metadata_filter: -jupytext.text_representation.jupytext_version
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+kernelspec:
+  display_name: itables
+  language: python
+  name: itables
+---
+
+# Pandas dataframes
+
+In this notebook we make sure that our test dataframes are displayed nicely with the default `pyaggrid` settings.
+
+```{code-cell} ipython3
+import pandas as pd  # noqa: F401
+
+import itables_core.sample_pandas_dfs
+import pyaggrid
+
+dict_of_test_dfs = itables_core.sample_pandas_dfs.get_dict_of_test_dfs()
+```
+
+## empty
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["empty"])
+```
+
+## No rows
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["no_rows"])
+```
+
+## No rows one column
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["no_rows_one_column"])
+```
+
+## No columns
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["no_columns"])
+```
+
+## No columns one row
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["no_columns_one_row"])
+```
+
+## bool
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["bool"])
+```
+
+## Nullable boolean
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["nullable_boolean"])
+```
+
+## int
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["int"])
+```
+
+## Nullable integer
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["nullable_int"])
+```
+
+## float
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["float"])
+```
+
+## float_types
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["float_types"])
+```
+
+## Ordered floats
+
+```{code-cell} ipython3
+pyaggrid.show(
+    pd.DataFrame(
+        {"float": [float("nan"), float("inf")] + [float(x) for x in range(18)]}
+    ),
+    order=[[0, "asc"]],
+)
+```
+
+## str
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["str"])
+```
+
+## time
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["time"])
+```
+
+## object
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["object"])
+```
+
+## ordered_categories
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["ordered_categories"])
+```
+
+## ordered_categories_in_multiindex
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["ordered_categories_in_multiindex"])
+```
+
+## multiindex
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["multiindex"])
+```
+
+## countries
+
+```{code-cell} ipython3
+:tags: [full-width]
+
+pyaggrid.show(dict_of_test_dfs["countries"])
+```
+
+## capital
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["capital"])
+```
+
+## complex_index
+
+```{code-cell} ipython3
+:tags: [full-width]
+
+pyaggrid.show(dict_of_test_dfs["complex_index"])
+```
+
+## int_float_str
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["int_float_str"])
+```
+
+## wide
+
+```{code-cell} ipython3
+:tags: [full-width]
+
+pyaggrid.show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
+```
+
+## long_column_names
+
+```{code-cell} ipython3
+:tags: [full-width]
+
+pyaggrid.show(dict_of_test_dfs["long_column_names"])
+```
+
+## duplicated_columns
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["duplicated_columns"])
+```
+
+## named_column_index
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["named_column_index"])
+```
+
+## big_integers
+
+```{code-cell} ipython3
+pyaggrid.show(dict_of_test_dfs["big_integers"])
+```

@@ -7,7 +7,7 @@ execute:
 # The docs/py folder holds the py:percent mirrors of the docs (used for linting
 # and formatting only), so we exclude it from the site build. The other entries
 # are Jupyter Book's defaults, which we have to repeat as this key overrides them.
-exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py]
+exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py, pyaggrid]
 sphinx:
   config:
     html_extra_path: ['quarto']
@@ -31,6 +31,7 @@ repository:
   path_to_book: docs
   branch: main
 html:
+  announcement: 'The ITables project now also offers an AG Grid renderer - check out the <a href="pyaggrid/index.html">PyAgGrid documentation</a>'
   use_edit_page_button: true
   use_repository_button: true
   use_issues_button: true

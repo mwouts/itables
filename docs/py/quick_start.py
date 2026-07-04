@@ -41,6 +41,11 @@
 # ITables is just about how tables are displayed. You can turn it on and off in just two lines,
 # with no other impact on your data workflow.
 #
+# This website documents `pydatatables`, the DataTables renderer of the ITables
+# project (and its backward-compatible wrapper `itables`). The ITables project
+# also offers an [AG Grid](https://www.ag-grid.com/) renderer, `pyaggrid`, which
+# has its own [documentation website](pyaggrid/index.html).
+#
 # Since v2.6.0, ITables has no dependencies. It works out of the box with Pandas or Polars in Jupyter, Dash, Streamlit, Shiny, Panel or Marimo—you only need these packages installed. The Jupyter Widget is the sole exception, requiring `anywidget`. With Narwhals installed, ITables can also display DataFrames from other libraries like cuDF, Modin or PyArrow.
 #
 # # Quick Start

@@ -1,12 +1,6 @@
 format: jb-book
-root: index
+root: quick_start
 parts:
-  - caption: PyDataTables
-    chapters:
-      - file: quick_start
-  - caption: PyAgGrid
-    chapters:
-      - file: pyaggrid
   - caption: Using ITables
     chapters:
       - file: apps/notebook
@@ -21,7 +15,7 @@ parts:
   - caption: Configuration
     chapters:
       - file: configuration
-  - caption: PyDataTables options
+  - caption: Options
     chapters:
       - file: options/options
       - file: options/classes

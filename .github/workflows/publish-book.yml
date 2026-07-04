@@ -53,10 +53,16 @@ jobs:
       run: |
         for qmd_file in `ls docs/quarto/*.qmd`; do quarto render ${qmd_file}; done
 
-    # Build the book
-    - name: Build the book
+    # Build the two books (pydatatables at the site root, pyaggrid under /pyaggrid)
+    - name: Build the PyDataTables book
       run: |
         jupyter-book build docs
+
+    - name: Build the PyAgGrid book
+      run: |
+        jupyter-book build docs/pyaggrid
+        rm -rf docs/_build/html/pyaggrid
+        cp -r docs/pyaggrid/_build/html docs/_build/html/pyaggrid
 
     # Upload the book's HTML as an artifact
     - name: Upload artifact

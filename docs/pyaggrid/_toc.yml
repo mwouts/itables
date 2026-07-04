@@ -1,0 +1,7 @@
+format: jb-book
+root: index
+parts:
+  - caption: Examples
+    chapters:
+      - file: pandas_dataframes
+      - file: polars_dataframes
