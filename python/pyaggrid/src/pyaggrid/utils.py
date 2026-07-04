@@ -1,7 +1,7 @@
 from io import open
 from pathlib import Path
 
-AG_GRID_ESM_URL = "https://cdn.jsdelivr.net/npm/ag-grid-community@34.2.0/+esm"
+AG_GRID_ESM_URL = "https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/+esm"
 
 
 def find_package_file(*path: str) -> Path:

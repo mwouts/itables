@@ -8,7 +8,11 @@ from typing import Any, Optional, cast
 
 import pyaggrid.options as opt
 from itables_core.downsample import downsample
-from itables_core.formatting import datatables_rows, get_keys_to_be_evaluated
+from itables_core.formatting import (
+    datatables_rows,
+    generate_encoder,
+    get_keys_to_be_evaluated,
+)
 from itables_core.frames import evaluate_show_index, safe_reset_index
 from itables_core.typing import (
     get_dataframe_module_and_type_name,
@@ -19,7 +23,6 @@ from itables_core.utils import replace_value
 from .typing import (
     DataFrameOrSeries,
     PyAgGridOptions,
-    PyAgGridRendererOptions,
     Unpack,
     check_pyaggrid_arguments,
 )
@@ -28,24 +31,8 @@ from .version import __version__ as pyaggrid_version
 
 _ORIGINAL_REPR_HTML = {}
 
-# The options of 'to_html_aggrid' that are not
-# passed to the AG Grid constructor
-_PYAGGRID_ONLY_OPTIONS = {
-    "classes",
-    "style",
-    "showIndex",
-    "show_df_type",
-    "maxBytes",
-    "maxRows",
-    "maxColumns",
-    "table_id",
-    "ag_grid_url",
-    "theme",
-    "warn_on_unexpected_types",
-    "warn_on_polars_get_fmt_not_found",
-    "warn_on_undocumented_option",
-    "warn_on_unexpected_option_type",
-}
+_CAPTION_DIV = '<div class="pyaggrid-caption" style="text-align:center">caption</div>'
+_WARNING_DIV = '<div class="pyaggrid-downsampling-warning">downsampling_warning</div>'
 
 GOOGLE_COLAB = (find_spec("google") is not None) and (
     find_spec("google.colab") is not None
@@ -107,7 +94,7 @@ def _aggrid_repr_(df: DataFrameOrSeries) -> str:
 def check_table_id(table_id: Optional[str]) -> str:
     """Make sure that the table_id is a valid HTML id"""
     if table_id is None:
-        return "pyaggrid_" + str(uuid.uuid4()).replace("-", "_")
+        return "pyaggrid_" + uuid.uuid4().hex
 
     if not re.match(r"[A-Za-z][-A-Za-z0-9_.]*", table_id):
         raise ValueError(
@@ -157,6 +144,51 @@ def set_default_options(kwargs: PyAgGridOptions) -> None:
     check_pyaggrid_arguments(cast("dict[str, Any]", kwargs), PyAgGridOptions)
 
 
+def _header_name(col: object) -> str:
+    """Flatten MultiIndex column names (grouped column headers might come later)."""
+    if isinstance(col, tuple):
+        parts = [str(level) for level in col if str(level) != ""]
+        return " / ".join(parts)
+    return str(col)
+
+
+def _numeric_columns(df: DataFrameOrSeries, df_module_name) -> "set[int]":
+    """Return the indices of the numeric columns"""
+    if df_module_name == "pandas":
+        return {i for i, dtype in enumerate(df.dtypes) if dtype.kind in "iuf"}
+    if df_module_name == "polars":
+        return {i for i, col in enumerate(df.columns) if df[col].dtype.is_numeric()}
+    # Narwhals DataFrame
+    return {i for i, col in enumerate(df.columns) if df[col].dtype.is_numeric()}
+
+
+def get_column_defs(df: DataFrameOrSeries, df_module_name) -> "list[dict[str, Any]]":
+    """Return the AG Grid column definitions for the given DataFrame.
+
+    The column definitions use positional field names ``c0``, ``c1``, ... so
+    that duplicated, non-string, or dotted column names cannot confuse AG Grid;
+    the actual column name is in ``headerName``.
+    """
+    numeric_columns = _numeric_columns(df, df_module_name)
+    column_defs: "list[dict[str, Any]]" = []
+    for i, col in enumerate(df.columns):
+        col_def: "dict[str, Any]" = {"field": f"c{i}", "headerName": _header_name(col)}
+        if i in numeric_columns:
+            col_def["type"] = "rightAligned"
+            col_def["filter"] = "agNumberColumnFilter"
+        column_defs.append(col_def)
+    return column_defs
+
+
+def _script_safe(json_str: str) -> str:
+    """Make a JSON string safe for inclusion in a <script> block.
+
+    A cell value containing e.g. "</script>" must not terminate the script;
+    "<\\/" is an equivalent JSON escape for "</".
+    """
+    return json_str.replace("</", "<\\/")
+
+
 def get_pyaggrid_arguments(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
@@ -164,10 +196,13 @@ def get_pyaggrid_arguments(
 ) -> "dict[str, Any]":
     """
     Return the arguments to be passed to the pyaggrid HTML template:
-    'table_id', 'classes', 'style', 'ag_grid_url', and the
-    PyAgGridRendererOptions in 'grid_args'.
+    'table_id', 'classes', 'style', 'ag_grid_url', 'caption',
+    'downsampling_warning', 'data_json' and the AG Grid options
+    in 'grid_options'.
     """
     set_default_options(kwargs)
+    kwargs.pop("warn_on_undocumented_option", None)
+    kwargs.pop("warn_on_unexpected_option_type", None)
 
     df_type_description = get_dataframe_type_description(df)
     df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
@@ -199,11 +234,11 @@ def get_pyaggrid_arguments(
             ) from e
         else:
             df = nw.from_native(df, eager_only=True, allow_series=True)
+            df_module_name = "narwhals"
 
     table_id = check_table_id(cast(Optional[str], kwargs.pop("table_id", None)))
     classes = get_compact_classes(kwargs.pop("classes"))
     style = get_compact_style(kwargs.pop("style"))
-    theme = kwargs.pop("theme")
     ag_grid_url = kwargs.pop("ag_grid_url")
 
     show_index = evaluate_show_index(df, kwargs.pop("showIndex"))
@@ -226,14 +261,13 @@ def get_pyaggrid_arguments(
         max_bytes=maxBytes,
     )
 
-    if show_index and df_module_name == "pandas":
-        df = safe_reset_index(df)
+    if df_module_name == "pandas":
+        if show_index:
+            df = safe_reset_index(df)
+        else:
+            df = df.reset_index(drop=True)
 
-    columns = [
-        " / ".join(str(level) for level in col) if isinstance(col, tuple) else str(col)
-        for col in df.columns
-    ]
-
+    # No HTML escaping: AG Grid renders cell values as text, not HTML
     data_json = datatables_rows(
         df,
         escape_html=False,
@@ -242,27 +276,20 @@ def get_pyaggrid_arguments(
     )
 
     grid_options = cast("dict[str, Any]", kwargs)
+    if "columnDefs" not in grid_options:
+        grid_options["columnDefs"] = get_column_defs(df, df_module_name)
 
     # Show the table on a single page when it fits
     if grid_options.get("pagination") and full_row_count <= grid_options.get(
         "paginationPageSize", 100
     ):
-        grid_options["pagination"] = False
-
-    if not grid_options.get("pagination"):
         grid_options.pop("pagination", None)
         grid_options.pop("paginationPageSize", None)
         grid_options.pop("paginationPageSizeSelector", None)
 
-    grid_args: "dict[str, Any]" = {
-        "columns": columns,
-        "data_json": data_json,
-        "grid_options": grid_options,
-        "theme": theme,
-    }
-
-    if caption is not None:
-        grid_args["caption"] = caption
+    keys_to_be_evaluated = get_keys_to_be_evaluated(grid_options)
+    if keys_to_be_evaluated:
+        grid_options["keys_to_be_evaluated"] = keys_to_be_evaluated
 
     if show_df_type:
         if downsampling_warning:
@@ -270,19 +297,15 @@ def get_pyaggrid_arguments(
         else:
             downsampling_warning = df_type_description
 
-    if downsampling_warning:
-        grid_args["downsampling_warning"] = downsampling_warning
-
-    keys_to_be_evaluated = get_keys_to_be_evaluated(grid_options)
-    if keys_to_be_evaluated:
-        grid_args["keys_to_be_evaluated"] = keys_to_be_evaluated
-
     return {
         "table_id": table_id,
         "classes": classes,
         "style": style,
         "ag_grid_url": ag_grid_url,
-        "grid_args": grid_args,
+        "caption": caption,
+        "downsampling_warning": downsampling_warning,
+        "data_json": data_json,
+        "grid_options": grid_options,
     }
 
 
@@ -293,7 +316,11 @@ def to_html_aggrid(
 ) -> str:
     """
     Return the HTML representation of the given
-    dataframe as an interactive AG Grid table
+    dataframe as an interactive AG Grid table.
+
+    The snippet loads AG Grid Community as an ES module from the URL in
+    'pyaggrid.options.ag_grid_url', so an internet connection is required
+    when the table is displayed.
     """
     args = get_pyaggrid_arguments(df, caption, **kwargs)
     return html_table_from_template(**args)
@@ -304,7 +331,10 @@ def html_table_from_template(
     classes: str,
     style: str,
     ag_grid_url: str,
-    grid_args: PyAgGridRendererOptions,
+    caption: Optional[str],
+    downsampling_warning: str,
+    data_json: str,
+    grid_options: "dict[str, Any]",
 ) -> str:
     output = read_package_file("html/aggrid_template.html")
 
@@ -314,23 +344,48 @@ def html_table_from_template(
         ag_grid_url,
     )
 
-    table_div = (
+    output = replace_value(
+        output,
+        '<div id="table_id" style="div_style">Loading pyaggrid...</div>',
         f'<div id="{table_id}" class="{classes}" style="{style}">'
         f"Loading pyaggrid v{pyaggrid_version}... "
         "(need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)"
-        "</div>"
+        "</div>",
     )
-    output = replace_value(output, '<div id="table_id"></div>', table_div)
     output = replace_value(
         output,
-        '"#table_id:not(.pyaggrid-rendered)"',
-        f'"#{table_id}:not(.pyaggrid-rendered)"',
+        "'#table_id:not([data-pyaggrid])'",
+        f"'#{table_id}:not([data-pyaggrid])'",
     )
 
-    # Export the grid args to JSON, sort keys for reproducible output
-    grid_args_json = json.dumps(grid_args, sort_keys=True, indent=2)
+    if caption is not None:
+        output = replace_value(
+            output,
+            _CAPTION_DIV,
+            _CAPTION_DIV.replace("caption</div>", f"{caption}</div>"),
+        )
+    else:
+        output = replace_value(output, f"{_CAPTION_DIV}\n", "")
+
+    if downsampling_warning:
+        output = replace_value(
+            output,
+            _WARNING_DIV,
+            _WARNING_DIV.replace("downsampling_warning", str(downsampling_warning)),
+        )
+    else:
+        output = replace_value(output, f"{_WARNING_DIV}\n", "")
+
+    grid_options_json = json.dumps(
+        grid_options, sort_keys=True, cls=generate_encoder(False), allow_nan=False
+    )
     output = replace_value(
-        output, "let grid_args = {};", f"let grid_args = {grid_args_json};"
+        output,
+        "let gridOptions = {};",
+        f"let gridOptions = {_script_safe(grid_options_json)};",
+    )
+    output = replace_value(
+        output, "let data = [];", f"let data = {_script_safe(data_json)};"
     )
 
     return output

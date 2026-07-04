@@ -26,9 +26,11 @@ The default classes added to the grid container div.
 classes: Union[str, Sequence[str]] = "pyaggrid"
 
 """
-The default style of the grid container div.
+The default style of the grid container div. Note that after the first
+rendering, the width of the container is adjusted to the table content
+(unless domLayout is set to 'normal').
 """
-style: Union[str, dict[str, str]] = "width:100%;margin:auto"
+style: Union[str, dict[str, str]] = "width:100%"
 
 """Maximum bytes before downsampling a table"""
 maxBytes: Union[str, int] = "64KB"
@@ -42,8 +44,7 @@ theme: Literal["quartz", "balham", "material", "alpine"] = "quartz"
 
 """Paginate the tables"""
 pagination: bool = True
-paginationPageSize: int = 10
-paginationPageSizeSelector: Union[Sequence[int], bool] = [10, 25, 50, 100]
+paginationPageSize: int = 20
 
 """The layout of the grid. With 'autoHeight' the grid height
 adjusts to the number of displayed rows"""
@@ -67,6 +68,7 @@ warn_on_polars_get_fmt_not_found: bool = True
 caption: Optional[str]
 columnDefs: Optional[Sequence[Mapping[str, Any]]]
 autoSizeStrategy: Optional[Mapping[str, Any]]
+paginationPageSizeSelector: Optional[Union[Sequence[int], bool]]
 paginationAutoPageSize: Optional[bool]
 rowHeight: Optional[int]
 headerHeight: Optional[int]

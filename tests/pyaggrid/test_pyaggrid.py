@@ -19,21 +19,39 @@ def df():
     )
 
 
-def get_grid_args(html: str) -> dict:
-    match = re.search(r"let grid_args = (\{.*?\});\n", html, flags=re.DOTALL)
+def get_grid_options(html: str) -> dict:
+    match = re.search(r"let gridOptions = (\{.*?\});\n", html, flags=re.DOTALL)
     assert match is not None, html
     return json.loads(match.group(1))
+
+
+def get_data(html: str) -> list:
+    match = re.search(r"let data = (\[.*?\]);\n", html, flags=re.DOTALL)
+    assert match is not None, html
+    return json.loads(match.group(1))
+
+
+def get_header_names(html: str) -> list:
+    return [col["headerName"] for col in get_grid_options(html)["columnDefs"]]
 
 
 def test_to_html_aggrid(df):
     html = to_html_aggrid(df, "my caption")
     assert "createGrid" in html
-    grid_args = get_grid_args(html)
-    assert grid_args["caption"] == "my caption"
-    assert grid_args["columns"] == ["a", "b", "x"]
-    data = json.loads(grid_args["data_json"])
+    assert ">my caption</div>" in html
+    assert get_header_names(html) == ["a", "b", "x"]
+    data = get_data(html)
     assert data[0] == [1, 1.5, "hello"]
     assert data[1][1] == "___NaN___"
+
+
+def test_column_defs(df):
+    column_defs = get_grid_options(to_html_aggrid(df))["columnDefs"]
+    assert column_defs[0]["field"] == "c0"
+    # numeric columns are right-aligned and get a number filter
+    assert column_defs[0]["type"] == "rightAligned"
+    assert column_defs[1]["filter"] == "agNumberColumnFilter"
+    assert "type" not in column_defs[2]
 
 
 def test_ag_grid_url_in_html(df):
@@ -44,37 +62,49 @@ def test_ag_grid_url_in_html(df):
 def test_downsampling_warning():
     big = pd.DataFrame({"a": range(10000)})
     html = to_html_aggrid(big, maxRows=20)
-    grid_args = get_grid_args(html)
-    assert "downsampled" in grid_args["downsampling_warning"]
-    assert len(json.loads(grid_args["data_json"])) == 20
+    assert "pyaggrid-downsampling-warning" in html
+    assert "downsampled" in html
+    assert len(get_data(html)) == 20
+
+
+def test_no_downsampling_warning_on_small_tables(df):
+    html = to_html_aggrid(df)
+    assert "pyaggrid-downsampling-warning" not in html
 
 
 def test_named_index_is_shown():
     df = pd.DataFrame({"a": [1, 2]}, index=pd.Index(["x", "y"], name="idx"))
-    grid_args = get_grid_args(to_html_aggrid(df))
-    assert grid_args["columns"] == ["idx", "a"]
+    assert get_header_names(to_html_aggrid(df)) == ["idx", "a"]
 
 
 def test_trivial_index_is_not_shown(df):
-    grid_args = get_grid_args(to_html_aggrid(df))
-    assert grid_args["columns"] == ["a", "b", "x"]
+    assert get_header_names(to_html_aggrid(df)) == ["a", "b", "x"]
 
 
 def test_pagination_is_deactivated_on_small_tables(df):
-    grid_args = get_grid_args(to_html_aggrid(df))
-    assert "pagination" not in grid_args["grid_options"]
+    grid_options = get_grid_options(to_html_aggrid(df))
+    assert "pagination" not in grid_options
 
     big = pd.DataFrame({"a": range(100)})
-    grid_args = get_grid_args(to_html_aggrid(big, maxBytes=0))
-    assert grid_args["grid_options"]["pagination"] is True
+    grid_options = get_grid_options(to_html_aggrid(big, maxBytes=0))
+    assert grid_options["pagination"] is True
 
 
 def test_javascript_function_is_evaluated(df):
     html = to_html_aggrid(
         df, getRowStyle=JavascriptFunction("function (params) { return null; }")
     )
-    grid_args = get_grid_args(html)
-    assert grid_args["keys_to_be_evaluated"] == [["getRowStyle"]]
+    grid_options = get_grid_options(html)
+    assert grid_options["keys_to_be_evaluated"] == [["getRowStyle"]]
+
+
+def test_script_content_is_escaped():
+    df = pd.DataFrame({"a": ["</script>"]})
+    html = to_html_aggrid(df)
+    # in the raw HTML the cell value is escaped, so only the template's
+    # own closing tag appears; the JSON escape resolves back to the value
+    assert html.count("</script>") == 1
+    assert get_data(html) == [["</script>"]]
 
 
 def test_table_id(df):
@@ -86,8 +116,8 @@ def test_table_id(df):
 
 
 def test_theme(df):
-    grid_args = get_grid_args(to_html_aggrid(df, theme="balham"))
-    assert grid_args["theme"] == "balham"
+    grid_options = get_grid_options(to_html_aggrid(df, theme="balham"))
+    assert grid_options["theme"] == "balham"
 
 
 def test_undocumented_option_warns(df):
@@ -114,9 +144,11 @@ def test_init_notebook_mode(df):
 def test_polars():
     pl = pytest.importorskip("polars")
     df = pl.DataFrame({"a": [1, 2], "b": ["x", "y"]})
-    grid_args = get_grid_args(to_html_aggrid(df))
-    assert grid_args["columns"] == ["a", "b"]
-    assert json.loads(grid_args["data_json"]) == [[1, "x"], [2, "y"]]
+    html = to_html_aggrid(df)
+    assert get_header_names(html) == ["a", "b"]
+    assert get_data(html) == [[1, "x"], [2, "y"]]
+    # the numeric column is right aligned
+    assert get_grid_options(html)["columnDefs"][0]["type"] == "rightAligned"
 
 
 def test_shared_core_with_pydatatables():
