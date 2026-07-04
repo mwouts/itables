@@ -1,0 +1,2 @@
+itables>=2.2
+shiny

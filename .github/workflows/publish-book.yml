@@ -51,17 +51,28 @@ jobs:
 
     - name: Render the quarto examples
       run: |
-        for qmd_file in `ls docs/quarto/*.qmd`; do quarto render ${qmd_file}; done
+        for qmd_file in `ls docs/*/quarto/*.qmd`; do quarto render ${qmd_file}; done
 
-    # Build the two books (pydatatables at the site root, pyaggrid under /pyaggrid)
+    # Build the three books: the historical ITables book stays at the site
+    # root (so the existing links keep working), and the PyDataTables and
+    # PyAgGrid books are published under /pydatatables and /pyaggrid
+    - name: Build the ITables book
+      run: |
+        jupyter-book build docs/itables
+
     - name: Build the PyDataTables book
       run: |
-        jupyter-book build docs
+        jupyter-book build docs/pydatatables
 
     - name: Build the PyAgGrid book
       run: |
         jupyter-book build docs/pyaggrid
-        rm -rf docs/_build/html/pyaggrid
+
+    - name: Assemble the website
+      run: |
+        mkdir -p docs/_build
+        cp -r docs/itables/_build/html docs/_build/html
+        cp -r docs/pydatatables/_build/html docs/_build/html/pydatatables
         cp -r docs/pyaggrid/_build/html docs/_build/html/pyaggrid
 
     # Upload the book's HTML as an artifact

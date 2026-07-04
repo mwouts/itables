@@ -20,8 +20,8 @@ exclude_lines = [
 [tool.pyright]
 typeCheckingMode = "standard"
 ignore = [
-    "apps/marimo",
-    "apps/panel",
+    "apps/*/marimo",
+    "apps/*/panel",
     "python/pydatatables/src/pydatatables_for_dash/DataTable.py",
     "research",
 ]

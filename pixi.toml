@@ -19,6 +19,12 @@ jupyter-book = ">=1,<2"
 [feature.docs.pypi-dependencies]
 sphinxext-rediraffe = "*"
 
+[feature.docs.tasks]
+docs-itables = "jupyter-book build docs/itables"
+docs-pydatatables = "jupyter-book build docs/pydatatables"
+docs-pyaggrid = "jupyter-book build docs/pyaggrid"
+docs = { depends-on = ["docs-itables", "docs-pydatatables", "docs-pyaggrid"] }
+
 [feature.build.dependencies]
 nodejs = ">=20"
 pip = "*"

@@ -12,5 +12,5 @@ cp binder/labconfig/* ${HOME}/.jupyter/labconfig
 python -m ipykernel install --name itables --user
 
 # Use that kernel for the documentation notebooks
-jupytext docs/*.md --set-kernel itables
+find docs -name "*.md" -not -path "docs/py/*" -exec jupytext --set-kernel itables {} +
 jupytext README.md --set-kernel itables

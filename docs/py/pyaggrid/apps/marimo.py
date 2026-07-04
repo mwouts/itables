@@ -35,4 +35,4 @@
 # ```
 #
 # A sample Marimo application is available at
-# [`apps/marimo/pyaggrid.py`](https://github.com/mwouts/itables/tree/main/apps/marimo/pyaggrid.py).
+# [`apps/pyaggrid/marimo/app.py`](https://github.com/mwouts/itables/tree/main/apps/pyaggrid/marimo/app.py).

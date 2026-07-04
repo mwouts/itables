@@ -1,0 +1,136 @@
+# ---
+# jupyter:
+#   jupytext:
+#     default_lexer: ipython3
+#     formats: docs///md:myst,docs/py///py:percent
+#     notebook_metadata_filter: -jupytext.text_representation.jupytext_version
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#   kernelspec:
+#     display_name: itables
+#     language: python
+#     name: itables
+# ---
+
+# %% [markdown]
+# # Polars dataframes
+#
+# In this notebook we make sure that our test [Polars](https://www.pola.rs/)
+# dataframes are displayed nicely with the default `itables` settings.
+
+# %%
+import polars as pl
+
+import itables
+
+dict_of_test_dfs = itables.sample_polars_dfs.get_dict_of_test_dfs()
+itables.init_notebook_mode()
+
+# %% [markdown]
+# ## empty
+
+# %%
+itables.show(dict_of_test_dfs["empty"])
+
+# %% [markdown]
+# ## No rows
+
+# %%
+itables.show(dict_of_test_dfs["no_rows"])
+
+# %% [markdown]
+# ## bool
+
+# %%
+itables.show(dict_of_test_dfs["bool"])
+
+# %% [markdown]
+# ## Nullable boolean
+
+# %%
+itables.show(dict_of_test_dfs["nullable_boolean"])
+
+# %% [markdown]
+# ## int
+
+# %%
+itables.show(dict_of_test_dfs["int"])
+
+# %% [markdown]
+# ## Nullable integer
+
+# %%
+itables.show(dict_of_test_dfs["nullable_int"])
+
+# %% [markdown]
+# ## float
+
+# %%
+itables.show(dict_of_test_dfs["float"])
+
+# %% [markdown]
+# ## float_types
+
+# %%
+itables.show(dict_of_test_dfs["float_types"])
+
+# %% [markdown]
+# ## Ordered floats
+
+# %%
+itables.show(
+    pl.DataFrame(
+        {"float": [float("nan"), float("inf")] + [float(x) for x in range(18)]}
+    ),
+    order=[[0, "asc"]],
+)
+
+# %% [markdown]
+# ## str
+
+# %%
+itables.show(dict_of_test_dfs["str"])
+
+# %% [markdown]
+# ## time
+
+# %%
+itables.show(dict_of_test_dfs["time"])
+
+# %% [markdown]
+# ## ordered_categories
+
+# %%
+itables.show(dict_of_test_dfs["ordered_categories"])
+
+# %% [markdown]
+# ## countries
+
+# %% tags=["full-width"]
+itables.show(dict_of_test_dfs["countries"])
+
+# %% [markdown]
+# ## int_float_str
+
+# %%
+itables.show(dict_of_test_dfs["int_float_str"])
+
+# %% [markdown]
+# ## wide
+
+# %% tags=["full-width"]
+itables.show(dict_of_test_dfs["wide"], maxBytes=100000, maxColumns=100)
+
+# %% [markdown]
+# ## long_column_names
+
+# %% tags=["full-width"]
+itables.show(dict_of_test_dfs["long_column_names"])
+
+# %% [markdown]
+# ## big_integers
+
+# %%
+itables.show(dict_of_test_dfs["big_integers"])

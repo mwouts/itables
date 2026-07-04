@@ -96,4 +96,4 @@ pyaggrid.show(
 Unlike `pydatatables`, `pyaggrid` cannot render
 [Pandas Style](https://pandas.pydata.org/docs/user_guide/style.html)
 objects. If you need them, use
-[`pydatatables`](../../pandas_style.html).
+[`pydatatables`](../pydatatables/pandas_style.html).

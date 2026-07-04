@@ -7,10 +7,11 @@ import pytest
 from pydatatables.downsample import downsample
 from pydatatables.shiny import DataTable
 
-SHINY_APPS_PATH = Path(__file__).parent / ".." / ".." / "apps" / "shiny"
+SHINY_APPS_PATH = Path(__file__).parent / ".." / ".." / "apps"
 SHINY_APPS_PY_FILES = [
-    f"{directory.name}/{file.stem}"
-    for directory in SHINY_APPS_PATH.iterdir()
+    f"{shiny_dir.parent.name}/shiny/{directory.name}/{file.stem}"
+    for shiny_dir in SHINY_APPS_PATH.glob("*/shiny")
+    for directory in shiny_dir.iterdir()
     if directory.is_dir()
     for file in directory.iterdir()
     if file.suffix == ".py"
@@ -58,7 +59,7 @@ def shiny_app(request) -> str:
 def test_shiny_apps_exist():
     assert (
         len(SHINY_APPS_PY_FILES) > 0
-    ), "No Shiny apps found in the apps/shiny directory."
+    ), "No Shiny apps found in the apps/*/shiny directories."
 
 
 def test_shiny_apps_are_valid_python_scripts(

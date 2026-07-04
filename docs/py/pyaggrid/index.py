@@ -31,9 +31,9 @@
 # [AG Grid](https://www.ag-grid.com/) tables.
 #
 # `pyaggrid` is developed in the [ITables](https://github.com/mwouts/itables)
-# project, together with [`pydatatables`](../index.html) - the
+# project, together with [`pydatatables`](../pydatatables/index.html) - the
 # [DataTables](https://datatables.net/) renderer. The two packages share
-# their core functions ([downsampling](../downsampling.html), value
+# their core functions ([downsampling](downsampling.html), value
 # formatting) through the `itables_core` package, and accept the same
 # dataframes and the same `maxBytes`/`maxRows`/`maxColumns`/`showIndex`
 # arguments - but the tables are rendered with AG Grid, with the AG Grid
@@ -142,7 +142,7 @@ pyaggrid.options.maxBytes = "64KB"
 # ## Downsampling
 #
 # Like with `pydatatables`, large tables are
-# [downsampled](../downsampling.html) before being rendered, and a message
+# [downsampled](downsampling.html) before being rendered, and a message
 # is displayed below the table:
 
 # %% tags=["full-width"]
@@ -163,19 +163,19 @@ pyaggrid.show(wide_df)
 #
 # ## Current limitations
 #
-# Compared to [`pydatatables`](../index.html), the `pyaggrid` package does
+# Compared to [`pydatatables`](../pydatatables/index.html), the `pyaggrid` package does
 # not yet offer:
 #
 # - an offline mode: AG Grid Community is loaded from the URL set in
 #   `pyaggrid.options.ag_grid_url` (jsDelivr by default)
-# - native Jupyter Widget, [Dash](../apps/dash.html),
-#   [Streamlit](../apps/streamlit.html) or [Shiny](../apps/shiny.html)
+# - native Jupyter Widget, [Dash](../pydatatables/apps/dash.html),
+#   [Streamlit](../pydatatables/apps/streamlit.html) or [Shiny](../pydatatables/apps/shiny.html)
 #   components
-# - the [pandas style](../pandas_style.html) support or the export
-#   [buttons](../options/buttons.html) of DataTables (AG Grid Community has
+# - the [pandas style](../pydatatables/pandas_style.html) support or the export
+#   [buttons](../pydatatables/options/buttons.html) of DataTables (AG Grid Community has
 #   its own per-column filters and CSV export)
 #
-# If you need one of these, use [`pydatatables`](../index.html), or open an
+# If you need one of these, use [`pydatatables`](../pydatatables/index.html), or open an
 # issue at [ITables](https://github.com/mwouts/itables/issues) to let us know!
 #
 # ## Licence

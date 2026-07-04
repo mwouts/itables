@@ -2,7 +2,7 @@
 
 PyAgGrid is developed in the [ITables](https://github.com/mwouts/itables)
 repository, in the `python/pyaggrid` folder. The
-[contributing](../contributing.html) and [developing](../developing.html)
+[contributing](../pydatatables/contributing.html) and [developing](../pydatatables/developing.html)
 guides of the ITables project apply.
 
 Compared to `pydatatables`, the `pyaggrid` package is younger and simpler:

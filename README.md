@@ -19,6 +19,11 @@ scroll, search and filter them.
 ITables is just about how tables are displayed. You can turn it on and off in
 just two lines, with no other impact on your data workflow.
 
+> **PyDataTables is the new name for ITables.** Same package, same functions,
+> new name. The historical `itables` package still works - it is now a thin
+> wrapper around `pydatatables` - and new projects should prefer
+> `pydatatables` directly.
+
 ## Two renderers: DataTables and AG Grid
 
 The ITables project offers **two rendering packages** with the same Python API,
@@ -100,11 +105,16 @@ The ITables project is developed in this repository and is distributed as severa
 
 ## Documentation
 
-Each renderer has its own documentation website, with the full dataframe
-examples rendered with that renderer:
+Each package has its own documentation website, with the full dataframe
+examples rendered with the corresponding renderer:
 
-- [PyDataTables documentation](https://mwouts.github.io/itables/)
+- [ITables documentation](https://mwouts.github.io/itables/) - the historical website, documenting the `itables` package
+- [PyDataTables documentation](https://mwouts.github.io/itables/pydatatables/)
 - [PyAgGrid documentation](https://mwouts.github.io/itables/pyaggrid/)
+
+Similarly, the [example apps](apps) for Dash, Marimo, Panel, Shiny and
+Streamlit come in three collections: [`apps/itables`](apps/itables),
+[`apps/pydatatables`](apps/pydatatables) and [`apps/pyaggrid`](apps/pyaggrid).
 
 ## ITables in Notebooks
 

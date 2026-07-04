@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "/home/marc/GitHub/itables/apps/shiny/itables_DT",
+        "app_url": "https://itables.shinyapps.io/itables_dt/",
+        "app_id": 12865873,
+        "app_guid": null,
+        "title": "itables_DT",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}

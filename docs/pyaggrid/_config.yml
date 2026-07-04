@@ -16,7 +16,7 @@ html:
   use_edit_page_button: true
   use_repository_button: true
   use_issues_button: true
-  announcement: 'PyAgGrid is the AG Grid renderer of the ITables project - see also <a href="../index.html">PyDataTables</a>, the DataTables renderer'
+  announcement: 'PyAgGrid is the AG Grid renderer of the ITables project - see also <a href="../pydatatables/index.html">PyDataTables</a>, the DataTables renderer'
 launch_buttons:
   notebook_interface: "jupyterlab"
   binderhub_url: "https://mybinder.org"

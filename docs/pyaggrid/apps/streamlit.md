@@ -4,7 +4,7 @@ PyAgGrid does not have a native Streamlit component yet, so we embed the
 HTML representation returned by `to_html_aggrid` with
 `st.components.v1.html`, like in this example:
 
-```{include} ../../../apps/streamlit/pyaggrid_app.py
+```{include} ../../../apps/pyaggrid/streamlit/app.py
 :code: python
 ```
 
@@ -15,6 +15,6 @@ Please note that:
 ```{tip}
 See also the [streamlit-aggrid](https://github.com/PablocFonseca/streamlit-aggrid)
 package for a native AG Grid component in Streamlit, and the
-`datatable` component of [`pydatatables`](../../apps/streamlit.html)
+`datatable` component of [`pydatatables`](../../pydatatables/apps/streamlit.html)
 for the DataTables look with selection callbacks.
 ```
