@@ -18,7 +18,7 @@
 # pyright: reportUnusedExpression=false
 
 # %% [markdown]
-# ![ITables Logo](../src/itables/logo/text.svg)
+# ![ITables Logo](../python/pydatatables/src/pydatatables/logo/text.svg)
 #
 # [![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)](https://github.com/mwouts/itables/actions)
 # [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)

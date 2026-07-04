@@ -9,8 +9,8 @@ mkdir -p ${HOME}/.jupyter/labconfig
 cp binder/labconfig/* ${HOME}/.jupyter/labconfig
 
 # Install a kernel called pydatatables
-python -m ipykernel install --name pydatatables --user
+python -m ipykernel install --name itables --user
 
 # Use that kernel for the documentation notebooks
-jupytext docs/*.md --set-kernel pydatatables
-jupytext README.md --set-kernel pydatatables
+jupytext docs/*.md --set-kernel itables
+jupytext README.md --set-kernel itables

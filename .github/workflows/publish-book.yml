@@ -44,7 +44,7 @@ jobs:
     - name: Create a kernel
       run: |
         pip install ipykernel
-        python -m ipykernel install --name pydatatables --user
+        python -m ipykernel install --name itables --user
 
     - name: Install Quarto
       uses: quarto-dev/quarto-actions/setup@v2
