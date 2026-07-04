@@ -16,15 +16,10 @@ except ImportError:
 
 def list_doc_notebooks():
     documentation_folder = Path(__file__).parent / ".." / ".." / "docs"
-    for path in documentation_folder.iterdir():
-        if path.suffix == ".md":
-            yield path
-        if path.is_dir():
-            if path.name == ".ipynb_checkpoints":
-                continue
-            for file in path.iterdir():
-                if file.suffix == ".md":
-                    yield file
+    for path in documentation_folder.rglob("*.md"):
+        if any(part in {".ipynb_checkpoints", "_build"} for part in path.parts):
+            continue
+        yield path
 
 
 @pytest.mark.parametrize(

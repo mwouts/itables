@@ -1,7 +1,26 @@
 format: jb-book
 root: index
 parts:
+  - caption: Using PyAgGrid
+    chapters:
+      - file: apps/notebook
+      - file: apps/html
+      - file: apps/marimo
+      - file: apps/dash
+      - file: apps/streamlit
+      - file: apps/shiny
+  - caption: More about PyAgGrid
+    chapters:
+      - file: downsampling
+      - file: formatting
+      - file: other_dataframes
+      - file: references
+      - file: supported_editors
   - caption: Examples
     chapters:
       - file: pandas_dataframes
       - file: polars_dataframes
+  - caption: Project
+    chapters:
+      - file: contributing
+      - file: changelog
