@@ -20,10 +20,20 @@ jupyter-book = ">=1,<2"
 sphinxext-rediraffe = "*"
 
 [feature.docs.tasks]
+# Each of the three books is a standalone website. The 'docs' task builds
+# them all and assembles the full website (with the cross-site links
+# working) in docs/_build/html, like the publish-book workflow does.
 docs-itables = "jupyter-book build docs/itables"
 docs-pydatatables = "jupyter-book build docs/pydatatables"
 docs-pyaggrid = "jupyter-book build docs/pyaggrid"
-docs = { depends-on = ["docs-itables", "docs-pydatatables", "docs-pyaggrid"] }
+docs = { cmd = """
+rm -rf docs/_build
+&& mkdir -p docs/_build
+&& cp -r docs/itables/_build/html docs/_build/html
+&& cp -r docs/pydatatables/_build/html docs/_build/html/pydatatables
+&& cp -r docs/pyaggrid/_build/html docs/_build/html/pyaggrid
+&& echo "The full website is in docs/_build/html - open docs/_build/html/index.html"
+""", depends-on = ["docs-itables", "docs-pydatatables", "docs-pyaggrid"] }
 
 [feature.build.dependencies]
 nodejs = ">=20"

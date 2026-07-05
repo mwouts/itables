@@ -56,16 +56,20 @@ you need to create a Jupyter kernel named `itables` with
 ```shell
 python -m ipykernel install --name itables --user
 ```
-Then you can build the three books with
+Then you can build the full website (the three books, assembled like on
+https://mwouts.github.io/itables/) with
 ```
 pixi run -e docs docs
 ```
-or a single one with e.g.
+and open `docs/_build/html/index.html` in your browser.
+
+You can also build a single book with e.g.
 ```
 pixi run -e docs docs-pydatatables
 ```
-
-This will give you a link to a local version of the documentation.
+which outputs to `docs/pydatatables/_build/html` - but note that the
+links to the other websites (e.g. the announcement banner) only work
+in the assembled website produced by the `docs` task.
 
 If you make any significant change then you should go through
 the updated documentation and make sure all the examples
