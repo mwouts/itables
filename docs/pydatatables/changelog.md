@@ -26,6 +26,10 @@ ITables ChangeLog
   It supports Pandas and Polars DataFrames (plus more through Narwhals),
   downsampling with `maxBytes`/`maxRows`/`maxColumns`, the AG Grid options,
   and `JavascriptFunction` arguments.
+- Like `pydatatables`, `pyaggrid` provides a Jupyter Widget
+  (`pyaggrid.widget.AgGrid`, which also works in Marimo and Shiny), a Dash
+  component (`pyaggrid.dash.AgGrid`) and a Streamlit component
+  (`pyaggrid.streamlit.aggrid`), with row selection support.
 
 
 2.8.1 (2026-06-10)

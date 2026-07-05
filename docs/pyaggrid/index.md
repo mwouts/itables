@@ -167,22 +167,26 @@ pyaggrid.show(wide_df)
 
 ## PyAgGrid in applications
 
-The [example apps](https://github.com/mwouts/itables/tree/main/apps) of the
-ITables repository include pyaggrid examples for Streamlit, Dash, Shiny and
-Marimo. As pyaggrid does not have native components for these frameworks
-yet, the examples embed the HTML representation returned by
-`to_html_aggrid`.
+PyAgGrid is also available as
+- a [Jupyter Widget](apps/widget.md) (which also works in [Marimo](apps/marimo.md)
+  and [Shiny](apps/shiny.md))
+- a [Dash](apps/dash.md) component
+- a [Streamlit](apps/streamlit.md) component.
+
+The corresponding example apps are at
+[`apps/pyaggrid`](https://github.com/mwouts/itables/tree/main/apps/pyaggrid).
+Unlike `show`, the components come with their own copy of AG Grid, so they
+work offline.
 
 ## Current limitations
 
 Compared to [`pydatatables`](../pydatatables/index.html), the `pyaggrid` package does
 not yet offer:
 
-- an offline mode: AG Grid Community is loaded from the URL set in
-  `pyaggrid.options.ag_grid_url` (jsDelivr by default)
-- native Jupyter Widget, [Dash](../pydatatables/apps/dash.html),
-  [Streamlit](../pydatatables/apps/streamlit.html) or [Shiny](../pydatatables/apps/shiny.html)
-  components
+- an offline mode for `show` and `to_html_aggrid`: AG Grid Community is
+  loaded from the URL set in `pyaggrid.options.ag_grid_url` (jsDelivr by
+  default). The widget, Dash and Streamlit components are not affected -
+  they come with their own copy of AG Grid
 - the [pandas style](../pydatatables/pandas_style.html) support or the export
   [buttons](../pydatatables/options/buttons.html) of DataTables (AG Grid Community has
   its own per-column filters and CSV export)

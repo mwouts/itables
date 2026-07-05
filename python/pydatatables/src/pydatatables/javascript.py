@@ -18,6 +18,7 @@ from itables_core.formatting import (
     get_keys_to_be_evaluated,
 )
 from itables_core.frames import evaluate_show_index as _evaluate_show_index
+from itables_core.frames import warn_if_selected_rows_are_not_visible
 from itables_core.frames import safe_reset_index
 
 from .typing import (
@@ -824,54 +825,6 @@ def get_pydatatables_extension_arguments(
         "selected_rows": dt_args.pop("selected_rows", []),
     }
     return dt_args, other_args
-
-
-def warn_if_selected_rows_are_not_visible(
-    selected_rows: Optional[Sequence[int]],
-    full_row_count: int,
-    data_row_count: int,
-    warn_on_selected_rows_not_rendered: bool,
-) -> Sequence[int]:
-    """
-    Issue a warning if the selected rows are not within the range of rendered rows.
-    """
-    if selected_rows is None:
-        return []
-
-    if not all(isinstance(i, int) for i in selected_rows):
-        raise TypeError("Selected rows must be integers")
-
-    if selected_rows and (
-        min(selected_rows) < 0 or max(selected_rows) >= full_row_count
-    ):
-        raise IndexError("Selected rows out of range")
-
-    if full_row_count == data_row_count:
-        return selected_rows
-
-    second_half = data_row_count // 2
-    first_half = data_row_count - second_half
-    assert first_half >= second_half
-
-    bottom_limit = first_half
-    top_limit = full_row_count - second_half
-
-    if warn_on_selected_rows_not_rendered and any(
-        bottom_limit <= i < top_limit for i in selected_rows
-    ):
-        not_shown = [i for i in selected_rows if bottom_limit <= i < top_limit]
-        not_shown = ", ".join(
-            [str(i) for i in not_shown[:6]] + (["..."] if len(not_shown) > 6 else [])
-        )
-        warnings.warn(
-            f"This table has been downsampled, see https://mwouts.github.io/itables/downsampling.html. "
-            f"Only {data_row_count} of the original {full_row_count} rows are rendered. "
-            f"In particular these rows: [{not_shown}] cannot be selected "
-            f"(more generally, no row with index between {bottom_limit} and {top_limit-1} "
-            "can be selected). Hint: increase maxBytes if appropriate - see link above."
-        )
-
-    return [i for i in selected_rows if i < bottom_limit or i >= top_limit]
 
 
 def check_table_id(

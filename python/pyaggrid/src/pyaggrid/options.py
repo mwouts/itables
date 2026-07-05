@@ -60,6 +60,10 @@ ag_grid_url: str = utils.AG_GRID_ESM_URL
 """Should a warning appear when we have to encode an unexpected type?"""
 warn_on_unexpected_types: bool = True
 
+"""Should a warning appear when the selection targets rows that have been
+filtered by the downsampling?"""
+warn_on_selected_rows_not_rendered: bool = True
+
 """Display a warning if the private Polars formatting method is not found"""
 warn_on_polars_get_fmt_not_found: bool = True
 

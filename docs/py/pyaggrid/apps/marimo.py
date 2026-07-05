@@ -20,19 +20,31 @@
 # The `init_notebook_mode` and the `show` functions do not work in Marimo. This is because they both use `IPython.display` to display the HTML representation of the table, which is not a good fit for Marimo.
 # ```
 #
-# In Marimo, use `to_html_aggrid` in combination with `mo.iframe`:
+# In Marimo the recommended way to use PyAgGrid is through the `AgGrid`
+# [widget](widget.md):
 #
 # ```python
-# import marimo as mo
+# import pandas as pd
 #
-# from itables_core.sample_dfs import get_dict_of_test_dfs
-# from pyaggrid import to_html_aggrid
+# from pyaggrid.widget import AgGrid
 #
-# df = get_dict_of_test_dfs()["int_float_str"]
+# df = pd.DataFrame({"x": [2, 1, 3]})
 #
-# html = to_html_aggrid(df)
-# mo.iframe(html)
+# AgGrid(df)
 # ```
 #
 # A sample Marimo application is available at
 # [`apps/pyaggrid/marimo/app.py`](https://github.com/mwouts/itables/tree/main/apps/pyaggrid/marimo/app.py).
+#
+# ## Using HTML
+#
+# You can also use `to_html_aggrid` in combination with `mo.iframe`:
+#
+# ```python
+# import marimo as mo
+#
+# from pyaggrid import to_html_aggrid
+#
+# html = to_html_aggrid(df)
+# mo.iframe(html)
+# ```

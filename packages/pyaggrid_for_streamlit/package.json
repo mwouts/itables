@@ -1,0 +1,16 @@
+{
+  "name": "pyaggrid_for_streamlit",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "pyaggrid": "file:../pyaggrid"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.9"
+  },
+  "scripts": {
+    "build:js": "esbuild src/index.js --bundle --minify --format=esm --outdir=../../python/pyaggrid/src/pyaggrid/pyaggrid_for_streamlit",
+    "build:css": "esbuild src/index.css --bundle --outdir=../../python/pyaggrid/src/pyaggrid/pyaggrid_for_streamlit",
+    "build": "npm run build:js && npm run build:css"
+  }
+}

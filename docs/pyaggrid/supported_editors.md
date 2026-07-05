@@ -2,8 +2,9 @@
 
 PyAgGrid generates plain HTML snippets that load AG Grid as an ES module,
 so it works in the same environments as `pydatatables` - with the
-difference that an internet connection is required (there is no offline
-mode yet).
+difference that `show` requires an internet connection (the widget, Dash
+and Streamlit components come with their own copy of AG Grid and work
+offline).
 
 ## Jupyter Notebook and Jupyter Lab
 

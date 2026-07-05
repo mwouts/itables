@@ -1,0 +1,14 @@
+{
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build:js": "esbuild js/widget.js --format=esm --bundle --minify --outdir=../../python/pyaggrid/src/pyaggrid/widget/static",
+		"build:css": "esbuild js/widget.css --bundle --minify --outdir=../../python/pyaggrid/src/pyaggrid/widget/static",
+		"build": "npm run build:js && npm run build:css"
+	},
+	"dependencies": {
+		"pyaggrid": "file:../pyaggrid"
+	},
+	"devDependencies": {
+		"esbuild": "^0.25.9"
+	}
+}

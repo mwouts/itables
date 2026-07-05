@@ -5,14 +5,14 @@ repository, in the `python/pyaggrid` folder. The
 [contributing](../pydatatables/contributing.html) and [developing](../pydatatables/developing.html)
 guides of the ITables project apply.
 
-Compared to `pydatatables`, the `pyaggrid` package is younger and simpler:
-it has no JavaScript build step - the HTML template at
-`python/pyaggrid/src/pyaggrid/html/aggrid_template.html` loads AG Grid
-Community as an ES module from a CDN.
+The `show` function renders the HTML template at
+`python/pyaggrid/src/pyaggrid/html/aggrid_template.html`, which loads AG Grid
+Community as an ES module from a CDN. The Jupyter Widget, Dash and Streamlit
+components are built from the JavaScript packages at
+`packages/pyaggrid*` (run `npm run build-pyaggrid` in `packages/`).
 
 Contributions are welcome! Some ideas:
-- an offline mode, similar to the one of `pydatatables`
-- native Jupyter Widget, Dash, Streamlit or Shiny components
+- an offline mode for `show`, similar to the one of `pydatatables`
 - support for more AG Grid features (grouped column headers for
   MultiIndex columns, custom themes, ...)
 

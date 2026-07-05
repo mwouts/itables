@@ -8,7 +8,13 @@ directly in [Shiny](https://shiny.posit.co/py/) applications with
 :code: python
 ```
 
-```{tip}
-If you need to react to the selected rows, use the `ITable` widget of
-[`pydatatables`](../../pydatatables/apps/shiny.html) instead.
+## The AgGrid widget in Shiny
+
+If you need to react to the selected rows, use the `AgGrid`
+[widget](widget.md) through
+[shinywidgets](https://shiny.posit.co/py/docs/jupyter-widgets.html),
+like in this example:
+
+```{include} ../../../apps/pyaggrid/shiny/aggrid_widget/app.py
+:code: python
 ```

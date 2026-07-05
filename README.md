@@ -34,8 +34,8 @@ but a different look, feel and set of options:
 | Rendering library | [DataTables](https://datatables.net/) (MIT) | [AG Grid Community](https://www.ag-grid.com/) (MIT) |
 | Look | The classic DataTables look, with [style classes](https://mwouts.github.io/itables/options/classes.html) | The modern AG Grid themes: `quartz`, `balham`, `material`, `alpine` |
 | Options | The [DataTables options](https://datatables.net/reference/option/): `layout`, `buttons`, `searchPanes`, `rowGroup`, ... | The [AG Grid options](https://www.ag-grid.com/javascript-data-grid/grid-options/): `columnDefs`, `rowSelection`, `quickFilterText`, ... |
-| Offline mode | Yes (`init_notebook_mode(connected=False)`) | Not yet (AG Grid is loaded from jsDelivr) |
-| Jupyter Widget, Dash, Streamlit, Shiny components | Yes | Not yet |
+| Offline mode | Yes (`init_notebook_mode(connected=False)`) | Only in the components (`show` loads AG Grid from jsDelivr) |
+| Jupyter Widget, Dash, Streamlit, Shiny components | Yes | Yes |
 | Maturity | Stable - this is the historical ITables renderer | New |
 
 Both packages share the same core functions through [`itables_core`](python/itables_core):
@@ -131,13 +131,11 @@ ITables works well in VS Code, both in Jupyter Notebooks and in interactive Pyth
 
 ## ITables in Python applications
 
-The DataTables renderer (`pydatatables`) is also available as
-- a [Jupyter Widget](https://mwouts.github.io/itables/apps/widget.html)
-- a [Dash](https://mwouts.github.io/itables/apps/dash.html) component
-- a [Streamlit](https://mwouts.github.io/itables/apps/streamlit.html) component,
-- and it also works in [Shiny](https://mwouts.github.io/itables/apps/shiny.html) applications.
-
-The corresponding `pyaggrid` components are not available yet.
+Both renderers are also available as
+- a [Jupyter Widget](https://mwouts.github.io/itables/pydatatables/apps/widget.html)
+- a [Dash](https://mwouts.github.io/itables/pydatatables/apps/dash.html) component
+- a [Streamlit](https://mwouts.github.io/itables/pydatatables/apps/streamlit.html) component,
+- and they also work in [Shiny](https://mwouts.github.io/itables/pydatatables/apps/shiny.html) applications.
 
 ## Licence
 

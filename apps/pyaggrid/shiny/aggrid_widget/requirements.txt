@@ -1,0 +1,3 @@
+pyaggrid[pandas,widget]
+shiny
+shinywidgets

@@ -40,11 +40,16 @@ be changed in `pyaggrid.options`.
 Large tables are downsampled to `maxBytes` (64KB by default) before being
 rendered, exactly like in `pydatatables`.
 
+PyAgGrid is also available as a Jupyter Widget (`pyaggrid.widget.AgGrid`,
+which also works in Marimo and Shiny), a Dash component (`pyaggrid.dash.AgGrid`)
+and a Streamlit component (`pyaggrid.streamlit.aggrid`) - install the
+corresponding extras, e.g. `pip install pyaggrid[widget]`.
+
 ## Notes
 
-- `pyaggrid` loads AG Grid Community from the URL set in
-  `pyaggrid.options.ag_grid_url` (jsDelivr by default). An offline mode
-  similar to the one of `pydatatables` is not available yet.
+- `pyaggrid.show` loads AG Grid Community from the URL set in
+  `pyaggrid.options.ag_grid_url` (jsDelivr by default). The widget, Dash and
+  Streamlit components come with their own copy of AG Grid and work offline.
 - The rows passed to AG Grid are arrays, not objects. The generated column
   definitions use a `valueGetter` and a `colId` equal to `"c" + column_index`.
   If you pass your own `columnDefs`, they replace the generated ones, so use

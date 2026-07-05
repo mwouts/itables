@@ -94,6 +94,7 @@ class PyAgGridOptions(AgGridOptions):
 
     classes: NotRequired[Union[str, Sequence[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
+    selected_rows: NotRequired[Sequence[int]]
 
     showIndex: NotRequired[Union[bool, Literal["auto"]]]
     show_df_type: NotRequired[bool]
@@ -107,6 +108,7 @@ class PyAgGridOptions(AgGridOptions):
     theme: NotRequired[Literal["quartz", "balham", "material", "alpine"]]
 
     warn_on_unexpected_types: NotRequired[bool]
+    warn_on_selected_rows_not_rendered: NotRequired[bool]
     warn_on_polars_get_fmt_not_found: NotRequired[bool]
     warn_on_undocumented_option: NotRequired[bool]
     warn_on_unexpected_option_type: NotRequired[bool]

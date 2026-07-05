@@ -13,7 +13,11 @@ from itables_core.formatting import (
     generate_encoder,
     get_keys_to_be_evaluated,
 )
-from itables_core.frames import evaluate_show_index, safe_reset_index
+from itables_core.frames import (
+    evaluate_show_index,
+    safe_reset_index,
+    warn_if_selected_rows_are_not_visible,
+)
 from itables_core.typing import (
     get_dataframe_module_and_type_name,
     get_dataframe_type_description,
@@ -125,6 +129,29 @@ def get_compact_style(style) -> str:
         raise TypeError(f"style must be a string or a dict, not {type(style)}")
 
 
+def get_expanded_classes(classes) -> "list[str]":
+    """Convert a class string to a list"""
+    if isinstance(classes, str):
+        return classes.split()
+    elif isinstance(classes, list):
+        return classes
+    else:
+        raise TypeError(f"classes must be a string or a list, not {type(classes)}")
+
+
+def get_expanded_style(style) -> "dict[str, str]":
+    """Convert a style to a dict"""
+    if isinstance(style, dict):
+        return dict(**style)
+    elif isinstance(style, str):
+        return {
+            k.strip(): v.strip()
+            for k, v in (item.split(":") for item in style.split(";") if item.strip())
+        }
+    else:
+        raise TypeError(f"style must be a string or a dict, not {type(style)}")
+
+
 def set_default_options(kwargs: PyAgGridOptions) -> None:
     """Complement the arguments with the default values from pyaggrid.options"""
     non_options = getattr(opt, "__non_options")
@@ -192,6 +219,7 @@ def _script_safe(json_str: str) -> str:
 def get_pyaggrid_arguments(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
+    app_mode: bool = False,
     **kwargs: Unpack[PyAgGridOptions],
 ) -> "dict[str, Any]":
     """
@@ -199,10 +227,29 @@ def get_pyaggrid_arguments(
     'table_id', 'classes', 'style', 'ag_grid_url', 'caption',
     'downsampling_warning', 'data_json' and the AG Grid options
     in 'grid_options'.
+
+    In app mode (used by the widget, Dash and Streamlit components, which
+    bundle AG Grid), the 'ag_grid_url' option is not available, and
+    'selected_rows' is returned in the arguments.
     """
+    if app_mode:
+        if "ag_grid_url" in kwargs:
+            raise TypeError(
+                "The 'ag_grid_url' option is not available in the pyaggrid "
+                "components, which come with their own copy of AG Grid."
+            )
+    elif "selected_rows" in kwargs:
+        raise TypeError(
+            "The 'selected_rows' option is only available in the pyaggrid "
+            "components (widget, Dash, Streamlit)."
+        )
     set_default_options(kwargs)
     kwargs.pop("warn_on_undocumented_option", None)
     kwargs.pop("warn_on_unexpected_option_type", None)
+    selected_rows = kwargs.pop("selected_rows", [])
+    warn_on_selected_rows_not_rendered = kwargs.pop(
+        "warn_on_selected_rows_not_rendered", False
+    )
 
     df_type_description = get_dataframe_type_description(df)
     df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
@@ -239,7 +286,7 @@ def get_pyaggrid_arguments(
     table_id = check_table_id(cast(Optional[str], kwargs.pop("table_id", None)))
     classes = get_compact_classes(kwargs.pop("classes"))
     style = get_compact_style(kwargs.pop("style"))
-    ag_grid_url = kwargs.pop("ag_grid_url")
+    ag_grid_url = kwargs.pop("ag_grid_url", None)
 
     show_index = evaluate_show_index(df, kwargs.pop("showIndex"))
     show_df_type = kwargs.pop("show_df_type")
@@ -253,31 +300,45 @@ def get_pyaggrid_arguments(
         "warn_on_polars_get_fmt_not_found", True
     )
 
-    full_row_count = len(df)
-    df, downsampling_warning = downsample(
-        df,
-        max_rows=maxRows,
-        max_columns=maxColumns,
-        max_bytes=maxBytes,
-    )
+    downsampling_warning = ""
+    if df is None:
+        full_row_count = 0
+        data_json = "[]"
+    else:
+        full_row_count = len(df)
+        df, downsampling_warning = downsample(
+            df,
+            max_rows=maxRows,
+            max_columns=maxColumns,
+            max_bytes=maxBytes,
+        )
 
-    if df_module_name == "pandas":
-        if show_index:
-            df = safe_reset_index(df)
-        else:
-            df = df.reset_index(drop=True)
+        if df_module_name == "pandas":
+            if show_index:
+                df = safe_reset_index(df)
+            else:
+                df = df.reset_index(drop=True)
 
-    # No HTML escaping: AG Grid renders cell values as text, not HTML
-    data_json = datatables_rows(
-        df,
-        escape_html=False,
-        warn_on_unexpected_types=warn_on_unexpected_types,
-        warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
+        # No HTML escaping: AG Grid renders cell values as text, not HTML
+        data_json = datatables_rows(
+            df,
+            escape_html=False,
+            warn_on_unexpected_types=warn_on_unexpected_types,
+            warn_on_polars_get_fmt_not_found=warn_on_polars_get_fmt_not_found,
+        )
+
+    selected_rows = warn_if_selected_rows_are_not_visible(
+        selected_rows,
+        full_row_count,
+        0 if df is None else len(df),
+        warn_on_selected_rows_not_rendered,
     )
 
     grid_options = cast("dict[str, Any]", kwargs)
     if "columnDefs" not in grid_options:
-        grid_options["columnDefs"] = get_column_defs(df, df_module_name)
+        grid_options["columnDefs"] = (
+            [] if df is None else get_column_defs(df, df_module_name)
+        )
 
     # Show the table on a single page when it fits
     if grid_options.get("pagination") and full_row_count <= grid_options.get(
@@ -297,16 +358,50 @@ def get_pyaggrid_arguments(
         else:
             downsampling_warning = df_type_description
 
-    return {
+    args: "dict[str, Any]" = {
         "table_id": table_id,
         "classes": classes,
         "style": style,
-        "ag_grid_url": ag_grid_url,
         "caption": caption,
         "downsampling_warning": downsampling_warning,
         "data_json": data_json,
         "grid_options": grid_options,
     }
+    if app_mode:
+        args["selected_rows"] = selected_rows
+    else:
+        args["ag_grid_url"] = ag_grid_url
+    return args
+
+
+def get_pyaggrid_extension_arguments(
+    df: Optional[DataFrameOrSeries] = None,
+    caption: Optional[str] = None,
+    **kwargs: Unpack[PyAgGridOptions],
+) -> "tuple[dict[str, Any], dict[str, Any]]":
+    """
+    This function returns two dictionaries that are JSON serializable and can
+    be passed to the pyaggrid components (widget, Dash, Streamlit).
+    The first dict contains the arguments to be passed to the AgGridTable
+    constructor (the grid options, the data and the optional downsampling
+    warning), while the second one contains other parameters to be used
+    outside of the constructor (classes, style, caption, selected rows).
+    """
+    args = get_pyaggrid_arguments(df, caption, app_mode=True, **kwargs)
+    args.pop("table_id")
+    grid_args: "dict[str, Any]" = {
+        "data_json": args["data_json"],
+        "grid_options": args["grid_options"],
+    }
+    if args["downsampling_warning"]:
+        grid_args["downsampling_warning"] = args["downsampling_warning"]
+    other_args = {
+        "classes": args["classes"],
+        "style": args["style"],
+        "caption": args["caption"],
+        "selected_rows": args["selected_rows"],
+    }
+    return grid_args, other_args
 
 
 def to_html_aggrid(

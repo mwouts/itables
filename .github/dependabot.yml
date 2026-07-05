@@ -14,6 +14,19 @@ updates:
           - "*"
 
   - package-ecosystem: "npm"
+    directories:
+      - "/packages/pyaggrid"
+      - "/packages/pyaggrid_anywidget"
+      - "/packages/pyaggrid_for_dash"
+      - "/packages/pyaggrid_for_streamlit"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-pyaggrid:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
     directory: "/packages/pydatatables"
     schedule:
       interval: "weekly"

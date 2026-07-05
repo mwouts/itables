@@ -36,13 +36,17 @@ polars = ["polars"]
 narwhals = ["narwhals"]
 
 notebook = ["IPython"]
+widget = ["anywidget", "traitlets"]
+shiny = ["shiny", "shinywidgets"]
+dash = ["dash", "typing-extensions"]
+streamlit = ["streamlit"]
 
 typing = ["typing_extensions;python_version<\"3.11\""]
 check_type = ["typeguard>=4.4.1"]
 
 samples = ["itables_core[samples]"]
 
-all = ["pyaggrid[pandas,polars,narwhals,samples,notebook,typing,check_type]"]
+all = ["pyaggrid[pandas,polars,narwhals,samples,notebook,widget,dash,shiny,streamlit,typing,check_type]"]
 test-base = [
   "pyaggrid",
   # Pytest
@@ -65,16 +69,46 @@ Repository = "https://github.com/mwouts/itables.git"
 Issues = "https://github.com/mwouts/itables/issues"
 Changelog = "https://github.com/mwouts/itables/blob/main/docs/changelog.md"
 
+[tool.hatch.build.hooks.jupyter-builder]
+enable-by-default = true
+dependencies = ["hatch-jupyter-builder>=0.5.0", "dash", "pyyaml"]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "src/pyaggrid/widget/static/widget.js",
+    "src/pyaggrid/widget/static/widget.css",
+    "src/pyaggrid/pyaggrid_for_streamlit/index.js",
+    "src/pyaggrid_for_dash/AgGrid.py",
+    "src/pyaggrid_for_dash/async-AgGrid.js",
+    ]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+path = "../../packages"
+build_cmd = "build-pyaggrid"
+npm = ["npm"]
+
+[tool.streamlit.component]
+components = [
+    {name = "pyaggrid_for_streamlit", asset_dir = "pyaggrid_for_streamlit"},
+]
+
 [tool.hatch.build.targets.sdist]
-packages = ["src/pyaggrid"]
+packages = ["src/pyaggrid", "src/pyaggrid_for_dash"]
 artifacts = [
     "src/pyaggrid/html/*",
+    "src/pyaggrid/widget/static/*",
+    "src/pyaggrid/pyaggrid_for_streamlit/*",
+    "src/pyaggrid_for_dash/*",
     "src/pyaggrid/py.typed",
+    "src/pyaggrid_for_dash/py.typed",
     ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pyaggrid"]
+packages = ["src/pyaggrid", "src/pyaggrid_for_dash"]
 artifacts = [
     "src/pyaggrid/html/*",
+    "src/pyaggrid/widget/static/*",
+    "src/pyaggrid/pyaggrid_for_streamlit/*",
+    "src/pyaggrid_for_dash/*",
     "src/pyaggrid/py.typed",
+    "src/pyaggrid_for_dash/py.typed",
     ]

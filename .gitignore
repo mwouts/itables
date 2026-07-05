@@ -37,6 +37,12 @@ dt_bundle.css
 # Dash component
 python/pydatatables/src/pydatatables_for_dash/*.js*
 python/pydatatables/src/pydatatables_for_dash/_imports_.py
+python/pyaggrid/src/pyaggrid_for_dash/*.js*
+python/pyaggrid/src/pyaggrid_for_dash/_imports_.py
+python/pyaggrid/src/pyaggrid_for_dash/metadata.json
+python/pyaggrid/src/pyaggrid_for_dash/package-info.json
+python/pyaggrid/src/pyaggrid/pyaggrid_for_streamlit
+python/pyaggrid/src/pyaggrid/widget/static
 
 # Streamlit component
 python/pydatatables/src/pydatatables/pydatatables_for_streamlit
