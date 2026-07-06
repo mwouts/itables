@@ -1,8 +1,7 @@
 import itertools as it
 
-import pytest
-
 import pydatatables
+import pytest
 
 try:
     dict_of_test_pandas_dfs = pydatatables.sample_pandas_dfs.get_dict_of_test_dfs()

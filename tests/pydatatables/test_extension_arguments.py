@@ -1,5 +1,4 @@
 import pytest
-
 from pydatatables.javascript import get_pydatatables_extension_arguments
 
 

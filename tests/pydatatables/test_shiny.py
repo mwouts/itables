@@ -3,7 +3,6 @@ import warnings
 from pathlib import Path
 
 import pytest
-
 from pydatatables.downsample import downsample
 from pydatatables.shiny import DataTable
 

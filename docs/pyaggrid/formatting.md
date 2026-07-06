@@ -33,7 +33,6 @@ either in your own `columnDefs`, or for all the columns through
 import math
 
 import pandas as pd
-
 import pyaggrid
 from pyaggrid import JavascriptFunction
 ```

@@ -42,9 +42,8 @@ def test_init_notebook_mode(df):
 
 
 def test_options_is_pydatatables_options():
-    import pydatatables.options as pydatatables_opt
-
     import itables.options as opt
+    import pydatatables.options as pydatatables_opt
 
     assert opt is pydatatables_opt
 
@@ -70,17 +69,16 @@ def test_options_are_used(df):
 
 
 def test_typing_aliases():
-    from pydatatables.typing import (
-        PyDataTablesOptions,
-        PyDataTablesRendererOptions,
-    )
-
     from itables.typing import DataFrameOrSeries  # noqa: F401
     from itables.typing import JavascriptCode  # noqa: F401
     from itables.typing import JavascriptFunction  # noqa: F401
     from itables.typing import (
         DTForITablesOptions,
         ITableOptions,
+    )
+    from pydatatables.typing import (
+        PyDataTablesOptions,
+        PyDataTablesRendererOptions,
     )
 
     assert ITableOptions is PyDataTablesOptions
@@ -89,7 +87,6 @@ def test_typing_aliases():
 
 def test_downsample_module():
     import itables_core.downsample
-
     from itables.downsample import as_nbytes, downsample, nbytes  # noqa: F401
 
     assert downsample is itables_core.downsample.downsample
@@ -106,13 +103,12 @@ def test_sample_dfs():
 
 
 def test_javascript_aliases():
-    from pydatatables.javascript import get_pydatatables_extension_arguments
-
     from itables.javascript import generate_init_offline_itables_html  # noqa: F401
     from itables.javascript import to_html_datatable  # noqa: F401
     from itables.javascript import (
         get_itables_extension_arguments,
     )
+    from pydatatables.javascript import get_pydatatables_extension_arguments
 
     assert get_itables_extension_arguments is get_pydatatables_extension_arguments
 
@@ -142,9 +138,8 @@ def test_widget(df):
 
 @pytest.mark.skipif(find_spec("dash") is None, reason="dash is not available")
 def test_dash():
-    from pydatatables.dash import DataTable, PyDataTablesRendererOutputs
-
     from itables.dash import ITABLE_PROPERTIES, ITable, ITableOutputs  # noqa: F401
+    from pydatatables.dash import DataTable, PyDataTablesRendererOutputs
 
     assert ITable is DataTable
     assert ITableOutputs is PyDataTablesRendererOutputs
@@ -153,9 +148,8 @@ def test_dash():
 @pytest.mark.skipif(find_spec("streamlit") is None, reason="streamlit is not available")
 def test_streamlit():
     pytest.importorskip("streamlit.components.v2")
-    from pydatatables.streamlit import datatable
-
     from itables.streamlit import interactive_table
+    from pydatatables.streamlit import datatable
 
     assert interactive_table is datatable
 

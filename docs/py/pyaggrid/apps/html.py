@@ -22,12 +22,12 @@
 # # HTML export
 #
 # To get the HTML representation of a Pandas DataFrame `df` as an interactive [AG Grid](https://www.ag-grid.com/) table, you can use `to_html_aggrid` as below:
+#
+# import itables_core.sample_dfs
+# import pyaggrid
 
 # %%
 from IPython.display import HTML, display
-
-import itables_core.sample_dfs
-import pyaggrid
 
 df = itables_core.sample_dfs.get_countries()
 html = pyaggrid.to_html_aggrid(df.head(3))

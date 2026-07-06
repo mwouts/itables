@@ -1,11 +1,11 @@
 import pytest
-
 from pydatatables.config import tomllib, user_config_path
 from pydatatables.show_config import show_config
 
 if (tomllib is None) or (user_config_path is None):
     pytest.skip(
-        reason="pydatatables[config] dependencies are not installed", allow_module_level=True
+        reason="pydatatables[config] dependencies are not installed",
+        allow_module_level=True,
     )
 
 

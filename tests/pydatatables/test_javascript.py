@@ -1,9 +1,8 @@
 import json
 from pathlib import Path
 
-import pytest
-
 import pydatatables.options as opt
+import pytest
 from pydatatables.javascript import (
     _df_fits_in_one_page,
     _tfoot_from_thead,

@@ -1,8 +1,7 @@
 import re
 
-import pytest
-
 import pydatatables
+import pytest
 
 if not pydatatables.typing.is_typeguard_available():
     pytestmark = pytest.mark.skip(reason="Typeguard is not available")

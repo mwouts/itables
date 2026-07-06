@@ -1,10 +1,11 @@
 import pytest
-
 from pydatatables.config import get_config_file, load_config_file
 
 
 def test_get_config_current_directory(tmp_path):
-    (tmp_path / "pydatatables.toml").write_text('classes = ["compact", "display", "nowrap"]')
+    (tmp_path / "pydatatables.toml").write_text(
+        'classes = ["compact", "display", "nowrap"]'
+    )
 
     config_file = get_config_file(tmp_path)
     assert config_file is not None
@@ -13,7 +14,9 @@ def test_get_config_current_directory(tmp_path):
 
 
 def test_get_config_parent_directory(tmp_path):
-    (tmp_path / "pydatatables.toml").write_text('classes = ["compact", "display", "nowrap"]')
+    (tmp_path / "pydatatables.toml").write_text(
+        'classes = ["compact", "display", "nowrap"]'
+    )
     tmp_path_child = tmp_path / "child"
     tmp_path_child.mkdir()
 

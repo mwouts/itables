@@ -7,8 +7,8 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
-
     from itables.sample_dfs import get_countries
+
     from itables.widget import ITable
 
     mo.output.append(

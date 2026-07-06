@@ -5,7 +5,6 @@ pixi run -e panel-app panel serve apps/panel/pydatatables_app.py
 """
 
 import panel as pn
-
 from pydatatables.sample_dfs import get_dict_of_test_dfs
 from pydatatables.widget import DataTable
 

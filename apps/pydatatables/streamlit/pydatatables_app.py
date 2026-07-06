@@ -71,7 +71,9 @@ it_args: pydatatables.PyDataTablesOptions = {}
 if select:
     it_args["select"] = True
     it_args["selected_rows"] = [0, 1, 2, 100, 207]
-if classes != pydatatables.javascript.get_expanded_classes(pydatatables.options.classes):
+if classes != pydatatables.javascript.get_expanded_classes(
+    pydatatables.options.classes
+):
     it_args["classes"] = classes
 if style != pydatatables.options.style:
     it_args["style"] = style

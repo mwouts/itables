@@ -1,7 +1,7 @@
+from itables.sample_dfs import get_countries
 from shiny import App, ui
 from shinywidgets import output_widget, render_widget
 
-from itables.sample_dfs import get_countries
 from itables.widget import ITable
 
 app_ui = ui.page_fluid(

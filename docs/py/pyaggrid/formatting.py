@@ -33,7 +33,6 @@
 import math
 
 import pandas as pd
-
 import pyaggrid
 from pyaggrid import JavascriptFunction
 

@@ -6,7 +6,8 @@ app = marimo.App()
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""
+    mo.md(
+        r"""
     # Using the AgGrid Widget in Marimo
 
     The `AgGrid` widget depends on [AnyWidget](https://anywidget.dev). You can install it with
@@ -16,7 +17,8 @@ def _(mo):
 
     The `AgGrid` class accepts the same options as the `show` method, but
     the `df` argument is optional.
-    """)
+    """
+    )
     return
 
 

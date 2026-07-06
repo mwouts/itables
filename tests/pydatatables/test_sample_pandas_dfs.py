@@ -1,7 +1,6 @@
 import json
 
 import pytest
-
 from pydatatables import show, to_html_datatable
 from pydatatables.datatables_format import _format_pandas_series, generate_encoder
 

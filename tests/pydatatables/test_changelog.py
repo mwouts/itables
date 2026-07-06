@@ -30,7 +30,9 @@ def test_replace_issue_numbers_with_links(input, output):
 
 
 def test_update_changelog():
-    changelog_file = Path(__file__).parent.parent.parent / "docs" / "pydatatables" / "changelog.md"
+    changelog_file = (
+        Path(__file__).parent.parent.parent / "docs" / "pydatatables" / "changelog.md"
+    )
     cur_text = changelog_file.read_text()
     new_text = replace_issue_number_with_links(cur_text)
     if cur_text != new_text:

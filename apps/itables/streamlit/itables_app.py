@@ -8,7 +8,6 @@ from typing import Optional
 
 import pyarrow  # type: ignore
 import streamlit as st
-
 from itables.typing import Unpack
 
 try:
@@ -21,10 +20,10 @@ except ImportError as e:
             raise import_error
 
 
+from itables.streamlit import interactive_table
 from streamlit.errors import StreamlitAPIException
 
 import itables
-from itables.streamlit import interactive_table
 
 st.set_page_config(
     page_title="ITables in Streamlit",

@@ -32,9 +32,8 @@
 
 # %%
 import modin.pandas as mpd
-import pyarrow as pa
-
 import pyaggrid
+import pyarrow as pa
 
 # %% [markdown]
 # ## PyArrow

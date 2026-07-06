@@ -35,9 +35,8 @@ out to us on [GitHub](https://github.com/mwouts/itables).
 
 ```{code-cell} ipython3
 import modin.pandas as mpd
-import pyarrow as pa
-
 import pyaggrid
+import pyarrow as pa
 ```
 
 ## PyArrow

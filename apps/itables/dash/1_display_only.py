@@ -1,5 +1,4 @@
 from dash import Dash, html
-
 from itables.dash import ITable
 from itables.sample_dfs import get_countries
 

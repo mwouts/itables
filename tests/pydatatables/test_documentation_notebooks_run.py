@@ -2,9 +2,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 import pydatatables.options as opt
+import pytest
 from pydatatables import init_notebook_mode
 
 try:

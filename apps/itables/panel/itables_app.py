@@ -5,8 +5,8 @@ pixi run -e panel-app panel serve apps/panel/itables_app.py
 """
 
 import panel as pn
-
 from itables.sample_dfs import get_dict_of_test_dfs
+
 from itables.widget import ITable
 
 # The "ipywidgets" extension (which requires the ipywidgets_bokeh

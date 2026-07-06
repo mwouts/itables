@@ -10,14 +10,14 @@ from typing import Any, Optional
 from dash import callback  # pyright: ignore[reportUnknownVariableType]
 from dash import Dash, callback_context, dcc, html
 from dash.dependencies import Input, Output, State
-
-from itables import DTForITablesOptions, ITableOptions
 from itables.dash import (
     ITable,
     ITableOutputs,
     updated_itable_outputs,
 )
 from itables.sample_dfs import get_countries
+
+from itables import DTForITablesOptions, ITableOptions
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

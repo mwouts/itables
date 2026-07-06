@@ -1,7 +1,6 @@
-from shiny import App, render, ui
-
 from itables.sample_dfs import get_dict_of_test_dfs
 from itables.shiny import DT, init_itables
+from shiny import App, render, ui
 
 dfs = get_dict_of_test_dfs()
 

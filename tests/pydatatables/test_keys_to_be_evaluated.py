@@ -1,5 +1,4 @@
 import pytest
-
 from pydatatables.javascript import JavascriptFunction, get_keys_to_be_evaluated
 
 

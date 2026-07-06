@@ -17,10 +17,10 @@ kernelspec:
 In this notebook we make sure that our test [Polars](https://www.pola.rs/)
 dataframes are displayed nicely with the default `pyaggrid` settings.
 
+import itables_core.sample_polars_dfs
+
 ```{code-cell} ipython3
 import polars as pl  # noqa: F401
-
-import itables_core.sample_polars_dfs
 import pyaggrid
 
 dict_of_test_dfs = itables_core.sample_polars_dfs.get_dict_of_test_dfs()

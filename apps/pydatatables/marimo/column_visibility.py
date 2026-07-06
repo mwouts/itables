@@ -23,7 +23,9 @@ def _():
 
     # buttons that trigger a drop-down don't work in Marimo when using the widget
     # see below for a workaround using mo.iframe
-    DataTable(df, buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5", "colvis"])
+    DataTable(
+        df, buttons=["pageLength", "copyHtml5", "csvHtml5", "excelHtml5", "colvis"]
+    )
     return (df,)
 
 

@@ -1,7 +1,6 @@
 """Test that the code in all the test notebooks work, including README.md"""
 
 import pytest
-
 from pydatatables.downsample import (
     as_nbytes,
     downsample,

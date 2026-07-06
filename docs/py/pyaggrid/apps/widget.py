@@ -39,7 +39,11 @@ from pyaggrid.widget import AgGrid
 
 df = itables_core.sample_dfs.get_countries()
 
-grid = AgGrid(df, caption="A DataFrame rendered with the AgGrid widget", rowSelection={"mode": "multiRow"})
+grid = AgGrid(
+    df,
+    caption="A DataFrame rendered with the AgGrid widget",
+    rowSelection={"mode": "multiRow"},
+)
 grid
 
 # %% [markdown]

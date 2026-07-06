@@ -1,7 +1,7 @@
+from itables.sample_dfs import get_dict_of_test_dfs
 from shiny import App, reactive, render, ui
 from shinywidgets import output_widget, reactive_read, render_widget
 
-from itables.sample_dfs import get_dict_of_test_dfs
 from itables.widget import ITable
 
 dfs = get_dict_of_test_dfs()

@@ -24,9 +24,9 @@ def _(mo):
 @app.cell
 def _():
     import marimo as mo
+    from itables.sample_dfs import get_dict_of_test_dfs
 
     from itables import to_html_datatable
-    from itables.sample_dfs import get_dict_of_test_dfs
 
     df = get_dict_of_test_dfs()["int_float_str"]
 

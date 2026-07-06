@@ -9,7 +9,9 @@ df = get_countries()
 app.layout = html.Div(
     [
         html.H1("ITables in a Dash application"),
-        DataTable(id="my_dataframe", df=df, caption="A DataFrame displayed with ITables"),
+        DataTable(
+            id="my_dataframe", df=df, caption="A DataFrame displayed with ITables"
+        ),
     ]
 )
 

@@ -1,7 +1,6 @@
 import json
 
 import pytest
-
 from pydatatables import show, to_html_datatable
 from pydatatables.datatables_format import _format_polars_series, generate_encoder
 from pydatatables.javascript import datatables_rows, get_itable_arguments

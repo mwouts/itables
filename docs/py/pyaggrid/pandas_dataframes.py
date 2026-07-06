@@ -18,11 +18,11 @@
 # # Pandas dataframes
 #
 # In this notebook we make sure that our test dataframes are displayed nicely with the default `pyaggrid` settings.
+#
+# import itables_core.sample_pandas_dfs
 
 # %%
 import pandas as pd  # noqa: F401
-
-import itables_core.sample_pandas_dfs
 import pyaggrid
 
 dict_of_test_dfs = itables_core.sample_pandas_dfs.get_dict_of_test_dfs()

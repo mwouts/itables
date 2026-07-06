@@ -3,7 +3,6 @@
 from typing import cast
 
 import pytest
-
 from pydatatables.datatables_format import datatables_rows
 from pydatatables.javascript import get_itable_arguments, to_html_datatable
 

@@ -1,7 +1,6 @@
 import json
 
 import pytest
-
 from pydatatables import to_html_datatable
 from pydatatables.javascript import get_itable_arguments
 

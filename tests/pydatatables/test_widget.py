@@ -1,9 +1,8 @@
 import itertools
 
-import pytest
-
 import pydatatables.options as opt
 import pydatatables.sample_dfs
+import pytest
 
 pytest.importorskip("anywidget")
 

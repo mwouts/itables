@@ -18,8 +18,7 @@ from itables_core.formatting import (
     get_keys_to_be_evaluated,
 )
 from itables_core.frames import evaluate_show_index as _evaluate_show_index
-from itables_core.frames import warn_if_selected_rows_are_not_visible
-from itables_core.frames import safe_reset_index
+from itables_core.frames import safe_reset_index, warn_if_selected_rows_are_not_visible
 
 from .typing import (
     DataFrameModuleName,
@@ -241,7 +240,9 @@ def generate_init_offline_pydatatables_html(dt_bundle: Union[Path, str]) -> str:
     init_notebook_mode = replace_value(init_notebook_mode, "dt_src_b64", dt_src_b64)
     init_notebook_mode = replace_value(init_notebook_mode, "dt_css_b64", dt_css_b64)
 
-    return init_notebook_mode + f"""
+    return (
+        init_notebook_mode
+        + f"""
 <div style="vertical-align:middle; text-align:left">
 <noscript>
 {get_animated_logo(opt.display_logo_when_loading)}
@@ -250,6 +251,7 @@ This is the <code>init_notebook_mode</code> cell from PyDataTablesRenderers v{py
 </noscript>
 </div>
 """
+    )
 
 
 def _table_header(

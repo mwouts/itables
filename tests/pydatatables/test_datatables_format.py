@@ -5,7 +5,6 @@ import warnings
 from datetime import date, datetime, timedelta
 
 import pytest
-
 from pydatatables.datatables_format import datatables_rows, generate_encoder
 from pydatatables.javascript import (
     JavascriptCode,
