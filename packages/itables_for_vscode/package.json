@@ -1,0 +1,64 @@
+{
+  "name": "itables-for-vscode",
+  "displayName": "ITables Auto Renderer",
+  "description": "Automatically initializes ITables in VS Code Jupyter notebooks so DataFrames render as interactive tables.",
+  "version": "0.1.0",
+  "publisher": "mwouts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mwouts/itables.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Notebooks"
+  ],
+  "activationEvents": [
+    "onNotebook:jupyter-notebook"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "itablesForVscode.enableForActiveNotebook",
+        "title": "ITables: Initialize In Active Notebook"
+      },
+      {
+        "command": "itablesForVscode.installInActiveKernel",
+        "title": "ITables: Install In Active Notebook Kernel"
+      },
+      {
+        "command": "itablesForVscode.resetSessionState",
+        "title": "ITables: Reset Auto-Init Session State"
+      }
+    ],
+    "configuration": {
+      "title": "ITables",
+      "properties": {
+        "itablesForVscode.enableAutoInit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically run the itables initialization snippet for each Python Jupyter notebook session."
+        },
+        "itablesForVscode.initSnippet": {
+          "type": "string",
+          "default": "try:\n    import itables\n    itables.init_notebook_mode(all_interactive=True)\nexcept Exception as _itables_error:\n    print(f'[itables-for-vscode] Could not initialize itables: {_itables_error}')",
+          "description": "Python snippet executed in the notebook kernel to initialize itables."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "build": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.8",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.2"
+  }
+}
