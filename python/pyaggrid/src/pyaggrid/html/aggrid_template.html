@@ -10,8 +10,7 @@
 <div class="pyaggrid-caption" style="text-align:center">caption</div>
 <div class="pyaggrid-downsampling-warning">downsampling_warning</div>
 <script type="module">
-    import * as agGrid from 'https://cdn.jsdelivr.net/npm/ag-grid-community/+esm';
-    agGrid.ModuleRegistry.registerModules([agGrid.AllCommunityModule]);
+    import { AgGridTable } from 'https://www.unpkg.com/pyaggrid/aggrid_bundle.js';
 
     document.querySelectorAll('#table_id:not([data-pyaggrid])').forEach(div => {
         div.dataset.pyaggrid = 'true';
@@ -19,104 +18,9 @@
         let gridOptions = {};
         let data = [];
 
-        // Evaluate the JavascriptCode and JavascriptFunction values
-        (gridOptions.keys_to_be_evaluated || []).forEach(keys => {
-            let obj = gridOptions;
-            for (let i = 0; i < keys.length - 1; i++)
-                obj = obj[keys[i]];
-            obj[keys[keys.length - 1]] = eval?.("(" + obj[keys[keys.length - 1]] + ")");
+        new AgGridTable(div, {
+            data_json: JSON.stringify(data),
+            grid_options: gridOptions,
         });
-        delete gridOptions.keys_to_be_evaluated;
-
-        const themes = {
-            quartz: agGrid.themeQuartz,
-            balham: agGrid.themeBalham,
-            material: agGrid.themeMaterial,
-            alpine: agGrid.themeAlpine,
-        };
-        if (typeof gridOptions.theme === 'string')
-            gridOptions.theme = themes[gridOptions.theme] || agGrid.themeQuartz;
-
-        if (gridOptions.themeParams) {
-            gridOptions.theme = gridOptions.theme.withParams(gridOptions.themeParams);
-            delete gridOptions.themeParams;
-        }
-
-        if (gridOptions.rowData === undefined) {
-            // itables sentinels -> null/Infinity, row arrays -> objects keyed c0..cN
-            const fix = v => v === "___NaN___" ? null
-                : v === "___Infinity___" ? Infinity
-                : v === "___-Infinity___" ? -Infinity
-                : v;
-            gridOptions.rowData = data.map(row =>
-                Object.fromEntries(row.map((v, i) => ['c' + i, fix(v)])));
-        }
-
-        // Resize and layout the grid after data is rendered, so that
-        // the table container is not bigger than the table content.
-        // Skip for domLayout:'normal' where the user controls container size.
-        if (gridOptions.domLayout !== 'normal') {
-            const userCallback = gridOptions.onFirstDataRendered;
-            gridOptions.onFirstDataRendered = (params) => {
-                if (userCallback) userCallback(params);
-
-                // autoSizeAllColumns() runs synchronously here, so column widths
-                // are final before we measure them below.
-                if (gridOptions.autoSizeStrategy === undefined) {
-                    params.api.autoSizeAllColumns();
-                }
-
-                const cols = params.api.getColumns();
-                if (!cols || cols.length === 0) return;
-
-                const totalColWidth = cols.reduce((sum, col) => sum + col.getActualWidth(), 0);
-                const parentWidth = div.parentElement ? div.parentElement.offsetWidth : Infinity;
-
-                // Shrink the div to column width first; this forces the browser to reflow
-                // so that pagingPanel.scrollWidth reflects the pagination bar's natural
-                // minimum width rather than its stretched 100%-parent width.
-                div.style.width = Math.min(totalColWidth + 2, parentWidth) + 'px';
-                const pagingPanel = div.querySelector('.ag-paging-panel');
-                // The paging panel wraps onto multiple lines (flex-wrap: wrap-reverse)
-                // once it no longer fits on one line; force it back to a single line
-                // while measuring, or scrollWidth would report the already-wrapped
-                // (smaller) width instead of the panel's true minimum width.
-                let paginationMinWidth = 0;
-                if (pagingPanel) {
-                    const previousFlexWrap = pagingPanel.style.flexWrap;
-                    pagingPanel.style.flexWrap = 'nowrap';
-                    paginationMinWidth = pagingPanel.scrollWidth;
-                    pagingPanel.style.flexWrap = previousFlexWrap;
-                }
-                const contentWidth = Math.max(totalColWidth, paginationMinWidth);
-                div.style.width = Math.min(contentWidth + 2, parentWidth) + 'px';
-                // Outer div stays left-aligned (no margin: auto).
-
-                // Give the caption and the downsampling warning the same width
-                let sibling = div.nextElementSibling;
-                while (sibling && sibling.className.startsWith('pyaggrid-')) {
-                    sibling.style.width = div.style.width;
-                    sibling = sibling.nextElementSibling;
-                }
-
-                // Centre the header row and data rows within the div when the
-                // pagination bar is wider than the column area.
-                if (paginationMinWidth > totalColWidth) {
-                    const colOffset = Math.floor((contentWidth - totalColWidth) / 2);
-                    const headerRow = div.querySelector('.ag-header-row');
-                    const colContainer = div.querySelector('.ag-center-cols-container');
-                    if (headerRow) headerRow.style.left = colOffset + 'px';
-                    if (colContainer) colContainer.style.marginLeft = colOffset + 'px';
-                }
-
-                // Hide the horizontal scroll track (eliminates blank space below rows)
-                // when there is no horizontal overflow.
-                if (totalColWidth + 2 <= contentWidth + 2) {
-                    params.api.setGridOption('suppressHorizontalScroll', true);
-                }
-            };
-        }
-
-        agGrid.createGrid(div, gridOptions);
     });
 </script>

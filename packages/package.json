@@ -7,7 +7,7 @@
     "build:pydatatables_for_dash": "cd pydatatables_for_dash && npm install && npm run build",
     "build:pydatatables_for_streamlit": "cd pydatatables_for_streamlit && npm install && npm run build",
     "build": "npm run build:pydatatables && npm run build:pydatatables_anywidget && npm run build:pydatatables_for_dash && npm run build:pydatatables_for_streamlit",
-    "build:pyaggrid": "cd pyaggrid && npm install",
+    "build:pyaggrid": "cd pyaggrid && npm install && npm run build",
     "build:pyaggrid_anywidget": "cd pyaggrid_anywidget && npm install && npm run build",
     "build:pyaggrid_for_dash": "cd pyaggrid_for_dash && npm install && npm run build",
     "build:pyaggrid_for_streamlit": "cd pyaggrid_for_streamlit && npm install && npm run build",

@@ -62,8 +62,8 @@ domLayout: Literal["normal", "autoHeight", "print"] = "autoHeight"
 https://www.ag-grid.com/javascript-data-grid/column-definitions/"""
 defaultColDef: Mapping[str, Any] = {"filter": True}
 
-"""The URL of the AG Grid Community ESM bundle used in the connected mode"""
-ag_grid_url: str = utils.AG_GRID_ESM_URL
+"""The URL of the pyaggrid browser bundle used by to_html_aggrid"""
+ag_grid_url: str = utils.UNPKG_PYAGGRID_BUNDLE_URL
 
 """Should a warning appear when we have to encode an unexpected type?"""
 warn_on_unexpected_types: bool = True

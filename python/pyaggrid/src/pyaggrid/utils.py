@@ -1,7 +1,8 @@
 from io import open
 from pathlib import Path
 
-AG_GRID_ESM_URL = "https://cdn.jsdelivr.net/npm/ag-grid-community@35.3.1/+esm"
+UNPKG_PYAGGRID_BUNDLE_URL = "https://www.unpkg.com/pyaggrid/aggrid_bundle.js"
+UNPKG_PYAGGRID_BUNDLE_URL_NO_VERSION = "https://www.unpkg.com/pyaggrid/aggrid_bundle.js"
 
 
 def find_package_file(*path: str) -> Path:

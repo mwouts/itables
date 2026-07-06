@@ -37,7 +37,7 @@ def get_header_names(html: str) -> list:
 
 def test_to_html_aggrid(df):
     html = to_html_aggrid(df, "my caption")
-    assert "createGrid" in html
+    assert "new AgGridTable" in html
     assert ">my caption</div>" in html
     assert get_header_names(html) == ["a", "b", "x"]
     data = get_data(html)
@@ -135,10 +135,10 @@ def test_show(df):
 def test_init_notebook_mode(df):
     try:
         init_notebook_mode(all_interactive=True)
-        assert "createGrid" in df._repr_html_()
+        assert "new AgGridTable" in df._repr_html_()
     finally:
         set_pyaggrid_repr_html_methods(all_interactive=False)
-    assert "createGrid" not in (df._repr_html_() or "")
+    assert "new AgGridTable" not in (df._repr_html_() or "")
 
 
 def test_polars():

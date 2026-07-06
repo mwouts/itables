@@ -33,6 +33,7 @@ node_modules
 # DataTables bundle
 dt_bundle.js
 dt_bundle.css
+aggrid_bundle.js
 
 # Dash component
 python/pydatatables/src/pydatatables_for_dash/*.js*

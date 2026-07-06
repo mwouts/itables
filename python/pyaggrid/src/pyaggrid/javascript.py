@@ -30,7 +30,7 @@ from .typing import (
     Unpack,
     check_pyaggrid_arguments,
 )
-from .utils import read_package_file
+from .utils import UNPKG_PYAGGRID_BUNDLE_URL_NO_VERSION, read_package_file
 from .version import __version__ as pyaggrid_version
 
 _ORIGINAL_REPR_HTML = {}
@@ -413,7 +413,7 @@ def to_html_aggrid(
     Return the HTML representation of the given
     dataframe as an interactive AG Grid table.
 
-    The snippet loads AG Grid Community as an ES module from the URL in
+    The snippet loads the pyaggrid browser bundle from the URL in
     'pyaggrid.options.ag_grid_url', so an internet connection is required
     when the table is displayed.
     """
@@ -435,7 +435,7 @@ def html_table_from_template(
 
     output = replace_value(
         output,
-        "https://cdn.jsdelivr.net/npm/ag-grid-community/+esm",
+        UNPKG_PYAGGRID_BUNDLE_URL_NO_VERSION,
         ag_grid_url,
     )
 

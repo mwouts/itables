@@ -4,14 +4,20 @@
   "description": "AG Grid wrapper for pyaggrid",
   "main": "src/index.js",
   "files": [
+    "aggrid_bundle.js",
     "src/index.js"
   ],
   "scripts": {
-    "build": "echo 'pyaggrid is consumed as a library by the component packages - nothing to build'"
+    "build:js": "esbuild src/index.js --format=esm --bundle --outfile=aggrid_bundle.js --minify",
+    "install:all": "cp aggrid_bundle.js ../../python/pyaggrid/src/pyaggrid/html",
+    "build": "npm run build:js && npm run install:all"
   },
   "author": "Marc Wouts",
   "license": "MIT",
   "dependencies": {
     "ag-grid-community": "^35.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0"
   }
 }

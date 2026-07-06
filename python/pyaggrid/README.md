@@ -47,8 +47,8 @@ corresponding extras, e.g. `pip install pyaggrid[widget]`.
 
 ## Notes
 
-- `pyaggrid.show` loads AG Grid Community from the URL set in
-  `pyaggrid.options.ag_grid_url` (jsDelivr by default). The widget, Dash and
+- `pyaggrid.show` loads the pyaggrid browser bundle from the URL set in
+  `pyaggrid.options.ag_grid_url` (unpkg by default). The widget, Dash and
   Streamlit components come with their own copy of AG Grid and work offline.
 - The rows passed to AG Grid are arrays, not objects. The generated column
   definitions use a `valueGetter` and a `colId` equal to `"c" + column_index`.

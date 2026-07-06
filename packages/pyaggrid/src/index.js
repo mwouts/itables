@@ -51,6 +51,14 @@ function evalNestedKeys(obj, keys, context) {
     }
 }
 
+function syncPyaggridSiblingWidths(container) {
+    let sibling = container.nextElementSibling;
+    while (sibling && sibling.className.startsWith('pyaggrid-')) {
+        sibling.style.width = container.style.width;
+        sibling = sibling.nextElementSibling;
+    }
+}
+
 /**
  * A thin wrapper around an AG Grid instance, that renders the
  * grid_args prepared by the pyaggrid Python package, and exposes
@@ -132,6 +140,10 @@ class AgGridTable {
                 }
                 const contentWidth = Math.max(totalColWidth, paginationMinWidth);
                 container.style.width = Math.min(contentWidth + 2, parentWidth) + 'px';
+
+                // Keep framework-rendered caption and warning blocks aligned with
+                // the measured grid width, matching the standalone HTML renderer.
+                syncPyaggridSiblingWidths(container);
 
                 // Centre the header row and data rows within the div when the
                 // pagination bar is wider than the column area.
