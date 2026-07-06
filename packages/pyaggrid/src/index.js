@@ -119,7 +119,17 @@ class AgGridTable {
                 // minimum width rather than its stretched 100%-parent width.
                 container.style.width = Math.min(totalColWidth + 2, parentWidth) + 'px';
                 const pagingPanel = container.querySelector('.ag-paging-panel');
-                const paginationMinWidth = pagingPanel ? pagingPanel.scrollWidth : 0;
+                // The paging panel wraps onto multiple lines (flex-wrap: wrap-reverse)
+                // once it no longer fits on one line; force it back to a single line
+                // while measuring, or scrollWidth would report the already-wrapped
+                // (smaller) width instead of the panel's true minimum width.
+                let paginationMinWidth = 0;
+                if (pagingPanel) {
+                    const previousFlexWrap = pagingPanel.style.flexWrap;
+                    pagingPanel.style.flexWrap = 'nowrap';
+                    paginationMinWidth = pagingPanel.scrollWidth;
+                    pagingPanel.style.flexWrap = previousFlexWrap;
+                }
                 const contentWidth = Math.max(totalColWidth, paginationMinWidth);
                 container.style.width = Math.min(contentWidth + 2, parentWidth) + 'px';
 
