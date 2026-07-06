@@ -42,6 +42,13 @@ maxColumns: int = 200
 """The AG Grid theme, one of 'quartz', 'balham', 'material' or 'alpine'"""
 theme: Literal["quartz", "balham", "material", "alpine"] = "quartz"
 
+"""Parameters applied to the theme with .withParams(), to control the
+information density (row height, header height, font size, spacing, ...).
+See https://www.ag-grid.com/javascript-data-grid/theming-parameters/
+The default reduces the AG Grid 'spacing' parameter (8px) to make the table
+as compact as the pydatatables tables."""
+themeParams: Mapping[str, Any] = {"spacing": 4}
+
 """Paginate the tables"""
 pagination: bool = True
 paginationPageSize: int = 10

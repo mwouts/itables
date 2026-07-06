@@ -106,6 +106,7 @@ class PyAgGridOptions(AgGridOptions):
     table_id: NotRequired[str]
     ag_grid_url: NotRequired[str]
     theme: NotRequired[Literal["quartz", "balham", "material", "alpine"]]
+    themeParams: NotRequired[Mapping[str, Any]]
 
     warn_on_unexpected_types: NotRequired[bool]
     warn_on_selected_rows_not_rendered: NotRequired[bool]

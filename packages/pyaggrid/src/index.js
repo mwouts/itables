@@ -58,6 +58,11 @@ class AgGridTable {
         if (typeof gridOptions.theme === 'string')
             gridOptions.theme = themes[gridOptions.theme] || themeQuartz;
 
+        if (gridOptions.themeParams) {
+            gridOptions.theme = gridOptions.theme.withParams(gridOptions.themeParams);
+            delete gridOptions.themeParams;
+        }
+
         if (gridOptions.rowData === undefined) {
             // row arrays -> objects keyed c0..cN, plus the original row index
             const data = JSON.parse(data_json || '[]');
