@@ -44,7 +44,8 @@ theme: Literal["quartz", "balham", "material", "alpine"] = "quartz"
 
 """Paginate the tables"""
 pagination: bool = True
-paginationPageSize: int = 20
+paginationPageSize: int = 10
+paginationPageSizeSelector: Union[Sequence[int], bool] = [10, 20, 50, 100]
 
 """The layout of the grid. With 'autoHeight' the grid height
 adjusts to the number of displayed rows"""
@@ -72,7 +73,6 @@ warn_on_polars_get_fmt_not_found: bool = True
 caption: Optional[str]
 columnDefs: Optional[Sequence[Mapping[str, Any]]]
 autoSizeStrategy: Optional[Mapping[str, Any]]
-paginationPageSizeSelector: Optional[Union[Sequence[int], bool]]
 paginationAutoPageSize: Optional[bool]
 rowHeight: Optional[int]
 headerHeight: Optional[int]
