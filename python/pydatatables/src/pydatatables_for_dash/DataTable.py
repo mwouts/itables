@@ -1,10 +1,8 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
 import typing  # noqa: F401
-
+from typing_extensions import TypedDict, NotRequired, Literal # noqa: F401
 from dash.development.base_component import Component, _explicitize_args
-from typing_extensions import Literal, NotRequired, TypedDict  # noqa: F401
-
 try:
     from dash.types import NumberType  # noqa: F401
 except ImportError:
@@ -24,30 +22,30 @@ ComponentType = typing.Union[
 
 class DataTable(Component):
     """A DataTable component.
-    DataTable is a dash component for DataTables
+DataTable is a dash component for DataTables
 
-    Keyword arguments:
+Keyword arguments:
 
-    - id (string; required):
-        The ID used to identify this component in Dash callbacks.
+- id (string; required):
+    The ID used to identify this component in Dash callbacks.
 
-    - caption (string; optional):
-        The table caption.
+- caption (string; optional):
+    The table caption.
 
-    - classes (string; required):
-        The table classes.
+- classes (string; required):
+    The table classes.
 
-    - dt_args (dict; required):
-        The arguments for DataTable e.g. select, buttons, layout etc.
+- dt_args (dict; required):
+    The arguments for DataTable e.g. select, buttons, layout etc.
 
-    - selected_rows (list; required):
-        The index of the selected rows (pass select=True to allow
-        selection)."""
-
+- selected_rows (list; required):
+    The index of the selected rows (pass select=True to allow
+    selection)."""
     _children_props: typing.List[str] = []
-    _base_nodes = ["children"]
-    _namespace = "pydatatables_for_dash"
-    _type = "DataTable"
+    _base_nodes = ['children']
+    _namespace = 'pydatatables_for_dash'
+    _type = 'DataTable'
+
 
     def __init__(
         self,
@@ -59,34 +57,20 @@ class DataTable(Component):
         dt_args: typing.Optional[dict] = None,
         **kwargs
     ):
-        self._prop_names = [
-            "id",
-            "caption",
-            "classes",
-            "dt_args",
-            "selected_rows",
-            "style",
-        ]
-        self._valid_wildcard_attributes = []
-        self.available_properties = [
-            "id",
-            "caption",
-            "classes",
-            "dt_args",
-            "selected_rows",
-            "style",
-        ]
-        self.available_wildcard_properties = []
-        _explicit_args = kwargs.pop("_explicit_args")
+        self._prop_names = ['id', 'caption', 'classes', 'dt_args', 'selected_rows', 'style']
+        self._valid_wildcard_attributes =            []
+        self.available_properties = ['id', 'caption', 'classes', 'dt_args', 'selected_rows', 'style']
+        self.available_wildcard_properties =            []
+        _explicit_args = kwargs.pop('_explicit_args')
         _locals = locals()
         _locals.update(kwargs)  # For wildcard attrs and excess named props
         args = {k: _locals[k] for k in _explicit_args}
 
-        for k in ["id", "classes", "dt_args", "selected_rows", "style"]:
+        for k in ['id', 'classes', 'dt_args', 'selected_rows', 'style']:
             if k not in args:
-                raise TypeError("Required argument `" + k + "` was not specified.")
+                raise TypeError(
+                    'Required argument `' + k + '` was not specified.')
 
         super(DataTable, self).__init__(**args)
-
 
 setattr(DataTable, "__init__", _explicitize_args(DataTable.__init__))
