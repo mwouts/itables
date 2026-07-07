@@ -1,0 +1,31 @@
+<!--| quarto-html-table-processing: none -->
+<div id="table_id" style="div_style">Loading pyaggrid...</div>
+<div class="pyaggrid-caption" style="text-align:center">caption</div>
+<div class="pyaggrid-downsampling-warning">downsampling_warning</div>
+<script type="module">
+    (async () => {
+        async function init() {
+            const { AgGridTable } = await window._pyaggrid_underscore_version;
+
+            document.querySelectorAll('#table_id:not([data-pyaggrid])').forEach(div => {
+                div.dataset.pyaggrid = 'true';
+                div.textContent = '';
+                let gridOptions = {};
+                let data = [];
+
+                new AgGridTable(div, {
+                    data_json: JSON.stringify(data),
+                    grid_options: gridOptions,
+                });
+            });
+        }
+
+        if (window._pyaggrid_underscore_version) {
+            init();
+        } else {
+            window.addEventListener("pyaggrid-version-ready", () => {
+                init();
+            });
+        }
+    })();
+</script>

@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import (
     Any,
     Literal,
@@ -105,6 +106,7 @@ class PyAgGridOptions(AgGridOptions):
 
     table_id: NotRequired[str]
     ag_grid_url: NotRequired[str]
+    ag_bundle: NotRequired[Union[str, Path]]
     theme: NotRequired[Literal["quartz", "balham", "material", "alpine"]]
     themeParams: NotRequired[Mapping[str, Any]]
 

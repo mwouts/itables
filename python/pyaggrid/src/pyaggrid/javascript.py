@@ -3,8 +3,10 @@
 import json
 import re
 import uuid
+from base64 import b64encode
 from importlib.util import find_spec
-from typing import Any, Optional, cast
+from pathlib import Path
+from typing import Any, Optional, Union, cast
 
 import pyaggrid.options as opt
 from itables_core.downsample import downsample
@@ -34,6 +36,7 @@ from .utils import UNPKG_PYAGGRID_BUNDLE_URL_NO_VERSION, read_package_file
 from .version import __version__ as pyaggrid_version
 
 _ORIGINAL_REPR_HTML = {}
+_CONNECTED = True
 
 _CAPTION_DIV = '<div class="pyaggrid-caption" style="text-align:center">caption</div>'
 _WARNING_DIV = '<div class="pyaggrid-downsampling-warning">downsampling_warning</div>'
@@ -42,17 +45,55 @@ GOOGLE_COLAB = (find_spec("google") is not None) and (
     find_spec("google.colab") is not None
 )
 
+_PYAGGRID_UNDERSCORE_VERSION = (
+    f"_pyaggrid_{pyaggrid_version.replace('.', '_').replace('-', '_')}"
+)
+_PYAGGRID_READY_EVENT = f"pyaggrid-{pyaggrid_version}-ready"
+
 
 def init_notebook_mode(
     all_interactive: bool = True,
+    connected: bool = GOOGLE_COLAB,
+    ag_bundle: "Optional[Union[Path, str]]" = None,
 ) -> None:
-    """When all_interactive=True, activate the AG Grid representation for
-    all the Pandas and Polars DataFrames and Series.
+    """Load the AG Grid library and (if all_interactive=True), activate the
+    AG Grid representation for all the Pandas and Polars DataFrames and Series.
 
-    Note: unlike pydatatables, pyaggrid does not have an offline mode yet -
-    the AG Grid library is loaded from the URL in 'pyaggrid.options.ag_grid_url'.
+    When connected=False (the default outside Google Colab), the AG Grid bundle
+    is embedded in the notebook output so tables work without internet access.
+    Keep the output of this cell — the tables depend on it.
+
+    When connected=True, tables load AG Grid from 'pyaggrid.options.ag_grid_url'
+    at display time, which requires an internet connection.
     """
+    if ag_bundle is None:
+        ag_bundle = opt.ag_bundle
+
+    global _CONNECTED
+    _CONNECTED = connected
+
     set_pyaggrid_repr_html_methods(all_interactive)
+
+    if not connected:
+        from IPython.display import HTML, display
+
+        display(HTML(generate_init_offline_pyaggrid_html(ag_bundle)))
+
+
+def generate_init_offline_pyaggrid_html(ag_bundle: "Union[Path, str]") -> str:
+    ag_src = Path(ag_bundle).read_text(encoding="utf-8")
+    ag_src_b64 = b64encode(ag_src.encode("utf-8")).decode("ascii")
+
+    output = read_package_file("html/init_notebook_offline.html")
+    output = replace_value(
+        output,
+        "_pyaggrid_underscore_version",
+        _PYAGGRID_UNDERSCORE_VERSION,
+        expected_count=3,
+    )
+    output = replace_value(output, "pyaggrid-version-ready", _PYAGGRID_READY_EVENT)
+    output = replace_value(output, "aggrid_src_b64", ag_src_b64)
+    return output
 
 
 def set_pyaggrid_repr_html_methods(all_interactive: bool) -> None:
@@ -410,15 +451,15 @@ def to_html_aggrid(
     **kwargs: Unpack[PyAgGridOptions],
 ) -> str:
     """
-    Return the HTML representation of the given
-    dataframe as an interactive AG Grid table.
+    Return the HTML representation of the given dataframe as an interactive
+    AG Grid table.
 
-    The snippet loads the pyaggrid browser bundle from the URL in
-    'pyaggrid.options.ag_grid_url', so an internet connection is required
-    when the table is displayed.
+    In offline mode (after calling init_notebook_mode()), the table relies on
+    the AG Grid bundle embedded by init_notebook_mode().  In connected mode it
+    loads the bundle from 'pyaggrid.options.ag_grid_url'.
     """
     args = get_pyaggrid_arguments(df, caption, **kwargs)
-    return html_table_from_template(**args)
+    return html_table_from_template(connected=_CONNECTED, **args)
 
 
 def html_table_from_template(
@@ -430,14 +471,22 @@ def html_table_from_template(
     downsampling_warning: str,
     data_json: str,
     grid_options: "dict[str, Any]",
+    connected: bool = True,
 ) -> str:
-    output = read_package_file("html/aggrid_template.html")
-
-    output = replace_value(
-        output,
-        UNPKG_PYAGGRID_BUNDLE_URL_NO_VERSION,
-        ag_grid_url,
-    )
+    if connected:
+        output = read_package_file("html/aggrid_template.html")
+        output = replace_value(
+            output, UNPKG_PYAGGRID_BUNDLE_URL_NO_VERSION, ag_grid_url
+        )
+    else:
+        output = read_package_file("html/aggrid_template_offline.html")
+        output = replace_value(
+            output,
+            "_pyaggrid_underscore_version",
+            _PYAGGRID_UNDERSCORE_VERSION,
+            expected_count=2,
+        )
+        output = replace_value(output, "pyaggrid-version-ready", _PYAGGRID_READY_EVENT)
 
     output = replace_value(
         output,

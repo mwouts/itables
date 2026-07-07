@@ -2,6 +2,7 @@
 Default options for the pyaggrid tables.
 """
 
+from pathlib import Path
 from typing import Any, Literal, Mapping, Optional, Sequence, Union
 
 import pyaggrid.typing as typing
@@ -62,8 +63,11 @@ domLayout: Literal["normal", "autoHeight", "print"] = "autoHeight"
 https://www.ag-grid.com/javascript-data-grid/column-definitions/"""
 defaultColDef: Mapping[str, Any] = {"filter": True}
 
-"""The URL of the pyaggrid browser bundle used by to_html_aggrid"""
+"""The URL of the pyaggrid browser bundle used by to_html_aggrid in connected mode"""
 ag_grid_url: str = utils.UNPKG_PYAGGRID_BUNDLE_URL
+
+"""The local bundle file used by init_notebook_mode(connected=False)"""
+ag_bundle: Union[str, Path] = utils.find_package_file("html", "aggrid_bundle.js")
 
 """Should a warning appear when we have to encode an unexpected type?"""
 warn_on_unexpected_types: bool = True

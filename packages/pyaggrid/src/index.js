@@ -12,12 +12,14 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 // AG Grid draws a header column separator and a resize handle after every
 // column, including the last one, which clashes with the grid's own outer
-// border.
-if (!document.getElementById('pyaggrid-header-border-fix')) {
+// border. It also draws a row border after the last row which duplicates
+// the outer border when all rows fit on one page.
+if (!document.getElementById('pyaggrid-border-fix')) {
     const style = document.createElement('style');
-    style.id = 'pyaggrid-header-border-fix';
+    style.id = 'pyaggrid-border-fix';
     style.textContent = '.ag-header-cell:last-of-type::after{border-right:none;border-left:none;}'
-        + '.ag-header-cell:last-of-type .ag-header-cell-resize{display:none;}';
+        + '.ag-header-cell:last-of-type .ag-header-cell-resize{display:none;}'
+        + '.ag-row.ag-row-last{border-bottom-color:transparent;}';
     document.head.appendChild(style);
 }
 

@@ -1,0 +1,17 @@
+<script>
+async function injectAgGridModule(base64JS) {
+    const jsText = atob(base64JS);
+    const blob = new Blob([jsText], { type: 'application/javascript' });
+    const url = URL.createObjectURL(blob);
+    const module = await import(url);
+    URL.revokeObjectURL(url);
+    return module;
+}
+
+if (!window._pyaggrid_underscore_version) {
+    window._pyaggrid_underscore_version = injectAgGridModule("aggrid_src_b64");
+    window._pyaggrid_underscore_version.then(() => {
+        window.dispatchEvent(new Event("pyaggrid-version-ready"));
+    });
+}
+</script>

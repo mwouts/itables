@@ -198,9 +198,9 @@ def init_notebook_mode(
             + "';"
         )
         local_import = (
-            "const { set_or_remove_dark_class } = await import(window."
+            "const { set_or_remove_dark_class } = await window."
             + _PYDATATABLES_UNDERSCORE_VERSION
-            + ");"
+            + ";"
         )
         init_datatables = replace_value(init_datatables, connected_import, local_import)
 
