@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.25.9",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "scripts": {
     "build:js": "esbuild src/index.tsx --bundle --minify --format=esm --outdir=../../src/itables/itables_for_streamlit",
