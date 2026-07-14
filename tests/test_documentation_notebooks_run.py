@@ -32,6 +32,7 @@ def list_doc_notebooks():
 )
 def test_run_documentation_notebooks(notebook):
     if "pandas_style" in notebook.stem:
+        pytest.importorskip("jinja2")
         pytest.importorskip("pandas.io.formats.style")
     if "marimo" in notebook.stem or "widget" in notebook.stem:
         pytest.importorskip("anywidget")
