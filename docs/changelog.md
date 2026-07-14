@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+Unreleased
+----------
+
+**Security**
+- We have added [zizmor](https://zizmor.sh/) to our CI to scan the GitHub Actions workflows for security issues. All actions are now pinned to a commit SHA, checkout steps no longer persist credentials, jobs use least-privilege permissions, and we fixed a code-injection risk in the PR-comment workflow where untrusted pull request metadata was interpolated directly into a `github-script` template.
+
+
 2.8.1 (2026-06-10)
 ------------------
 
