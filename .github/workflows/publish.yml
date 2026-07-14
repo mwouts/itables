@@ -11,12 +11,15 @@ jobs:
       name: pypi
       url: https://pypi.org/p/itables
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: Checkout source
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
       - name: Setup Pixi
-        uses: prefix-dev/setup-pixi@v0.9.6
+        uses: prefix-dev/setup-pixi@5185adfbffb4bd703da3010310260805d89ebb11 # v0.9.6
         with:
           pixi-version: latest
           locked: false
@@ -28,4 +31,4 @@ jobs:
           # hatchling.plugin.exceptions.UnknownPluginError: Unknown build hook: jupyter-builder
           pixi run -e build hatch build
       - name: Publish
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
