@@ -30,6 +30,23 @@ Running the `pytest` test suite is not enough to guarantee that a change won't
 break `itables`. You also need to test that the tables are well rendered in the
 different contexts like Jupyter Book, Jupyter Lab, VS Code.
 
+### Browser-based (Playwright) tests
+
+A few regressions (e.g. dark mode issues) can only be caught by actually
+rendering a table in a browser and inspecting the resulting DOM/CSS. These
+tests (like `tests/test_dark_mode_fixed_columns.py`) are skipped by default,
+as Playwright and its browser binaries are not part of the standard test
+dependencies. Run them locally with the dedicated `playwright` pixi
+environment:
+
+```shell
+pixi run -e playwright playwright install chromium
+pixi run -e playwright pytest tests/test_dark_mode_fixed_columns.py
+```
+
+This environment is not part of the CI test matrix, so make sure to run it
+yourself whenever you touch the dark-mode or FixedColumns related CSS/JS.
+
 ## How to build the package locally
 
 Build both the wheel and source distribution with:
