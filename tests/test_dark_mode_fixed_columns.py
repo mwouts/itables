@@ -27,7 +27,9 @@ except ImportError:
 
 from IPython.core.interactiveshell import InteractiveShell  # noqa: E402
 from IPython.utils.capture import capture_output  # noqa: E402
-from playwright.sync_api import sync_playwright  # noqa: E402
+from playwright.sync_api import (  # noqa: E402  # pyright: ignore[reportMissingImports]
+    sync_playwright,
+)
 
 
 def render_offline_notebook_html() -> str:
