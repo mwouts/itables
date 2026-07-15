@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       pip-dependencies:
         patterns:
@@ -13,6 +15,8 @@ updates:
     directory: "/packages/dt_for_itables"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       npm-dt-for-itables:
         patterns:
@@ -22,6 +26,8 @@ updates:
     directory: "/packages/itables_anywidget"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       npm-itables-anywidget:
         patterns:
@@ -31,6 +37,8 @@ updates:
     directory: "/packages/itables_for_dash"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       npm-itables-for-dash:
         patterns:
@@ -40,6 +48,8 @@ updates:
     directory: "/packages/itables_for_streamlit"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       npm-itables-for-streamlit:
         patterns:
@@ -49,6 +59,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     groups:
       github-actions:
         patterns:
