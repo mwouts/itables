@@ -69,7 +69,7 @@ function evalNestedKeys(obj, keys, context) {
 
 class ITable {
     constructor(table, itable_args) {
-        const { data, caption, classes, style, data_json, table_html, table_style, selected_rows, filtered_row_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
+        const { data, caption, classes, style, data_json, table_html, table_style, selected_rows, filtered_row_count, filtered_column_count, keys_to_be_evaluated, column_filters, text_in_header_can_be_selected, initComplete, downsampling_warning, ...dt_args } = itable_args;
         if (data !== undefined) {
             throw new Error("The 'data' property is not allowed in dt_args.");
         }

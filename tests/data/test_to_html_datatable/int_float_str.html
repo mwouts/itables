@@ -1,7 +1,7 @@
 <!--| quarto-html-table-processing: none -->
 <table id="table_id">
   <tbody>
-    <tr>
+    <tr hidden="hidden">
       <td style="vertical-align:middle; text-align:left">
         Loading ITables v{itables_version} from the internet...
         (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
@@ -9,6 +9,18 @@
     </tr>
   </tbody>
 </table>
+<script>document.querySelector("#table_id [hidden]")?.removeAttribute("hidden")</script>
+<noscript><table border="1" cellpadding="4"><caption>ITables can't run JavaScript in this context - defaulting to a <a href=https://mwouts.github.io/itables/troubleshooting.html#static-preview-instead-of-the-interactive-table>static preview</a></caption><thead>    <tr style="text-align: right;">
+      <th>int</th>
+      <th>float</th>
+      <th>str</th>
+    </tr></thead><tbody>
+<tr><td>0</td><td>5.000000</td><td>a</td></tr>
+<tr><td>1</td><td>4.949495</td><td>b</td></tr>
+<tr><td>2</td><td>4.898990</td><td>c</td></tr>
+<tr><td>3</td><td>4.848485</td><td>d</td></tr>
+<tr><td>4</td><td>4.797980</td><td>e</td></tr>
+</tbody></table></noscript>
 <link href="https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.css" rel="stylesheet">
 <script type="module">
     import { ITable, jQuery as $ } from 'https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.js';

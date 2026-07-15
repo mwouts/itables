@@ -411,13 +411,385 @@ def to_html_datatable(
     display_logo_when_loading = dt_args.pop("display_logo_when_loading", False)
 
     check_itable_arguments(cast(dict[str, Any], dt_args), DTForITablesOptions)
+    fallback_html = _simple_html_table_from_dt_args(dt_args)
     return html_table_from_template(
         table_id=table_id,
         dt_url=dt_url,
         connected=connected,
         display_logo_when_loading=display_logo_when_loading,
         kwargs=dt_args,
+        fallback_html=fallback_html,
     )
+
+
+_STATIC_PREVIEW_HELP_URL = (
+    "https://mwouts.github.io/itables/troubleshooting.html"
+    "#static-preview-instead-of-the-interactive-table"
+)
+
+
+def _could_not_load_message(*, connected: bool) -> str:
+    """Markdown explanation shown by show() when it can't attempt to
+    display HTML/JavaScript at all - cf. #575."""
+    source = "the internet" if connected else "the `init_notebook_mode` cell"
+    help_link = f"[help]({_STATIC_PREVIEW_HELP_URL})"
+    return (
+        f"Could not load ITables v{itables_version} from {source}, "
+        f"defaulting to a static preview (need {help_link}?)"
+    )
+
+
+# The exact 'render' function that get_itable_arguments() generates for float
+# columns formatted in Python, cf. get_float_columns_to_be_formatted_in_python()
+_FLOAT_SORT_PAIR_RENDER = (
+    "function (data, type, row, meta) "
+    "{ return type === 'sort' || type === 'type' ? data[1] : data[0]; }"
+)
+# The 'render' function generated for categorical columns sorted by rank,
+# cf. get_categorical_columns_to_be_represented_through_their_rank(): the
+# categories are embedded in the function body as a JSON array
+_CATEGORY_RENDER_RE = re.compile(r"var categories = (.*); return type")
+_NON_FINITE_FLOAT_SENTINELS = {
+    "___NaN___": "NaN",
+    "___Infinity___": "Infinity",
+    "___-Infinity___": "-Infinity",
+}
+_THEAD_RE = re.compile(r"<thead>(.*?)</thead>", re.DOTALL)
+_TR_RE = re.compile(r"<tr[^>]*>(.*?)</tr>", re.DOTALL)
+_TH_RE = re.compile(r"<th[^>]*>(.*?)</th>", re.DOTALL)
+_TAG_RE = re.compile(r"<[^>]+>")
+_TABLE_OPEN_RE = re.compile(r"<table\b[^>]*>")
+
+
+def _markdown_escape_cell(value: str) -> str:
+    """Escape a cell value so that it can't break out of a Markdown table row"""
+    return value.replace("|", "\\|").replace("\n", " ")
+
+
+def _markdown_table(headers: Sequence[str], rows: Sequence[Sequence[str]]) -> str:
+    """Format a column-aligned GitHub-Flavored-Markdown table"""
+    header_cells = [_markdown_escape_cell(h) for h in headers] or [""]
+    row_cells = [[_markdown_escape_cell(cell) for cell in row] for row in rows]
+
+    widths = [len(cell) for cell in header_cells]
+    for row in row_cells:
+        for i, cell in enumerate(row):
+            if i < len(widths):
+                widths[i] = max(widths[i], len(cell))
+
+    def format_row(cells: Sequence[str]) -> str:
+        cells = cells or [""] * len(widths)
+        return (
+            "| "
+            + " | ".join(cell.ljust(width) for cell, width in zip(cells, widths))
+            + " |"
+        )
+
+    lines = [
+        format_row(header_cells),
+        "| " + " | ".join("-" * w for w in widths) + " |",
+    ]
+    lines.extend(format_row(row) for row in row_cells)
+    return "\n".join(lines)
+
+
+def _rows_per_page(dt_args: Mapping[str, Any]) -> Optional[int]:
+    """Return the number of rows to show in the Markdown fallback table,
+    following the pagination options ('paging', 'pageLength', 'lengthMenu').
+    Returns None if all the (downsampled) rows should be shown."""
+    if dt_args.get("paging") is False:
+        return None
+
+    page_length = dt_args.get("pageLength")
+    if isinstance(page_length, (int, float)) and page_length > 0:
+        return int(page_length)
+
+    min_rows = _min_rows(dt_args)
+    return int(min_rows) if isinstance(min_rows, (int, float)) else 10
+
+
+def _header_labels_from_table_html(table_html: str) -> "list[str]":
+    """Extract the plain-text column labels from the <thead> of an
+    itables-generated table_html string.
+
+    A named index gets its own header row (name under the index column,
+    blanks elsewhere), so we merge all the (non-dtype) rows column-by-
+    column rather than just taking the first one. NB: for a Pandas
+    MultiIndex, colspan-ed labels aren't expanded, so some may be lost.
+    """
+    thead_match = _THEAD_RE.search(table_html)
+    if not thead_match:
+        return []
+
+    rows = [
+        [_TAG_RE.sub("", cell).strip() for cell in _TH_RE.findall(row)]
+        for row in _TR_RE.findall(thead_match.group(1))
+        # The dtypes sub-header added by show_dtypes isn't a column label
+        if "itables-dtype" not in row
+    ]
+    if not rows:
+        return []
+
+    width = max(len(row) for row in rows)
+    if any(len(row) != width for row in rows):
+        # Rows disagree on the number of cells (e.g. a Pandas MultiIndex,
+        # where the outer levels use colspan): fall back to the last row,
+        # which has one cell per column
+        return rows[-1]
+
+    return [next((cell for cell in column if cell), "") for column in zip(*rows)]
+
+
+def _float_and_category_targets_from_column_defs(
+    columnDefs: Optional[Sequence[Mapping[str, Any]]],
+) -> "tuple[set[int], dict[int, list]]":
+    """Recover, from the columnDefs generated by get_itable_arguments(), which
+    columns are float columns encoded as [display, sort] pairs, and which
+    columns are categorical columns encoded as a 1-based rank (0 = missing),
+    together with their ordered list of categories."""
+    float_targets: set[int] = set()
+    category_targets: dict[int, list] = {}
+    for col_def in columnDefs or []:
+        targets = col_def.get("targets")
+        target_list = targets if isinstance(targets, list) else [targets]
+        render = str(col_def.get("render", ""))
+        if render == _FLOAT_SORT_PAIR_RENDER:
+            float_targets.update(target_list)
+            continue
+        match = _CATEGORY_RENDER_RE.search(render)
+        if match:
+            categories = json.loads(match.group(1))
+            for target in target_list:
+                category_targets[target] = categories
+    return float_targets, category_targets
+
+
+def _decode_cell_for_markdown(
+    value: Any, *, is_float: bool, categories: Optional[list]
+) -> str:
+    """Turn one data_json cell (as produced by get_itable_arguments(), see
+    datatables_rows()) into a plain-text value for the Markdown table."""
+    if is_float:
+        # [display_string, sort_value] pair, cf. _FLOAT_SORT_PAIR_RENDER above
+        display_value = None if value is None else value[0]
+        return "" if display_value is None else str(display_value)
+    if categories is not None:
+        # 1-based rank (0 = missing), cf. add_rank_to_categories
+        return "" if not value else str(categories[value - 1])
+    if value is None:
+        return ""
+    if isinstance(value, str) and value in _NON_FINITE_FLOAT_SENTINELS:
+        return _NON_FINITE_FLOAT_SENTINELS[value]
+    return str(value)
+
+
+def _decoded_rows(dt_args: DTForITablesOptions) -> "tuple[list[list[str]], int]":
+    """Decode dt_args['data_json'] into plain-text rows, truncated to the
+    pagination row count. Returns (rows, hidden_row_count), where
+    hidden_row_count counts every row missing from the preview compared to
+    the original dataframe - both the ones downsampling already dropped
+    from data_json (filtered_row_count) and the ones pagination hides on
+    top of that."""
+    float_targets, category_targets = _float_and_category_targets_from_column_defs(
+        dt_args.get("columnDefs")
+    )
+    all_rows = json.loads(dt_args["data_json"])
+    text_rows = [
+        [
+            _decode_cell_for_markdown(
+                cell,
+                is_float=i in float_targets,
+                categories=category_targets.get(i),
+            )
+            for i, cell in enumerate(row)
+        ]
+        for row in all_rows
+    ]
+
+    total_rows = len(text_rows)
+    rows_to_show = _rows_per_page(dt_args)
+    hidden_rows = cast(int, dt_args.get("filtered_row_count", 0))
+    if rows_to_show is not None and rows_to_show < total_rows:
+        text_rows = text_rows[:rows_to_show]
+        hidden_rows += total_rows - rows_to_show
+
+    return text_rows, hidden_rows
+
+
+def _fallback_notes(dt_args: DTForITablesOptions, hidden_rows: int) -> "list[str]":
+    """Return the small, human-readable notes (rows/columns missing from
+    the preview, out of the original dataframe) that go along with a
+    static fallback table."""
+    hidden_columns = cast(int, dt_args.get("filtered_column_count", 0))
+    downsampled = bool(
+        cast(int, dt_args.get("filtered_row_count", 0)) or hidden_columns
+    )
+    notes = []
+    if not downsampled and dt_args.get("downsampling_warning"):
+        # show_df_type=True stashes the dataframe type description in
+        # downsampling_warning even when nothing was actually downsampled
+        # (cf. get_itable_arguments()) - show it here, since it's then just
+        # that description, not the (now redundant) downsampling message.
+        # It must be checked independently of hidden_rows/hidden_columns
+        # below, since those may be nonzero from pagination alone.
+        notes.append(cast(str, dt_args["downsampling_warning"]))
+    if hidden_rows > 0:
+        notes.append(
+            f"{hidden_rows:,d} more row{'s' if hidden_rows > 1 else ''} not shown"
+        )
+    if hidden_columns > 0:
+        notes.append(
+            f"{hidden_columns:,d} more column{'s' if hidden_columns > 1 else ''} "
+            "not shown"
+        )
+    return notes
+
+
+def to_markdown_table(
+    df: DataFrameOrSeries,
+    caption: Optional[str] = None,
+    **kwargs: Unpack[ITableOptions],
+) -> str:
+    """
+    Return a simple, static Markdown table for the given dataframe. This is
+    what show() prints when it can't display an interactive table at all
+    (cf. #575). Only the first rows are included, following the pagination
+    options ('pageLength', 'lengthMenu' or 'paging') - 10 rows by default.
+    """
+    # get_itable_arguments() expects a resolved table_id, cf. to_html_datatable()
+    kwargs["table_id"] = check_table_id(kwargs.pop("table_id", None), kwargs, df=df)
+    dt_args = get_itable_arguments(df, **kwargs)
+    return _markdown_table_from_dt_args(dt_args, caption)
+
+
+def _markdown_table_from_dt_args(
+    dt_args: DTForITablesOptions, caption: Optional[str]
+) -> str:
+    """Build the Markdown table (see to_markdown_table()) from the output of
+    get_itable_arguments(). Just the table: show() prepends its own "could
+    not load" explanation when actually falling back to it."""
+    lines = []
+    if caption:
+        lines.append(f"**{caption}**")
+        lines.append("")
+
+    if "data_json" not in dt_args:
+        # df is None, or this is a Pandas Styler object (or use_to_html=True
+        # in general), rendered with df.to_html() directly: there is no
+        # downsampled, DataTables-ready data to build a Markdown preview from
+        lines.append("*(no static preview available for this table)*")
+        return "\n".join(lines)
+
+    headers = _header_labels_from_table_html(dt_args["table_html"])
+    text_rows, hidden_rows = _decoded_rows(dt_args)
+    lines.append(_markdown_table(headers, text_rows))
+
+    notes = _fallback_notes(dt_args, hidden_rows)
+    if notes:
+        lines.append("")
+        lines.append(f"*({'; '.join(notes)})*")
+
+    return "\n".join(lines)
+
+
+def _static_preview_caption(caption: Optional[str]) -> str:
+    """Build the <caption> for the static preview table - the original
+    table caption (if any) plus the explanation of the fallback itself.
+    Using a <caption>, part of the <table>, rather than a standalone <p>,
+    keeps the message aligned the same way as the table it refers to,
+    regardless of whatever CSS the surrounding page applies to tables."""
+    message = (
+        "ITables can't run JavaScript in this context - defaulting to a "
+        f"<a href={_STATIC_PREVIEW_HELP_URL}>static preview</a>"
+    )
+    if caption:
+        return f"<caption>{caption}<br>{message}</caption>"
+    return f"<caption>{message}</caption>"
+
+
+def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
+    """Build a plain HTML <table> (no DataTables, no JavaScript) for
+    embedding in a <noscript> tag - see to_html_datatable() and #575. This
+    reuses table_html's <thead> as-is, unlike to_markdown_table(). The
+    fallback explanation goes in the <caption>, alongside the original one
+    if there was one; downsampling/hidden-row notes go in a <tfoot> row.
+    Both are part of the <table> itself, rather than standalone <p> tags,
+    so they stay aligned the same way as the table regardless of whatever
+    CSS the surrounding page applies to it. The table also gets a plain
+    'border' attribute (not CSS - there's no guarantee a <style> tag would
+    survive a sanitizer, cf. the 'hidden' row above), so it has visible
+    cell delimiters even with no surrounding stylesheet."""
+    caption_html = _static_preview_caption(cast(Optional[str], dt_args.get("caption")))
+
+    if "data_json" not in dt_args:
+        # df is None, or this is a Pandas Styler object (or use_to_html=True
+        # in general): there is no downsampled JSON data to build a table
+        # from, but table_html - when there's a df - already holds the
+        # full rendered table (unstyled, for a Styler), so reuse it as-is
+        # rather than showing nothing.
+        table_html = dt_args.get("table_html")
+        if not table_html:
+            return ""
+        table_html = cast(str, table_html).replace(
+            "<table", '<table border="1" cellpadding="4"', 1
+        )
+        return _TABLE_OPEN_RE.sub(
+            lambda m: m.group(0) + caption_html, table_html, count=1
+        )
+
+    thead_match = _THEAD_RE.search(cast(str, dt_args["table_html"]))
+    if thead_match:
+        # _table_header() can leave a blank line where an empty index
+        # <th></th> was removed (show_index=False): harmless in the
+        # interactive table, since DataTables re-renders the header, but
+        # visible as stray whitespace in our raw-HTML fallback.
+        thead_content = "\n".join(
+            line for line in thead_match.group(1).splitlines() if line.strip()
+        )
+        thead = f"<thead>{thead_content}</thead>"
+    else:
+        thead = ""
+
+    text_rows, hidden_rows = _decoded_rows(dt_args)
+    body_rows = "\n".join(
+        "<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>"
+        for row in text_rows
+    )
+
+    notes = _fallback_notes(dt_args, hidden_rows)
+    if notes:
+        # A <tfoot> row (rather than a trailing <p>) keeps the note aligned
+        # the same way as the table, for the same reason as the <caption>
+        # above.
+        col_count = (
+            len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
+        )
+        notes_html = (
+            f'<tfoot><tr><td colspan="{col_count}">{"; ".join(notes)}</td></tr></tfoot>'
+        )
+    else:
+        notes_html = ""
+
+    return (
+        f'<table border="1" cellpadding="4">{caption_html}{thead}<tbody>\n{body_rows}'
+        f"\n</tbody>{notes_html}</table>"
+    )
+
+
+def to_html_static_preview(
+    df: DataFrameOrSeries,
+    caption: Optional[str] = None,
+    **kwargs: Unpack[ITableOptions],
+) -> str:
+    """
+    Return the static HTML preview table for the given dataframe - the same
+    plain <table> that to_html_datatable() embeds in a <noscript> tag (cf.
+    #575). Only the first rows are included, following the pagination
+    options ('pageLength', 'lengthMenu' or 'paging') - 10 rows by default.
+    """
+    kwargs["table_id"] = check_table_id(kwargs.pop("table_id", None), kwargs, df=df)
+    dt_args = get_itable_arguments(df, caption, **kwargs)
+    return _simple_html_table_from_dt_args(dt_args)
 
 
 def _evaluate_show_index(df, showIndex) -> bool:
@@ -688,6 +1060,7 @@ def get_itable_arguments(
         pass
     elif not use_to_html:
         full_row_count = len(df)  # type: ignore
+        full_column_count = len(df.columns)  # type: ignore
         df, downsampling_warning = downsample(
             df,
             df_module_name=df_module_name,
@@ -707,6 +1080,7 @@ def get_itable_arguments(
         if downsampling_warning:
             dt_args["downsampling_warning"] = downsampling_warning
             dt_args["filtered_row_count"] = full_row_count - len(df)
+            dt_args["filtered_column_count"] = full_column_count - len(df.columns)
 
         if dt_args.get("column_filters", False) == "footer":
             footer = True
@@ -1029,6 +1403,7 @@ def html_table_from_template(
     connected: bool,
     display_logo_when_loading: bool,
     kwargs: DTForITablesOptions,
+    fallback_html: str = "",
 ) -> str:
     # Load the HTML template
     if connected:
@@ -1053,9 +1428,21 @@ def html_table_from_template(
     itables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"
     )
+    # 'hidden' - not CSS - keeps this row hidden by default: some
+    # sanitizers (e.g. an untrusted Jupyter notebook) strip <style> tags,
+    # which would otherwise leave it visible alongside the <noscript>
+    # fallback below. The inline script un-hides it immediately if
+    # JavaScript actually runs (before the DataTables import even
+    # resolves), regardless of whether that import succeeds or is slow.
+    # The value is written out explicitly (hidden="hidden", not a bare
+    # 'hidden') because JupyterLab's untrusted-output sanitizer (sanitize-html)
+    # drops attributes with an empty value even when the attribute name
+    # itself is allowlisted - a valued boolean attribute is equivalent per
+    # the HTML spec, but survives that sanitizer.
+    loading_hidden = 'hidden="hidden"' if fallback_html else ""
     table_body = f"""
   <tbody>
-    <tr>
+    <tr {loading_hidden}>
       <td style="vertical-align:middle; text-align:left">{get_animated_logo(display_logo_when_loading)}
         Loading ITables v{itables_version} from {itables_source}...
         (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
@@ -1064,12 +1451,25 @@ def html_table_from_template(
   </tbody>
 """
     check_table_id(table_id, kwargs)
+    # Substitute '#table_id' now, since our own fallback content below may
+    # itself contain that literal text if that's the table_id in use.
+    output = replace_value(output, "#table_id", f"#{table_id}")
+
+    # Placed right after the table (not at the end of the document) so the
+    # trailing <script> tag - on which shiny.py's DT() relies - is kept.
+    if fallback_html:
+        unhide_script = (
+            f'<script>document.querySelector("#{table_id} [hidden]")'
+            f'?.removeAttribute("hidden")</script>'
+        )
+        noscript_fallback = f"\n{unhide_script}\n<noscript>{fallback_html}</noscript>"
+    else:
+        noscript_fallback = ""
     output = replace_value(
         output,
         '<table id="table_id"></table>',
-        f'<table id="{table_id}">{table_body}</table>',
+        f'<table id="{table_id}">{table_body}</table>{noscript_fallback}',
     )
-    output = replace_value(output, "#table_id", f"#{table_id}")
 
     assert "classes" in kwargs
     kwargs["classes"] = get_expanded_classes(kwargs["classes"])
@@ -1177,12 +1577,39 @@ def safe_reset_index(df):
         return pd.concat(index_levels + [df.reset_index(drop=True)], axis=1)
 
 
+def _html_display_is_supported() -> bool:
+    """Return True if we're running inside a Jupyter kernel that can be
+    expected to run JavaScript (as opposed to no IPython at all, a plain
+    Python script, or a terminal-based IPython session)."""
+    try:
+        from IPython import get_ipython
+    except ImportError:
+        return False
+
+    shell = get_ipython()
+    if shell is None:
+        return False
+
+    return shell.__class__.__name__ != "TerminalInteractiveShell"
+
+
 def show(
     df: DataFrameOrSeries,
     caption: Optional[str] = None,
     **kwargs: Unpack[ITableOptions],
 ) -> None:
-    """Render the given dataframe as an interactive datatable"""
+    """Render the given dataframe as an interactive datatable.
+
+    When HTML/JavaScript can't be rendered (no IPython, or no JavaScript
+    support, e.g. in a terminal), a simpler Markdown table is printed
+    instead - see to_markdown_table()."""
+    if not _html_display_is_supported():
+        connected = bool(kwargs.get("connected", _CONNECTED))
+        print(_could_not_load_message(connected=connected))
+        print()
+        print(to_markdown_table(df, caption, **kwargs))
+        return
+
     from IPython.display import HTML, display
 
     display(HTML(to_html_datatable(df, caption, **kwargs)))

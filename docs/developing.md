@@ -83,7 +83,7 @@ you need to create a Jupyter kernel named `itables` with
 python -m ipykernel install --name itables --user
 ```
 Then you can build the documentation with
-```
+```shell
 pixi run -e docs jupyter book build docs
 ```
 
@@ -96,11 +96,11 @@ still work properly.
 ## Jupyter Lab
 
 In the pixi environment, you can start Jupyter with
-```
+```shell
 pixi run jupyter lab
 ```
 or if you're already in a pixi shell:
-```
+```shell
 jupyter lab
 ```
 

@@ -235,6 +235,7 @@ class DTForITablesOptions(DataTableOptions):
 
     selected_rows: NotRequired[Sequence[int]]
     filtered_row_count: NotRequired[int]
+    filtered_column_count: NotRequired[int]
 
     downsampling_warning: NotRequired[str]
     text_in_header_can_be_selected: NotRequired[bool]

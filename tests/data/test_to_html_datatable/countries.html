@@ -1,7 +1,7 @@
 <!--| quarto-html-table-processing: none -->
 <table id="table_id">
   <tbody>
-    <tr>
+    <tr hidden="hidden">
       <td style="vertical-align:middle; text-align:left">
         Loading ITables v{itables_version} from the internet...
         (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
@@ -9,6 +9,29 @@
     </tr>
   </tbody>
 </table>
+<script>document.querySelector("#table_id [hidden]")?.removeAttribute("hidden")</script>
+<noscript><table border="1" cellpadding="4"><caption>ITables can't run JavaScript in this context - defaulting to a <a href=https://mwouts.github.io/itables/troubleshooting.html#static-preview-instead-of-the-interactive-table>static preview</a></caption><thead>    <tr style="text-align: right;">
+      <th></th>
+      <th>region</th>
+      <th>country</th>
+      <th>capital</th>
+      <th>longitude</th>
+      <th>latitude</th>
+    </tr>
+    <tr>
+      <th>code</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr></thead><tbody>
+<tr><td>AW</td><td>Latin America &amp; Caribbean </td><td>Aruba</td><td>Oranjestad</td><td>-70.0167</td><td>12.51670</td></tr>
+<tr><td>AF</td><td>South Asia</td><td>Afghanistan</td><td>Kabul</td><td>69.1761</td><td>34.52280</td></tr>
+<tr><td>AO</td><td>Sub-Saharan Africa </td><td>Angola</td><td>Luanda</td><td>13.2420</td><td>-8.81155</td></tr>
+<tr><td>AL</td><td>Europe &amp; Central Asia</td><td>Albania</td><td>Tirane</td><td>19.8172</td><td>41.33170</td></tr>
+<tr><td>AD</td><td>Europe &amp; Central Asia</td><td>Andorra</td><td>Andorra la Vella</td><td>1.5218</td><td>42.50750</td></tr>
+</tbody></table></noscript>
 <link href="https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.css" rel="stylesheet">
 <script type="module">
     import { ITable, jQuery as $ } from 'https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.js';
