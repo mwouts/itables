@@ -4,6 +4,9 @@ ITables ChangeLog
 Unreleased
 ----------
 
+**Fixed**
+- We have fixed the dark mode detection in offline mode (`connected=False`, the default outside of Google Colab): the script that adds the `dark` class to the page used to crash while trying to `import()` a `Promise` object instead of awaiting it, so the `dark` class was never set. This made the `fixedColumns` columns keep their light background in dark mode, even though the rest of the table (which does not rely on the `dark` class the same way) looked fine ([#564](https://github.com/mwouts/itables/issues/564)).
+
 **Security**
 - We have added [zizmor](https://zizmor.sh/) to our CI to scan the GitHub Actions workflows for security issues. All actions are now pinned to a commit SHA, checkout steps no longer persist credentials, jobs use least-privilege permissions, and we fixed a code-injection risk in the PR-comment workflow where untrusted pull request metadata was interpolated directly into a `github-script` template.
 
