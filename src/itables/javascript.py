@@ -423,8 +423,11 @@ def to_html_datatable(
 
 
 _STATIC_PREVIEW_HELP_URL = (
-    "https://mwouts.github.io/itables/troubleshooting.html"
-    "#static-preview-instead-of-the-interactive-table"
+    "https://mwouts.github.io/itables/fallbacks/static_preview.html"
+)
+_STATIC_PREVIEW_MESSAGE = (
+    f"<sup><a href={_STATIC_PREVIEW_HELP_URL} "
+    f'title="ITables v{itables_version} static preview">ⓘ</a></sup>'
 )
 
 
@@ -459,6 +462,12 @@ _TR_RE = re.compile(r"<tr[^>]*>(.*?)</tr>", re.DOTALL)
 _TH_RE = re.compile(r"<th[^>]*>(.*?)</th>", re.DOTALL)
 _TAG_RE = re.compile(r"<[^>]+>")
 _TABLE_OPEN_RE = re.compile(r"<table\b[^>]*>")
+_CELL_OPEN_RE = re.compile(r"<(th|td)\b([^>]*)>")
+_STYLE_ATTR_RE = re.compile(r'\sstyle="([^"]*)"')
+# Light cell delimiters as inline styles rather than a <style> tag,
+# which may not survive a sanitizer.
+_TABLE_STYLE = "border-collapse:collapse"
+_CELL_STYLE = "border:1px solid #ddd;padding:8px"
 
 
 def _markdown_escape_cell(value: str) -> str:
@@ -633,15 +642,20 @@ def _fallback_notes(dt_args: DTForITablesOptions, hidden_rows: int) -> "list[str
         # It must be checked independently of hidden_rows/hidden_columns
         # below, since those may be nonzero from pagination alone.
         notes.append(cast(str, dt_args["downsampling_warning"]))
-    if hidden_rows > 0:
-        notes.append(
-            f"{hidden_rows:,d} more row{'s' if hidden_rows > 1 else ''} not shown"
-        )
-    if hidden_columns > 0:
-        notes.append(
-            f"{hidden_columns:,d} more column{'s' if hidden_columns > 1 else ''} "
-            "not shown"
-        )
+    row_note = (
+        f"{hidden_rows:,d} more row{'s' if hidden_rows > 1 else ''}"
+        if hidden_rows > 0
+        else ""
+    )
+    col_note = (
+        f"{hidden_columns:,d} more column{'s' if hidden_columns > 1 else ''}"
+        if hidden_columns > 0
+        else ""
+    )
+    if row_note and col_note:
+        notes.append(f"{row_note} and {col_note} not shown")
+    elif row_note or col_note:
+        notes.append(f"{row_note or col_note} not shown")
     return notes
 
 
@@ -692,34 +706,68 @@ def _markdown_table_from_dt_args(
     return "\n".join(lines)
 
 
-def _static_preview_caption(caption: Optional[str]) -> str:
-    """Build the <caption> for the static preview table - the original
-    table caption (if any) plus the explanation of the fallback itself.
-    Using a <caption>, part of the <table>, rather than a standalone <p>,
-    keeps the message aligned the same way as the table it refers to,
-    regardless of whatever CSS the surrounding page applies to tables."""
-    message = (
-        "ITables can't run JavaScript in this context - defaulting to a "
-        f"<a href={_STATIC_PREVIEW_HELP_URL}>static preview</a>"
-    )
-    if caption:
-        return f"<caption>{caption}<br>{message}</caption>"
-    return f"<caption>{message}</caption>"
+def _add_cell_borders(html: str) -> str:
+    """Add a light inline border/padding style to every <th>/<td> cell in
+    html (merging into any style attribute already there, e.g. a Pandas
+    Styler's own cell formatting, rather than adding a second, conflicting
+    style attribute)."""
+
+    def add_style(m: "re.Match[str]") -> str:
+        tag, attrs = m.group(1), m.group(2)
+        style_match = _STYLE_ATTR_RE.search(attrs)
+        if style_match:
+            attrs = _STYLE_ATTR_RE.sub(
+                f' style="{_CELL_STYLE};{style_match.group(1)}"', attrs, count=1
+            )
+            return f"<{tag}{attrs}>"
+        return f'<{tag} style="{_CELL_STYLE}"{attrs}>'
+
+    return _CELL_OPEN_RE.sub(add_style, html)
+
+
+def _table_caption(caption: Optional[str]) -> str:
+    """Wrap the original table caption (if any) in a <caption> tag, part of
+    the <table> so it stays aligned the same way as the table itself,
+    regardless of whatever CSS the surrounding page applies to it."""
+    return f"<caption>{caption}</caption>" if caption else ""
+
+
+_FIRST_TH_RE = re.compile(r"<th\b([^>]*)>(.*?)</th>", re.DOTALL)
+
+
+def _add_static_preview_marker(html: str) -> str:
+    """Add the static-preview marker - a small, linked 'ⓘ' with a title
+    tooltip - to the first header cell, rather than a sentence of
+    always-visible text in the table's footer: now that it's just that one
+    symbol, it reads more naturally right where a reader's eye starts."""
+
+    def add_marker(m: "re.Match[str]") -> str:
+        attrs, content = m.group(1), m.group(2)
+        return f"<th{attrs}>{content}{_STATIC_PREVIEW_MESSAGE}</th>"
+
+    return _FIRST_TH_RE.sub(add_marker, html, count=1)
+
+
+def _table_footer(notes: "list[str]", col_count: int) -> str:
+    """Build the <tfoot> row holding the downsampling/hidden-row notes, if
+    any. Part of the <table> itself, rather than a standalone <p>, so it
+    stays aligned the same way as the table regardless of whatever CSS the
+    surrounding page applies to it."""
+    if not notes:
+        return ""
+    return f'<tfoot><tr><td colspan="{col_count}">{"; ".join(notes)}</td></tr></tfoot>'
 
 
 def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
     """Build a plain HTML <table> (no DataTables, no JavaScript) for
     embedding in a <noscript> tag - see to_html_datatable() and #575. This
     reuses table_html's <thead> as-is, unlike to_markdown_table(). The
-    fallback explanation goes in the <caption>, alongside the original one
-    if there was one; downsampling/hidden-row notes go in a <tfoot> row.
-    Both are part of the <table> itself, rather than standalone <p> tags,
-    so they stay aligned the same way as the table regardless of whatever
-    CSS the surrounding page applies to it. The table also gets a plain
-    'border' attribute (not CSS - there's no guarantee a <style> tag would
-    survive a sanitizer, cf. the 'hidden' row above), so it has visible
-    cell delimiters even with no surrounding stylesheet."""
-    caption_html = _static_preview_caption(cast(Optional[str], dt_args.get("caption")))
+    original caption (if any) goes in the <caption>; the static-preview
+    marker goes in the first header cell, and the downsampling/hidden-row
+    notes (if any) go in a <tfoot> row. The table gets light cell
+    delimiters via inline styles (not a <style> tag, which may not survive
+    a sanitizer), so it's readable even with no surrounding stylesheet."""
+    caption_html = _table_caption(cast(Optional[str], dt_args.get("caption")))
 
     if "data_json" not in dt_args:
         # df is None, or this is a Pandas Styler object (or use_to_html=True
@@ -730,12 +778,12 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
         table_html = dt_args.get("table_html")
         if not table_html:
             return ""
-        table_html = cast(str, table_html).replace(
-            "<table", '<table border="1" cellpadding="4"', 1
+        table_html = _TABLE_OPEN_RE.sub(
+            lambda m: m.group(0) + caption_html, cast(str, table_html), count=1
         )
-        return _TABLE_OPEN_RE.sub(
-            lambda m: m.group(0) + caption_html, table_html, count=1
-        )
+        table_html = table_html.replace("<table", f'<table style="{_TABLE_STYLE}"', 1)
+        table_html = _add_cell_borders(table_html)
+        return _add_static_preview_marker(table_html)
 
     thead_match = _THEAD_RE.search(cast(str, dt_args["table_html"]))
     if thead_match:
@@ -757,23 +805,17 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
     )
 
     notes = _fallback_notes(dt_args, hidden_rows)
-    if notes:
-        # A <tfoot> row (rather than a trailing <p>) keeps the note aligned
-        # the same way as the table, for the same reason as the <caption>
-        # above.
-        col_count = (
-            len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
-        )
-        notes_html = (
-            f'<tfoot><tr><td colspan="{col_count}">{"; ".join(notes)}</td></tr></tfoot>'
-        )
-    else:
-        notes_html = ""
+    col_count = (
+        len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
+    )
+    notes_html = _table_footer(notes, col_count)
 
-    return (
-        f'<table border="1" cellpadding="4">{caption_html}{thead}<tbody>\n{body_rows}'
+    table_html = (
+        f'<table style="{_TABLE_STYLE}">{caption_html}{thead}<tbody>\n{body_rows}'
         f"\n</tbody>{notes_html}</table>"
     )
+    table_html = _add_cell_borders(table_html)
+    return _add_static_preview_marker(table_html)
 
 
 def to_html_static_preview(

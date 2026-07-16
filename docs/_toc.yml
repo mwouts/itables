@@ -73,7 +73,9 @@ parts:
     chapters:
       - file: fallbacks/static_preview
       - file: fallbacks/markdown_preview
-      - file: fallbacks/static_preview_pandas_dataframes
-      - file: fallbacks/static_preview_polars_dataframes
-      - file: fallbacks/markdown_preview_pandas_dataframes
-      - file: fallbacks/markdown_preview_polars_dataframes
+      - file: fallbacks/examples
+        sections:
+          - file: fallbacks/static_preview_pandas_dataframes
+          - file: fallbacks/static_preview_polars_dataframes
+          - file: fallbacks/markdown_preview_pandas_dataframes
+          - file: fallbacks/markdown_preview_polars_dataframes

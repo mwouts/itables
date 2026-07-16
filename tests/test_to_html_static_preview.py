@@ -9,8 +9,9 @@ except ImportError:
 
 
 def _row_count(html: str) -> int:
-    # every data row is written as "<tr><td>...", cf. _simple_html_table_from_dt_args()
-    return html.count("<tr><td>")
+    # every data row is written as "<tr><td ...", cf. _simple_html_table_from_dt_args()
+    body = html.split("<tbody>", 1)[1].split("</tbody>", 1)[0]
+    return body.count("<tr><td")
 
 
 def test_default_pagination_shows_ten_rows():
@@ -70,30 +71,61 @@ def test_hidden_rows_note_uses_full_column_span():
     df = pd.DataFrame({"a": range(20), "b": range(20), "c": range(20)})
 
     html = to_html_static_preview(df)
-    assert '<tfoot><tr><td colspan="3">10 more rows not shown</td></tr></tfoot>' in html
+    tfoot = html.split("<tfoot>", 1)[1].split("</tfoot>", 1)[0]
+    assert 'colspan="3"' in tfoot
+    assert tfoot.endswith("10 more rows not shown</td></tr>")
 
 
-def test_caption_combines_original_caption_with_message():
+def test_static_preview_marker_is_in_the_header_not_the_footer():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": range(20)})
+
+    html = to_html_static_preview(df)
+    thead = html.split("<thead>", 1)[1].split("</thead>", 1)[0]
+    tfoot = html.split("<tfoot>", 1)[1].split("</tfoot>", 1)[0]
+    assert "static preview" in thead
+    assert "static preview" not in tfoot
+    assert "10 more rows not shown" in tfoot
+
+
+def test_no_footer_without_any_notes():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": [1]})
+
+    html = to_html_static_preview(df)
+    assert "<tfoot>" not in html
+
+
+def test_static_preview_marker_mentions_the_version():
+    pd = pytest.importorskip("pandas")
+    from itables.version import __version__
+
+    df = pd.DataFrame({"x": [1]})
+    html = to_html_static_preview(df)
+    thead = html.split("<thead>", 1)[1].split("</thead>", 1)[0]
+    # a small, linked "info" marker with a tooltip, rather than a sentence
+    # of always-visible text
+    assert (
+        "<sup><a href=https://mwouts.github.io/itables/fallbacks/static_preview.html "
+        f'title="ITables v{__version__} static preview">ⓘ</a></sup>'
+    ) in thead
+
+
+def test_caption_is_just_the_original_caption():
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"x": [1]})
 
     html = to_html_static_preview(df, caption="My caption")
     caption = html.split("<caption>", 1)[1].split("</caption>", 1)[0]
-    assert caption.startswith("My caption<br>")
-    assert "ITables can't run JavaScript in this context" in caption
+    assert caption == "My caption"
 
 
-def test_caption_is_just_the_message_without_an_explicit_caption():
+def test_no_caption_tag_without_an_explicit_caption():
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"x": [1]})
 
     html = to_html_static_preview(df)
-    caption = html.split("<caption>", 1)[1].split("</caption>", 1)[0]
-    assert caption == (
-        "ITables can't run JavaScript in this context - defaulting to a "
-        "<a href=https://mwouts.github.io/itables/troubleshooting.html"
-        "#static-preview-instead-of-the-interactive-table>static preview</a>"
-    )
+    assert "<caption>" not in html
 
 
 def test_none_dataframe():
@@ -115,5 +147,5 @@ def test_styler_with_allow_html_reuses_table_html():
 
     styler = pd.DataFrame({"x": [1, 2]}).style
     html = to_html_static_preview(styler, allow_html=True)
-    assert "<caption>" in html
+    assert "static preview" in html.split("<thead>", 1)[1].split("</thead>", 1)[0]
     assert "<td" in html and ">1<" in html and ">2<" in html

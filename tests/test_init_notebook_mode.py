@@ -26,7 +26,7 @@ def test_init_notebook_mode():
     # <noscript> tag - see #575
     html = pd.DataFrame({"x": [1]})._repr_html_()
     assert "<noscript>" in html
-    assert "<td>1</td>" in html
+    assert ">1</td>" in html
 
     init_notebook_mode(all_interactive=False)
     assert not hasattr(pd.Series, "_repr_html_")
