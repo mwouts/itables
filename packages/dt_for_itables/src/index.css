@@ -38,3 +38,11 @@ table.dataTable tfoot > tr > th div.dt-column-footer,
 table.dataTable tfoot > tr > td div.dt-column-footer {
     flex-direction: row !important;
 }
+
+/* ColumnControl's dropdown search box ships with an empty search icon that
+   is only meant to be hidden in the inline (column header) search box - the
+   upstream CSS never hides it in the dropdown, so it shows up as a stray,
+   unstyled icon between the type select and the input (#536) */
+div.dtcc-dropdown div.dtcc-search > div div.dtcc-search-icon {
+    display: none;
+}

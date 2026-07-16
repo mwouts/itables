@@ -34,7 +34,8 @@ different contexts like Jupyter Book, Jupyter Lab, VS Code.
 
 A few regressions (e.g. dark mode issues) can only be caught by actually
 rendering a table in a browser and inspecting the resulting DOM/CSS. These
-tests (like `tests/test_dark_mode_fixed_columns.py`) are skipped by default,
+tests (like `tests/test_dark_mode_fixed_columns.py` and
+`tests/test_column_control_search_dropdown.py`) are skipped by default,
 as Playwright and its browser binaries are not part of the standard test
 dependencies. Run them locally with the dedicated `playwright` pixi
 environment:
@@ -46,6 +47,17 @@ pixi run -e playwright pytest tests/test_dark_mode_fixed_columns.py
 
 This environment is not part of the CI test matrix, so make sure to run it
 yourself whenever you touch the dark-mode or FixedColumns related CSS/JS.
+
+### Reproducing Quarto-specific issues
+
+Quarto's Bootstrap-based HTML theme can interact with the ColumnControl
+CSS in ways that a plain notebook render won't reveal (see `#536`). Render
+`docs/quarto/quarto_column_control.qmd` with the dedicated `quarto` pixi
+environment to reproduce and check such issues:
+
+```shell
+pixi run -e quarto quarto render docs/quarto/quarto_column_control.qmd
+```
 
 ## How to build the package locally
 
