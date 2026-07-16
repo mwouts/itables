@@ -759,9 +759,10 @@ def _table_footer(notes: "list[str]", col_count: int) -> str:
 
 
 def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
-    """Build a plain HTML <table> (no DataTables, no JavaScript) for
-    embedding in a <noscript> tag - see to_html_datatable() and #575. This
-    reuses table_html's <thead> as-is, unlike to_markdown_table(). The
+    """Build a plain HTML <table> (no DataTables, no JavaScript) that is
+    shown by default, ahead of the interactive table - see
+    to_html_datatable() and #575. This reuses table_html's <thead> as-is,
+    unlike to_markdown_table(). The
     original caption (if any) goes in the <caption>; the static-preview
     marker goes in the first header cell, and the downsampling/hidden-row
     notes (if any) go in a <tfoot> row. The table gets light cell
@@ -825,8 +826,8 @@ def to_html_static_preview(
 ) -> str:
     """
     Return the static HTML preview table for the given dataframe - the same
-    plain <table> that to_html_datatable() embeds in a <noscript> tag (cf.
-    #575). Only the first rows are included, following the pagination
+    plain <table> that to_html_datatable() shows by default, ahead of the
+    interactive table (cf. #575). Only the first rows are included, following the pagination
     options ('pageLength', 'lengthMenu' or 'paging') - 10 rows by default.
     """
     kwargs["table_id"] = check_table_id(kwargs.pop("table_id", None), kwargs, df=df)
@@ -1470,21 +1471,9 @@ def html_table_from_template(
     itables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"
     )
-    # 'hidden' - not CSS - keeps this row hidden by default: some
-    # sanitizers (e.g. an untrusted Jupyter notebook) strip <style> tags,
-    # which would otherwise leave it visible alongside the <noscript>
-    # fallback below. The inline script un-hides it immediately if
-    # JavaScript actually runs (before the DataTables import even
-    # resolves), regardless of whether that import succeeds or is slow.
-    # The value is written out explicitly (hidden="hidden", not a bare
-    # 'hidden') because JupyterLab's untrusted-output sanitizer (sanitize-html)
-    # drops attributes with an empty value even when the attribute name
-    # itself is allowlisted - a valued boolean attribute is equivalent per
-    # the HTML spec, but survives that sanitizer.
-    loading_hidden = 'hidden="hidden"' if fallback_html else ""
     table_body = f"""
   <tbody>
-    <tr {loading_hidden}>
+    <tr>
       <td style="vertical-align:middle; text-align:left">{get_animated_logo(display_logo_when_loading)}
         Loading ITables v{itables_version} from {itables_source}...
         (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
@@ -1500,17 +1489,38 @@ def html_table_from_template(
     # Placed right after the table (not at the end of the document) so the
     # trailing <script> tag - on which shiny.py's DT() relies - is kept.
     if fallback_html:
-        unhide_script = (
-            f'<script>document.querySelector("#{table_id} [hidden]")'
-            f'?.removeAttribute("hidden")</script>'
+        # The static preview is the *default*, visible content, and the
+        # interactive table starts out hidden: a <noscript> fallback would
+        # not work here, since e.g. GitHub's own notebook preview page runs
+        # JavaScript (it's a JS-powered page), so <noscript> content never
+        # renders there even though GitHub does not execute the <script>
+        # tags we emit in this HTML fragment (they're inserted into the
+        # page's DOM rather than parsed as part of it, so they stay inert -
+        # see #587). This inline script - which only runs where scripts we
+        # emit are actually executed, e.g. a real Jupyter session - swaps
+        # the two around: hide the static preview, and reveal the
+        # interactive table.
+        # The value is written out explicitly (hidden="hidden", not a bare
+        # 'hidden') because JupyterLab's untrusted-output sanitizer
+        # (sanitize-html) drops attributes with an empty value even when the
+        # attribute name itself is allowlisted - a valued boolean attribute
+        # is equivalent per the HTML spec, but survives that sanitizer.
+        table_hidden = ' hidden="hidden"'
+        fallback_id = f"{table_id}_fallback"
+        swap_script = (
+            f"<script>"
+            f'document.getElementById("{table_id}")?.removeAttribute("hidden");'
+            f'document.getElementById("{fallback_id}")?.setAttribute("hidden", "hidden");'
+            f"</script>"
         )
-        noscript_fallback = f"\n{unhide_script}\n<noscript>{fallback_html}</noscript>"
+        fallback_block = f'\n<div id="{fallback_id}">{fallback_html}</div>{swap_script}'
     else:
-        noscript_fallback = ""
+        table_hidden = ""
+        fallback_block = ""
     output = replace_value(
         output,
         '<table id="table_id"></table>',
-        f'<table id="{table_id}">{table_body}</table>{noscript_fallback}',
+        f'<table id="{table_id}"{table_hidden}>{table_body}</table>{fallback_block}',
     )
 
     assert "classes" in kwargs

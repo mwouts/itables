@@ -21,9 +21,9 @@
 # # Static preview - Polars dataframes
 #
 # `itables.to_html_static_preview()` returns the plain HTML table that
-# `to_html_datatable()` embeds in a `<noscript>` tag - see
-# [Static preview](static_preview.md) for why, and when, this is shown
-# instead of the interactive table. This page shows it for each of our test
+# `to_html_datatable()` shows by default, ahead of the interactive table -
+# see [Static preview](static_preview.md) for why, and when, this is shown
+# instead. This page shows it for each of our test
 # [Polars](https://www.pola.rs/) dataframes; see
 # [Polars dataframes](../polars_dataframes.md) for the same dataframes rendered
 # as interactive tables.

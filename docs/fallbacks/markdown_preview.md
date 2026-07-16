@@ -34,7 +34,7 @@ your `pageLength`/`lengthMenu` options say. This is the same fallback (see
 [Static preview](static_preview.md)) that a table gets when it's viewed
 somewhere that can't run JavaScript, except that here it's printed as
 Markdown - since there is no HTML output at all to embed it in - rather
-than embedded as a static `<noscript>` HTML table.
+than shown as a static HTML table.
 
 ## `to_markdown_table`
 

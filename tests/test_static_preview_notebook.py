@@ -1,10 +1,12 @@
 """Generate and execute short demo notebooks, and save them under
 tests/data/ so that the static-preview fallback (see #575) can be
-visually inspected by viewing these files on GitHub: since GitHub's
-static .ipynb preview can't run JavaScript, the interactive tables
-below should show up as the <noscript> fallback table there, while a
-real (trusted, JavaScript-capable) Jupyter session shows the
-interactive table.
+visually inspected by viewing these files on GitHub: since GitHub's own
+notebook preview page does not execute the <script> tags in our HTML
+output (they're inserted into the page's DOM instead of being parsed as
+part of it, so they stay inert), the static-preview table - shown by
+default, ahead of the initially-hidden interactive table - is what shows
+up there, while a real (trusted, JavaScript-capable) Jupyter session
+swaps the two around and shows the interactive table instead.
 
 Like test_to_html_datatable.py, the reference notebook is created (and
 the test fails, asking you to review it) the first time it's missing,
@@ -85,7 +87,7 @@ def _build_notebook():
             "\n"
             "Styler objects are already a static HTML rendering, so their "
             "static preview reuses that same HTML directly - see "
-            "[`test_noscript_fallback_shows_styler_table_html`]"
+            "[`test_static_preview_fallback_shows_styler_table_html`]"
             "(https://github.com/mwouts/itables/blob/main/tests/test_pandas_style.py)."
         ),
         new_code_cell(
@@ -154,11 +156,13 @@ def test_static_preview_notebook(notebook_kernel_name):
         html_outputs = _html_outputs(cell)
         assert html_outputs, f"No text/html output found in cell: {cell['source']}"
         html = "".join(html_outputs[0])
-        assert "<noscript>" in html
+        assert "_fallback" in html
         assert "France" in html
 
-    styler_noscript = "".join(_html_outputs(styler_cell)[0]).split("<noscript>", 1)[1]
-    assert "no static preview" not in styler_noscript
+    styler_fallback = (
+        "".join(_html_outputs(styler_cell)[0]).split('<div id="', 1)[1].split(">", 1)[1]
+    )
+    assert "no static preview" not in styler_fallback
 
     generated = _stable_text(nb)
 

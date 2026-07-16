@@ -22,10 +22,10 @@ def test_init_notebook_mode():
 
     init_notebook_mode(all_interactive=True)
     assert hasattr(pd.Series, "_repr_html_")
-    # The interactive HTML embeds a static, plain HTML fallback table in a
-    # <noscript> tag - see #575
+    # The interactive HTML shows a static, plain HTML fallback table by
+    # default, ahead of the (initially hidden) interactive table - see #575
     html = pd.DataFrame({"x": [1]})._repr_html_()
-    assert "<noscript>" in html
+    assert "_fallback" in html
     assert ">1</td>" in html
 
     init_notebook_mode(all_interactive=False)

@@ -36,10 +36,15 @@ Untrusted notebooks, which can't use JavaScript until you trust them, also use t
 
 ## What the fallback looks like
 
-`to_html_datatable` embeds that static preview - built with
-`to_html_static_preview` - in a `<noscript>` tag, right next to the
-interactive table. Here it is, the same plain HTML table you'd see on
-GitHub:
+`to_html_datatable` shows that static preview - built with
+`to_html_static_preview` - by default, right next to the interactive
+table, which starts out hidden. A small inline script swaps the two
+around wherever it actually gets to run (a real, JavaScript-capable
+session): a `<noscript>` tag would not do here, since it only hides its
+content when scripting is disabled for the whole page, which isn't the
+case on GitHub - GitHub's notebook preview is itself a JavaScript-powered
+page, it just doesn't execute the `<script>` tags in our output. Here is
+the static preview, the same plain HTML table you'd see on GitHub:
 
 ```{code-cell} ipython3
 from IPython.display import HTML, display

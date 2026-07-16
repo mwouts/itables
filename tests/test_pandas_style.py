@@ -61,22 +61,23 @@ def test_trivial_indexes_of_styler_objects_are_not_included(showIndex):
     assert ('class="blank level0"' in table_html) == (showIndex is True), table_html
 
 
-def test_noscript_fallback_shows_styler_table_html():
+def test_static_preview_fallback_shows_styler_table_html():
     """
     Pandas Styler objects have no downsampled data_json (see #575): the
-    <noscript> fallback must still show the actual (unstyled) table_html,
-    rather than a "no static preview available" placeholder - i.e. a
-    Styler table doesn't need a separate, data_json-based fallback since
-    its table_html is already a complete, static rendering.
+    static-preview fallback must still show the actual (unstyled)
+    table_html, rather than a "no static preview available" placeholder -
+    i.e. a Styler table doesn't need a separate, data_json-based fallback
+    since its table_html is already a complete, static rendering.
     """
     df = pd.DataFrame({"A": [42]})
-    html = to_html_datatable(df.style, allow_html=True)
+    html = to_html_datatable(df.style, table_id="T_id", allow_html=True)
 
-    # The "Loading ITables..." row is still hidden by default, and
-    # un-hidden by the same inline script as for a regular dataframe
-    assert '<tr hidden="hidden">' in html
+    # The interactive table is hidden by default, and un-hidden (while the
+    # static preview is hidden in turn) by the same inline script
+    assert '<table id="T_id" hidden="hidden">' in html
     assert 'removeAttribute("hidden")' in html
+    assert 'setAttribute("hidden", "hidden")' in html
 
-    noscript = html.split("<noscript>", 1)[1].split("</noscript>", 1)[0]
-    assert "no static preview" not in noscript
-    assert "<td" in noscript and ">42<" in noscript
+    fallback = html.split('<div id="T_id_fallback">', 1)[1].split("</div>", 1)[0]
+    assert "no static preview" not in fallback
+    assert "<td" in fallback and ">42<" in fallback
