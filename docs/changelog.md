@@ -4,6 +4,9 @@ ITables ChangeLog
 Unreleased
 ----------
 
+**Added**
+- We have added a `css` argument to `show` (and a matching `itables.options.css`) to inject custom CSS. Unlike `display(HTML(f"<style>{css}</style>"))`, this CSS is embedded in the output of every table, so it does not depend on that separate cell's output being rendered - some notebook front-ends (e.g. VS Code) defer rendering outputs that are scrolled out of view, so a standalone CSS cell may not take effect until it becomes visible ([#572](https://github.com/mwouts/itables/issues/572)).
+
 **Fixed**
 - We have fixed the dark mode detection in offline mode ([#564](https://github.com/mwouts/itables/issues/564)).
 - We have fixed the dark mode detection in Quarto documents ([#536](https://github.com/mwouts/itables/issues/536)).

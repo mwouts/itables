@@ -184,6 +184,7 @@ class ITableOptions(DataTableOptions):
 
     classes: NotRequired[Union[str, Sequence[str]]]
     style: NotRequired[Union[str, dict[str, str]]]
+    css: NotRequired[str]
     selected_rows: NotRequired[Sequence[int]]
 
     showIndex: NotRequired[Union[bool, Literal["auto"]]]
