@@ -34,8 +34,9 @@ different contexts like Jupyter Book, Jupyter Lab, VS Code.
 
 A few regressions (e.g. dark mode issues) can only be caught by actually
 rendering a table in a browser and inspecting the resulting DOM/CSS. These
-tests (like `tests/test_dark_mode_fixed_columns.py` and
-`tests/test_column_control_search_dropdown.py`) are skipped by default,
+tests (like `tests/test_dark_mode_fixed_columns.py`,
+`tests/test_column_control_search_dropdown.py` and
+`tests/test_quarto_dark_mode.py`) are skipped by default,
 as Playwright and its browser binaries are not part of the standard test
 dependencies. Run them locally with the dedicated `playwright` pixi
 environment:

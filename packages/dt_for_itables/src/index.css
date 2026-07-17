@@ -46,3 +46,15 @@ table.dataTable tfoot > tr > td div.dt-column-footer {
 div.dtcc-dropdown div.dtcc-search > div div.dtcc-search-icon {
     display: none;
 }
+
+/* The dropdown's type-icon + type-select row is sized with zero pixel of
+   slack: the icon's width and margin add up to exactly the 24px that
+   --dtcc-search-input_flexCalc reserves for the select's flex-basis. Under
+   a Bootstrap-themed page (e.g. Quarto), the universal `box-sizing:
+   border-box` reset shifts sub-pixel rounding just enough to overflow that
+   budget, which makes the row wrap: the icon, the select and the input
+   each end up stacked on their own line instead of the icon and select
+   sharing one row (#536). Reserve a little extra room so it always fits. */
+:root {
+    --dtcc-search-input_flexCalc: 28px;
+}

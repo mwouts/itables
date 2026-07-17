@@ -6,6 +6,7 @@ Unreleased
 
 **Fixed**
 - We have fixed the dark mode detection in offline mode ([#564](https://github.com/mwouts/itables/issues/564)).
+- We have fixed the dark mode detection in Quarto documents ([#536](https://github.com/mwouts/itables/issues/536)).
 - We have fixed the misaligned ColumnControl search dropdown (e.g. `columnControl={"content": ["searchDropdown"]}`) ([#536](https://github.com/mwouts/itables/issues/536)).
 - The `dash` version used to generate `src/itables_for_dash/ITable.py` is now pinned to `dash==4.4.0` to avoid jitter in `ITable.py`.
 

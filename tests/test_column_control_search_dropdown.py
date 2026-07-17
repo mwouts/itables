@@ -33,7 +33,7 @@ from playwright.sync_api import (  # noqa: E402  # pyright: ignore[reportMissing
 )
 
 
-def render_offline_html() -> str:
+def render_offline_html(body: str = "") -> str:
     """Capture the HTML that itables would display in a notebook, for a
     table with a columnControl search dropdown, by actually running the code
     through an IPython shell rather than calling the underlying functions
@@ -46,7 +46,10 @@ from itables import init_notebook_mode, to_html_datatable
 
 init_notebook_mode(all_interactive=False, connected=False)
 
-df = pd.DataFrame({"name": ["a", "b", "c"]})
+df = pd.DataFrame({
+    "name": ["a", "b", "c"],
+    "date": pd.date_range("2020-01-01", periods=3),
+})
 display(HTML(to_html_datatable(
     df,
     connected=False,
@@ -61,7 +64,7 @@ display(HTML(to_html_datatable(
     html_outputs = [
         out.data["text/html"] for out in cap.outputs if "text/html" in out.data
     ]
-    return "<html><body>" + "\n".join(html_outputs) + "</body></html>"
+    return f"<html><body>{body}" + "\n".join(html_outputs) + "</body></html>"
 
 
 def test_column_control_search_dropdown_has_no_stray_icon(tmp_path):
@@ -95,5 +98,50 @@ def test_column_control_search_dropdown_has_no_stray_icon(tmp_path):
                 """
             )
             assert icon_display == "none"
+        finally:
+            browser.close()
+
+
+def test_date_search_dropdown_type_select_does_not_wrap(tmp_path):
+    html_path = tmp_path / "table.html"
+    # Quarto's default HTML theme sets the root font-size to 17px (instead
+    # of the browser default of 16px). The dropdown's type-icon + select row
+    # is sized with zero pixel of slack: the icon's width plus its em-based
+    # margin (0.5em) add up to exactly the space --dtcc-search-input_flexCalc
+    # reserves for the select. At 17px, that margin resolves to 8.5px instead
+    # of 8px, overflowing the budget by half a pixel and wrapping the type
+    # icon, select and date input onto three separate lines instead of two
+    # (issue #536).
+    html_path.write_text(
+        render_offline_html(body="<style>html { font-size: 17px; }</style>"),
+        encoding="utf-8",
+    )
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page(viewport={"width": 500, "height": 400})
+            errors = []
+            page.on("pageerror", lambda exc: errors.append(str(exc)))
+            page.goto(html_path.as_uri())
+            page.wait_for_selector("span.dtcc button.dtcc-button")
+            # The "date" column is the second one.
+            page.click("button.dtcc-button >> nth=1")
+            page.wait_for_selector("div.dtcc-dropdown")
+
+            assert errors == []
+
+            icon_box = page.locator(
+                "div.dtcc-dropdown div.dtcc-search-type-icon"
+            ).bounding_box()
+            select_box = page.locator("div.dtcc-dropdown select").bounding_box()
+            input_box = page.locator("div.dtcc-dropdown input").bounding_box()
+
+            # The type icon and the select must share the same row...
+            assert icon_box["y"] < select_box["y"] + select_box["height"]
+            assert select_box["y"] < icon_box["y"] + icon_box["height"]
+            # ... while the date input is on its own row below them.
+            assert input_box["y"] >= icon_box["y"] + icon_box["height"]
+            assert input_box["y"] >= select_box["y"] + select_box["height"]
         finally:
             browser.close()

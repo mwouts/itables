@@ -225,6 +225,12 @@ function set_or_remove_dark_class() {
         if ('theme' in document.documentElement.dataset)
             return document.documentElement.dataset.theme.includes('dark');
 
+        // Quarto
+        if (document.body.classList.contains('quarto-dark'))
+            return true;
+        if (document.body.classList.contains('quarto-light'))
+            return false;
+
         // Default
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
