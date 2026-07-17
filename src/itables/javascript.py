@@ -732,6 +732,21 @@ def _table_caption(caption: Optional[str]) -> str:
     return f"<caption>{caption}</caption>" if caption else ""
 
 
+def _table_style(dt_args: DTForITablesOptions, has_caption: bool) -> str:
+    """The inline style for the static-preview <table>. When the table has a
+    caption, we carry over the 'caption-side' from the DataTable style
+    (bottom by default) so the caption sits below the table, like it does in
+    the interactive table, rather than at the HTML default position (above
+    it)."""
+    if not has_caption:
+        return _TABLE_STYLE
+    for part in cast(str, dt_args.get("style") or "").split(";"):
+        prop, _, value = part.partition(":")
+        if prop.strip() == "caption-side" and value.strip():
+            return f"{_TABLE_STYLE};caption-side:{value.strip()}"
+    return _TABLE_STYLE
+
+
 _FIRST_TH_RE = re.compile(r"<th\b([^>]*)>(.*?)</th>", re.DOTALL)
 
 
@@ -779,10 +794,13 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
         table_html = dt_args.get("table_html")
         if not table_html:
             return ""
+        # A Pandas Styler may carry its own <caption> in the table_html.
+        has_caption = bool(caption_html) or "<caption" in cast(str, table_html)
+        table_style = _table_style(dt_args, has_caption)
         table_html = _TABLE_OPEN_RE.sub(
             lambda m: m.group(0) + caption_html, cast(str, table_html), count=1
         )
-        table_html = table_html.replace("<table", f'<table style="{_TABLE_STYLE}"', 1)
+        table_html = table_html.replace("<table", f'<table style="{table_style}"', 1)
         table_html = _add_cell_borders(table_html)
         return _add_static_preview_marker(table_html)
 
@@ -811,8 +829,9 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
     )
     notes_html = _table_footer(notes, col_count)
 
+    table_style = _table_style(dt_args, bool(caption_html))
     table_html = (
-        f'<table style="{_TABLE_STYLE}">{caption_html}{thead}<tbody>\n{body_rows}'
+        f'<table style="{table_style}">{caption_html}{thead}<tbody>\n{body_rows}'
         f"\n</tbody>{notes_html}</table>"
     )
     table_html = _add_cell_borders(table_html)

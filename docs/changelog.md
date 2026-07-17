@@ -10,6 +10,9 @@ Unreleased
 **Changed**
 - We have further sped up the CI: the conda package is now built with [rattler-build](https://rattler.build/) instead of `conda-build`, and dependencies in the `pytest` matrix are now installed with [uv](https://docs.astral.sh/uv/) instead of `pip`.
 
+**Fixed**
+- The caption in the static HTML preview now appears below the table (`caption-side:bottom`, following the `style` option), like it does in the interactive table, rather than above it ([#575](https://github.com/mwouts/itables/issues/575)).
+
 
 2.8.2 (2026-07-19)
 ------------------

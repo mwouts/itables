@@ -128,6 +128,38 @@ def test_no_caption_tag_without_an_explicit_caption():
     assert "<caption>" not in html
 
 
+def _table_style(html: str) -> str:
+    return html.split('<table style="', 1)[1].split('"', 1)[0]
+
+
+def test_caption_is_placed_below_the_table():
+    # like in the interactive table, the caption goes below the table (#575)
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": [1]})
+
+    html = to_html_static_preview(df, caption="My caption")
+    assert "caption-side:bottom" in _table_style(html)
+
+
+def test_caption_side_follows_the_style_option():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": [1]})
+
+    html = to_html_static_preview(
+        df, caption="My caption", style="width:auto;caption-side:top"
+    )
+    assert "caption-side:top" in _table_style(html)
+
+
+def test_no_caption_side_without_a_caption():
+    # captionless tables keep the plain table style, cf. #575
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": [1]})
+
+    html = to_html_static_preview(df)
+    assert "caption-side" not in _table_style(html)
+
+
 def test_none_dataframe():
     assert to_html_static_preview(None) == ""
 
@@ -149,3 +181,14 @@ def test_styler_with_allow_html_reuses_table_html():
     html = to_html_static_preview(styler, allow_html=True)
     assert "static preview" in html.split("<thead>", 1)[1].split("</thead>", 1)[0]
     assert "<td" in html and ">1<" in html and ">2<" in html
+
+
+def test_styler_own_caption_is_placed_below_the_table():
+    # a caption set on the Styler itself (set_caption) also goes below (#575)
+    pd = pytest.importorskip("pandas")
+    pytest.importorskip("jinja2")
+
+    styler = pd.DataFrame({"x": [1, 2]}).style.set_caption("Styler caption")
+    html = to_html_static_preview(styler, allow_html=True)
+    assert "<caption>Styler caption</caption>" in html
+    assert "caption-side:bottom" in _table_style(html)
