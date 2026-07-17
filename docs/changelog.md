@@ -11,7 +11,7 @@ Unreleased
 - We have further sped up the CI: the conda package is now built with [rattler-build](https://rattler.build/) instead of `conda-build`, and dependencies in the `pytest` matrix are now installed with [uv](https://docs.astral.sh/uv/) instead of `pip`.
 
 **Fixed**
-- The caption in the static HTML preview now appears below the table (`caption-side:bottom`, following the `style` option), like it does in the interactive table, rather than above it ([#575](https://github.com/mwouts/itables/issues/575)).
+- The caption in the static HTML preview is now rendered as a table row (a `<tfoot>` row for the default `caption-side:bottom`, a leading `<thead>` row for `caption-side:top`) rather than a `<caption>` element. GitHub's notebook viewer strips `<caption>` tags, which left the caption text pushed above the table; the row survives sanitization and stays below (or above) the table, like in the interactive table ([#575](https://github.com/mwouts/itables/issues/575)). When there is also a "rows/columns not shown" note, it now joins the caption in that same row (in parentheses, on its own line) instead of getting its own, separately bordered row.
 
 
 2.8.2 (2026-07-19)

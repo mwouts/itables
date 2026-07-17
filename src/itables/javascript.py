@@ -732,19 +732,55 @@ def _table_caption(caption: Optional[str]) -> str:
     return f"<caption>{caption}</caption>" if caption else ""
 
 
-def _table_style(dt_args: DTForITablesOptions, has_caption: bool) -> str:
-    """The inline style for the static-preview <table>. When the table has a
-    caption, we carry over the 'caption-side' from the DataTable style
-    (bottom by default) so the caption sits below the table, like it does in
-    the interactive table, rather than at the HTML default position (above
-    it)."""
-    if not has_caption:
-        return _TABLE_STYLE
+def _caption_side(dt_args: DTForITablesOptions) -> str:
+    """The 'caption-side' from the DataTable style (bottom by default), which
+    tells us where to place the caption row in the static preview - matching
+    where the interactive table shows its caption."""
     for part in cast(str, dt_args.get("style") or "").split(";"):
         prop, _, value = part.partition(":")
         if prop.strip() == "caption-side" and value.strip():
-            return f"{_TABLE_STYLE};caption-side:{value.strip()}"
-    return _TABLE_STYLE
+            return value.strip()
+    return "bottom"
+
+
+_CAPTION_RE = re.compile(r"<caption[^>]*>(.*?)</caption>", re.DOTALL)
+
+
+def _caption_as_row(
+    table_html: str, col_count: int, side: str, note: Optional[str] = None
+) -> str:
+    """Turn the <caption> element into a spanning table row. We can't keep a
+    real <caption>: GitHub's notebook-output sanitizer strips <caption> tags,
+    and the leftover text is then foster-parented out of the table by the
+    HTML parser, landing *above* it - so with the default caption-side:bottom
+    the caption would end up on the wrong side. A <tr>/<td> row instead
+    survives sanitization and stays where we put it: a <tfoot> row for
+    caption-side:bottom, or a leading <thead> row for caption-side:top. This
+    also rescues a caption set on a Pandas Styler via set_caption().
+
+    If note (the parenthesized 'rows not shown' note) is given, it joins the
+    caption in that same row, on a new line, rather than getting its own
+    (bordered) row below."""
+    m = _CAPTION_RE.search(table_html)
+    if not m:
+        return table_html
+    caption = m.group(1).strip()
+    table_html = table_html[: m.start()] + table_html[m.end() :]
+    content = f"{caption}<br>{note}" if note else caption
+    row = (
+        f'<tr><td colspan="{col_count}" '
+        f'style="border:none;padding:8px;text-align:center">{content}</td></tr>'
+    )
+    if side == "top":
+        if "<thead>" in table_html:
+            return table_html.replace("<thead>", f"<thead>{row}", 1)
+        return _TABLE_OPEN_RE.sub(
+            lambda mm: mm.group(0) + f"<thead>{row}</thead>", table_html, count=1
+        )
+    # bottom (the default): a <tfoot> row, before any existing (notes) row
+    if "<tfoot>" in table_html:
+        return table_html.replace("<tfoot>", f"<tfoot>{row}", 1)
+    return table_html.replace("</table>", f"<tfoot>{row}</tfoot></table>", 1)
 
 
 _FIRST_TH_RE = re.compile(r"<th\b([^>]*)>(.*?)</th>", re.DOTALL)
@@ -778,11 +814,14 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
     shown by default, ahead of the interactive table - see
     to_html_datatable() and #575. This reuses table_html's <thead> as-is,
     unlike to_markdown_table(). The
-    original caption (if any) goes in the <caption>; the static-preview
-    marker goes in the first header cell, and the downsampling/hidden-row
-    notes (if any) go in a <tfoot> row. The table gets light cell
-    delimiters via inline styles (not a <style> tag, which may not survive
-    a sanitizer), so it's readable even with no surrounding stylesheet."""
+    original caption (if any) goes in a spanning <tfoot>/<thead> row (see
+    _caption_as_row); the static-preview marker goes in the first header
+    cell, and the downsampling/hidden-row notes (if any) go in a <tfoot>
+    row - or, when there is a caption, in parentheses on a second line of
+    the caption's own row, rather than in a separate (bordered) row. The
+    table gets light cell delimiters via inline styles (not a <style> tag,
+    which may not survive a sanitizer), so it's readable even with no
+    surrounding stylesheet."""
     caption_html = _table_caption(cast(Optional[str], dt_args.get("caption")))
 
     if "data_json" not in dt_args:
@@ -794,15 +833,16 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
         table_html = dt_args.get("table_html")
         if not table_html:
             return ""
-        # A Pandas Styler may carry its own <caption> in the table_html.
-        has_caption = bool(caption_html) or "<caption" in cast(str, table_html)
-        table_style = _table_style(dt_args, has_caption)
         table_html = _TABLE_OPEN_RE.sub(
             lambda m: m.group(0) + caption_html, cast(str, table_html), count=1
         )
-        table_html = table_html.replace("<table", f'<table style="{table_style}"', 1)
+        table_html = table_html.replace("<table", f'<table style="{_TABLE_STYLE}"', 1)
         table_html = _add_cell_borders(table_html)
-        return _add_static_preview_marker(table_html)
+        table_html = _add_static_preview_marker(table_html)
+        col_count = (
+            len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
+        )
+        return _caption_as_row(table_html, col_count, _caption_side(dt_args))
 
     thead_match = _THEAD_RE.search(cast(str, dt_args["table_html"]))
     if thead_match:
@@ -827,15 +867,17 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
     col_count = (
         len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
     )
-    notes_html = _table_footer(notes, col_count)
+    has_caption = bool(dt_args.get("caption"))
+    inline_note = f"({'; '.join(notes)})" if notes and has_caption else None
+    notes_html = "" if inline_note else _table_footer(notes, col_count)
 
-    table_style = _table_style(dt_args, bool(caption_html))
     table_html = (
-        f'<table style="{table_style}">{caption_html}{thead}<tbody>\n{body_rows}'
+        f'<table style="{_TABLE_STYLE}">{caption_html}{thead}<tbody>\n{body_rows}'
         f"\n</tbody>{notes_html}</table>"
     )
     table_html = _add_cell_borders(table_html)
-    return _add_static_preview_marker(table_html)
+    table_html = _add_static_preview_marker(table_html)
+    return _caption_as_row(table_html, col_count, _caption_side(dt_args), inline_note)
 
 
 def to_html_static_preview(

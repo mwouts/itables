@@ -111,53 +111,79 @@ def test_static_preview_marker_mentions_the_version():
     ) in thead
 
 
-def test_caption_is_just_the_original_caption():
+def _tfoot(html: str) -> str:
+    return html.split("<tfoot>", 1)[1].split("</tfoot>", 1)[0]
+
+
+def _thead(html: str) -> str:
+    return html.split("<thead>", 1)[1].split("</thead>", 1)[0]
+
+
+def test_caption_is_rendered_as_a_row_not_a_caption_tag():
+    # GitHub's notebook sanitizer strips <caption> tags (the text then
+    # foster-parents out of the table, above it), so we use a table row
+    # instead - see _caption_as_row() and #575
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"x": [1]})
 
     html = to_html_static_preview(df, caption="My caption")
-    caption = html.split("<caption>", 1)[1].split("</caption>", 1)[0]
-    assert caption == "My caption"
+    assert "<caption" not in html
+    assert "My caption" in html
 
 
-def test_no_caption_tag_without_an_explicit_caption():
+def test_no_caption_row_without_an_explicit_caption():
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"x": [1]})
 
     html = to_html_static_preview(df)
-    assert "<caption>" not in html
+    assert "<caption" not in html
+    assert "<tfoot>" not in html
 
 
-def _table_style(html: str) -> str:
-    return html.split('<table style="', 1)[1].split('"', 1)[0]
-
-
-def test_caption_is_placed_below_the_table():
-    # like in the interactive table, the caption goes below the table (#575)
+def test_caption_is_placed_below_the_table_by_default():
+    # like in the interactive table, the caption goes below the table - here
+    # in a <tfoot> row, so it survives GitHub's sanitizer (#575)
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"x": [1]})
 
     html = to_html_static_preview(df, caption="My caption")
-    assert "caption-side:bottom" in _table_style(html)
+    assert "My caption" in _tfoot(html)
+    assert "My caption" not in _thead(html)
 
 
-def test_caption_side_follows_the_style_option():
+def test_caption_and_rows_not_shown_note_share_one_row():
+    # the note joins the caption's own row, in parentheses, on a new line -
+    # rather than getting its own (bordered) row below
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": range(20)})
+
+    html = to_html_static_preview(df, caption="My caption")
+    tfoot = _tfoot(html)
+    assert tfoot.count("<tr>") == 1
+    assert "My caption<br>(10 more rows not shown)" in tfoot
+
+
+def test_rows_not_shown_note_keeps_its_own_row_without_a_caption():
+    pd = pytest.importorskip("pandas")
+    df = pd.DataFrame({"x": range(20)})
+
+    tfoot = _tfoot(to_html_static_preview(df))
+    assert "10 more rows not shown" in tfoot
+    assert "border:none" not in tfoot
+
+
+def test_caption_side_top_places_the_caption_above_the_header():
     pd = pytest.importorskip("pandas")
     df = pd.DataFrame({"x": [1]})
 
     html = to_html_static_preview(
         df, caption="My caption", style="width:auto;caption-side:top"
     )
-    assert "caption-side:top" in _table_style(html)
-
-
-def test_no_caption_side_without_a_caption():
-    # captionless tables keep the plain table style, cf. #575
-    pd = pytest.importorskip("pandas")
-    df = pd.DataFrame({"x": [1]})
-
-    html = to_html_static_preview(df)
-    assert "caption-side" not in _table_style(html)
+    thead = _thead(html)
+    assert "My caption" in thead
+    # above the header row, i.e. before the first <th>
+    assert thead.index("My caption") < thead.index("<th")
+    assert "<tfoot>" not in html
 
 
 def test_none_dataframe():
@@ -183,12 +209,13 @@ def test_styler_with_allow_html_reuses_table_html():
     assert "<td" in html and ">1<" in html and ">2<" in html
 
 
-def test_styler_own_caption_is_placed_below_the_table():
-    # a caption set on the Styler itself (set_caption) also goes below (#575)
+def test_styler_own_caption_is_rescued_into_a_row():
+    # a caption set on the Styler itself (set_caption) would also be stripped
+    # by GitHub, so it too is turned into a <tfoot> row (#575)
     pd = pytest.importorskip("pandas")
     pytest.importorskip("jinja2")
 
     styler = pd.DataFrame({"x": [1, 2]}).style.set_caption("Styler caption")
     html = to_html_static_preview(styler, allow_html=True)
-    assert "<caption>Styler caption</caption>" in html
-    assert "caption-side:bottom" in _table_style(html)
+    assert "<caption" not in html
+    assert "Styler caption" in _tfoot(html)

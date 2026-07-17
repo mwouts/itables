@@ -83,6 +83,31 @@ def _build_notebook():
         new_markdown_cell("## `itables.show(df)`"),
         new_code_cell("itables.show(df)"),
         new_markdown_cell(
+            "## A table with a caption\n"
+            "\n"
+            "The caption is shown below the table, like in the interactive "
+            "table. In the static preview it is rendered as a `<tfoot>` row "
+            "rather than a `<caption>` element, because GitHub's notebook "
+            "viewer strips `<caption>` tags from the output (the leftover text "
+            "would then be pushed above the table)."
+        ),
+        new_code_cell(
+            'itables.show(df, caption="Population of some European countries")'
+        ),
+        new_markdown_cell(
+            "## A table with a caption above it\n"
+            "\n"
+            "With `caption-side:top` in the `style` option, the caption is "
+            "placed above the table instead - here in a leading `<thead>` row."
+        ),
+        new_code_cell(
+            "itables.show(\n"
+            "    df,\n"
+            '    caption="Population of some European countries",\n'
+            '    style="table-layout:auto;width:auto;margin:auto;caption-side:top",\n'
+            ")"
+        ),
+        new_markdown_cell(
             "## A Pandas Styler\n"
             "\n"
             "Styler objects are already a static HTML rendering, so their "
@@ -148,8 +173,14 @@ def test_static_preview_notebook(notebook_kernel_name):
     nb = _build_notebook()
     ExecutePreprocessor(kernel_name=notebook_kernel_name, timeout=60).preprocess(nb)
 
-    df_repr_cell, show_cell, styler_cell = nb.cells[3], nb.cells[5], nb.cells[7]
-    for cell in (df_repr_cell, show_cell, styler_cell):
+    df_repr_cell, show_cell, caption_cell, caption_top_cell, styler_cell = (
+        nb.cells[3],
+        nb.cells[5],
+        nb.cells[7],
+        nb.cells[9],
+        nb.cells[11],
+    )
+    for cell in (df_repr_cell, show_cell, caption_cell, caption_top_cell, styler_cell):
         assert not any(
             output.get("output_type") == "error" for output in cell.get("outputs", [])
         ), cell["outputs"]
@@ -158,6 +189,24 @@ def test_static_preview_notebook(notebook_kernel_name):
         html = "".join(html_outputs[0])
         assert "_fallback" in html
         assert "France" in html
+
+    def _fallback_of(cell):
+        return "".join(_html_outputs(cell)[0]).split('<div id="', 1)[1].split(">", 1)[1]
+
+    # the caption is rendered as a table row, not a <caption> tag (which
+    # GitHub strips), so it survives on GitHub (cf. #575): below the table
+    # (a <tfoot> row) by default, ...
+    caption_fallback = _fallback_of(caption_cell)
+    assert "<caption" not in caption_fallback
+    tfoot = caption_fallback.split("<tfoot>", 1)[1].split("</tfoot>", 1)[0]
+    assert "Population of some European countries" in tfoot
+
+    # ... or above it (a leading <thead> row) with caption-side:top
+    caption_top_fallback = _fallback_of(caption_top_cell)
+    assert "<caption" not in caption_top_fallback
+    thead = caption_top_fallback.split("<thead>", 1)[1].split("</thead>", 1)[0]
+    assert "Population of some European countries" in thead
+    assert thead.index("Population of some European countries") < thead.index("<th")
 
     styler_fallback = (
         "".join(_html_outputs(styler_cell)[0]).split('<div id="', 1)[1].split(">", 1)[1]
