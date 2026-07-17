@@ -1,3 +1,8 @@
+# 2.5.6 (2026-07-18)
+
+- We have added a Quarto-specific detection for the dark mode
+- We have fixed the ColumnControl dropdown in Quarto ([#536](https://github.com/mwouts/itables/issues/536))
+
 # 2.5.5 (2026-06-10)
 
 - We have added the Scroller and ColReorder extension of DataTables to the `dt_for_itables` package

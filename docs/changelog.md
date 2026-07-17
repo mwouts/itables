@@ -5,8 +5,10 @@ Unreleased
 ----------
 
 **Fixed**
-- We have fixed the dark mode detection in offline mode (`connected=False`, the default outside of Google Colab): the script that adds the `dark` class to the page used to crash while trying to `import()` a `Promise` object instead of awaiting it, so the `dark` class was never set. This made the `fixedColumns` columns keep their light background in dark mode, even though the rest of the table (which does not rely on the `dark` class the same way) looked fine ([#564](https://github.com/mwouts/itables/issues/564)).
-- The `dash` version used to generate `src/itables_for_dash/ITable.py` was unpinned, so the file could be regenerated with different content on every build depending on which `dash` release was resolved at build time. We now pin `dash==4.4.0` for the build (in both the Hatch build hook and the Pixi `build` environment) and regenerated `ITable.py` accordingly.
+- We have fixed the dark mode detection in offline mode ([#564](https://github.com/mwouts/itables/issues/564)).
+- We have fixed the dark mode detection in Quarto documents ([#536](https://github.com/mwouts/itables/issues/536)).
+- We have fixed the misaligned ColumnControl search dropdown (e.g. `columnControl={"content": ["searchDropdown"]}`) ([#536](https://github.com/mwouts/itables/issues/536)).
+- The `dash` version used to generate `src/itables_for_dash/ITable.py` is now pinned to `dash==4.4.0` to avoid jitter in `ITable.py`.
 
 **Security**
 - We have added [zizmor](https://zizmor.sh/) to our CI to scan the GitHub Actions workflows for security issues. All actions are now pinned to a commit SHA, checkout steps no longer persist credentials, jobs use least-privilege permissions, and we fixed a code-injection risk in the PR-comment workflow where untrusted pull request metadata was interpolated directly into a `github-script` template.
