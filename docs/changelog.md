@@ -7,6 +7,9 @@ Unreleased
 **Added**
 - We have added a `css` argument to `show` (and a matching `itables.options.css`) to inject custom CSS. Unlike `display(HTML(f"<style>{css}</style>"))`, this CSS is embedded in the output of every table, so it does not depend on that separate cell's output being rendered - some notebook front-ends (e.g. VS Code) defer rendering outputs that are scrolled out of view, so a standalone CSS cell may not take effect until it becomes visible ([#572](https://github.com/mwouts/itables/issues/572)).
 
+**Changed**
+- We have sped up the CI: the `pytest` matrix jobs now install the wheel built once by `build-wheel` instead of each rebuilding the JS bundle from source, tests now run in parallel with `pytest-xdist`, and `pytest-pixi-updated` (which overlaps with the weekly scheduled run) is skipped on pull requests.
+
 **Fixed**
 - We have fixed the dark mode detection so that it also reacts to theme changes that happen *after* the table has been rendered, e.g. when the user switches the Jupyter Lab or VS Code theme ([#576](https://github.com/mwouts/itables/issues/576)).
 - We have fixed the dark mode detection in offline mode ([#564](https://github.com/mwouts/itables/issues/564)).
