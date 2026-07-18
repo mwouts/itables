@@ -222,6 +222,30 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
+  pytest-playwright:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@5185adfbffb4bd703da3010310260805d89ebb11 # v0.9.6
+        with:
+          pixi-version: latest
+          locked: false
+          frozen: true
+          cache: true
+
+      - name: Install Playwright's Chromium browser
+        run: pixi run -e playwright playwright install --with-deps chromium
+
+      - name: Test with pytest
+        run: pixi run -e playwright pytest tests/playwright
+
   pytest-minimal-deps:
     strategy:
       fail-fast: false

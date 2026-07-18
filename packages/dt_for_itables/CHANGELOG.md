@@ -1,3 +1,7 @@
+# 2.5.7 (2026-07-18)
+
+- We have made the dark mode detection reactive, so it also follows theme changes that happen after the table has been rendered (e.g. switching the Jupyter Lab or VS Code theme) ([#576](https://github.com/mwouts/itables/issues/576))
+
 # 2.5.6 (2026-07-18)
 
 - We have added a Quarto-specific detection for the dark mode
