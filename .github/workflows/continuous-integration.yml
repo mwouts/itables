@@ -119,6 +119,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Set up uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+
       - name: Download the pre-built wheel
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
@@ -128,30 +131,30 @@ jobs:
       - name: Install a development version of 'itables'
         # Install from the wheel built once in build-wheel, instead of rebuilding
         # the JS bundle (via pip install -e .) in every matrix job.
-        run: pip install "$(ls dist/itables-*.whl)[test-all]"
+        run: uv pip install --system "$(ls dist/itables-*.whl)[test-all]"
 
       - name: Install pandas latest
         if: matrix.pandas-version == 'latest'
-        run: pip install pandas
+        run: uv pip install --system pandas
       - name: Install pandas pre-release
         if: matrix.pandas-version == 'pre'
-        run: pip install pandas --pre
+        run: uv pip install --system pandas --pre
       - name: Install pandas ${{ matrix.pandas-version }}
         if: matrix.pandas-version != 'pre' && matrix.pandas-version != 'latest'
-        run: pip install 'pandas${{ matrix.pandas-version }}'
+        run: uv pip install --system 'pandas${{ matrix.pandas-version }}'
       - name: Install numpy ${{ matrix.numpy-version }}
         if: matrix.numpy-version != 'latest'
-        run: pip install 'numpy${{ matrix.numpy-version }}'
+        run: uv pip install --system 'numpy${{ matrix.numpy-version }}'
       - name: Install typeguard ${{ matrix.typeguard-version }}
         if: matrix.typeguard-version != 'latest'
-        run: pip install 'typeguard${{ matrix.typeguard-version }}'
+        run: uv pip install --system 'typeguard${{ matrix.typeguard-version }}'
 
       - name: Install shiny
-        run: pip install "shiny>=1.0" shinywidgets
+        run: uv pip install --system "shiny>=1.0" shinywidgets
 
       - name: Uninstall non-essential dependencies
         if: matrix.uninstall_non_essential_dependencies
-        run: pip uninstall polars jinja2 dash anywidget streamlit shiny shinywidgets -y
+        run: uv pip uninstall --system polars jinja2 dash anywidget streamlit shiny shinywidgets
 
       - name: Install a Jupyter Kernel
         run: python -m ipykernel install --name itables --user
@@ -343,29 +346,15 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
-      - name: Set up Mambaforge
-        uses: conda-incubator/setup-miniconda@8ee1f361103df19b6f8c8655fd3967a8ecb162d5 # v4
+
+      - name: Compute the itables version
+        run: echo "ITABLES_VERSION=$(grep -oP '(?<=__version__ = \")[^\"]+' src/itables/version.py)" >> "$GITHUB_ENV"
+
+      - name: Build conda package with rattler-build
+        uses: prefix-dev/rattler-build-action@1ca5f45832f419a46d1326ccc5861d7e14d67c44 # v0.2.39
         with:
-          miniforge-version: latest
-          auto-update-conda: true
-          python-version: 3.11
-
-      - name: Install conda-build
-        run: mamba install conda-build -y
-
-      - name: Build conda package
-        run: |
-          conda config --set anaconda_upload no
-          # Not sure how to remove the 'defaults' channel ?
-          # conda config --set conda-remove-defaults true
-          # conda config --remove channels defaults
-          conda build conda.recipe --output-folder conda-dist
-
-      - name: Upload conda package
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: itables-conda-package
-          path: conda-dist/**/itables-*.conda
+          rattler-build-version: v0.69.1
+          artifact-name: itables-conda-package
 
   comment-on-pr:
     runs-on: ubuntu-latest
