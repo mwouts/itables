@@ -235,11 +235,43 @@ function set_or_remove_dark_class() {
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
 
-    if (is_dark_theme()) {
-        document.documentElement.classList.add('dark');
+    let apply_dark_theme = function () {
+        if (is_dark_theme()) {
+            document.documentElement.classList.add('dark');
+        }
+        else {
+            document.documentElement.classList.remove('dark');
+        }
     }
-    else {
-        document.documentElement.classList.remove('dark');
+
+    apply_dark_theme();
+
+    // Keep the 'dark' class in sync if the notebook/host theme changes later
+    // (e.g. the user toggles the Jupyter Lab or VS Code theme after a table
+    // has already been rendered). This watcher is installed only once per
+    // page: since every table shares the same 'dark' class on <html>, a
+    // single watcher keeps all of them up to date.
+    if (!window._itables_dark_theme_watcher) {
+        window._itables_dark_theme_watcher = true;
+
+        // Jupyter Lab and VS Code expose the current theme as a data-attribute
+        // on <body>, which they update live when the user switches theme.
+        // Quarto toggles a 'quarto-dark'/'quarto-light' class on <body> too.
+        new MutationObserver(apply_dark_theme).observe(document.body, {
+            attributes: true,
+            attributeFilter: ['data-jp-theme-light', 'data-vscode-theme-kind', 'class'],
+        });
+
+        // Jupyter Book sets a data-theme attribute on <html>.
+        new MutationObserver(apply_dark_theme).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme'],
+        });
+
+        // Fallback: the OS/browser level color scheme preference.
+        window
+            .matchMedia('(prefers-color-scheme: dark)')
+            .addEventListener('change', apply_dark_theme);
     }
 }
 
