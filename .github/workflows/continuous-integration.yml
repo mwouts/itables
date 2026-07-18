@@ -88,6 +88,7 @@ jobs:
         uses: github/codeql-action/analyze@7188fc363630916deb702c7fdcf4e481b751f97a # v4.37.1
 
   pytest:
+    needs: build-wheel
     strategy:
       fail-fast: false
       matrix:
@@ -113,16 +114,21 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Download the pre-built wheel
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: itables-wheel
+          path: dist
+
       - name: Install a development version of 'itables'
-        run: pip install -e .[test-all]
+        # Install from the wheel built once in build-wheel, instead of rebuilding
+        # the JS bundle (via pip install -e .) in every matrix job.
+        run: pip install "$(ls dist/itables-*.whl)[test-all]"
 
       - name: Install pandas latest
         if: matrix.pandas-version == 'latest'
@@ -181,7 +187,7 @@ jobs:
         run: pixi run python -m ipykernel install --name itables --user
 
       - name: Test with pytest
-        run: pixi run pytest --cov=./ --cov-report=xml
+        run: pixi run pytest -n auto --cov=./ --cov-report=xml
 
       - name: Upload coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
@@ -190,6 +196,9 @@ jobs:
           verbose: true
 
   pytest-pixi-updated:
+    # This job re-tests against updated pixi/conda-forge dependencies. It overlaps
+    # with the weekly `schedule` trigger, so skip it on PRs to keep them faster.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -214,7 +223,7 @@ jobs:
         run: pixi run python -m ipykernel install --name itables --user
 
       - name: Test with pytest
-        run: pixi run pytest --cov=./ --cov-report=xml
+        run: pixi run pytest -n auto --cov=./ --cov-report=xml
 
       - name: Upload coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
@@ -278,7 +287,7 @@ jobs:
         run: pixi run -e ${{ matrix.environment }} python -m ipykernel install --name itables --user
 
       - name: Test with pytest in ${{ matrix.environment }}
-        run: pixi run -e ${{ matrix.environment }} pytest --cov=./ --cov-report=xml
+        run: pixi run -e ${{ matrix.environment }} pytest -n auto --cov=./ --cov-report=xml
 
       - name: Upload coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
