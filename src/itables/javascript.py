@@ -678,6 +678,7 @@ def get_itable_arguments(
     warn_on_polars_get_fmt_not_found = kwargs.pop(
         "warn_on_polars_get_fmt_not_found", True
     )
+    css = kwargs.pop("css", "")
     dt_args = cast(DTForITablesOptions, kwargs)
     if caption is not None:
         dt_args["caption"] = caption
@@ -807,6 +808,13 @@ def get_itable_arguments(
         else:
             # NB: style is not available either
             dt_args["table_html"] = df.to_html(escape=allow_html is not True)  # type: ignore
+
+    if css:
+        # We embed the CSS in the table's own output (rather than relying on a
+        # separate display(HTML(...)) cell) so that it is guaranteed to render
+        # together with the table, see https://github.com/mwouts/itables/issues/572
+        table_style = dt_args.get("table_style")
+        dt_args["table_style"] = f"{css}\n{table_style}" if table_style else css
 
     if show_df_type:
         if "downsampling_warning" in dt_args:
@@ -1022,12 +1030,6 @@ def html_table_from_template(
     display_logo_when_loading: bool,
     kwargs: DTForITablesOptions,
 ) -> str:
-    if "css" in kwargs:
-        raise TypeError(
-            "The 'css' argument has been deprecated, see the new "
-            "approach at https://mwouts.github.io/itables/css.html."
-        )
-
     # Load the HTML template
     if connected:
         output = read_package_file("html/datatables_template.html")

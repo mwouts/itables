@@ -64,6 +64,16 @@ style: Union[str, dict[str, str]] = (
     "table-layout:auto;width:auto;margin:auto;caption-side:bottom"
 )
 
+"""
+Custom CSS rules, e.g. '.dt-container { font-size: small; }'.
+
+Unlike a standalone `display(HTML(f"<style>{css}</style>"))` cell, this CSS is embedded
+in the output of every table, so it is guaranteed to render together with the table itself
+(some notebook front-ends, like VS Code, defer the rendering of outputs that are scrolled
+out of view, see https://github.com/mwouts/itables/issues/572).
+"""
+css: str = ""
+
 """Maximum bytes before downsampling a table"""
 maxBytes: Union[str, int] = "64KB"
 
