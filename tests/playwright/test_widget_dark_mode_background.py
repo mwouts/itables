@@ -51,7 +51,7 @@ from itables.utils import find_package_file  # noqa: E402
 from itables.widget import ITable  # noqa: E402
 
 
-def render_widget_page(tmp_path, body_dataset_attrs: str) -> int:
+def render_widget_page(tmp_path, body_dataset_attrs: str) -> http.server.HTTPServer:
     """Serve a page that renders the `ITable` anywidget the same way a real
     widget front-end does: import the built `widget.js`/`widget.css`, and
     call `render({model, el})` with a stub model exposing the widget's

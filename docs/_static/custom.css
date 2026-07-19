@@ -23,3 +23,14 @@ html[data-theme="dark"] .bd-content div.cell_output .widget-subarea {
     background-color: transparent !important;
     padding: 0 !important;
 }
+
+/* The quick_start.md hero logo uses two {image} directives (.only-light/
+ * .only-dark, toggled by pydata-sphinx-theme based on data-theme) instead
+ * of a single Markdown image, so that it can swap colors for dark mode
+ * (#426). Directives aren't wrapped in a <p>, unlike a Markdown image, so
+ * they don't get the theme's own paragraph spacing below them - match it
+ * here (1.15rem is the theme's own bd-article p margin-bottom). */
+.bd-article img.only-light,
+.bd-article img.only-dark {
+    margin-bottom: 1.15rem;
+}

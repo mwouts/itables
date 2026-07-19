@@ -1,12 +1,20 @@
 <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 600 400" style="font-family: 'Droid Sans', sans-serif;">
-    <g style="fill:#d9d7fc">
+    <style>
+        .paper { fill: #d9d7fc; }
+        .ink { fill: #1a1366; stroke: #1a1366; }
+        @media (prefers-color-scheme: dark) {
+            .paper { fill: #4a4470; }
+            .ink { fill: #e4e2ff; stroke: #e4e2ff; }
+        }
+    </style>
+    <g class="paper">
         <path d="M100,400H600V357H100Z" />
         <path d="M100,300H500V257H100Z" />
         <path d="M0,200H500V107H0Z" />
         <path d="M100,100H600V57H100Z" />
     </g>
-    <g style="fill:#1a1366;stroke:#1a1366;">
+    <g class="ink">
         <path d="M100,250H500V207H100Z" />
         <path d="M100,350H600V307H100Z" />
         <path d="M100,50H600V7H100Z" />

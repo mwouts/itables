@@ -18,7 +18,14 @@
 # pyright: reportUnusedExpression=false
 
 # %% [markdown]
-# ![ITables Logo](../src/itables/logo/text.svg)
+# ```{image} ../src/itables/logo/text.svg
+# :alt: ITables Logo
+# :class: only-light
+# ```
+# ```{image} ../src/itables/logo/text-dark.svg
+# :alt: ITables Logo
+# :class: only-dark
+# ```
 #
 # [![CI](https://github.com/mwouts/itables/actions/workflows/continuous-integration.yml/badge.svg?branch=main)](https://github.com/mwouts/itables/actions)
 # [![codecov.io](https://codecov.io/github/mwouts/itables/coverage.svg?branch=main)](https://codecov.io/github/mwouts/itables?branch=main)
