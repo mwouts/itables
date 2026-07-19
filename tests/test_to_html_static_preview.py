@@ -20,7 +20,7 @@ def test_default_pagination_shows_ten_rows():
 
     html = to_html_static_preview(df)
     assert _row_count(html) == 10
-    assert "90 more rows not shown" in html
+    assert "(90 more rows not shown)" in html
 
 
 def test_page_length_option_is_respected():
@@ -47,7 +47,7 @@ def test_downsampling_note_is_shown_in_tfoot():
     html = to_html_static_preview(df, maxRows=30, paging=False)
     assert _row_count(html) == 30
     assert "<tfoot>" in html
-    assert "70 more rows not shown" in html.split("<tfoot>", 1)[1]
+    assert "(70 more rows not shown)" in html.split("<tfoot>", 1)[1]
 
 
 def test_downsampled_columns_note_is_shown():
@@ -55,7 +55,7 @@ def test_downsampled_columns_note_is_shown():
     df = pd.DataFrame({f"c{i}": range(5) for i in range(20)})
 
     html = to_html_static_preview(df, maxColumns=5)
-    assert "15 more columns not shown" in html.split("<tfoot>", 1)[1]
+    assert "(15 more columns not shown)" in html.split("<tfoot>", 1)[1]
 
 
 def test_show_df_type_note_is_shown_when_nothing_is_downsampled():
@@ -73,7 +73,7 @@ def test_hidden_rows_note_uses_full_column_span():
     html = to_html_static_preview(df)
     tfoot = html.split("<tfoot>", 1)[1].split("</tfoot>", 1)[0]
     assert 'colspan="3"' in tfoot
-    assert tfoot.endswith("10 more rows not shown</td></tr>")
+    assert tfoot.endswith("(10 more rows not shown)</td></tr>")
 
 
 def test_static_preview_marker_is_in_the_header_not_the_footer():
@@ -168,8 +168,8 @@ def test_rows_not_shown_note_keeps_its_own_row_without_a_caption():
     df = pd.DataFrame({"x": range(20)})
 
     tfoot = _tfoot(to_html_static_preview(df))
-    assert "10 more rows not shown" in tfoot
-    assert "border:none" not in tfoot
+    assert "(10 more rows not shown)" in tfoot
+    assert "border:none" in tfoot
 
 
 def test_caption_side_top_places_the_caption_above_the_header():
