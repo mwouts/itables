@@ -11,6 +11,10 @@ exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py]
 sphinx:
   config:
     html_extra_path: ['quarto']
+    # Fixes the "rocket icon" JupyterLite link, which sphinx-book-theme
+    # renders relative to the site root without adjusting for how deep the
+    # current page is nested -- see the file itself for details.
+    html_js_files: ['fix_jupyterlite_links.js']
     rediraffe_branch: main
     rediraffe_redirects:
       advanced_parameters.md: options/options.md
