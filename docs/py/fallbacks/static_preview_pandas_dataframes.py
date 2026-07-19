@@ -9,9 +9,9 @@
 #       format_name: percent
 #       format_version: '1.3'
 #   kernelspec:
-#     display_name: itables
+#     display_name: python3
 #     language: python
-#     name: itables
+#     name: python3
 # ---
 
 # %% tags=["remove-cell"]

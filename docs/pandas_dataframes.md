@@ -7,9 +7,9 @@ jupytext:
     format_name: myst
     format_version: 0.13
 kernelspec:
-  display_name: itables
+  display_name: python3
   language: python
-  name: itables
+  name: python3
 ---
 
 # Pandas dataframes
