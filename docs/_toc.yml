@@ -48,21 +48,6 @@ parts:
       - file: options/show_dtypes
       - file: options/show_df_type
       - file: options/text_in_header_can_be_selected
-  - caption: More about ITables
-    chapters:
-    - file: downsampling
-    - file: formatting
-    - file: dark_mode
-    - file: css
-    - file: custom_extensions
-    - file: references
-    - file: supported_editors
-  - caption: Contributing to ITables
-    chapters:
-      - file: contributing
-      - file: developing
-      - file: troubleshooting
-      - file: changelog
   - caption: Examples
     chapters:
     - file: pandas_dataframes
@@ -79,3 +64,18 @@ parts:
           - file: fallbacks/static_preview_polars_dataframes
           - file: fallbacks/markdown_preview_pandas_dataframes
           - file: fallbacks/markdown_preview_polars_dataframes
+  - caption: More about ITables
+    chapters:
+    - file: downsampling
+    - file: formatting
+    - file: dark_mode
+    - file: css
+    - file: custom_extensions
+    - file: references
+    - file: supported_editors
+  - caption: Contributing to ITables
+    chapters:
+      - file: contributing
+      - file: developing
+      - file: troubleshooting
+      - file: changelog
