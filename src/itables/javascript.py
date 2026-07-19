@@ -795,11 +795,12 @@ def _add_static_preview_marker(html: str) -> str:
     """Add the static-preview marker - a small, linked 'ⓘ' with a title
     tooltip - to the first header cell, rather than a sentence of
     always-visible text in the table's footer: now that it's just that one
-    symbol, it reads more naturally right where a reader's eye starts."""
+    symbol, it reads more naturally right where a reader's eye starts - ahead
+    of that cell's own text, so it's the first thing read."""
 
     def add_marker(m: "re.Match[str]") -> str:
         attrs, content = m.group(1), m.group(2)
-        return f"<th{attrs}>{content}{_STATIC_PREVIEW_MESSAGE}</th>"
+        return f"<th{attrs}>{_STATIC_PREVIEW_MESSAGE}{content}</th>"
 
     return _FIRST_TH_RE.sub(add_marker, html, count=1)
 
