@@ -18,6 +18,7 @@ conda-dist
 *.ipynb
 .ipynb_checkpoints
 !tests/test_notebook.ipynb
+!tests/data/static_preview_notebooks/*.ipynb
 
 # Jupyter Book
 _build

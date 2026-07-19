@@ -6,6 +6,7 @@ import pytest
 import itables.options as opt
 from itables.javascript import (
     _df_fits_in_one_page,
+    _html_display_is_supported,
     _tfoot_from_thead,
     check_table_id,
     get_compact_classes,
@@ -261,3 +262,81 @@ def test_categorical_labels_are_escaped_when_allow_html_is_false():
     render_allow_html = str(itable_args_allow_html["columnDefs"][0]["render"])
     assert "<b>bold</b>" in render_allow_html
     assert "</script><script>alert(1)</script>" in render_allow_html
+
+
+def test_html_display_is_supported_without_ipython(monkeypatch):
+    import builtins
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "IPython":
+            raise ImportError("No module named 'IPython'")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+    assert _html_display_is_supported() is False
+
+
+def test_html_display_is_supported_outside_ipython(monkeypatch):
+    IPython = pytest.importorskip("IPython")
+    monkeypatch.setattr(IPython, "get_ipython", lambda: None)
+    assert _html_display_is_supported() is False
+
+
+def test_html_display_is_supported_in_terminal_ipython(monkeypatch):
+    IPython = pytest.importorskip("IPython")
+
+    class TerminalInteractiveShell:
+        pass
+
+    monkeypatch.setattr(IPython, "get_ipython", TerminalInteractiveShell)
+    assert _html_display_is_supported() is False
+
+
+def test_html_display_is_supported_in_jupyter_kernel(monkeypatch):
+    # cf. the autouse simulate_jupyter_kernel fixture in conftest.py
+    pytest.importorskip("IPython")
+    assert _html_display_is_supported() is True
+
+
+def test_show_falls_back_to_markdown_table(monkeypatch, capsys):
+    pd = pytest.importorskip("pandas")
+    IPython = pytest.importorskip("IPython")
+    from itables import show
+
+    monkeypatch.setattr(IPython, "get_ipython", lambda: None)
+    show(pd.DataFrame({"x": [1, 2, 3]}))
+
+    out = capsys.readouterr().out
+    assert "| x |" in out
+    assert "| 1 |" in out
+
+
+def test_show_prints_markdown_table_in_pure_python(monkeypatch, capsys):
+    """When IPython isn't even installed (e.g. a plain Python script, no
+    Jupyter/notebook stack at all), show() can't display(HTML(...)) - it
+    must print the Markdown table instead, cf. #575."""
+    pd = pytest.importorskip("pandas")
+    import builtins
+
+    from itables import show
+
+    real_import = builtins.__import__
+
+    def fake_import(name, *args, **kwargs):
+        if name == "IPython" or name.startswith("IPython."):
+            raise ImportError("No module named 'IPython'")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    show(pd.DataFrame({"x": [1, 2, 3]}), caption="my caption")
+
+    out = capsys.readouterr().out
+    assert "**my caption**" in out
+    assert "| x |" in out
+    assert "| 1 |" in out
+    # and definitely no HTML/JavaScript in there
+    assert "<table" not in out
+    assert "<script" not in out

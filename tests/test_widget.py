@@ -41,6 +41,7 @@ def test_create_widget_with_df(df, df_name):
             "data_json",
             "table_html",
             "filtered_row_count",
+            "filtered_column_count",
             "downsampling_warning",
             "layout",
         ]

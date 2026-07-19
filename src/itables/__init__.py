@@ -1,6 +1,12 @@
 from itables import config, downsample, options, sample_dfs
 
-from .javascript import init_notebook_mode, show, to_html_datatable
+from .javascript import (
+    init_notebook_mode,
+    show,
+    to_html_datatable,
+    to_html_static_preview,
+    to_markdown_table,
+)
 from .typing import (
     DataFrameOrSeries,
     DTForITablesOptions,
@@ -23,6 +29,8 @@ except ImportError:
 __all__ = [
     "__version__",
     "to_html_datatable",
+    "to_html_static_preview",
+    "to_markdown_table",
     "show",
     "init_notebook_mode",
     "JavascriptCode",

@@ -83,3 +83,21 @@ def escape_html(request) -> bool:
 @pytest.fixture(params=[False, True])
 def format_floats_in_python(request) -> bool:
     return request.param
+
+
+@pytest.fixture(autouse=True)
+def simulate_jupyter_kernel(monkeypatch):
+    """Plain pytest has no real IPython/Jupyter kernel, so show() would
+    always fall back to printing a Markdown table (see
+    _html_display_is_supported() in javascript.py, #575). Pretend we're in
+    a Jupyter kernel by default, so existing show() calls in the test
+    suite keep exercising the interactive HTML path."""
+    try:
+        import IPython
+    except ImportError:
+        return
+
+    class _FakeJupyterKernelShell:
+        pass
+
+    monkeypatch.setattr(IPython, "get_ipython", _FakeJupyterKernelShell)
