@@ -65,18 +65,11 @@ def _build_notebook():
             "preview of this file - a plain HTML table is shown instead."
         ),
         new_code_cell(
-            "import pandas as pd\n"
             "import itables\n"
             "\n"
             "itables.init_notebook_mode(connected=True)\n"
             "\n"
-            "df = pd.DataFrame(\n"
-            "    {\n"
-            '        "country": ["France", "Germany", "Italy", "Spain"],\n'
-            '        "capital": ["Paris", "Berlin", "Rome", "Madrid"],\n'
-            '        "population_millions": [68.0, 84.5, 59.0, 47.4],\n'
-            "    }\n"
-            ').set_index("country")'
+            "df = itables.sample_dfs.get_countries()"
         ),
         new_markdown_cell("## The bare `df` repr"),
         new_code_cell("df"),
@@ -89,21 +82,23 @@ def _build_notebook():
             "table. In the static preview it is rendered as a `<tfoot>` row "
             "rather than a `<caption>` element, because GitHub's notebook "
             "viewer strips `<caption>` tags from the output (the leftover text "
-            "would then be pushed above the table)."
+            "would then be pushed above the table). When rows are hidden "
+            "(as they are here, since only the first page is shown), the "
+            "note about them joins the caption in that same row, in "
+            "parentheses."
         ),
-        new_code_cell(
-            'itables.show(df, caption="Population of some European countries")'
-        ),
+        new_code_cell('itables.show(df, caption="World countries and capitals")'),
         new_markdown_cell(
             "## A table with a caption above it\n"
             "\n"
-            "With `caption-side:top` in the `style` option, the caption is "
-            "placed above the table instead - here in a leading `<thead>` row."
+            "With `caption-side:top` in the `style` option, the caption (and "
+            "the rows-not-shown note) are placed above the table instead - "
+            "here in a leading `<thead>` row."
         ),
         new_code_cell(
             "itables.show(\n"
             "    df,\n"
-            '    caption="Population of some European countries",\n'
+            '    caption="World countries and capitals",\n'
             '    style="table-layout:auto;width:auto;margin:auto;caption-side:top",\n'
             ")"
         ),
@@ -113,11 +108,14 @@ def _build_notebook():
             "Styler objects are already a static HTML rendering, so their "
             "static preview reuses that same HTML directly - see "
             "[`test_static_preview_fallback_shows_styler_table_html`]"
-            "(https://github.com/mwouts/itables/blob/main/tests/test_pandas_style.py)."
+            "(https://github.com/mwouts/itables/blob/main/tests/test_pandas_style.py). "
+            "This doesn't downsample rows, so we style a small slice of `df` "
+            "here."
         ),
         new_code_cell(
             "itables.show(\n"
-            '    df.style.highlight_max(color="lightgreen"), allow_html=True\n'
+            '    df.head(10).style.highlight_max(color="lightgreen"),\n'
+            "    allow_html=True,\n"
             ")"
         ),
     ]
@@ -188,25 +186,28 @@ def test_static_preview_notebook(notebook_kernel_name):
         assert html_outputs, f"No text/html output found in cell: {cell['source']}"
         html = "".join(html_outputs[0])
         assert "_fallback" in html
-        assert "France" in html
+        assert "Aruba" in html
 
     def _fallback_of(cell):
         return "".join(_html_outputs(cell)[0]).split('<div id="', 1)[1].split(">", 1)[1]
 
     # the caption is rendered as a table row, not a <caption> tag (which
     # GitHub strips), so it survives on GitHub (cf. #575): below the table
-    # (a <tfoot> row) by default, ...
+    # (a <tfoot> row) by default, ... - and since rows are hidden here (only
+    # the first page is shown), the rows-not-shown note joins the caption in
+    # that same row, in parentheses, rather than getting its own row
     caption_fallback = _fallback_of(caption_cell)
     assert "<caption" not in caption_fallback
     tfoot = caption_fallback.split("<tfoot>", 1)[1].split("</tfoot>", 1)[0]
-    assert "Population of some European countries" in tfoot
+    assert tfoot.count("<tr>") == 1
+    assert "World countries and capitals<br>(198 more rows not shown)" in tfoot
 
     # ... or above it (a leading <thead> row) with caption-side:top
     caption_top_fallback = _fallback_of(caption_top_cell)
     assert "<caption" not in caption_top_fallback
     thead = caption_top_fallback.split("<thead>", 1)[1].split("</thead>", 1)[0]
-    assert "Population of some European countries" in thead
-    assert thead.index("Population of some European countries") < thead.index("<th")
+    assert "World countries and capitals<br>(198 more rows not shown)" in thead
+    assert thead.index("World countries and capitals") < thead.index("<th")
 
     styler_fallback = (
         "".join(_html_outputs(styler_cell)[0]).split('<div id="', 1)[1].split(">", 1)[1]
