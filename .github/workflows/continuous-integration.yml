@@ -29,6 +29,12 @@ jobs:
           persist-credentials: false
       - name: Run zizmor 🌈
         uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+      - name: Fail on medium+ severity findings
+        uses: zizmorcore/zizmor-action@192e21d79ab29983730a13d1382995c2307fbcaa # v0.5.7
+        with:
+          advanced-security: false
+          annotations: true
+          min-severity: medium
 
   pre-commit:
     runs-on: ubuntu-latest
