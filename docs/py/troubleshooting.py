@@ -18,6 +18,7 @@
 # ruff: noqa: E402
 # pyright: reportUnusedExpression=false
 # pyright: reportDuplicateImport=false
+# pyright: reportUnknownVariableType=false
 
 # %% [markdown]
 # # Troubleshooting

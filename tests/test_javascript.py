@@ -296,6 +296,7 @@ def test_html_display_is_supported_in_terminal_ipython(monkeypatch):
 
 def test_html_display_is_supported_in_jupyter_kernel(monkeypatch):
     # cf. the autouse simulate_jupyter_kernel fixture in conftest.py
+    pytest.importorskip("IPython")
     assert _html_display_is_supported() is True
 
 

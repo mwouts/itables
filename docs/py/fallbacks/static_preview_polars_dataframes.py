@@ -16,6 +16,7 @@
 
 # %% tags=["remove-cell"]
 # pyright: reportUnusedExpression=false
+# pyright: reportUnknownVariableType=false
 
 # %% [markdown]
 # # Static preview - Polars dataframes

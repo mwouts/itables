@@ -560,7 +560,9 @@ def _float_and_category_targets_from_column_defs(
     category_targets: dict[int, list] = {}
     for col_def in columnDefs or []:
         targets = col_def.get("targets")
-        target_list = targets if isinstance(targets, list) else [targets]
+        target_list = cast(
+            "list[int]", targets if isinstance(targets, list) else [targets]
+        )
         render = str(col_def.get("render", ""))
         if render == _FLOAT_SORT_PAIR_RENDER:
             float_targets.update(target_list)
@@ -602,7 +604,7 @@ def _decoded_rows(dt_args: DTForITablesOptions) -> "tuple[list[list[str]], int]"
     float_targets, category_targets = _float_and_category_targets_from_column_defs(
         dt_args.get("columnDefs")
     )
-    all_rows = json.loads(dt_args["data_json"])
+    all_rows = json.loads(cast(str, dt_args.get("data_json")))
     text_rows = [
         [
             _decode_cell_for_markdown(
@@ -641,7 +643,7 @@ def _fallback_notes(dt_args: DTForITablesOptions, hidden_rows: int) -> "list[str
         # that description, not the (now redundant) downsampling message.
         # It must be checked independently of hidden_rows/hidden_columns
         # below, since those may be nonzero from pagination alone.
-        notes.append(cast(str, dt_args["downsampling_warning"]))
+        notes.append(cast(str, dt_args.get("downsampling_warning")))
     row_note = (
         f"{hidden_rows:,d} more row{'s' if hidden_rows > 1 else ''}"
         if hidden_rows > 0
@@ -694,7 +696,7 @@ def _markdown_table_from_dt_args(
         lines.append("*(no static preview available for this table)*")
         return "\n".join(lines)
 
-    headers = _header_labels_from_table_html(dt_args["table_html"])
+    headers = _header_labels_from_table_html(cast(str, dt_args.get("table_html")))
     text_rows, hidden_rows = _decoded_rows(dt_args)
     lines.append(_markdown_table(headers, text_rows))
 
@@ -840,11 +842,12 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
         table_html = _add_cell_borders(table_html)
         table_html = _add_static_preview_marker(table_html)
         col_count = (
-            len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
+            len(_header_labels_from_table_html(cast(str, dt_args.get("table_html"))))
+            or 1
         )
         return _caption_as_row(table_html, col_count, _caption_side(dt_args))
 
-    thead_match = _THEAD_RE.search(cast(str, dt_args["table_html"]))
+    thead_match = _THEAD_RE.search(cast(str, dt_args.get("table_html")))
     if thead_match:
         # _table_header() can leave a blank line where an empty index
         # <th></th> was removed (show_index=False): harmless in the
@@ -865,7 +868,7 @@ def _simple_html_table_from_dt_args(dt_args: DTForITablesOptions) -> str:
 
     notes = _fallback_notes(dt_args, hidden_rows)
     col_count = (
-        len(_header_labels_from_table_html(cast(str, dt_args["table_html"]))) or 1
+        len(_header_labels_from_table_html(cast(str, dt_args.get("table_html")))) or 1
     )
     has_caption = bool(dt_args.get("caption"))
     inline_note = f"({'; '.join(notes)})" if notes and has_caption else None
@@ -1695,7 +1698,7 @@ def _html_display_is_supported() -> bool:
     expected to run JavaScript (as opposed to no IPython at all, a plain
     Python script, or a terminal-based IPython session)."""
     try:
-        from IPython import get_ipython
+        from IPython import get_ipython  # pyright: ignore[reportPrivateImportUsage]
     except ImportError:
         return False
 

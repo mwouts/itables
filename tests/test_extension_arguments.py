@@ -19,6 +19,7 @@ def test_get_itables_extension_arguments(df, df_name):
         "order",
         "text_in_header_can_be_selected",
         "filtered_row_count",
+        "filtered_column_count",
         "downsampling_warning",
     }
 

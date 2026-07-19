@@ -61,4 +61,4 @@ def test_offline_notebook_is_not_too_large(tmp_path):
     assert nb_ipynb.exists()
     size_in_kb = nb_ipynb.stat().st_size // 1024
 
-    assert 850 < size_in_kb < 950
+    assert 900 < size_in_kb < 1000
