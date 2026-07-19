@@ -108,6 +108,18 @@ ensured-targets = [
     "src/itables/itables_for_streamlit/index.js",
     "src/itables/widget/static/widget.js",
     ]
+# hatch build runs the sdist and wheel targets in the same invocation, and both
+# trigger this hook; skip the (identical) second npm build once the first one
+# has already produced these files.
+skip-if-exists = [
+    "src/itables/html/dt_bundle.js",
+    "src/itables/html/dt_bundle.css",
+    "src/itables_for_dash/ITable.py",
+    "src/itables_for_dash/async-ITable.js",
+    "src/itables_for_dash/async-ITable.js.LICENSE.txt",
+    "src/itables/itables_for_streamlit/index.js",
+    "src/itables/widget/static/widget.js",
+    ]
 
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 path = "packages"
