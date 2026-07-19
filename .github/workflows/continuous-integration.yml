@@ -262,7 +262,13 @@ jobs:
         run: pixi run -e playwright playwright install --with-deps chromium
 
       - name: Test with pytest
-        run: pixi run -e playwright pytest tests/playwright
+        run: pixi run -e playwright pytest tests/playwright --cov=./ --cov-report=xml
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        with:
+          fail_ci_if_error: true
+          verbose: true
 
   pytest-minimal-deps:
     strategy:
