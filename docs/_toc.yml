@@ -1,5 +1,5 @@
 format: jb-book
-root: quick_start
+root: index
 parts:
   - caption: Using ITables
     chapters:

@@ -22,6 +22,7 @@ sphinx:
         image_dark: "../src/itables/logo/logo-dark.svg"
     rediraffe_branch: main
     rediraffe_redirects:
+      quick_start.md: index.md
       advanced_parameters.md: options/options.md
       extensions.md: options/buttons.md
       select.md: options/select.md

@@ -413,7 +413,7 @@ jobs:
             const body = `${marker}
             Thank you for making this pull request.
 
-            Did you know? You can try it on Binder: [![Binder:lab](https://img.shields.io/badge/binder-jupyterlab-0172B2.svg)](https://mybinder.org/v2/gh/${headRepoFullName}/${headRef}?urlpath=lab/tree/docs/quick_start.md).
+            Did you know? You can try it on Binder: [![Binder:lab](https://img.shields.io/badge/binder-jupyterlab-0172B2.svg)](https://mybinder.org/v2/gh/${headRepoFullName}/${headRef}?urlpath=lab/tree/docs/index.md).
 
             Also, the version of ITables developed in this PR is available as a wheel artifact :package: for easy installation.
             Download it [here](${wheel_url}), unzip it and then run <code>pip install itables-xxx.whl</code> in the unzipped directory.
