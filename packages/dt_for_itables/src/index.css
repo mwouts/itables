@@ -83,3 +83,18 @@ div.dtcc-dropdown div.dtcc-search > div div.dtcc-search-icon {
 :root.dark {
     --itables-dark-color: rgb(222, 226, 230);
 }
+
+/* The animated loading logo (logo/loading.svg) hard-codes a dark navy ink
+   on a transparent background, which nearly disappears on a dark page
+   (#426). It's embedded inline (unlike the other logo files, which are
+   loaded as standalone <img>s and can't reach these variables), so it can
+   use them directly via var(--itables-logo-ink)/var(--itables-logo-paper)
+   instead. */
+:root {
+    --itables-logo-ink: #1a1366;
+    --itables-logo-paper: #d9d7fc;
+}
+:root.dark {
+    --itables-logo-ink: #e4e2ff;
+    --itables-logo-paper: #4a4470;
+}
