@@ -77,12 +77,7 @@ This uses the dedicated `build` pixi environment, which pins `hatch` and
 
 The `itables` documentation uses [Jupyter Book](https://jupyterbook.org/).
 
-To build the documentation locally,
-you need to create a Jupyter kernel named `itables` with
-```shell
-python -m ipykernel install --name itables --user
-```
-Then you can build the documentation with
+Build the documentation with:
 ```shell
 pixi run -e docs jupyter book build docs
 ```

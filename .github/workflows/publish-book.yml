@@ -29,36 +29,25 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Set up Node
-      uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
-
-    - name: Set up Python 3.11
-      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+    - name: Setup Pixi
+      uses: prefix-dev/setup-pixi@a09b6247153796b190642a2b53fac4241043cf6f # v0.10.0
       with:
-        python-version: 3.11
-
-    - name: Install dependencies
-      run: |
-        pip install 'jupyter-book<2' sphinxext-rediraffe
-        pip install matplotlib  # Pandas style
-        pip install .[all]
-
-    - name: Create a kernel
-      run: |
-        pip install ipykernel
-        python -m ipykernel install --name itables --user
+        pixi-version: latest
+        locked: false
+        frozen: true
+        cache: true
 
     - name: Install Quarto
       uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2
 
     - name: Render the quarto examples
       run: |
-        for qmd_file in `ls docs/quarto/*.qmd`; do quarto render ${qmd_file}; done
+        for qmd_file in `ls docs/quarto/*.qmd`; do pixi run -e docs quarto render ${qmd_file}; done
 
     # Build the book
     - name: Build the book
       run: |
-        jupyter-book build docs
+        pixi run -e docs jupyter-book build docs
 
     # Upload the book's HTML as an artifact
     - name: Upload artifact
