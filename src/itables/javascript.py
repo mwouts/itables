@@ -423,10 +423,13 @@ def to_html_datatable(
 
 
 _STATIC_PREVIEW_HELP_URL = "https://itables.org/fallbacks/static_preview.html"
-_STATIC_PREVIEW_MESSAGE = (
-    f"<sup><a href={_STATIC_PREVIEW_HELP_URL} "
-    f'title="ITables v{itables_version} static preview">ⓘ</a></sup>'
-)
+
+
+def _static_preview_message() -> str:
+    return (
+        f"<sup><a href={_STATIC_PREVIEW_HELP_URL} "
+        f'title="ITables v{itables_version} static preview">ⓘ</a></sup>'
+    )
 
 
 def _html_not_supported_message() -> str:
@@ -811,7 +814,7 @@ def _add_static_preview_marker(html: str) -> str:
 
     def add_marker(m: "re.Match[str]") -> str:
         attrs, content = m.group(1), m.group(2)
-        return f"<th{attrs}>{_STATIC_PREVIEW_MESSAGE}{content}</th>"
+        return f"<th{attrs}>{_static_preview_message()}{content}</th>"
 
     return _FIRST_TH_RE.sub(add_marker, html, count=1)
 
