@@ -14,7 +14,6 @@ and compared byte-for-byte on every following run.
 """
 
 import copy
-import json
 import re
 from pathlib import Path
 
@@ -33,12 +32,7 @@ from nbformat.v4 import (  # noqa: E402
     new_notebook,
 )
 
-from itables.version import __version__ as itables_version  # noqa: E402
-
 NOTEBOOK_DIR = Path(__file__).parent / "data" / "static_preview_notebooks"
-
-with open(Path(__file__).parent / "../packages/dt_for_itables/package.json") as fp:
-    DT_FOR_ITABLES_VERSION = json.load(fp)["version"]
 
 
 @pytest.fixture(scope="module")
@@ -66,6 +60,12 @@ def _build_notebook():
         ),
         new_code_cell(
             "import itables\n"
+            "\n"
+            "# Pin the itables/dt_for_itables version strings shown below, so\n"
+            "# this notebook doesn't need to be regenerated on every release\n"
+            "itables.javascript.itables_version = '{itables_version}'\n"
+            "itables.options.dt_url = ('https://www.unpkg.com/dt_for_itables'\n"
+            "    '@{dt_for_itables_version}/dt_bundle.js')\n"
             "\n"
             "itables.init_notebook_mode(connected=True)\n"
             "\n"
@@ -126,8 +126,9 @@ def _stable_text(nb) -> str:
     """Strip the parts of an executed notebook that are not reproducible
     across runs/environments (timestamps, cell ids, Python patch version),
     and return its serialized text. The itables/dt_for_itables version
-    numbers are left as-is, so that the saved notebook remains a genuine,
-    presentable example when viewed on GitHub."""
+    strings are pinned to placeholders by the notebook's own setup cell
+    (mirroring test_to_html_datatable.py's approach), so this doesn't need
+    to be regenerated on every release."""
     nb = copy.deepcopy(nb)
     nb["metadata"].pop("language_info", None)
     for i, cell in enumerate(nb["cells"]):
@@ -146,14 +147,10 @@ _TABLE_ID_RE = re.compile(
 _STYLER_ID_RE = re.compile(r"T_[0-9a-f]{5}")
 
 
-def _version_independent(text: str) -> str:
-    """Replace the itables/dt_for_itables version numbers, and the randomly
-    generated table_id (a new uuid4 on every execution, since the notebook
-    cells don't pass an explicit table_id), with placeholders - mirroring
-    test_to_html_datatable.py's approach - so that comparisons don't require
-    regenerating the reference notebook on every version bump or run."""
-    text = text.replace(itables_version, "{itables_version}")
-    text = text.replace(DT_FOR_ITABLES_VERSION, "{dt_for_itables_version}")
+def _normalize_random_ids(text: str) -> str:
+    """Replace the randomly generated table_id (a new uuid4 on every
+    execution, since the notebook cells don't pass an explicit table_id)
+    with a placeholder, so comparisons don't depend on run-to-run randomness."""
     text = _TABLE_ID_RE.sub("itables_{table_id}", text)
     text = _STYLER_ID_RE.sub("T_{table_id}", text)
     return text
@@ -227,6 +224,6 @@ def test_static_preview_notebook(notebook_kernel_name):
     # ref_file may have a trailing newline added by the end-of-file-fixer
     # pre-commit hook, which nbformat.writes() doesn't necessarily add.
     expected = ref_file.read_text()
-    assert _version_independent(generated.rstrip("\n")) == _version_independent(
+    assert _normalize_random_ids(generated.rstrip("\n")) == _normalize_random_ids(
         expected.rstrip("\n")
     ), "Generated notebook does not match reference."
