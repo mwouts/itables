@@ -24,8 +24,20 @@ sphinx:
       streamlit.md: apps/streamlit.md
       widget.md: apps/widget.md
       sample_dataframes.md: pandas_dataframes.md
+    # Let the "rocket icon" launch button below open each doc page (a MyST
+    # notebook) directly as a live JupyterLite notebook with a Pyodide kernel.
+    # jupyter-plainb (installed as a JupyterLite federated extension) can
+    # render a .md file as a notebook directly, but isn't the default viewer
+    # for .md; docs/overrides.json makes it the default one, so no .ipynb
+    # conversion step is needed. docs/stage_jupyterlite_contents.py (run
+    # before this build) stages the content with the "docs/" prefix the
+    # launch button expects, and (re)generates docs/jupyter-lite.json so the
+    # Pyodide kernel preloads the latest itables wheel from PyPI at startup --
+    # otherwise `import itables` would need an explicit %pip install cell.
+    jupyterlite_overrides: "overrides.json"
   extra_extensions:
     - sphinxext.rediraffe
+    - jupyterlite_sphinx
 repository:
   url: https://github.com/mwouts/itables
   path_to_book: docs
@@ -36,4 +48,4 @@ html:
   use_issues_button: true
 launch_buttons:
   notebook_interface: "jupyterlab"
-  binderhub_url: "https://mybinder.org"
+  jupyterlite_url: "lite/lab/index.html"

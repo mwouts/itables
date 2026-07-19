@@ -79,9 +79,9 @@ df
 # %% [markdown]
 # Read more about the different context where you can use ITables.
 #
-# ## Binder
+# ## JupyterLite
 #
-# You can run the examples above (or any other documentation page) directly on ![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg), without having to install anything on your end - just click on the rocket icon at the top of the page.
+# You can run the examples above (or any other documentation page) directly on ![Lab](https://img.shields.io/badge/JupyterLite-Lab-blue.svg), without having to install anything on your end - just click on the rocket icon at the top of the page.
 #
 # ## Licence
 #

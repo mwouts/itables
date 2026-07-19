@@ -188,6 +188,9 @@ jupyter-book = ">=1,<2"
 
 [tool.pixi.feature.docs.pypi-dependencies]
 sphinxext-rediraffe = "*"
+jupyterlite-sphinx = "*"
+jupyterlite-pyodide-kernel = "*"
+jupyter-plainb = "*"
 
 [tool.pixi.feature.build.dependencies]
 nodejs = ">=20"

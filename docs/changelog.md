@@ -10,6 +10,7 @@ Unreleased
 **Changed**
 - We have further sped up the CI: the conda package is now built with [rattler-build](https://rattler.build/) instead of `conda-build`, and dependencies in the `pytest` matrix are now installed with [uv](https://docs.astral.sh/uv/) instead of `pip`.
 - We now use a standard `python3` kernel for the documentation - this removes the need for a custom kernel.
+- The documentation's "try it live" links now open a [JupyterLite](https://jupyterlite.readthedocs.io) notebook (Pyodide, running fully in the browser) instead of a Binder-hosted JupyterLab, so they start instantly instead of waiting on a container build.
 
 
 2.8.2 (2026-07-19)

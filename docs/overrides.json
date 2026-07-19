@@ -1,0 +1,7 @@
+{
+  "@jupyterlab/docmanager-extension:plugin": {
+    "defaultViewers": {
+      "ptjnb-md": "ptjnb-md"
+    }
+  }
+}

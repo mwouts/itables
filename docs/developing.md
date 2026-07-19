@@ -88,6 +88,23 @@ If you make any significant change then you should go through
 the updated documentation and make sure all the examples
 still work properly.
 
+### JupyterLite
+
+The rocket icon at the top of each documentation page opens that page as a
+live, in-browser notebook via [JupyterLite](https://jupyterlite.readthedocs.io)
+(no server, no Binder wait). To build and test this locally:
+
+```shell
+pixi run -e docs python docs/stage_jupyterlite_contents.py
+pixi run -e docs jupyter-book build docs
+cd docs/_build/html && python3 -m http.server 8000
+```
+
+Then open `http://localhost:8000/quick_start.html` and click the rocket icon.
+JupyterLite needs a real HTTP server, not `file://` (it relies on a Service
+Worker, which browsers won't register for local files) -- so opening the
+built HTML file directly will just show a blank page.
+
 ## Jupyter Lab
 
 In the pixi environment, you can start Jupyter with

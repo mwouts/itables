@@ -4,13 +4,13 @@ ITables has been tested in the following environments
 
 ## Jupyter Notebook
 
-Try it on [![Notebook](https://img.shields.io/badge/Binder-JupyterNotebook-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?filepath=docs/quick_start.md)
+Try it on [![Notebook](https://img.shields.io/badge/JupyterLite-Notebook-blue.svg)](https://mwouts.github.io/itables/lite/notebooks/index.html?path=quick_start.ipynb)
 
 ![](images/notebook.png)
 
 ## Jupyter Lab
 
-Try it on [![Lab](https://img.shields.io/badge/Binder-JupyterLab-blue.svg)](https://mybinder.org/v2/gh/mwouts/itables/main?urlpath=lab/tree/docs/quick_start.md)
+Try it on [![Lab](https://img.shields.io/badge/JupyterLite-Lab-blue.svg)](https://mwouts.github.io/itables/lite/lab/index.html?path=quick_start.ipynb)
 
 ![](images/lab.png)
 

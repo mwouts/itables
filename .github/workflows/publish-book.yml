@@ -44,6 +44,12 @@ jobs:
       run: |
         for qmd_file in `ls docs/quarto/*.qmd`; do pixi run -e docs quarto render ${qmd_file}; done
 
+    # Stage the doc pages that the JupyterLite build (triggered below, via
+    # jupyterlite-sphinx) picks up from docs/_contents/
+    - name: Stage the JupyterLite contents
+      run: |
+        pixi run -e docs python docs/stage_jupyterlite_contents.py
+
     # Build the book
     - name: Build the book
       run: |

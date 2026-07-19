@@ -23,6 +23,11 @@ conda-dist
 # Jupyter Book
 _build
 
+# JupyterLite (staged/built by docs/stage_jupyterlite_contents.py and jupyterlite-sphinx)
+docs/_contents
+docs/.jupyterlite.doit.db
+docs/jupyter-lite.json
+
 # Quarto
 .jupyter_cache
 docs/quarto/*.html
