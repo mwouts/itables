@@ -148,19 +148,16 @@ def test_embedded_newlines_do_not_break_the_table():
     assert len(table_lines) == 3  # header, separator, one data row
 
 
-def test_styler_requires_allow_html():
+def test_styler_falls_back_to_its_underlying_data():
+    # A Styler's formatting/highlighting is arbitrary HTML that can't be
+    # expressed in Markdown, but its underlying data can still be shown as a
+    # plain table - unlike the interactive table, this doesn't require
+    # allow_html=True, since we never touch the Styler's HTML
     pd = pytest.importorskip("pandas")
     pytest.importorskip("jinja2")
 
-    styler = pd.DataFrame({"x": [1, 2]}).style
-    with pytest.raises(ValueError, match="allow_html=True"):
-        to_markdown_table(styler)
-
-
-def test_styler_with_allow_html_has_no_data_preview():
-    pd = pytest.importorskip("pandas")
-    pytest.importorskip("jinja2")
-
-    styler = pd.DataFrame({"x": [1, 2]}).style
-    markdown = to_markdown_table(styler, allow_html=True)
-    assert "no static preview" in markdown
+    styler = pd.DataFrame({"x": [1, 2]}).style.highlight_max(color="yellow")
+    markdown = to_markdown_table(styler)
+    assert "no static preview" not in markdown
+    assert _cells(markdown.splitlines()[2]) == ["1"]
+    assert to_markdown_table(styler, allow_html=True) == markdown

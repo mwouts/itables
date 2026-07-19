@@ -431,14 +431,13 @@ _STATIC_PREVIEW_MESSAGE = (
 )
 
 
-def _could_not_load_message(*, connected: bool) -> str:
+def _html_not_supported_message() -> str:
     """Markdown explanation shown by show() when it can't attempt to
     display HTML/JavaScript at all - cf. #575."""
-    source = "the internet" if connected else "the `init_notebook_mode` cell"
     help_link = f"[help]({_STATIC_PREVIEW_HELP_URL})"
     return (
-        f"Could not load ITables v{itables_version} from {source}, "
-        f"defaulting to a static preview (need {help_link}?)"
+        f"HTML rendering not available, "
+        f"defaulting to a markdown preview (need {help_link}?)"
     )
 
 
@@ -672,8 +671,20 @@ def to_markdown_table(
     (cf. #575). Only the first rows are included, following the pagination
     options ('pageLength', 'lengthMenu' or 'paging') - 10 rows by default.
     """
+    df_module_name, df_type_name = get_dataframe_module_and_type_name(df)
+    if df_module_name == "pandas" and df_type_name == "Styler":
+        # A Styler's formatting/highlighting is arbitrary HTML that can't be
+        # expressed in Markdown, but its underlying data can still be shown
+        # as a plain table rather than nothing
+        return to_markdown_table(df.data, caption, **kwargs)
+
     # get_itable_arguments() expects a resolved table_id, cf. to_html_datatable()
     kwargs["table_id"] = check_table_id(kwargs.pop("table_id", None), kwargs, df=df)
+    # Markdown is not HTML: values must not be HTML-escaped (cf. #575), which
+    # is what allow_html=True achieves - it's safe to force it here since a
+    # Styler (the only case where allow_html gates untrusted HTML) is handled
+    # above, before ever reaching get_itable_arguments()
+    kwargs["allow_html"] = True
     dt_args = get_itable_arguments(df, **kwargs)
     return _markdown_table_from_dt_args(dt_args, caption)
 
@@ -690,9 +701,11 @@ def _markdown_table_from_dt_args(
         lines.append("")
 
     if "data_json" not in dt_args:
-        # df is None, or this is a Pandas Styler object (or use_to_html=True
-        # in general), rendered with df.to_html() directly: there is no
-        # downsampled, DataTables-ready data to build a Markdown preview from
+        # df is None, or use_to_html=True was requested and the table is
+        # rendered with df.to_html() directly (Styler objects are handled
+        # earlier, in to_markdown_table(), via their underlying data): there
+        # is no downsampled, DataTables-ready data to build a Markdown
+        # preview from
         lines.append("*(no static preview available for this table)*")
         return "\n".join(lines)
 
@@ -1707,8 +1720,7 @@ def show(
     support, e.g. in a terminal), a simpler Markdown table is printed
     instead - see to_markdown_table()."""
     if not _html_display_is_supported():
-        connected = bool(kwargs.get("connected", _CONNECTED))
-        print(_could_not_load_message(connected=connected))
+        print(_html_not_supported_message())
         print()
         print(to_markdown_table(df, caption, **kwargs))
         return
