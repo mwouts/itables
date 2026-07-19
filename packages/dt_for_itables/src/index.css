@@ -15,6 +15,22 @@
 
 div.dt-container {
     max-width: 100%;
+    /* itables' regular table cells are transparent by design, so that they
+       blend into the host page's own background (see the dark-mode
+       fixed-columns fix, issue #564). That assumes the host's background
+       (and text color) already matches the theme, which isn't always true:
+       some hosts wrap outputs in their own container with a hard-coded
+       background that itables has no control over (e.g. pydata-sphinx-theme
+       -- used for itables.org itself -- paints a light "safety" background
+       behind any cell output that isn't a plain `table.dataframe`, and
+       ipywidgets' hosts commonly default widget containers to white).
+       Painting our own background and text color here, right behind the
+       table, wins over any such ancestor regardless of what triggered it
+       (#426). DataTables' own dark-mode CSS does not set a text color on
+       its own (it also relies on the host), hence --itables-dark-color.
+    */
+    background-color: var(--dt-html-background);
+    color: var(--itables-dark-color, inherit);
 }
 
 div.dt-layout-table>div {
@@ -57,4 +73,13 @@ div.dtcc-dropdown div.dtcc-search > div div.dtcc-search-icon {
    sharing one row (#536). Reserve a little extra room so it always fits. */
 :root {
     --dtcc-search-input_flexCalc: 28px;
+}
+
+/* Paired with div.dt-container's `color` above (#426): a light, high-contrast
+   text color for dark mode, since DataTables' own dark-mode CSS does not set
+   one (see the comment on div.dt-container). rgb(222, 226, 230) is the same
+   pairing Bootstrap 5.3's dark mode uses with rgb(33, 37, 41), i.e.
+   --dt-html-background's own dark value. */
+:root.dark {
+    --itables-dark-color: rgb(222, 226, 230);
 }

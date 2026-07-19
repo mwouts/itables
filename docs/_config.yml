@@ -11,6 +11,8 @@ exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py]
 sphinx:
   config:
     html_extra_path: ['quarto']
+    html_static_path: ['_static']
+    html_css_files: ['custom.css']
     rediraffe_branch: main
     rediraffe_redirects:
       advanced_parameters.md: options/options.md
