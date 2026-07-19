@@ -15,11 +15,25 @@ Run this before `jupyter-book build docs`. It does two things:
    JupyterLite content tree. So we stage the doc pages one level deeper, under
    docs/_contents/docs/, to reproduce that expected prefix.
 
-2. Generates docs/jupyter-lite.json, so the Pyodide kernel preloads the latest
-   published itables wheel from PyPI at startup. Without this, `import
-   itables` would need an explicit `%pip install itables` cell -- there is no
-   auto-install-on-import for packages that aren't part of the base Pyodide
-   distribution.
+2. Generates docs/jupyter-lite.json, so the Pyodide kernel preloads, at
+   startup, the packages the staged doc pages actually import: the latest
+   published itables wheel from PyPI, and pandas (a package built into the
+   Pyodide distribution -- unlike itables, it has compiled extensions, so it
+   must come from Pyodide's own WASM build rather than PyPI). Without this,
+   `import itables` / `import pandas` would need an explicit `%pip install`
+   cell -- there is no auto-install-on-import for packages that aren't part
+   of the base Pyodide distribution.
+
+Each staged .md file also gets a `language_info` key added to its YAML
+frontmatter (only in the staged _copy_ -- the real docs/*.md are untouched).
+Without it, JupyterLite shows a "select kernel" dialog instead of picking the
+Pyodide kernel automatically: our frontmatter's `kernelspec.name` is
+`python3` (needed for the local kernel that builds the static docs), but
+JupyterLite's Pyodide kernel is named `python`. JupyterLab's fallback for a
+mismatched kernel name only kicks in when it can find a *single* installed
+kernel matching `language_info.name` -- and that field is normally filled in
+by the kernel itself after running the notebook once, which never happens
+for a freshly-authored .md file.
 """
 
 import json
@@ -27,7 +41,32 @@ import shutil
 import urllib.request
 from pathlib import Path
 
+import yaml
+
 DOCS_DIR = Path(__file__).parent
+FRONTMATTER_DELIMITER = "---\n"
+
+
+def add_language_info(markdown: str) -> str:
+    if not markdown.startswith(FRONTMATTER_DELIMITER):
+        return markdown
+    end = markdown.find(f"\n{FRONTMATTER_DELIMITER}", len(FRONTMATTER_DELIMITER))
+    if end == -1:
+        return markdown
+
+    frontmatter = yaml.safe_load(markdown[len(FRONTMATTER_DELIMITER) : end])
+    kernelspec = frontmatter.get("kernelspec")
+    if not kernelspec or "language_info" in frontmatter:
+        return markdown
+
+    frontmatter["language_info"] = {"name": kernelspec["language"]}
+    body = markdown[end + len(f"\n{FRONTMATTER_DELIMITER}") :]
+    return (
+        FRONTMATTER_DELIMITER
+        + yaml.safe_dump(frontmatter, sort_keys=False)
+        + FRONTMATTER_DELIMITER
+        + body
+    )
 
 
 def stage_doc_pages() -> None:
@@ -44,6 +83,9 @@ def stage_doc_pages() -> None:
         else:
             shutil.copy2(src, dst)
 
+    for md_file in staged_docs.rglob("*.md"):
+        md_file.write_text(add_language_info(md_file.read_text()))
+
 
 def latest_itables_wheel_url() -> str:
     with urllib.request.urlopen("https://pypi.org/pypi/itables/json") as response:
@@ -55,12 +97,15 @@ def latest_itables_wheel_url() -> str:
 
 
 def write_jupyter_lite_config() -> None:
+    # "pandas" is loaded by name, from Pyodide's own distribution; itables is
+    # pure Python, so a regular PyPI wheel works fine.
+    packages = ["pandas", latest_itables_wheel_url()]
     config = {
         "jupyter-config-data": {
             "litePluginSettings": {
                 "@jupyterlite/pyodide-kernel-extension:kernel": {
                     "loadPyodideOptions": {
-                        "packages": [latest_itables_wheel_url()],
+                        "packages": packages,
                     },
                 },
             },
