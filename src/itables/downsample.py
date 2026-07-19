@@ -65,7 +65,7 @@ def downsample(
     )
 
     if len(df) < org_rows or len(df.columns) < org_columns:
-        downsampled = '<a href="https://mwouts.github.io/itables/downsampling.html">downsampled</a>'
+        downsampled = '<a href="https://itables.org/downsampling.html">downsampled</a>'
         reasons = []
         if org_rows > max_rows > 0:
             reasons.append("maxRows={}".format(max_rows))

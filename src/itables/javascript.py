@@ -210,7 +210,7 @@ def get_animated_logo(display_logo_when_loading: bool) -> str:
     """Return the HTML for the loading logo of ITables"""
     if not display_logo_when_loading:
         return ""
-    return f"<a href=https://mwouts.github.io/itables/>{read_package_file('logo/loading.svg')}</a>"
+    return f"<a href=https://itables.org/>{read_package_file('logo/loading.svg')}</a>"
 
 
 def generate_init_offline_itables_html(dt_bundle: Union[Path, str]) -> str:
@@ -422,9 +422,7 @@ def to_html_datatable(
     )
 
 
-_STATIC_PREVIEW_HELP_URL = (
-    "https://mwouts.github.io/itables/fallbacks/static_preview.html"
-)
+_STATIC_PREVIEW_HELP_URL = "https://itables.org/fallbacks/static_preview.html"
 _STATIC_PREVIEW_MESSAGE = (
     f"<sup><a href={_STATIC_PREVIEW_HELP_URL} "
     f'title="ITables v{itables_version} static preview">ⓘ</a></sup>'
@@ -1264,7 +1262,7 @@ def get_itable_arguments(
                 raise ValueError(
                     "Pandas Styler objects always use HTML. Please make sure that you trust the "
                     "content of that table. If so, please render it with allow_html=True, cf. "
-                    "https://mwouts.github.io/itables/options/allow_html.html."
+                    "https://itables.org/options/allow_html.html."
                 )
             if not showIndex:
                 try:
@@ -1397,7 +1395,7 @@ def warn_if_selected_rows_are_not_visible(
             [str(i) for i in not_shown[:6]] + (["..."] if len(not_shown) > 6 else [])
         )
         warnings.warn(
-            f"This table has been downsampled, see https://mwouts.github.io/itables/downsampling.html. "
+            f"This table has been downsampled, see https://itables.org/downsampling.html. "
             f"Only {data_row_count} of the original {full_row_count} rows are rendered. "
             f"In particular these rows: [{not_shown}] cannot be selected "
             f"(more generally, no row with index between {bottom_limit} and {top_limit-1} "
@@ -1540,7 +1538,7 @@ def html_table_from_template(
     <tr>
       <td style="vertical-align:middle; text-align:left">{get_animated_logo(display_logo_when_loading)}
         Loading ITables v{itables_version} from {itables_source}...
-        (need <a href=https://mwouts.github.io/itables/troubleshooting.html>help</a>?)
+        (need <a href=https://itables.org/troubleshooting.html>help</a>?)
       </td>
     </tr>
   </tbody>

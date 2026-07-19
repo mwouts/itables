@@ -51,7 +51,7 @@ from IPython.display import HTML, display
 display(
     HTML(
         """
-Tables displayed with <a href=https://mwouts.github.io/itables/>ITables</a>,
+Tables displayed with <a href=https://itables.org/>ITables</a>,
 a Python wrapper for <a href=https://datatables.net>DataTables</a>
 """
     )

@@ -48,7 +48,7 @@
   "devDependencies": {
     "esbuild": "^0.28.0"
   },
-  "homepage": "https://mwouts.github.io/itables",
+  "homepage": "https://itables.org",
   "repository": {
     "type": "git",
     "url": "https://github.com/mwouts/itables.git"

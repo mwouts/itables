@@ -49,6 +49,11 @@ jobs:
       run: |
         pixi run -e docs jupyter-book build docs
 
+    # docs/_build/html is regenerated on every run, so the CNAME file has to be
+    # re-added each time - otherwise GitHub Pages can lose the custom domain.
+    - name: Add custom domain
+      run: echo "itables.org" > docs/_build/html/CNAME
+
     # Upload the book's HTML as an artifact
     - name: Upload artifact
       uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5

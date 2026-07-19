@@ -106,7 +106,7 @@ def test_static_preview_marker_mentions_the_version():
     # a small, linked "info" marker with a tooltip, rather than a sentence
     # of always-visible text
     assert (
-        "<sup><a href=https://mwouts.github.io/itables/fallbacks/static_preview.html "
+        "<sup><a href=https://itables.org/fallbacks/static_preview.html "
         f'title="ITables v{__version__} static preview">ⓘ</a></sup>'
     ) in thead
 
