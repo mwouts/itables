@@ -76,8 +76,8 @@ dev = ["itables[test-all]", "watchfiles", "jupyterlab", "pyright", "pandas-stubs
 path = "src/itables/version.py"
 
 [project.urls]
-Homepage = "https://mwouts.github.io/itables/"
-Documentation = "https://mwouts.github.io/itables"
+Homepage = "https://itables.org/"
+Documentation = "https://itables.org"
 Repository = "https://github.com/mwouts/itables.git"
 Issues = "https://github.com/mwouts/itables/issues"
 Changelog = "https://github.com/mwouts/itables/blob/main/docs/changelog.md"

@@ -2,7 +2,7 @@
 Default options for ITables.
 
 These parameters are documented at
-https://mwouts.github.io/itables/options/options.html
+https://itables.org/options/options.html
 """
 
 from pathlib import Path
@@ -43,13 +43,13 @@ show_df_type: bool = False
 
 """
 The default classes.
-See https://mwouts.github.io/itables/options/classes.html
+See https://itables.org/options/classes.html
 """
 classes: Union[str, Sequence[str]] = "display nowrap compact"
 
 """
 The default table style.
-See https://mwouts.github.io/itables/options/style.html
+See https://itables.org/options/style.html
 
 Use
 - 'table-layout:auto' to compute the layout automatically

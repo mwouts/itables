@@ -22,7 +22,7 @@ The tables are still interactive when you _download_ the notebook as an HTML fil
 
 ## Jupyter Book
 
-The tables are interactive in interactive books powered by [Jupyter Book](https://jupyterbook.org), see e.g. the [ITables documentation](https://mwouts.github.io/itables/).
+The tables are interactive in interactive books powered by [Jupyter Book](https://jupyterbook.org), see e.g. the [ITables documentation](https://itables.org/).
 
 ## Google Colab
 

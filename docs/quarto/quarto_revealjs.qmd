@@ -63,7 +63,7 @@ itables.sample_dfs.get_countries()
 ## How to make your table smaller
 
 - display only a few rows with `lengthMenu`,
-- adjust the [style or font](https://mwouts.github.io/itables/css.html) with a custom `css`
+- adjust the [style or font](https://itables.org/css.html) with a custom `css`
 :::
 
 ::: {.callout-note}
@@ -90,11 +90,11 @@ display(HTML("<style>.dt-container { font-size: medium; }</style>"))
 ::: {.callout-tip}
 ## Parameters
 
-ITables' [advanced parameters](https://mwouts.github.io/itables/advanced_parameters.html):
+ITables' [advanced parameters](https://itables.org/advanced_parameters.html):
 
 - Can be set globally on `itables.options`, or
 - Passed as arguments to the `show` function.
-- Table-specific arguments like [caption](https://mwouts.github.io/itables/advanced_parameters.html#caption) are only available in `show`.
+- Table-specific arguments like [caption](https://itables.org/advanced_parameters.html#caption) are only available in `show`.
 :::
 
 ::: {.callout-warning}
@@ -129,5 +129,5 @@ interactive HTML tables using the JavaScript
 ::: {.callout-tip}
 ## Documentation
 
-Learn More about ITables in the [documentation](https://mwouts.github.io/itables).
+Learn More about ITables in the [documentation](https://itables.org).
 :::

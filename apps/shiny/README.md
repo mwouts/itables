@@ -1,7 +1,7 @@
 # ITables in Shiny for Python: a Demo
 
 This directory contains two example Python for Shiny applications that render
-Pandas DataFrames using [ITables](https://mwouts.github.io/itables).
+Pandas DataFrames using [ITables](https://itables.org).
 
 ## The ITable Widget
 

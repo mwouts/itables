@@ -8,8 +8,8 @@
 [![pyversions](https://img.shields.io/pypi/pyversions/itables.svg)](https://pypi.python.org/pypi/itables)
  ![PyPI - Types](https://img.shields.io/pypi/types/itables)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://mwouts.github.io/itables/apps/widget.html)
-[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://mwouts.github.io/itables/apps/dash.html)
+[![Jupyter Widget](https://img.shields.io/badge/Jupyter-Widget-F37626.svg?style=flat&logo=Jupyter)](https://itables.org/apps/widget.html)
+[![Dash Component](https://img.shields.io/badge/Dash-Plotly-1098F7.svg?style=flat&logo=Plotly)](https://itables.org/apps/dash.html)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://itables.streamlit.app)
 
 This package changes how Pandas and Polars DataFrames are rendered in Python notebooks and applications.
@@ -23,7 +23,7 @@ Since v2.6.0, ITables has no dependencies. It works out of the box with Pandas o
 
 ## Documentation
 
-Browse the [documentation](https://mwouts.github.io/itables/) to see
+Browse the [documentation](https://itables.org/) to see
 examples of Pandas or Polars DataFrames rendered as interactive DataTables.
 
 ## Quick start
@@ -55,17 +55,17 @@ If you prefer to render only selected DataFrames as interactive tables, call `it
 
 ITables works in all the usual Jupyter Notebook environments, including Jupyter Notebook, Jupyter Lab, Jupyter nbconvert (i.e. the tables are still interactive in the HTML export of a notebook), Jupyter Book, Google Colab and Kaggle.
 
-You can also use ITables in [Quarto](https://mwouts.github.io/itables/quarto.html) HTML documents, and in RISE presentations.
+You can also use ITables in [Quarto](https://itables.org/quarto.html) HTML documents, and in RISE presentations.
 
 ITables works well in VS Code, both in Jupyter Notebooks and in interactive Python sessions.
 
 ## ITables in Python applications
 
 ITables is also available as
-- a [Jupyter Widget](https://mwouts.github.io/itables/widget.html)
-- a [Dash](https://mwouts.github.io/itables/dash.html) component
-- a [Streamlit](https://mwouts.github.io/itables/streamlit.html) component,
-- and it also works in [Shiny](https://mwouts.github.io/itables/shiny.html) applications.
+- a [Jupyter Widget](https://itables.org/widget.html)
+- a [Dash](https://itables.org/dash.html) component
+- a [Streamlit](https://itables.org/streamlit.html) component,
+- and it also works in [Shiny](https://itables.org/shiny.html) applications.
 
 ## Licence
 

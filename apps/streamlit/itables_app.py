@@ -32,7 +32,7 @@ st.set_page_config(
 )
 st.logo(
     "https://raw.githubusercontent.com/mwouts/itables/main/src/itables/logo/logo.svg",
-    link="https://mwouts.github.io/itables/streamlit.html",
+    link="https://itables.org/streamlit.html",
 )
 st.markdown(
     "![ITables](https://raw.githubusercontent.com/mwouts/itables/main/src/itables/logo/wide.svg)"
