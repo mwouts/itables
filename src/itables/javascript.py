@@ -33,10 +33,15 @@ from .utils import (
 )
 from .version import __version__ as itables_version
 
-_ITABLES_UNDERSCORE_VERSION = (
-    f"_itables_{itables_version.replace('.','_').replace('-','_')}"
-)
-_ITABLES_READY_EVENT = f"itables-{itables_version}-ready"
+
+def _itables_underscore_version() -> str:
+    return f"_itables_{itables_version.replace('.', '_').replace('-', '_')}"
+
+
+def _itables_ready_event() -> str:
+    return f"itables-{itables_version}-ready"
+
+
 _OPTIONS_NOT_AVAILABLE_IN_APP_MODE = {
     "connected",
     "dt_url",
@@ -193,7 +198,7 @@ def init_notebook_mode(
         )
         local_import = (
             "const { set_or_remove_dark_class } = await window."
-            + _ITABLES_UNDERSCORE_VERSION
+            + _itables_underscore_version()
             + ";"
         )
         init_datatables = replace_value(init_datatables, connected_import, local_import)
@@ -225,11 +230,11 @@ def generate_init_offline_itables_html(dt_bundle: Union[Path, str]) -> str:
     init_notebook_mode = replace_value(
         init_notebook_mode,
         "_itables_underscore_version",
-        _ITABLES_UNDERSCORE_VERSION,
+        _itables_underscore_version(),
         expected_count=3,
     )
     init_notebook_mode = replace_value(
-        init_notebook_mode, "itables-version-ready", _ITABLES_READY_EVENT
+        init_notebook_mode, "itables-version-ready", _itables_ready_event()
     )
     init_notebook_mode = replace_value(init_notebook_mode, "dt_src_b64", dt_src_b64)
     init_notebook_mode = replace_value(init_notebook_mode, "dt_css_b64", dt_css_b64)
@@ -1528,10 +1533,10 @@ def html_table_from_template(
         output = replace_value(
             output,
             "_itables_underscore_version",
-            _ITABLES_UNDERSCORE_VERSION,
+            _itables_underscore_version(),
             expected_count=2,
         )
-        output = replace_value(output, "itables-version-ready", _ITABLES_READY_EVENT)
+        output = replace_value(output, "itables-version-ready", _itables_ready_event())
 
     itables_source = (
         "the internet" if connected else "the <code>init_notebook_mode</code> cell"
