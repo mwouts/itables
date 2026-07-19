@@ -1,1 +1,24 @@
 @import 'dt_for_itables/dt_bundle.css';
+
+/* itables' regular table cells are transparent by design, so that they blend
+   into the host page's own background (see the dark-mode fixed-columns fix,
+   issue #564). That works for the plain HTML/notebook-cell output, which
+   sits directly in a themed output area, but the div into which ipywidgets
+   (e.g. VS Code's Jupyter extension) mounts a widget's view has its own
+   opaque, always-white background -- so the transparent table cells show
+   through to white instead of the notebook's dark theme (issue #426). Give
+   the widget's own root element an explicit background instead of relying
+   on transparency. */
+.itables_anywidget {
+    background-color: var(--dt-html-background);
+}
+
+/* VS Code's Jupyter extension wraps every ipywidget's output in its own
+   `.cell-output-ipywidget-background` container(s), hardcoded to white
+   regardless of the editor's theme - that showed up as a thick white
+   border around the (correctly dark) widget above (issue #426). Repaint
+   it to match whenever it actually hosts an ITable widget, so other
+   (non-itables) widgets are left untouched. */
+.cell-output-ipywidget-background:has(.itables_anywidget) {
+    background-color: var(--dt-html-background);
+}

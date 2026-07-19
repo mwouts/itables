@@ -211,25 +211,47 @@ class ITable {
     }
 }
 
+function get_theme_documents() {
+    // Widgets (e.g. ipywidgets in VS Code's notebook/interactive window) are
+    // often rendered inside a same-origin iframe of their own, so the host's
+    // theme data-attributes, which are set on the outermost document's
+    // <body>, are not visible on `document` itself. We walk up the chain of
+    // parent frames (stopping at the first cross-origin one, if any) so that
+    // every ancestor document is also considered.
+    let docs = [document];
+    let win = window;
+    while (win.parent && win.parent !== win) {
+        try {
+            docs.push(win.parent.document);
+        } catch (e) {
+            break;
+        }
+        win = win.parent;
+    }
+    return docs;
+}
+
 function set_or_remove_dark_class() {
     let is_dark_theme = function () {
-        // Jupyter Lab
-        if ('jpThemeLight' in document.body.dataset)
-            return (document.body.dataset.jpThemeLight === "false");
+        for (let doc of get_theme_documents()) {
+            // Jupyter Lab
+            if ('jpThemeLight' in doc.body.dataset)
+                return (doc.body.dataset.jpThemeLight === "false");
 
-        // VS Code
-        if ('vscodeThemeKind' in document.body.dataset)
-            return document.body.dataset.vscodeThemeKind.includes('dark');
+            // VS Code
+            if ('vscodeThemeKind' in doc.body.dataset)
+                return doc.body.dataset.vscodeThemeKind.includes('dark');
 
-        // Jupyter Book
-        if ('theme' in document.documentElement.dataset)
-            return document.documentElement.dataset.theme.includes('dark');
+            // Jupyter Book
+            if ('theme' in doc.documentElement.dataset)
+                return doc.documentElement.dataset.theme.includes('dark');
 
-        // Quarto
-        if (document.body.classList.contains('quarto-dark'))
-            return true;
-        if (document.body.classList.contains('quarto-light'))
-            return false;
+            // Quarto
+            if (doc.body.classList.contains('quarto-dark'))
+                return true;
+            if (doc.body.classList.contains('quarto-light'))
+                return false;
+        }
 
         // Default
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -257,16 +279,20 @@ function set_or_remove_dark_class() {
         // Jupyter Lab and VS Code expose the current theme as a data-attribute
         // on <body>, which they update live when the user switches theme.
         // Quarto toggles a 'quarto-dark'/'quarto-light' class on <body> too.
-        new MutationObserver(apply_dark_theme).observe(document.body, {
-            attributes: true,
-            attributeFilter: ['data-jp-theme-light', 'data-vscode-theme-kind', 'class'],
-        });
+        // Jupyter Book sets a data-theme attribute on <html>. Any of these
+        // may live on an ancestor document rather than on `document` itself
+        // (see get_theme_documents), so we watch every one of them.
+        for (let doc of get_theme_documents()) {
+            new MutationObserver(apply_dark_theme).observe(doc.body, {
+                attributes: true,
+                attributeFilter: ['data-jp-theme-light', 'data-vscode-theme-kind', 'class'],
+            });
 
-        // Jupyter Book sets a data-theme attribute on <html>.
-        new MutationObserver(apply_dark_theme).observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ['data-theme'],
-        });
+            new MutationObserver(apply_dark_theme).observe(doc.documentElement, {
+                attributes: true,
+                attributeFilter: ['data-theme'],
+            });
+        }
 
         // Fallback: the OS/browser level color scheme preference.
         window

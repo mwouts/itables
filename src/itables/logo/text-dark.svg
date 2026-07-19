@@ -1,12 +1,6 @@
 <svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 933 380" style="font-family: 'Droid Sans', sans-serif; background-color:transparent">
-    <style>
-        .ink { fill: #1a1366; stroke: #1a1366; }
-        @media (prefers-color-scheme: dark) {
-            .ink { fill: #e4e2ff; stroke: #e4e2ff; }
-        }
-    </style>
-    <g class="ink">
+    <g style="fill:#e4e2ff;stroke:#e4e2ff;">
         <text style="font-size: 240px; font-weight:bold;">
             <tspan x="-10" y="190">ITables</tspan>
         </text>

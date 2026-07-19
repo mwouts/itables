@@ -1,7 +1,6 @@
 title: Interactive Tables
 author: Marc Wouts
 copyright: "2019-2026"
-logo: "../src/itables/logo/logo.svg"
 execute:
   execute_notebooks: force
 # The docs/py folder holds the py:percent mirrors of the docs (used for linting
@@ -11,6 +10,16 @@ exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py]
 sphinx:
   config:
     html_extra_path: ['quarto']
+    html_static_path: ['_static']
+    html_css_files: ['custom.css']
+    # pydata-sphinx-theme swaps these based on the page's own data-theme
+    # attribute (the light/dark toggle), unlike a plain `logo:` key or a
+    # `prefers-color-scheme` media query in the SVG itself, neither of which
+    # track that toggle (#426).
+    html_theme_options:
+      logo:
+        image_light: "../src/itables/logo/logo.svg"
+        image_dark: "../src/itables/logo/logo-dark.svg"
     rediraffe_branch: main
     rediraffe_redirects:
       advanced_parameters.md: options/options.md

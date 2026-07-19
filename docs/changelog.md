@@ -12,6 +12,12 @@ Unreleased
 - We have further sped up the CI: the conda package is now built with [rattler-build](https://rattler.build/) instead of `conda-build`, and dependencies in the `pytest` matrix are now installed with [uv](https://docs.astral.sh/uv/) instead of `pip`.
 - We now use a standard `python3` kernel for the documentation - this removes the need for a custom kernel.
 
+**Fixed**
+- We have fixed several dark mode issues with the `ITable` widget and with the documentation, where the table controls (search box, page length) turned dark but the table itself stayed light ([#426](https://github.com/mwouts/itables/issues/426)):
+  - VS Code renders ipywidget content inside a same-origin iframe of its own, but only sets the `data-vscode-theme-kind` attribute on the outer notebook webview's `<body>`, so itables' dark-mode detection now also looks at ancestor documents, not just the widget's own.
+  - itables' table cells are transparent by design, so that they blend into the host page's own background - but some hosts (e.g. ipywidgets front-ends, or pydata-sphinx-theme on itables.org) wrap the output in their own container with a hard-coded background that itables has no control over. `div.dt-container` now paints its own theme-aware background and text color instead of relying on transparency and inheritance.
+  - On itables.org specifically, pydata-sphinx-theme also added its own padding around that container as part of its (now neutralized) safety-net background, which showed up as a light border around the table; we now ship a small custom stylesheet with the docs to opt itables' own output out of it.
+  - In VS Code specifically, the Jupyter extension also wraps every ipywidget's output in its own `.cell-output-ipywidget-background` container(s), hardcoded to white regardless of the editor's theme, which showed up as a thick white border around the widget; the `ITable` widget's CSS now repaints it too, whenever it's actually hosting an `ITable` (other widgets are left untouched).
 
 2.8.2 (2026-07-19)
 ------------------

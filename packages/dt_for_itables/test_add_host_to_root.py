@@ -12,7 +12,7 @@ html.dark, :root[data-bs-theme=dark] table.dataTable {}
     expected_css = """
 :root, :host {}
 :root.dark, :host.dark {}
-html.dark, :root[data-bs-theme=dark] table.dataTable, :host[data-bs-theme=dark] table.dataTable {}
+html.dark, :host.dark, :root[data-bs-theme=dark] table.dataTable, :host[data-bs-theme=dark] table.dataTable {}
 """
     assert add_host_to_root(original_css) == expected_css
 
@@ -62,8 +62,28 @@ html.dark, :root[data-bs-theme=dark] table.dataTable { color: white; }
 :root[data-theme="light"] .element { background-color: white; }
 """
     expected_css = """
-html.dark, :root[data-bs-theme=dark] table.dataTable, :host[data-bs-theme=dark] table.dataTable { color: white; }
+html.dark, :host.dark, :root[data-bs-theme=dark] table.dataTable, :host[data-bs-theme=dark] table.dataTable { color: white; }
 :root[data-theme="light"] .element, :host[data-theme="light"] .element { background-color: white; }
+"""
+    assert add_host_to_root(original_css) == expected_css
+
+
+def test_add_host_to_root_html_selectors():
+    """`html`, like `:root`, is the light-DOM equivalent of `:host` and
+    should get the same treatment, e.g. for DataTables' own dark-mode CSS,
+    which mixes `:root.dark` and `html.dark` for otherwise-equivalent
+    rules (#426)."""
+    original_css = """
+html {}
+html.dark {}
+html[data-theme=dark] {}
+html.dark table.dataTable { color: white; }
+"""
+    expected_css = """
+html, :host {}
+html.dark, :host.dark {}
+html[data-theme=dark], :host[data-theme=dark] {}
+html.dark table.dataTable, :host.dark table.dataTable { color: white; }
 """
     assert add_host_to_root(original_css) == expected_css
 

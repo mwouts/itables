@@ -1,0 +1,36 @@
+/* pydata-sphinx-theme paints a light "safety" background (plus padding)
+ * behind any cell output that isn't a plain pandas `table.dataframe`, so
+ * that content with unknown/uncontrolled text color stays legible - see
+ * https://github.com/mwouts/itables/issues/426. itables' own DataTables
+ * markup (table.dataTable) isn't a `table.dataframe`, so it gets caught by
+ * that rule, and its own dark-mode styling (div.dt-container) ends up
+ * nested inside an extra light, padded box that itables can't reach to fix
+ * from its own CSS. This also affects itables outputs with nothing visible
+ * in them at all (e.g. `init_notebook_mode()`'s cell, which is just a
+ * <script> tag), since the theme doesn't check for actual content, only for
+ * the absence of `table.dataframe`.
+ *
+ * itables.org's pages only ever display itables' own output, which never
+ * needs that safety net (it manages its own background and text color), so
+ * we neutralize it unconditionally rather than trying to detect itables
+ * content specifically. `!important` is needed because the theme's
+ * selector uses `:not(:has(table.dataframe))`, which - unlike a plain
+ * `:not()` - carries the specificity of its `:has()` argument, putting it
+ * above a same-shape selector without that extra weight.
+ */
+html[data-theme="dark"] .bd-content div.cell_output .text_html,
+html[data-theme="dark"] .bd-content div.cell_output .widget-subarea {
+    background-color: transparent !important;
+    padding: 0 !important;
+}
+
+/* The quick_start.md hero logo uses two {image} directives (.only-light/
+ * .only-dark, toggled by pydata-sphinx-theme based on data-theme) instead
+ * of a single Markdown image, so that it can swap colors for dark mode
+ * (#426). Directives aren't wrapped in a <p>, unlike a Markdown image, so
+ * they don't get the theme's own paragraph spacing below them - match it
+ * here (1.15rem is the theme's own bd-article p margin-bottom). */
+.bd-article img.only-light,
+.bd-article img.only-dark {
+    margin-bottom: 1.15rem;
+}

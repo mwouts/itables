@@ -1,3 +1,11 @@
+# 2.5.8 (2026-07-19)
+
+- We have fixed several dark mode issues where the table controls turned dark but the table itself stayed light ([#426](https://github.com/mwouts/itables/issues/426)):
+  - The dark-mode detection now also looks at ancestor documents, not just the current one, since some hosts (e.g. VS Code) render table/widget content inside a same-origin iframe of its own.
+  - `div.dt-container` now paints its own theme-aware background and text color, instead of relying on transparency and inheritance from a host that may not provide either.
+  - `html.<selector>` rules (in addition to the existing `:root.<selector>` ones) are now also mirrored to `:host.<selector>`, so dark mode works inside a Shadow DOM (e.g. Marimo).
+- We have added `--itables-logo-ink`/`--itables-logo-paper` CSS variables so the animated loading logo also adapts to dark mode.
+
 # 2.5.7 (2026-07-18)
 
 - We have made the dark mode detection reactive, so it also follows theme changes that happen after the table has been rendered (e.g. switching the Jupyter Lab or VS Code theme) ([#576](https://github.com/mwouts/itables/issues/576))

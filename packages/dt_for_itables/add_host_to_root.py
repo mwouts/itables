@@ -1,7 +1,11 @@
 #! /usr/bin/env python3
 """This is a Python script that modifies the dt_bundle.css to
-add :host to each :root selector. This ensures that the styles
-works in Marimo which uses Shadow DOM.
+add :host to each :root selector, and :host(<suffix>) to each
+bare `html<suffix>` selector (e.g. `html.dark`). This ensures
+that the styles work in Marimo, VS Code and other hosts that
+render widgets (e.g. via anywidget) inside a Shadow DOM, where
+there is no <html> element for `html.dark` (or `:root.dark`) to
+match against.
 """
 
 import argparse
@@ -9,10 +13,14 @@ import re
 import sys
 import warnings
 
+# (prefix used in the source CSS, prefix to substitute in the :host copy)
+ROOT_ELEMENT_SELECTORS = ((":root", ":host"), ("html", ":host"))
+
 
 def add_host_to_root(css_content: str) -> str:
     """
-    Add :host to each :root selector in the given CSS content.
+    Add a :host equivalent for each selector in the given CSS content that
+    starts with :root or html.
     """
     if ":host" in css_content:
         raise ValueError("The CSS content already contains ':host'")
@@ -32,8 +40,8 @@ def add_host_to_root(css_content: str) -> str:
         spaces_after = selector_group[len(stripped_selector_group) :]
         selector_group = stripped_selector_group
 
-        # If no :root in the selector, return the rule as is
-        if ":root" not in selector_group:
+        # If neither :root nor html appears in the selector, return the rule as is
+        if not any(root in selector_group for root, _ in ROOT_ELEMENT_SELECTORS):
             return f"{spaces_before}{selector_group}{spaces_after}{properties}"
 
         new_selectors = []
@@ -42,17 +50,19 @@ def add_host_to_root(css_content: str) -> str:
         for selector in selector_group.split(","):
             striped_selector = selector.lstrip()
             new_selectors.append(striped_selector)
-            if not striped_selector.startswith(":root"):
-                continue
-            if striped_selector == ":root" or striped_selector.startswith(
-                (":root ", ":root.", ":root[")
-            ):
-                new_selectors.append(striped_selector.replace(":root", ":host", 1))
+
+            for root, host in ROOT_ELEMENT_SELECTORS:
+                if striped_selector == root or striped_selector.startswith(
+                    (f"{root} ", f"{root}.", f"{root}[")
+                ):
+                    new_selectors.append(striped_selector.replace(root, host, 1))
+                    break
             else:
-                warnings.warn(
-                    f"Selector '{striped_selector}' contains ':root' but is not a simple ':root' selector. "
-                    "It will not be modified."
-                )
+                if any(root in striped_selector for root, _ in ROOT_ELEMENT_SELECTORS):
+                    warnings.warn(
+                        f"Selector '{striped_selector}' contains ':root' or 'html' but is not "
+                        "a simple selector starting with either. It will not be modified."
+                    )
 
         return f"{spaces_before}{(', ').join(new_selectors)}{spaces_after}{properties}"
 
