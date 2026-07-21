@@ -21,11 +21,11 @@ kernelspec:
 
 # Static Preview
 
-## Viewing a notebook with ITables tables on GitHub
+## Viewing a notebook with ITables on GitHub
 
 GitHub renders `.ipynb` files as non interactive HTML pages. If the notebook
-outputs contain JavaScript code, that code is not executed. Since ITables tables are
-normally interactive DataTables built with JavaScript, GitHub can't show
+outputs contain JavaScript code, that code is not executed. Since ITables
+normally renders interactive DataTables built with JavaScript, GitHub can't show
 them that way.
 
 To address this, ITables v2.9+ ships a **static preview** with every table: a plain HTML table with just the first rows - 10 by default, or as many as your

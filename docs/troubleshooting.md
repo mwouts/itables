@@ -23,7 +23,7 @@ kernelspec:
 
 # Troubleshooting
 
-ITables tables are interactive, but that requires JavaScript to actually run
+The tables rendered by ITables are interactive, but that requires JavaScript to actually run
 in whatever is displaying the notebook. When it can't, you will see one of
 two things instead: a table stuck on "Loading ITables...", or, since ITables v2.9, a small static
 preview. This page explains both, and how to get the interactive table back
