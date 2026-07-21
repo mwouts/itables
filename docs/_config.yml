@@ -8,6 +8,16 @@ execute:
 # are Jupyter Book's defaults, which we have to repeat as this key overrides them.
 exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints", py]
 sphinx:
+  # Without this, `sphinx.config` below is merged into the config computed
+  # from `repository:`/`html:`/`launch_buttons:` with a shallow dict.update()
+  # rather than a deep merge - so `sphinx.config.html_theme_options` was
+  # silently replacing (not extending) the html_theme_options that
+  # `repository:`/`html:` compute, wiping out use_repository_button/
+  # use_issues_button/use_edit_page_button/launch_buttons/repository_url/
+  # path_to_docs and disabling all of those buttons (and the repo/issues/
+  # edit-page URLs sphinx_book_theme derives from repository_url) without
+  # any error or warning.
+  recursive_update: true
   config:
     html_extra_path: ['quarto']
     html_static_path: ['_static']
