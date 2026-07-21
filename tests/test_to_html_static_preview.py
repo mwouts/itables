@@ -104,7 +104,9 @@ def test_static_preview_marker_mentions_the_version():
     html = to_html_static_preview(df)
     thead = html.split("<thead>", 1)[1].split("</thead>", 1)[0]
     # a small, linked "info" marker with a tooltip, rather than a sentence
-    # of always-visible text
+    # of always-visible text. No "trust this notebook" hint here: this
+    # standalone static preview isn't paired with an interactive table and
+    # a swap script - see test_to_html_datatable.py for that case.
     assert (
         "<sup><a href=https://itables.org/fallbacks/static_preview.html "
         f'title="ITables v{__version__} static preview">ⓘ</a></sup>'
