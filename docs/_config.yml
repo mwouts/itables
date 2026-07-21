@@ -17,6 +17,7 @@ sphinx:
     # `prefers-color-scheme` media query in the SVG itself, neither of which
     # track that toggle (#426).
     html_theme_options:
+      home_page_in_toc: true
       logo:
         image_light: "../src/itables/logo/logo.svg"
         image_dark: "../src/itables/logo/logo-dark.svg"
