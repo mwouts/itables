@@ -51,4 +51,6 @@
 #
 # Option names and types are checked by default at runtime when `typeguard>=4.4.1` is installed. You can disable this by setting `warn_on_undocumented_option=False`.
 #
+# The check occurs both when you set an option on `itables.options`, and when you pass an option to e.g. `show`.
+#
 # If you find an option that is useful but undocumented, or if you notice an incorrect type hint, please submit a PR (and consider adding an example to the documentation, too).
