@@ -12,7 +12,12 @@ from typing import Any, Literal, Mapping, Optional, Sequence, Union, cast
 
 import itables.options as opt
 
-from .datatables_format import datatables_rows, escape_html_chars
+from .datatables_format import (
+    _narwhals_categories,
+    _polars_categories,
+    datatables_rows,
+    escape_html_chars,
+)
 from .downsample import downsample
 from .typing import (
     DataFrameModuleName,
@@ -1039,7 +1044,7 @@ def get_categorical_columns_to_be_represented_through_their_rank(
         pl = sys.modules["polars"]
 
         categorical_columns = {
-            i: df[col].cat.get_categories().to_list()
+            i: _polars_categories(df[col])
             for i, col in enumerate(df.columns)
             if df[col].dtype in (pl.Categorical, pl.Enum)
         }
@@ -1049,7 +1054,7 @@ def get_categorical_columns_to_be_represented_through_their_rank(
         nw_df = nw.from_native(df, eager_only=True, allow_series=True)
 
         categorical_columns = {
-            i: nw_df[col].cat.get_categories().to_list()
+            i: _narwhals_categories(nw_df[col])
             for i, col in enumerate(nw_df.columns)
             if isinstance(nw_df[col].dtype, (nw.Categorical, nw.Enum))
         }

@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+2.9.1 (unreleased)
+------------------
+
+**Fixed**
+- We have fixed the display of Polars `Categorical` columns with Polars 1.32 and above ([#607](https://github.com/mwouts/itables/issues/607)).
+
+
 2.9.0 (2026-07-19)
 ------------------
 

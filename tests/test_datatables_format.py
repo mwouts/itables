@@ -715,5 +715,6 @@ def test_polars_categorical_with_missing_values():
     dt_args = get_itable_arguments(df)
     assert "data_json" in dt_args
     data = json.loads(dt_args["data_json"])
-    # Polars assigns codes in insertion order: b=0→rank 1, a=1→rank 2; null=rank 0
-    assert data == [[1], [0], [2]]
+    # A polars Categorical has no category order, so we sort the categories
+    # alphabetically: null sorts first (rank 0), then a=1, b=2
+    assert data == [[2], [0], [1]]
