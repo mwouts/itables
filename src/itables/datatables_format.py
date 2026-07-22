@@ -51,6 +51,30 @@ def _format_pandas_series(
     return formatted
 
 
+def _polars_categories(x) -> "list[Any]":
+    """Return the ordered categories of a Polars Categorical or Enum series"""
+    pl = sys.modules["polars"]
+    if x.dtype == pl.Enum:
+        return x.dtype.categories.to_list()
+    # Since Polars 1.32 the categories of a Categorical live in a process-global
+    # registry, so neither 'dtype' nor 'cat.get_categories()' can tell us which
+    # categories this particular column uses. We collect them from the values, and
+    # sort them, which is reproducible and consistent with how Polars itself sorts
+    # a Categorical column #607
+    return sorted(x.unique().drop_nulls().to_list())
+
+
+def _narwhals_categories(x) -> "list[Any]":
+    """Return the ordered categories of a Narwhals Categorical or Enum series"""
+    nw = sys.modules["narwhals"]
+    if isinstance(x.dtype, nw.Enum):
+        # Narwhals only exposes the categories of an Enum since v2
+        categories = getattr(x.dtype, "categories", None)
+        if categories is not None:
+            return list(categories)
+    return sorted(x.unique().drop_nulls().to_list())
+
+
 def _format_polars_series(
     x,
     escape_html: bool,
@@ -83,9 +107,21 @@ def _format_polars_series(
         formatted = x.to_list()
     elif dtype == pl.Enum or dtype == pl.Categorical:
         if add_rank_to_categories:
-            codes = x.to_physical().to_list()
-            # null gets rank 0 (sorts first), categories are 1-indexed
-            return [0 if c is None else c + 1 for c in codes]
+            if dtype == pl.Enum:
+                # The physical representation of an Enum is the index of the value
+                # in dtype.categories, i.e. in _polars_categories(x)
+                codes = x.to_physical().to_list()
+                # null gets rank 0 (sorts first), categories are 1-indexed
+                return [0 if c is None else c + 1 for c in codes]
+            # The physical representation of a Categorical is a global category id
+            # (#607), so we rank the values against the categories of that column
+            category_to_rank = {
+                cat: i + 1 for i, cat in enumerate(_polars_categories(x))
+            }
+            return [
+                0 if v is None else category_to_rank[v]
+                for v in x.cast(pl.String).to_list()
+            ]
         formatted = x.cast(pl.String).to_list()
     else:
         # Other types - use Polars' native formatting
@@ -158,7 +194,7 @@ def _format_narwhals_series(
 
     # Categorical and Enum types
     if isinstance(dtype, (nw.Categorical, nw.Enum)) and add_rank_to_categories:
-        categories = x.cat.get_categories().to_list()
+        categories = _narwhals_categories(x)
         category_to_rank = {cat: i + 1 for i, cat in enumerate(categories)}
         # null gets rank 0 (sorts first), categories are 1-indexed
         return [0 if v is None else category_to_rank.get(v, 0) for v in x.to_list()]

@@ -182,6 +182,22 @@ def test_polars_df_with_categorical_and_enums():
     assert dt_args["columnDefs"][1]["targets"] == 1
 
 
+def test_polars_categories_do_not_leak_from_one_df_to_the_next():
+    """Since Polars 1.32 the categories of a Categorical are held in a process-global
+    registry, so we must not use them as-is for a given column #607"""
+    df1 = pl.DataFrame({"cat": pl.Series(["a", "b", "a", "c"], dtype=pl.Categorical)})
+    df2 = pl.DataFrame({"other": pl.Series(["zz", "yy"], dtype=pl.Categorical)})
+
+    get_itable_arguments(df1)
+    dt_args = get_itable_arguments(df2)
+    assert "data_json" in dt_args
+    assert "columnDefs" in dt_args
+
+    # Only the categories of 'other', in alphabetical order: yy=1, zz=2
+    assert dt_args["data_json"] == "[[2], [1]]"
+    assert '["yy", "zz"]' in dt_args["columnDefs"][0]["render"]
+
+
 def test_polars_df_with_nan_and_none():
     df = pl.DataFrame(
         {
