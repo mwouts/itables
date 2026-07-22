@@ -950,6 +950,27 @@ def _evaluate_show_dtypes(
     return False
 
 
+def _check_column_defs(
+    columnDefs: Sequence[Mapping[str, Any]],
+) -> Sequence[Mapping[str, Any]]:
+    """Make sure that columnDefs is a sequence of column definitions.
+
+    Most DataTables options are simply passed on to DataTables, but columnDefs
+    is one that itables reads, and to which it adds its own column definitions,
+    so we can't do anything sensible with an invalid value (#601)."""
+    invalid = [col_def for col_def in columnDefs if not isinstance(col_def, Mapping)]
+    if invalid:
+        msg = (
+            "The 'columnDefs' option must be a sequence of column definitions "
+            "(see https://datatables.net/reference/option/columnDefs), i.e. of dicts "
+            f"like {{'targets': 0, 'className': 'dt-center'}}, but it contains {invalid[0]!r}."
+        )
+        if isinstance(invalid[0], (list, tuple)):
+            msg += " Did you wrap the column definitions in an extra list or tuple?"
+        raise TypeError(msg)
+    return columnDefs
+
+
 def _remove_columns_with_render_in_columndefs(
     column_set: set[int],
     n_columns: int,
@@ -1221,7 +1242,7 @@ def get_itable_arguments(
         # an extra empty column in the table data #141
         column_count = _column_count_in_header(table_header)
         dt_args["table_html"] = table_header
-        columnDefs = dt_args.get("columnDefs") or []
+        columnDefs = _check_column_defs(dt_args.get("columnDefs") or [])
         float_columns_to_be_formatted_in_python: set[int] = (
             get_float_columns_to_be_formatted_in_python(
                 df_module_name, df, format_floats_in_python, columnDefs
@@ -1504,15 +1525,11 @@ def set_default_options(
                 )
             )
 
-    # The options for ITable in dt_for_itables will be checked later on
-    check_itable_arguments(
-        {
-            k: v
-            for k, v in kwargs.items()
-            if k not in DTForITablesOptions.__optional_keys__
-        },
-        ITableOptions,
-    )
+    # We check every option here, including the ones that will be passed on to
+    # ITable in dt_for_itables and checked again there, because some of them
+    # (e.g. columnDefs) are transformed in between - checking them here is what
+    # lets us report the option as the user wrote it (#601)
+    check_itable_arguments(cast(dict[str, Any], kwargs), ITableOptions)
 
 
 def html_table_from_template(

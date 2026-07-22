@@ -4,6 +4,10 @@ ITables ChangeLog
 2.9.1 (unreleased)
 ------------------
 
+**Changed**
+- The options set on `itables.options` are now checked as they are assigned, rather than only when the next table is rendered. A typo in an option name, or an option with an unexpected type, is now reported at the assignment itself ([#601](https://github.com/mwouts/itables/issues/601)).
+- The type of the options passed to e.g. `show` is now checked before itables transforms them, so that the warning quotes the option as you wrote it. Also, every item of a collection is now checked (rather than just the first one as was previously the case)
+
 **Fixed**
 - We have fixed the display of Polars `Categorical` columns with Polars 1.32 and above ([#607](https://github.com/mwouts/itables/issues/607)).
 

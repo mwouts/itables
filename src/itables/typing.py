@@ -318,7 +318,7 @@ def check_itable_argument_types(kwargs: dict[str, Any], typed_dict: type) -> Non
     match the types defined in the given TypedDict.
     """
     try:
-        from typeguard import TypeCheckError, check_type
+        from typeguard import CollectionCheckStrategy, TypeCheckError, check_type
     except ImportError as e:
         raise ImportError(
             "The `warn_on_unexpected_option_type` option requires the 'typeguard' package. "
@@ -332,7 +332,13 @@ def check_itable_argument_types(kwargs: dict[str, Any], typed_dict: type) -> Non
             continue
 
         try:
-            check_type({key: value}, typed_dict)
+            # the options are small, so we can afford to check every item of
+            # e.g. the columnDefs, rather than just the first one (#601)
+            check_type(
+                {key: value},
+                typed_dict,
+                collection_check_strategy=CollectionCheckStrategy.ALL_ITEMS,
+            )
         except TypeCheckError as e:
             type_repr = str(typed_dict.__annotations__[key]).replace("typing.", "")
             warnings.warn(

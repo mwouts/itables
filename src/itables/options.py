@@ -5,7 +5,9 @@ These parameters are documented at
 https://itables.org/options/options.html
 """
 
+import sys
 from pathlib import Path
+from types import ModuleType
 from typing import Any, Literal, Mapping, Optional, Sequence, Union
 
 import itables.config as config
@@ -209,3 +211,27 @@ if warn_on_unexpected_option_type:
         },
         typing.ITableOptions,
     )
+
+_non_options = __non_options
+
+
+class _ITableOptionsModule(ModuleType):
+    """The class of the itables.options module.
+
+    Options set on this module are checked as they are assigned, so that
+    e.g. a typo in an option name, or an option with an unexpected type,
+    is reported at the assignment rather than (possibly) much later, when
+    a table is rendered ([#601](https://github.com/mwouts/itables/issues/601)).
+    """
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        super().__setattr__(name, value)
+        if name.startswith("_") or name in _non_options:
+            return
+        if getattr(self, "warn_on_undocumented_option", False):
+            typing.check_itable_argument_names({name}, typing.ITableOptions)
+        if getattr(self, "warn_on_unexpected_option_type", False):
+            typing.check_itable_argument_types({name: value}, typing.ITableOptions)
+
+
+sys.modules[__name__].__class__ = _ITableOptionsModule
