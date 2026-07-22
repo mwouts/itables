@@ -1,8 +1,11 @@
 ITables ChangeLog
 =================
 
-2.9.1 (unreleased)
+2.9.1 (2026-07-22)
 ------------------
+
+**Added**
+- The static preview's small, linked "ⓘ" marker (see the 2.9.0 entry below) is now preceded by a "🔒" hint specifically when the notebook you're viewing isn't trusted - explaining that trusting it will restore the interactive table. It's wrapped in a `<noscript>` element so it only shows up in that actionable case: it stays hidden once the notebook is trusted, and on read-only renders (e.g. GitHub's `.ipynb` preview) where trusting isn't available anyway.
 
 **Changed**
 - The options set on `itables.options` are now checked as they are assigned, rather than only when the next table is rendered. A typo in an option name, or an option with an unexpected type, is now reported at the assignment itself ([#601](https://github.com/mwouts/itables/issues/601)).

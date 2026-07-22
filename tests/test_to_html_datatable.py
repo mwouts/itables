@@ -58,3 +58,20 @@ def test_to_html_datatable(df_name, df):
     assert (
         html == expected_html
     ), f"Generated HTML does not match reference for {df_name}."
+
+
+def test_static_preview_fallback_includes_the_trust_hint(df):
+    # Unlike a standalone to_html_static_preview() call (see
+    # test_to_html_static_preview.py), the static preview embedded in
+    # to_html_datatable() is paired with a hidden interactive table and a
+    # swap script, so it's worth hinting at *why* it might stay visible:
+    # the notebook isn't trusted yet.
+    html = to_html_datatable(df, table_id="table_id", connected=True)
+    thead = html.split("<thead>", 1)[1].split("</thead>", 1)[0]
+    assert (
+        "<noscript>"
+        '<span title="JavaScript not allowed. '
+        'Please trust this notebook to get interactive tables.">'
+        "🔒</span>"
+        "</noscript>"
+    ) in thead
