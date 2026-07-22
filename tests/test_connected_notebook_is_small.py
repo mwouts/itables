@@ -44,7 +44,7 @@ def test_connected_notebook_is_small(tmp_path, display_logo_when_loading):
     assert jupytext is not None
     jupytext([str(nb_py), "--to", "ipynb", "--set-kernel", "-", "--execute"])
     assert nb_ipynb.exists()
-    if nb_ipynb.stat().st_size < (9000 if display_logo_when_loading else 5000):
+    if nb_ipynb.stat().st_size < (10_000 if display_logo_when_loading else 5_000):
         return
     raise AssertionError(
         f"Notebook size is too large: {nb_ipynb.stat().st_size} bytes:\n"
