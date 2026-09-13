@@ -1,2 +1,2 @@
-jupyterlab>=4.6.1
+jupyterlab>=4
 jupytext
