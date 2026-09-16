@@ -222,7 +222,7 @@ class ITableOptions(DataTableOptions):
 class DTForITablesOptions(DataTableOptions):
     """
     The options that can be passed to the ITable constructor
-    in the dt_for_itables package.
+    in the pydatatables package.
     """
 
     caption: NotRequired[str]

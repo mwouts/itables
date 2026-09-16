@@ -1,6 +1,13 @@
 ITables ChangeLog
 =================
 
+3.0.0.dev0 (not released)
+-------------------------
+
+**Changed**
+- We have renamed our datatable.net bundle to `pydatatables-assets` ([#629](https://github.com/mwouts/itables/issues/629))
+
+
 2.9.1 (2026-07-22)
 ------------------
 

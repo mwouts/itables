@@ -1,3 +1,7 @@
+# 2.5.9 (2026-09-16)
+
+- We have renamed `dt_for_itables` to `pydatatables-assets` to make clear that it is used by our Python wrapper for `datatables.net` ([#629](https://github.com/mwouts/itables/issues/629))
+
 # 2.5.8 (2026-07-19)
 
 - We have fixed several dark mode issues where the table controls turned dark but the table itself stayed light ([#426](https://github.com/mwouts/itables/issues/426)):
