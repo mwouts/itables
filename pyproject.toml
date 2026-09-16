@@ -1,5 +1,8 @@
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling<1.29",
+    "hatch-jupyter-builder>=0.5.0",
+]
 build-backend = "hatchling.build"
 
 [project]
@@ -97,7 +100,7 @@ exclude_lines = [
 
 [tool.hatch.build.hooks.jupyter-builder]
 enable-by-default = true
-dependencies = ["hatch-jupyter-builder>=0.5.0", "dash==4.4.0", "pyyaml"]
+dependencies = ["dash==4.4.0", "pyyaml"]
 build-function = "hatch_jupyter_builder.npm_builder"
 ensured-targets = [
     "src/itables/html/dt_bundle.js",
