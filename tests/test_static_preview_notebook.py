@@ -65,7 +65,7 @@ def _build_notebook():
             "# this notebook doesn't need to be regenerated on every release\n"
             "itables.javascript.itables_version = '{itables_version}'\n"
             "itables.options.dt_url = ('https://www.unpkg.com/pydatatables-assets'\n"
-            "    '@{pydatatables_version}/dt_bundle.js')\n"
+            "    '@{pydatatables-assets-version}/dt_bundle.js')\n"
             "\n"
             "itables.init_notebook_mode(connected=True)\n"
             "\n"
