@@ -73,6 +73,7 @@ This uses the dedicated `build` pixi environment, which pins `hatch` and
 `virtualenv` to versions that are currently compatible with the
 `jupyter-builder` build hook.
 
+(jupyter-book)=
 ## Jupyter Book
 
 The `itables` documentation uses [Jupyter Book](https://jupyterbook.org/).
@@ -82,7 +83,12 @@ Build the documentation with:
 pixi run -e docs jupyter book build docs
 ```
 
-This will give you a link to a local version of the documentation.
+To serve the built documentation locally, run:
+```shell
+python3 -m http.server 8000 --directory docs/_build/html
+```
+
+Then open [http://localhost:8000/](http://localhost:8000/) in your browser.
 
 If you make any significant change then you should go through
 the updated documentation and make sure all the examples

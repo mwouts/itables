@@ -36,7 +36,7 @@
 # or improve the documentation, feel free to make a pull request!
 #
 # You can render the documentation locally - see the section on
-# [Jupyter Book](developing.md#jupyter-book) in the developer guide.
+# {ref}`Jupyter Book <jupyter-book>` in the developer guide.
 #
 # ## Give credit to ITables
 #

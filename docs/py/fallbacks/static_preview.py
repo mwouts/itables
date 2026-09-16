@@ -33,7 +33,7 @@
 # instead of the interactive table.
 #
 # Untrusted notebooks, which can't use JavaScript until you trust them, also use the same fallback - see
-# [Seeing a static preview instead?](../troubleshooting.md#seeing-a-static-preview-instead).
+# {ref}`Seeing a static preview instead? <static-preview-instead-of-the-interactive-table>`.
 #
 # ## What the fallback looks like
 #
