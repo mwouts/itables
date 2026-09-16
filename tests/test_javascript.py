@@ -175,7 +175,7 @@ def test_check_table_id():
 @pytest.mark.parametrize("url", [UNPKG_DT_BUNDLE_URL, UNPKG_DT_BUNDLE_CSS])
 def test_unpkg_links(url):
     requests = pytest.importorskip("requests")
-    response_no_version = requests.get("https://www.unpkg.com/dt_for_itables/")
+    response_no_version = requests.get("https://www.unpkg.com/pydatatables-assets/")
     if not response_no_version.ok:
         pytest.skip("unpkg.com is not reachable")
     response = requests.get(url)
@@ -183,16 +183,18 @@ def test_unpkg_links(url):
 
 
 def test_unpkg_urls_are_up_to_date():
-    with open(Path(__file__).parent / "../packages/dt_for_itables/package.json") as fp:
-        dt_for_itables = json.load(fp)
-    bundle_version = dt_for_itables["version"]
+    with open(
+        Path(__file__).parent / "../packages/pydatatables-assets/package.json"
+    ) as fp:
+        pydatatables = json.load(fp)
+    bundle_version = pydatatables["version"]
     assert (
         UNPKG_DT_BUNDLE_URL
-        == f"https://www.unpkg.com/dt_for_itables@{bundle_version}/dt_bundle.js"
+        == f"https://www.unpkg.com/pydatatables-assets@{bundle_version}/dt_bundle.js"
     )
     assert (
         UNPKG_DT_BUNDLE_CSS
-        == f"https://www.unpkg.com/dt_for_itables@{bundle_version}/dt_bundle.css"
+        == f"https://www.unpkg.com/pydatatables-assets@{bundle_version}/dt_bundle.css"
     )
 
 

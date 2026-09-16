@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@streamlit/component-v2-lib": "^0.2.0",
-    "dt_for_itables": "file:../dt_for_itables"
+    "pydatatables-assets": "file:../pydatatables-assets"
   },
   "devDependencies": {
     "esbuild": "^0.25.9",

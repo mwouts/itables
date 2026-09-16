@@ -61,11 +61,11 @@ def _build_notebook():
         new_code_cell(
             "import itables\n"
             "\n"
-            "# Pin the itables/dt_for_itables version strings shown below, so\n"
+            "# Pin the itables/pydatatables-assets version strings shown below, so\n"
             "# this notebook doesn't need to be regenerated on every release\n"
             "itables.javascript.itables_version = '{itables_version}'\n"
-            "itables.options.dt_url = ('https://www.unpkg.com/dt_for_itables'\n"
-            "    '@{dt_for_itables_version}/dt_bundle.js')\n"
+            "itables.options.dt_url = ('https://www.unpkg.com/pydatatables-assets'\n"
+            "    '@{pydatatables_version}/dt_bundle.js')\n"
             "\n"
             "itables.init_notebook_mode(connected=True)\n"
             "\n"
@@ -125,7 +125,7 @@ def _build_notebook():
 def _stable_text(nb) -> str:
     """Strip the parts of an executed notebook that are not reproducible
     across runs/environments (timestamps, cell ids, Python patch version),
-    and return its serialized text. The itables/dt_for_itables version
+    and return its serialized text. The itables/pydatatables-assets version
     strings are pinned to placeholders by the notebook's own setup cell
     (mirroring test_to_html_datatable.py's approach), so this doesn't need
     to be regenerated on every release."""

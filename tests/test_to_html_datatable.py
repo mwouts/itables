@@ -40,7 +40,7 @@ def test_to_html_datatable(df_name, df):
         patch("itables.javascript.itables_version", "{itables_version}"),
         patch(
             "itables.options.dt_url",
-            "https://www.unpkg.com/dt_for_itables@{dt_for_itables_version}/dt_bundle.js",
+            "https://www.unpkg.com/pydatatables-assets@{pydatatables_version}/dt_bundle.js",
         ),
     ):
         html = to_html_datatable(

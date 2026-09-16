@@ -12,7 +12,7 @@
   "author": "Marc Wouts <marc.wouts@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "dt_for_itables": "file:../dt_for_itables"
+    "pydatatables-assets": "file:../pydatatables-assets"
   },
   "devDependencies": {
     "@babel/core": "^7.29.6",
