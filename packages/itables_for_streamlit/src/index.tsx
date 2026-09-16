@@ -1,6 +1,6 @@
 import type { FrontendRenderer, FrontendState } from "@streamlit/component-v2-lib"
 
-import { ITable, set_or_remove_dark_class } from "dt_for_itables"
+import { ITable, set_or_remove_dark_class } from "pydatatables-assets"
 
 interface ITableState extends FrontendState {
   selected_rows: number[];

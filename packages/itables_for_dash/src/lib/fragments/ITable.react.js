@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { ITable as ITableClass, set_or_remove_dark_class} from "dt_for_itables";
+import { ITable as ITableClass, set_or_remove_dark_class} from "pydatatables-assets";
 import { defaultProps, propTypes } from '../components/ITable.react.js';
-import "dt_for_itables/dt_bundle.css";
+import "pydatatables-assets/dt_bundle.css";
 
 const ITable = (props) => {
   const { id, caption, selected_rows, classes, style, dt_args, setProps } = props;

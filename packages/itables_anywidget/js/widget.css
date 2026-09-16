@@ -1,4 +1,4 @@
-@import 'dt_for_itables/dt_bundle.css';
+@import 'pydatatables-assets/dt_bundle.css';
 
 /* itables' regular table cells are transparent by design, so that they blend
    into the host page's own background (see the dark-mode fixed-columns fix,

@@ -1,5 +1,5 @@
 import type { RenderContext } from "@anywidget/types";
-import { ITable, set_or_remove_dark_class } from 'dt_for_itables';
+import { ITable, set_or_remove_dark_class } from 'pydatatables-assets';
 
 /* Specifies attributes defined with traitlets in ../src/itables_anywidget/__init__.py */
 interface WidgetModel {

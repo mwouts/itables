@@ -54,7 +54,7 @@ itables.show(
 # to create a bundle of jQuery, DataTables, and the desired extensions.
 #
 # To do so, make a copy of
-# [`packages/dt_for_itables`](https://github.com/mwouts/itables/tree/main/packages/dt_for_itables):
+# [`packages/pydatatables-assets`](https://github.com/mwouts/itables/tree/main/packages/pydatatables-assets)
 # ```bash
 # $ tree
 # ```
