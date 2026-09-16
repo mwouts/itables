@@ -12,7 +12,7 @@ updates:
           - "*"
 
   - package-ecosystem: "npm"
-    directory: "/packages/dt_for_itables"
+    directory: "/packages/pydatatables-assets"
     schedule:
       interval: "weekly"
     cooldown:

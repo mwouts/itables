@@ -1557,7 +1557,7 @@ def set_default_options(
             )
 
     # We check every option here, including the ones that will be passed on to
-    # ITable in dt_for_itables and checked again there, because some of them
+    # ITable in pydatatables and checked again there, because some of them
     # (e.g. columnDefs) are transformed in between - checking them here is what
     # lets us report the option as the user wrote it (#601)
     check_itable_arguments(cast(dict[str, Any], kwargs), ITableOptions)
