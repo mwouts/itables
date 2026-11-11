@@ -4,6 +4,9 @@ ITables ChangeLog
 3.0.0.dev0 (not released)
 -------------------------
 
+**Fixed**
+- Valid DataTables callbacks, including `headerCallback`, `footerCallback`, and `rowCallback`, are now documented and typed as `JavascriptFunction` options, avoiding undocumented-option warnings. The options guide includes a callback example and links to the DataTables reference ([#641](https://github.com/mwouts/itables/issues/641)).
+
 **Changed**
 - We have renamed our datatable.net bundle to `pydatatables-assets` ([#629](https://github.com/mwouts/itables/issues/629))
 
