@@ -22,6 +22,52 @@ Since ITables simply maps these options to DataTables, we encourage you to consu
 
 A non-exhaustive list of DataTables options, along with their expected types, is provided by `DataTableOptions` in [`itables.typing`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py).
 
+## JavaScript Callbacks
+
+DataTables callbacks can customize the table when it is created or redrawn.
+Pass JavaScript functions as `itables.JavascriptFunction` objects, rather than
+plain strings or Python functions. For example,
+[`headerCallback`](https://datatables.net/reference/option/headerCallback)
+can style the header each time the table is drawn:
+
+```{code-cell} ipython3
+import pandas as pd
+
+import itables
+
+itables.show(
+    pd.DataFrame({"value": [1, 2, 3]}),
+    headerCallback=itables.JavascriptFunction(
+        """function (thead, data, start, end, display) {
+    thead.style.color = 'navy';
+}"""
+    ),
+)
+```
+
+Option names are case-sensitive: use `headerCallback`, with a lowercase `b`.
+The callback runs in the browser and affects the interactive table. It does
+not change the static HTML or Markdown preview.
+
+The following callbacks are documented in ITables' option types. See the linked
+DataTables reference for each function's arguments and return value.
+
+| Callbacks | Purpose |
+| --- | --- |
+| [`createdRow`](https://datatables.net/reference/option/createdRow) | Customize a newly created row. |
+| [`headerCallback`](https://datatables.net/reference/option/headerCallback), [`footerCallback`](https://datatables.net/reference/option/footerCallback) | Update the header or footer on each draw. Use `footer=True` to include a footer. |
+| [`rowCallback`](https://datatables.net/reference/option/rowCallback) | Customize rows on each draw. |
+| [`preDrawCallback`](https://datatables.net/reference/option/preDrawCallback), [`drawCallback`](https://datatables.net/reference/option/drawCallback) | Run before or after drawing the table. |
+| [`initComplete`](https://datatables.net/reference/option/initComplete) | Run when initialization finishes. |
+| [`infoCallback`](https://datatables.net/reference/option/infoCallback), [`formatNumber`](https://datatables.net/reference/option/formatNumber) | Customize the table summary or displayed numbers. |
+| [`stateLoadCallback`](https://datatables.net/reference/option/stateLoadCallback), [`stateSaveCallback`](https://datatables.net/reference/option/stateSaveCallback) | Customize where table state is loaded and saved. |
+| [`stateLoadParams`](https://datatables.net/reference/option/stateLoadParams), [`stateLoaded`](https://datatables.net/reference/option/stateLoaded), [`stateSaveParams`](https://datatables.net/reference/option/stateSaveParams) | Inspect or modify saved state. |
+
+You can also set callbacks globally on `itables.options`, for example
+`itables.options.headerCallback = itables.JavascriptFunction(...)`.
+JavaScript callbacks can be used with `show` and `to_html_datatable`; the
+widget, Dash, and Streamlit integrations reject JavaScript code in their options.
+
 ## ITable Options
 
 ITables adds a few options of its own, such as `connected`, `maxBytes`, `allow_html`, and others. An exhaustive list of these additional options is provided by `ITableOptions` in [`itables.typing`](https://github.com/mwouts/itables/blob/main/src/itables/typing.py).
