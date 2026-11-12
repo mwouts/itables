@@ -1,9 +1,11 @@
 import re
 import warnings
+from typing import Any
 
 import pytest
 
 import itables
+from itables.javascript import get_itable_arguments
 
 if not itables.typing.is_typeguard_available():
     pytestmark = pytest.mark.skip(reason="Typeguard is not available")
@@ -80,3 +82,43 @@ def test_no_warning_when_a_valid_option_is_set(monkeypatch):
     with warnings.catch_warnings():
         warnings.simplefilter("error")
         monkeypatch.setattr(itables.options, "lengthMenu", [2, 5, 10], raising=False)
+
+
+DATATABLE_CALLBACKS = [
+    "createdRow",
+    "footerCallback",
+    "formatNumber",
+    "headerCallback",
+    "infoCallback",
+    "preDrawCallback",
+    "rowCallback",
+    "stateLoadCallback",
+    "stateLoadParams",
+    "stateLoaded",
+    "stateSaveCallback",
+    "stateSaveParams",
+]
+
+
+@pytest.mark.parametrize("option_name", DATATABLE_CALLBACKS)
+@pytest.mark.parametrize("global_default", [False, True])
+def test_datatables_callback_is_accepted(df, monkeypatch, option_name, global_default):
+    callback = itables.JavascriptFunction("function () { return true; }")
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", SyntaxWarning)
+        if global_default:
+            monkeypatch.setattr(itables.options, option_name, callback, raising=False)
+            args = get_itable_arguments(df)
+        else:
+            kwargs: dict[str, Any] = {option_name: callback}
+            args = get_itable_arguments(df, **kwargs)
+    assert args[option_name] == callback
+    assert "keys_to_be_evaluated" in args
+    assert [option_name] in args["keys_to_be_evaluated"]
+
+
+@pytest.mark.parametrize("option_name", DATATABLE_CALLBACKS)
+def test_datatables_callback_requires_javascript_function(df, option_name):
+    with pytest.warns(SyntaxWarning, match=option_name + ".*does not match"):
+        kwargs: dict[str, Any] = {option_name: "function () {}"}
+        itables.to_html_datatable(df, **kwargs)
