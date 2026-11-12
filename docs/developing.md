@@ -18,6 +18,26 @@ Install the pre-commit hooks with
 pre-commit install
 ```
 
+## Using the development container
+
+With Docker and the VS Code Dev Containers extension installed, open this
+repository in VS Code and run **Dev Containers: Reopen in Container**.
+The container installs the locked Pixi development environment, pre-commit
+hooks, and the `itables` Jupyter kernel. Python tools and new terminals use
+that environment automatically.
+
+The container uses Linux amd64 because the Pixi workspace currently supports
+`linux-64`, but not `linux-aarch64`. On ARM hosts (including Apple Silicon),
+Docker must support amd64 emulation.
+
+The `.pixi` directory lives in a Docker volume so dependencies survive
+container rebuilds and stay separate from the host environment. After changing
+`pyproject.toml` or `pixi.lock`, run `pixi install --locked` in the container.
+
+Run the tests with `pixi run pytest`, or start JupyterLab with
+`pixi run jupyter lab --ip=0.0.0.0 --no-browser`. Port 8888 is forwarded to
+the host; open the URL with the token printed by JupyterLab.
+
 ## How to run the Python test suite
 
 The Python code can be tested with just
