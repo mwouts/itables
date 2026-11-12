@@ -375,7 +375,8 @@ jobs:
       actions: read
       pull-requests: write
     needs: [build-wheel, build-conda]
-    if: github.event_name == 'pull_request'
+    # Fork pull_request tokens are read-only and cannot post comments.
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Comment with direct artifact link
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
